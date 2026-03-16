@@ -34,7 +34,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
 .msg.success{background:#dcfce7;color:#16a34a;display:block}
-/* QR Scanner Modal */
 #qr-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-end;justify-content:center}
 #qr-modal.open{display:flex}
 .qr-modal-card{background:white;border-radius:2rem 2rem 0 0;padding:1.5rem;width:100%;max-width:480px}
@@ -43,14 +42,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .close-qr{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
 #qr-reader{border-radius:1rem;overflow:hidden;border:2px solid #0057ff}
 .qr-cancel{width:100%;margin-top:1rem;padding:.75rem;background:#fee2e2;border:none;color:#dc2626;border-radius:1rem;font-size:.75rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
-/* Receipt Modal */
 #receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
 #receipt-modal.open{display:flex}
 .receipt-card{background:linear-gradient(160deg,#f0f4ff 0%,#fff 100%);border-radius:2rem 2rem 0 0;padding:2rem;width:100%;max-width:480px}
 .receipt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
 .receipt-header h3{font-size:1rem;font-weight:800;color:#0f172a}
 .close-btn{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
-.receipt-icon{width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem}
+.receipt-icon{width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem}
 .receipt-amt{text-align:center;font-size:2.25rem;font-weight:900;color:#dc2626}
 .receipt-label{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:1.25rem}
 .receipt-row{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f8fafc}
@@ -75,6 +73,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <div class="container">
+
   <div class="balance-pill">
     <span>Balance</span>
     <strong>₹<span id="balance">0.00</span></strong>
@@ -84,7 +83,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
   <div class="card">
 
-    <!-- Receiver Number + QR -->
+    <!-- Number + QR -->
     <div class="input-group">
       <label>Receiver Number</label>
       <div class="input-wrap">
@@ -114,10 +113,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <button class="btn" id="send-btn" onclick="sendMoney()">
       <i class="fa-solid fa-paper-plane"></i> Send Money
     </button>
+
   </div>
 </div>
 
-<!-- QR Scanner Modal -->
+<!-- QR Modal -->
 <div id="qr-modal">
   <div class="qr-modal-card">
     <div class="qr-modal-header">
@@ -139,7 +139,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <button class="close-btn" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="receipt-icon">
-      <i class="fa-solid fa-check" style="color:#dc2626;font-size:1.5rem"></i>
+      <i class="fa-solid fa-check" style="color:#16a34a;font-size:1.5rem"></i>
     </div>
     <div class="receipt-amt" id="r-amt"></div>
     <div class="receipt-label">Transfer Sent ✅</div>
@@ -173,13 +173,11 @@ if(!token) window.location.href = 'index.html';
 let fetchTimer  = null;
 let html5QrCode = null;
 
-// Load balance
 fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
   });
 
-// Name fetcher
 function fetchName(val) {
   clearTimeout(fetchTimer);
   document.getElementById('name-tag').classList.remove('show');
@@ -190,7 +188,7 @@ function fetchName(val) {
       const r = await fetch(API+'/transfer/lookup/'+val,{headers:{'Authorization':'Bearer '+token}});
       const d = await r.json();
       if(d.status==='success') {
-        document.getElementById('fetched-name').textContent = d.name || 'User';
+        document.getElementById('fetched-name').textContent = d.name||'User';
         document.getElementById('name-tag').classList.add('show');
       } else {
         document.getElementById('name-not-found').classList.add('show');
@@ -202,21 +200,21 @@ function fetchName(val) {
 function showMsg(text, type) {
   const m = document.getElementById('msg');
   m.textContent = text;
-  m.className = 'msg ' + type;
+  m.className = 'msg '+type;
 }
 
 async function sendMoney() {
   const mobile = document.getElementById('mobile').value;
   const amount = document.getElementById('amount').value;
-  if(!mobile) return showMsg('Number enter karo!', 'error');
-  if(!amount) return showMsg('Amount enter karo!', 'error');
+  if(!mobile) return showMsg('Number enter karo!','error');
+  if(!amount) return showMsg('Amount enter karo!','error');
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
 
   try {
-    const r = await fetch(API+'/transfer/send', {
+    const r = await fetch(API+'/transfer/send',{
       method:  'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
       body:    JSON.stringify({ receiver_mobile: mobile, amount })
@@ -242,15 +240,14 @@ async function sendMoney() {
       document.getElementById('name-tag').classList.remove('show');
       document.getElementById('msg').className = 'msg';
 
-      // Refresh balance
       fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
         .then(r=>r.json()).then(d=>{
-          if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
+          if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
         });
     } else {
-      showMsg(d.message||'Transfer failed!', 'error');
+      showMsg(d.message||'Transfer failed!','error');
     }
-  } catch(e) { showMsg('Server error!', 'error'); }
+  } catch(e) { showMsg('Server error!','error'); }
 
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Money';
@@ -260,7 +257,6 @@ function closeReceipt() {
   document.getElementById('receipt-modal').classList.remove('open');
 }
 
-// QR Scanner
 function openQR() {
   document.getElementById('qr-modal').classList.add('open');
   html5QrCode = new Html5Qrcode('qr-reader');
@@ -268,10 +264,7 @@ function openQR() {
     {facingMode:'environment'},
     {fps:10, qrbox:{width:250,height:250}},
     onQRScan
-  ).catch(()=>{
-    alert('Camera permission denied!');
-    closeQR();
-  });
+  ).catch(()=>{ alert('Camera permission denied!'); closeQR(); });
 }
 
 async function onQRScan(decoded) {
@@ -282,7 +275,7 @@ async function onQRScan(decoded) {
     document.getElementById('mobile').value = mobile;
     fetchName(mobile);
   } else {
-    alert('Invalid UNIO QR Code!');
+    alert('Invalid UNIO QR!');
   }
 }
 
@@ -296,7 +289,6 @@ function closeQR() {
   }
 }
 
-// Auto fill from URL
 const urlTo = new URLSearchParams(window.location.search).get('to');
 if(urlTo) {
   document.getElementById('mobile').value = urlTo;
