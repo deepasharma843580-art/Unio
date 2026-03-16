@@ -4,11 +4,13 @@ const Transaction = require('../models/Transaction');
 const { auth }    = require('../middleware/auth');
 const tg          = require('../helpers/telegram');
 
+// Balance
 router.get('/balance', auth, async (req, res) => {
   const u = await User.findById(req.user._id).select('balance wallet_id name mobile');
   res.json({ status:'success', balance: u.balance, wallet_id: u.wallet_id, name: u.name });
 });
 
+// Transactions history
 router.get('/transactions', auth, async (req, res) => {
   try {
     const txns = await Transaction.find({
@@ -20,18 +22,41 @@ router.get('/transactions', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ status:'error', message: e.message }); }
 });
 
+// Deposit info
 router.get('/deposit-info', auth, (req, res) => {
-  const upi_id  = process.env.UPI_ID || 'Sumit302010@upi';
-  const upi_name= process.env.UPI_NAME || 'UNIO%20WALLET%20SERVICES';
   res.json({
     status:   'success',
-    upi_id,
-    upi_name: decodeURIComponent(upi_name),
-    fee_pct:  1.1,
-    note:     'Pay via UPI and send screenshot to admin for manual credit'
+    upi_id:   process.env.UPI_ID || 'sumitsharmaji001@ptyes',
+    fee_pct:  0,
+    note:     'Pay via UPI then submit UTR number'
   });
 });
 
+// Deposit UTR request
+router.post('/deposit-request', auth, async (req, res) => {
+  try {
+    const { utr, amount } = req.body;
+    const amt = parseFloat(amount);
+    if(!utr) return res.status(400).json({ status:'error', message:'UTR required' });
+    if(amt < 1) return res.status(400).json({ status:'error', message:'Minimum ₹1' });
+    const user = await User.findById(req.user._id);
+    const existing = await Transaction.findOne({ remark: 'UTR:' + utr });
+    if(existing) return res.status(400).json({ status:'error', message:'This UTR already submitted!' });
+    await Transaction.create({
+      receiver_id: user._id, amount: amt,
+      type: 'transfer', status: 'pending',
+      remark: 'UTR:' + utr
+    });
+    if(process.env.ADMIN_TG_ID) {
+      tg.sendAlert(process.env.ADMIN_TG_ID,
+        `💳 *NEW DEPOSIT REQUEST*\n\n👤 User: \`${user.mobile}\`\n💰 Amount: ₹${amt}\n🔖 UTR: \`${utr}\`\n⏳ Status: Pending\n\n_UNIO Deposit System_`
+      );
+    }
+    res.json({ status:'success', message:'Request submitted! Admin will verify shortly.' });
+  } catch(e) { res.status(500).json({ status:'error', message: e.message }); }
+});
+
+// Withdraw request
 router.post('/withdraw', auth, async (req, res) => {
   try {
     const { upi, amount } = req.body;
@@ -49,7 +74,7 @@ router.post('/withdraw', auth, async (req, res) => {
     if(process.env.ADMIN_TG_ID) {
       tg.sendAlert(process.env.ADMIN_TG_ID, tg.withdrawMsg(user.mobile, amt, upi));
     }
-    res.json({ status:'success', message:'Withdraw request submitted. Admin will process shortly.', tx_id: txn.tx_id });
+    res.json({ status:'success', message:'Withdraw request submitted!', tx_id: txn.tx_id });
   } catch(e) { res.status(500).json({ status:'error', message: e.message }); }
 });
 
