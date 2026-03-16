@@ -36,16 +36,19 @@ app.use('/admin',    require('./routes/admin'));
 app.use('/payment',  payLimiter, require('./routes/payment'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
-app.get('/',                  (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/dashboard',         (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
-app.get('/transfer',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
-app.get('/deposit',           (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
-app.get('/withdraw',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'withdraw.html')));
-app.get('/lifafa-create',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'lifafa.html')));
-app.get('/claim',             (req, res) => res.sendFile(path.join(__dirname, 'public', 'claim.html')));
-app.get('/tg',                (req, res) => res.sendFile(path.join(__dirname, 'public', 'tg.html')));
-app.get('/admin-panel',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
-app.get('/sahab',             (req, res) => res.sendFile(path.join(__dirname, 'public', 'sahab.html')));
+app.get('/',               (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/dashboard',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+app.get('/transfer',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
+app.get('/deposit',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
+app.get('/withdraw',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'withdraw.html')));
+app.get('/lifafa-create',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'lifafa.html')));
+app.get('/claim',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'claim.html')));
+app.get('/tg',             (req, res) => res.sendFile(path.join(__dirname, 'public', 'tg.html')));
+app.get('/admin-panel',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admindash.html')));
+app.get('/sahab',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'sahab.html')));
+app.get('/transactions',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'transactions.html')));
+app.get('/settings',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'settings.html')));
+app.get('/qr',             (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -53,7 +56,12 @@ app.get('*', (req, res) => {
 });
 
 // ── MongoDB ───────────────────────────────────────────────────────────────────
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 60000,
+  socketTimeoutMS:          60000,
+  connectTimeoutMS:         60000,
+  maxPoolSize:              10,
+})
   .then(() => console.log('✅ MongoDB Connected'))
   .catch(e => console.error('❌ DB Error:', e.message));
 
