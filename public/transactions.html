@@ -296,7 +296,7 @@ function openReceipt(d) {
   icon.style.background = isCredit ? '#f0fdf4' : '#fff1f2';
   icon.innerHTML = `<i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}" style="color:${isCredit?'#16a34a':'#dc2626'};font-size:1.5rem"></i>`;
 
-  document.getElementById('r-amt').textContent   = (isCredit?'+':'-') + '&#8377;' + d.amt;
+  document.getElementById('r-amt').innerHTML = (isCredit?'+':'-') + '₹' + d.amt;
   document.getElementById('r-amt').style.color   = isCredit ? '#16a34a' : '#dc2626';
   document.getElementById('r-label').textContent = isCredit ? 'Transfer Received' : 'Transfer Sent';
 
