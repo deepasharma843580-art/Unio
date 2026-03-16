@@ -20,9 +20,13 @@ async function sendTG(tg_id, text) {
 
 // Lookup
 router.get('/lookup/:mobile', auth, async (req, res) => {
-  const u = await User.findOne({ mobile: req.params.mobile }).select('name mobile');
-  if(!u) return res.json({ status:'error', message:'User not found' });
-  res.json({ status:'success', name: u.name, mobile: u.mobile });
+  try {
+    const u = await User.findOne({ mobile: req.params.mobile }).select('name mobile');
+    if(!u) return res.json({ status:'error', message:'User not found' });
+    res.json({ status:'success', name: u.name, mobile: u.mobile });
+  } catch(e) {
+    res.status(500).json({ status:'error', message: e.message });
+  }
 });
 
 // P2P Transfer — no PIN needed
@@ -31,16 +35,20 @@ router.post('/send', auth, async (req, res) => {
   session.startTransaction();
   try {
     const { receiver_mobile, amount } = req.body;
+
     if(!receiver_mobile || !amount)
       return res.status(400).json({ status:'error', message:'receiver_mobile and amount required' });
 
     const amt = Math.round(parseFloat(amount) * 100) / 100;
-    if(amt < 1)
+    if(isNaN(amt) || amt < 1)
       return res.status(400).json({ status:'error', message:'Minimum ₹1' });
 
     const sender = await User.findById(req.user._id);
+    if(!sender)
+      return res.status(404).json({ status:'error', message:'Sender not found' });
+
     if(sender.balance < amt)
-      return res.status(400).json({ status:'error', message:`Insufficient balance. Available: ₹${sender.balance}` });
+      return res.status(400).json({ status:'error', message:'Insufficient balance. Available: ₹'+sender.balance });
 
     const receiver = await User.findOne({ mobile: receiver_mobile });
     if(!receiver)
@@ -60,9 +68,14 @@ router.post('/send', auth, async (req, res) => {
     await User.findByIdAndUpdate(receiver._id, { $inc:{ balance: +amt } }, { session });
 
     await Transaction.create([{
-      tx_id: txId, sender_id: sender._id, receiver_id: receiver._id,
-      amount: amt, type: 'transfer', status: 'success',
-      remark: `Transfer to ${receiver_mobile}`, tx_time: now
+      tx_id:       txId,
+      sender_id:   sender._id,
+      receiver_id: receiver._id,
+      amount:      amt,
+      type:        'transfer',
+      status:      'success',
+      remark:      'Transfer to ' + receiver_mobile,
+      tx_time:     now
     }], { session });
 
     await session.commitTransaction();
@@ -70,7 +83,7 @@ router.post('/send', auth, async (req, res) => {
     const sNew = await User.findById(sender._id).select('balance tg_id');
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
-    // 🔴 Debit Alert → Sender
+    // Debit Alert
     if(sNew.tg_id) {
       sendTG(sNew.tg_id,
 `🔴 *DEBIT ALERT*
@@ -94,7 +107,7 @@ router.post('/send', auth, async (req, res) => {
       );
     }
 
-    // 🟢 Credit Alert → Receiver
+    // Credit Alert
     if(rNew.tg_id) {
       sendTG(rNew.tg_id,
 `🟢 *CREDIT ALERT*
@@ -128,7 +141,9 @@ router.post('/send', auth, async (req, res) => {
   } catch(e) {
     await session.abortTransaction();
     res.status(500).json({ status:'error', message: e.message });
-  } finally { session.endSession(); }
+  } finally {
+    session.endSession();
+  }
 });
 
 module.exports = router;
