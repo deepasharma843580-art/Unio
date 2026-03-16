@@ -85,16 +85,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <span class="param-desc">Your API Key</span>
     </div>
     <div class="param-row">
-      <span class="param-name">to<span class="param-req">*</span></span>
+      <span class="param-name">paytm<span class="param-req">*</span></span>
       <span class="param-desc">Receiver number</span>
     </div>
     <div class="param-row">
-      <span class="param-name">amt<span class="param-req">*</span></span>
+      <span class="param-name">amount<span class="param-req">*</span></span>
       <span class="param-desc">Amount in ₹ (min ₹1)</span>
     </div>
     <div class="param-row">
-      <span class="param-name">remark</span>
-      <span class="param-desc">Optional note</span>
+      <span class="param-name">comment</span>
+      <span class="param-desc">Optional comment</span>
     </div>
     <div class="param-row">
       <span class="param-name">txn</span>
@@ -150,10 +150,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
       <div class="res-code success">{
   "status": "success",
-  "message": "Transfer Done",
-  "amount": 50,
-  "txn": "UNIOA1B2C3D4E5",
-  "tx_id": "TX172345678901234"
+  "message": "Payment successful",
+  "data": {
+    "transaction_id": "TXNhgphgfqre1med5sc",
+    "amount": 50,
+    "receiver": {
+      "name": "Rahul Kumar",
+      "number": "9876543210"
+    },
+    "comment": "RealCasino",
+    "timestamp": "16-03-2026 15:12:06"
+  }
 }</div>
     </div>
 
@@ -242,14 +249,18 @@ function loadData() {
   const jwt    = token || 'YOUR_TOKEN';
 
   // Full URL
-  const fullUrl = `${BASE}/payment?key=${apiKey}&to={number}&amt={amount}`;
+  const fullUrl = `${BASE}/api?key=${apiKey}&paytm={number}&amount={amount}&comment={comment}`;
   document.getElementById('full-url').innerHTML =
-    `<span style="color:#94a3b8">${BASE}/payment?</span>` +
-    `<span class="key-highlight">key=${apiKey}</span>` +
-    `<span style="color:#94a3b8">&</span>` +
-    `<span class="param-highlight">to={number}</span>` +
-    `<span style="color:#94a3b8">&</span>` +
-    `<span class="param-highlight">amt={amount}</span>`;
+    `<span style="color:#94a3b8">https://unio-hazel.vercel.app/api?</span>` +
+    `<span style="color:#94a3b8">key=</span>` +
+    `<span class="key-highlight">${apiKey}</span>` +
+    `<span style="color:#94a3b8">&paytm=</span>` +
+    `<span class="param-highlight">{number}</span>` +
+    `<span style="color:#94a3b8">&amount=</span>` +
+    `<span class="param-highlight">{amount}</span>` +
+    `<span style="color:#94a3b8">&comment=</span>` +
+    `<span class="param-highlight">{comment}</span>`;
+  document.getElementById('full-url-raw').value = `https://unio-hazel.vercel.app/api?key=${apiKey}&paytm={number}&amount={amount}&comment={comment}`;
   document.getElementById('full-url-raw').value = fullUrl;
 
   // API Key
