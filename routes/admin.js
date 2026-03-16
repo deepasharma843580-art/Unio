@@ -1,23 +1,32 @@
 const router      = require('express').Router();
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
-const { adminAuth } = require('../middleware/auth');
 const tg          = require('../helpers/telegram');
 
-router.use(adminAuth);
+const ADMIN_KEY = process.env.ADMIN_KEY || '8435';
+
+function adminCheck(req, res, next) {
+  const key = req.headers['x-admin-key'] || req.query.admin_key;
+  if(key === ADMIN_KEY) return next();
+  return res.status(403).json({ status:'error', message:'Admin access required' });
+}
+
+router.use(adminCheck);
 
 router.get('/stats', async (req, res) => {
-  const [users, txns, bal] = await Promise.all([
-    User.countDocuments(),
-    Transaction.countDocuments({ status:'success' }),
-    User.aggregate([{ $group:{ _id:null, total:{ $sum:'$balance' } } }])
-  ]);
-  const api_vol = await Transaction.aggregate([
-    { $match:{ type:'api', status:'success' } },
-    { $group:{ _id:null, total:{ $sum:'$amount' } } }
-  ]);
-  res.json({ status:'success', users, transactions:txns,
-    total_balance: bal[0]?.total||0, api_volume: api_vol[0]?.total||0 });
+  try {
+    const [users, txns, bal] = await Promise.all([
+      User.countDocuments(),
+      Transaction.countDocuments({ status:'success' }),
+      User.aggregate([{ $group:{ _id:null, total:{ $sum:'$balance' } } }])
+    ]);
+    const api_vol = await Transaction.aggregate([
+      { $match:{ type:'api', status:'success' } },
+      { $group:{ _id:null, total:{ $sum:'$amount' } } }
+    ]);
+    res.json({ status:'success', users, transactions:txns,
+      total_balance: bal[0]?.total||0, api_volume: api_vol[0]?.total||0 });
+  } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
 });
 
 router.get('/users', async (req, res) => {
@@ -95,7 +104,7 @@ router.post('/notify-txn/:id', async (req, res) => {
   if(txn.sender_id?.tg_id)   tg.sendAlert(txn.sender_id.tg_id,   tg.debitMsg(txn.amount, rD, label, dt, txn.sender_id.balance));
   if(txn.receiver_id?.tg_id) tg.sendAlert(txn.receiver_id.tg_id, tg.creditMsg(txn.amount, sD, label, dt, txn.receiver_id.balance));
   if(process.env.ADMIN_TG_ID) tg.sendAlert(process.env.ADMIN_TG_ID, tg.adminApiMsg(txn.amount, sD, rD, label, dt));
-  res.json({ status:'success', notified: ['sender','receiver','admin'] });
+  res.json({ status:'success' });
 });
 
 module.exports = router;
