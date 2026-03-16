@@ -15,16 +15,21 @@ async function sendTG(tg_id, text) {
   } catch(e) {}
 }
 
-async function processPayment(req, res, params) {
+async function processPayment(req, res, query) {
   try {
-    const { key, to, amount, comment, txn } = params;
+    const key     = query.key;
+    const to      = query.to || query.paytm;
+    const amount  = query.amount || query.amt;
+    const comment = query.comment || '';
+    const txn     = query.txn || '';
 
-    if(!key || !to || !amount)
-      return res.json({ status:'error', message:'key, to/paytm and amount/amt required' });
+    if(!key)    return res.json({ status:'error', message:'API key required' });
+    if(!to)     return res.json({ status:'error', message:'Receiver number required (to or paytm)' });
+    if(!amount) return res.json({ status:'error', message:'Amount required' });
 
     const amt = Math.round(parseFloat(amount) * 100) / 100;
     if(isNaN(amt) || amt < 1)
-      return res.json({ status:'error', message:'Invalid amount. Minimum ₹1' });
+      return res.json({ status:'error', message:'Invalid amount. Minimum Rs.1' });
 
     const sender = await User.findOne({ api_key: key });
     if(!sender) return res.json({ status:'error', message:'Invalid API key' });
@@ -48,8 +53,8 @@ async function processPayment(req, res, params) {
     const timestamp = `${pad(ist.getDate())}-${pad(ist.getMonth()+1)}-${ist.getFullYear()} ${pad(ist.getHours())}:${pad(ist.getMinutes())}:${pad(ist.getSeconds())}`;
 
     const dt = now.toLocaleString('en-IN',{
-      timeZone:'Asia/Kolkata',day:'2-digit',month:'short',
-      year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true
+      timeZone:'Asia/Kolkata', day:'2-digit', month:'short',
+      year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true
     });
 
     await User.findByIdAndUpdate(sender._id,   { $inc:{ balance: -amt } });
@@ -69,7 +74,7 @@ async function processPayment(req, res, params) {
     const sNew = await User.findById(sender._id).select('balance tg_id');
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
-    // 🔴 Debit Alert → Sender
+    // Debit Alert → Sender
     if(sNew.tg_id) {
       sendTG(sNew.tg_id,
 `🔴 *DEBIT ALERT*
@@ -94,7 +99,7 @@ async function processPayment(req, res, params) {
       );
     }
 
-    // 🟢 Credit Alert → Receiver
+    // Credit Alert → Receiver
     if(rNew.tg_id) {
       sendTG(rNew.tg_id,
 `🟢 *CREDIT ALERT*
@@ -119,7 +124,7 @@ async function processPayment(req, res, params) {
       );
     }
 
-    // 🔔 Admin Alert
+    // Admin Alert
     if(ADMIN_TG_ID) {
       sendTG(ADMIN_TG_ID,
 `🔔 *API TRANSACTION*
@@ -155,17 +160,15 @@ async function processPayment(req, res, params) {
 
 // ── OLD URL: /payment?key=&to=&amt=&comment=&txn= ─────────────────────────────
 router.get('/', async (req, res) => {
-  const { key, to, amt, amount, comment, txn } = req.query;
-  processPayment(req, res, {
-    key,
-    to,
-    amount: amt || amount,
-    comment,
-    txn
-  });
+  processPayment(req, res, req.query);
 });
 
-// ── Balance Check ─────────────────────────────────────────────────────────────
+// ── NEW URL: /api?key=&paytm=&amount=&comment=&txn= ──────────────────────────
+router.get('/api-pay', async (req, res) => {
+  processPayment(req, res, req.query);
+});
+
+// ── Balance Check: /payment/balance?key= ─────────────────────────────────────
 router.get('/balance', async (req, res) => {
   try {
     const { key } = req.query;
@@ -178,7 +181,7 @@ router.get('/balance', async (req, res) => {
   }
 });
 
-// ── Verify Number ─────────────────────────────────────────────────────────────
+// ── Verify Number: /payment/verify?key=&number= ───────────────────────────────
 router.get('/verify', async (req, res) => {
   try {
     const { key, number, mobile } = req.query;
