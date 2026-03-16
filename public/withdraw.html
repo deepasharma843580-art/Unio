@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdraw | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#0057ff;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.info-box{background:#eff6ff;border-radius:1rem;padding:1rem;margin-bottom:1.25rem}
+.info-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:.4rem}
+.info-row:last-child{margin-bottom:0}
+.info-row span:last-child{color:#0057ff;font-weight:700}
+.note{background:#fff7ed;border:1px solid #fed7aa;border-radius:1rem;padding:1rem;font-size:.75rem;font-weight:600;color:#ea580c}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
+.nav-item.active{color:#0057ff}
+.nav-item i{font-size:1.2rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+  <h1>Withdraw</h1>
+</div>
+
+<div class="container">
+
+  <div class="balance-pill">
+    <span>Available Balance</span>
+    <strong>₹<span id="balance">0.00</span></strong>
+  </div>
+
+  <div class="card">
+    <div style="font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem">
+      <i class="fa-solid fa-arrow-up"></i> Withdraw Funds
+    </div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="input-group">
+      <label>UPI ID</label>
+      <input type="text" id="upi" placeholder="yourname@upi">
+    </div>
+
+    <div class="input-group">
+      <label>Amount (₹)</label>
+      <input type="number" id="amount" placeholder="Minimum ₹10" step="0.01">
+    </div>
+
+    <div class="info-box">
+      <div class="info-row"><span>Minimum Withdrawal</span><span>₹10</span></div>
+      <div class="info-row"><span>Processing Time</span><span>Within 24 hours</span></div>
+      <div class="info-row"><span>Fee</span><span>Free</span></div>
+    </div>
+
+    <button class="btn" id="withdraw-btn" onclick="withdraw()">
+      <i class="fa-solid fa-arrow-up"></i> Request Payout
+    </button>
+
+    <div class="note" style="margin-top:1rem">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      Withdraw request admin ke paas jayegi — 24 ghante mein process hogi!
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
+  <a href="withdraw.html" class="nav-item active"><i class="fa-solid fa-arrow-up"></i>Withdraw</a>
+  <a href="lifafa.html" class="nav-item"><i class="fa-solid fa-envelope-open-text"></i>Lifafa</a>
+</div>
+
+<script>
+const API = '';
+const token = localStorage.getItem('token');
+if(!token) window.location.href = 'index.html';
+
+// Load balance
+fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+  .then(r=>r.json()).then(d=>{
+    if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
+  });
+
+function showMsg(text, type) {
+  const m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+
+async function withdraw() {
+  const upi    = document.getElementById('upi').value.trim();
+  const amount = document.getElementById('amount').value;
+  if(!upi)    return showMsg('UPI ID required!', 'error');
+  if(!amount) return showMsg('Amount required!', 'error');
+  if(parseFloat(amount) < 10) return showMsg('Minimum withdrawal is ₹10!', 'error');
+
+  const btn = document.getElementById('withdraw-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const r = await fetch(API+'/wallet/withdraw', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ upi, amount })
+    });
+    const d = await r.json();
+    if(d.status === 'success') {
+      showMsg('✅ Withdraw request submitted! Admin will process within 24 hours.', 'success');
+      document.getElementById('upi').value = '';
+      document.getElementById('amount').value = '';
+      // Refresh balance
+      fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+        .then(r=>r.json()).then(d=>{
+          if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
+        });
+    } else {
+      showMsg(d.message || 'Request failed!', 'error');
+    }
+  } catch(e) {
+    showMsg('Server error! Try again.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-arrow-up"></i> Request Payout';
+}
+</script>
+</body>
+</html>
