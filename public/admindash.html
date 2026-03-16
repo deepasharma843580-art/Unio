@@ -9,8 +9,8 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:100vh;color:#e2e8f0}
-#blocked{min-height:100vh;display:none;align-items:center;justify-content:center}
-.blocked-card{background:#141927;border-radius:2rem;padding:2.5rem;text-align:center;border:1px solid rgba(220,38,38,0.3);max-width:320px}
+#blocked{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.blocked-card{background:#141927;border-radius:2rem;padding:2.5rem;text-align:center;border:1px solid rgba(220,38,38,0.3);max-width:320px;width:90%}
 #dashboard{display:none}
 .top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
 .top-bar h1{font-size:.9rem;font-weight:900;color:#0057ff;font-style:italic;text-transform:uppercase}
@@ -188,23 +188,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 const API       = '';
 const ADMIN_KEY = '8435';
 
-// Admin header — no JWT, sirf admin key
-function aH() {
-  return { 'x-admin-key': ADMIN_KEY };
-}
-function aHJ() {
-  return { 'Content-Type':'application/json', 'x-admin-key': ADMIN_KEY };
-}
+function aH()  { return { 'x-admin-key': ADMIN_KEY }; }
+function aHJ() { return { 'Content-Type':'application/json', 'x-admin-key': ADMIN_KEY }; }
 
 // ── Auth Check ────────────────────────────────────────────────────────────────
-if(sessionStorage.getItem('admin_ok') === '1') {
-  document.getElementById('dashboard').style.display = 'block';
-  loadStats();
-  loadWithdrawals();
-  loadDeposits();
-} else {
-  document.getElementById('blocked').style.display = 'flex';
-}
+window.onload = function() {
+  const ok = sessionStorage.getItem('admin_ok');
+  if(ok === '1') {
+    document.getElementById('blocked').style.display   = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadStats();
+    loadWithdrawals();
+    loadDeposits();
+  } else {
+    document.getElementById('blocked').style.display   = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+  }
+};
 
 function doLogout() {
   sessionStorage.removeItem('admin_ok');
@@ -271,21 +271,21 @@ async function loadWithdrawals() {
 async function approveWithdraw(tx_id, id) {
   if(!confirm('Approve?')) return;
   try {
-    const r = await fetch(API+'/admin/approve-withdraw/'+tx_id, { method:'POST', headers: aH() });
+    const r = await fetch(API+'/admin/approve-withdraw/'+tx_id, {method:'POST',headers:aH()});
     const d = await r.json();
-    if(d.status==='success') { document.getElementById('wd-'+id)?.remove(); alert('✅ Approved!'); }
+    if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('✅ Approved!');}
     else alert('Error: '+d.message);
-  } catch(e) { alert('Error!'); }
+  } catch(e){alert('Error!');}
 }
 
 async function rejectWithdraw(tx_id, id) {
   if(!confirm('Reject & refund?')) return;
   try {
-    const r = await fetch(API+'/admin/reject-withdraw/'+tx_id, { method:'POST', headers: aH() });
+    const r = await fetch(API+'/admin/reject-withdraw/'+tx_id, {method:'POST',headers:aH()});
     const d = await r.json();
-    if(d.status==='success') { document.getElementById('wd-'+id)?.remove(); alert('❌ Rejected & refunded!'); }
+    if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('❌ Rejected & refunded!');}
     else alert('Error: '+d.message);
-  } catch(e) { alert('Error!'); }
+  } catch(e){alert('Error!');}
 }
 
 // ── Deposits ──────────────────────────────────────────────────────────────────
@@ -294,8 +294,8 @@ async function loadDeposits() {
   try {
     const r = await fetch(API+'/admin/transactions', { headers: aH() });
     const d = await r.json();
-    const deps = (d.transactions||[]).filter(t => t.status==='pending' && t.remark?.startsWith('UTR:'));
-    if(deps.length===0) {
+    const deps = (d.transactions||[]).filter(t=>t.status==='pending'&&t.remark?.startsWith('UTR:'));
+    if(deps.length===0){
       list.innerHTML='<div class="empty"><i class="fa-solid fa-check-circle" style="color:#10b981"></i><br>No pending deposits!</div>';
       return;
     }
@@ -319,20 +319,17 @@ async function loadDeposits() {
       </div>`;
     });
     list.innerHTML=html;
-  } catch(e) { list.innerHTML='<div class="empty">Error!</div>'; }
+  } catch(e){list.innerHTML='<div class="empty">Error!</div>';}
 }
 
 async function approveDeposit(id, mobile, amount) {
   if(!confirm('Approve ₹'+amount+' for '+mobile+'?')) return;
   try {
-    const r = await fetch(API+'/admin/add-balance', {
-      method:'POST', headers: aHJ(),
-      body: JSON.stringify({ mobile, amount })
-    });
+    const r = await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
     const d = await r.json();
-    if(d.status==='success') { document.getElementById('dep-'+id)?.remove(); alert('✅ ₹'+amount+' added!'); }
+    if(d.status==='success'){document.getElementById('dep-'+id)?.remove();alert('✅ ₹'+amount+' added!');}
     else alert('Error: '+d.message);
-  } catch(e) { alert('Error!'); }
+  } catch(e){alert('Error!');}
 }
 
 async function rejectDeposit(id) {
@@ -341,64 +338,55 @@ async function rejectDeposit(id) {
   alert('❌ Rejected!');
 }
 
-// ── Add / Deduct Balance ──────────────────────────────────────────────────────
-function showMsg(id, text, type) {
-  const m = document.getElementById(id);
-  m.textContent = text;
-  m.className = 'msg '+type;
-  setTimeout(() => m.className='msg', 3000);
+// ── Add / Deduct ──────────────────────────────────────────────────────────────
+function showMsg(id,text,type){
+  const m=document.getElementById(id);
+  m.textContent=text; m.className='msg '+type;
+  setTimeout(()=>m.className='msg',3000);
 }
 
 async function addBalance() {
-  const mobile = document.getElementById('b-mobile').value.trim();
-  const amount = document.getElementById('b-amount').value;
+  const mobile=document.getElementById('b-mobile').value.trim();
+  const amount=document.getElementById('b-amount').value;
   if(!mobile||!amount) return showMsg('bal-msg','Fill all fields!','error');
   try {
-    const r = await fetch(API+'/admin/add-balance', {
-      method:'POST', headers: aHJ(),
-      body: JSON.stringify({ mobile, amount })
-    });
-    const d = await r.json();
-    if(d.status==='success') {
-      showMsg('bal-msg','✅ ₹'+amount+' added! New balance: ₹'+d.new_balance,'success');
+    const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
+    const d=await r.json();
+    if(d.status==='success'){
+      showMsg('bal-msg','✅ ₹'+amount+' added! Balance: ₹'+d.new_balance,'success');
       document.getElementById('b-mobile').value='';
       document.getElementById('b-amount').value='';
-    } else showMsg('bal-msg', d.message||'Failed!','error');
-  } catch(e) { showMsg('bal-msg','Server error!','error'); }
+    } else showMsg('bal-msg',d.message||'Failed!','error');
+  } catch(e){showMsg('bal-msg','Server error!','error');}
 }
 
 async function deductBalance() {
-  const mobile = document.getElementById('d-mobile').value.trim();
-  const amount = document.getElementById('d-amount').value;
+  const mobile=document.getElementById('d-mobile').value.trim();
+  const amount=document.getElementById('d-amount').value;
   if(!mobile||!amount) return showMsg('ded-msg','Fill all fields!','error');
   if(!confirm('Deduct ₹'+amount+' from '+mobile+'?')) return;
   try {
-    const r = await fetch(API+'/admin/deduct-balance', {
-      method:'POST', headers: aHJ(),
-      body: JSON.stringify({ mobile, amount })
-    });
-    const d = await r.json();
-    if(d.status==='success') {
+    const r=await fetch(API+'/admin/deduct-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
+    const d=await r.json();
+    if(d.status==='success'){
       showMsg('ded-msg','✅ Deducted!','success');
       document.getElementById('d-mobile').value='';
       document.getElementById('d-amount').value='';
-    } else showMsg('ded-msg', d.message||'Failed!','error');
-  } catch(e) { showMsg('ded-msg','Server error!','error'); }
+    } else showMsg('ded-msg',d.message||'Failed!','error');
+  } catch(e){showMsg('ded-msg','Server error!','error');}
 }
 
 // ── Transactions ──────────────────────────────────────────────────────────────
 async function loadTxns() {
-  const list = document.getElementById('txns-list');
+  const list=document.getElementById('txns-list');
   list.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
   try {
-    const r = await fetch(API+'/admin/transactions', { headers: aH() });
-    const d = await r.json();
-    if(!d.transactions||d.transactions.length===0) {
-      list.innerHTML='<div class="empty">No transactions</div>'; return;
-    }
+    const r=await fetch(API+'/admin/transactions',{headers:aH()});
+    const d=await r.json();
+    if(!d.transactions||d.transactions.length===0){list.innerHTML='<div class="empty">No transactions</div>';return;}
     let html='';
-    d.transactions.slice(0,100).forEach(t => {
-      const from = t.sender_id?.mobile||'—';
-      const to   = t.receiver_id?.mobile||'—';
-      const amt  = parseFloat(t.amount).toFixed(2);
-      const time =
+    d.transactions.slice(0,100).forEach(t=>{
+      const from=t.sender_id?.mobile||'—';
+      const to=t.receiver_id?.mobile||'—';
+      const amt=parseFloat(t.amount).toFixed(2);
+      const time=new Date(t
