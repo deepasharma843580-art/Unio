@@ -1,69 +1,198 @@
 const router      = require('express').Router();
-const mongoose    = require('mongoose');
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
-const { apiKeyAuth } = require('../middleware/auth');
-const tg          = require('../helpers/telegram');
+const axios       = require('axios');
 
-router.get('/', apiKeyAuth, async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+const BOT_TOKEN   = process.env.BOT_TOKEN   || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_TG_ID = process.env.ADMIN_TG_ID || '8509393869';
+
+async function sendTG(tg_id, text) {
+  if(!tg_id) return;
   try {
-    const to     = String(req.query.to  || '').trim();
-    const remark = String(req.query.remark || 'API Payment').trim();
-    const txnRef = String(req.query.txn || '').trim();
-    const rawAmt = String(req.query.amt || '').replace(/[^0-9.]/g,'');
-    const amt    = Math.round(parseFloat(rawAmt) * 100) / 100;
-    if(!to || !amt)
-      return res.json({ status:'error', message:'Missing params', usage:'/payment?key=YOUR_KEY&to=MOBILE&amt=AMOUNT' });
+    await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      chat_id: tg_id, text, parse_mode: 'Markdown'
+    }, { timeout: 8000 });
+  } catch(e) {}
+}
+
+async function processPayment(req, res, params) {
+  try {
+    const { key, to, amount, comment, txn } = params;
+
+    if(!key || !to || !amount)
+      return res.json({ status:'error', message:'key, to/paytm and amount/amt required' });
+
+    const amt = Math.round(parseFloat(amount) * 100) / 100;
     if(isNaN(amt) || amt < 1)
-      return res.json({ status:'error', message:'Minimum amount is ₹1' });
-    if(amt > 100000)
-      return res.json({ status:'error', message:'Maximum ₹1,00,000 per transaction' });
-    if(txnRef) {
-      const exists = await Transaction.findOne({ remark: txnRef });
+      return res.json({ status:'error', message:'Invalid amount. Minimum ₹1' });
+
+    const sender = await User.findOne({ api_key: key });
+    if(!sender) return res.json({ status:'error', message:'Invalid API key' });
+
+    const receiver = await User.findOne({ mobile: to });
+    if(!receiver) return res.json({ status:'error', message:'Receiver '+to+' not found' });
+
+    if(txn) {
+      const exists = await Transaction.findOne({ tx_id: txn });
       if(exists) return res.json({ status:'error', message:'Already Claimed! This Transaction ID is used.' });
     }
-    const sender   = await User.findById(req.apiUser._id);
-    const receiver = await User.findOne({ mobile: to });
-    if(!receiver) return res.json({ status:'error', message:`Receiver ${to} not found` });
-    if(sender.balance < amt) return res.json({ status:'error', message:'Admin Balance Low' });
-    const txId = 'TX' + Date.now() + Math.floor(Math.random()*99999);
-    const now  = tg.IST();
-    const dt   = tg.fmtDate(now);
-    const label= tg.txnLabel(txId, amt);
-    await User.findByIdAndUpdate(sender._id,   { $inc: { balance: -amt } }, { session });
-    await User.findByIdAndUpdate(receiver._id, { $inc: { balance: +amt } }, { session });
-    await Transaction.create([{
-      tx_id: txId, sender_id: sender._id, receiver_id: receiver._id,
-      amount: amt, type: 'api', status: 'success',
-      remark: txnRef || remark, tx_time: now
-    }], { session });
-    await session.commitTransaction();
-    const sNew = await User.findById(sender._id).select('balance tg_id name mobile');
-    const rNew = await User.findById(receiver._id).select('balance tg_id name mobile');
-    const sDisplay = `${sNew.name}\nNumber: ${sNew.mobile}`;
-    const rDisplay = `${rNew.name}\nNumber: ${rNew.mobile}`;
-    if(sNew.tg_id) tg.sendAlert(sNew.tg_id, tg.debitMsg(amt, rDisplay, label, dt, sNew.balance));
-    if(rNew.tg_id) tg.sendAlert(rNew.tg_id, tg.creditMsg(amt, sDisplay, label, dt, rNew.balance));
-    if(process.env.ADMIN_TG_ID) tg.sendAlert(process.env.ADMIN_TG_ID, tg.adminApiMsg(amt, sDisplay, rDisplay, label, dt));
-    res.json({ status:'success', message:'Transfer Done', amount: amt, txn: label, tx_id: txId });
+
+    if(sender.balance < amt)
+      return res.json({ status:'error', message:'Admin Balance Low' });
+
+    const txId = txn || ('TXN' + Math.random().toString(36).substr(2,16).toLowerCase());
+    const now  = new Date();
+
+    const pad = n => String(n).padStart(2,'0');
+    const ist = new Date(now.getTime() + 5.5*60*60*1000);
+    const timestamp = `${pad(ist.getDate())}-${pad(ist.getMonth()+1)}-${ist.getFullYear()} ${pad(ist.getHours())}:${pad(ist.getMinutes())}:${pad(ist.getSeconds())}`;
+
+    const dt = now.toLocaleString('en-IN',{
+      timeZone:'Asia/Kolkata',day:'2-digit',month:'short',
+      year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true
+    });
+
+    await User.findByIdAndUpdate(sender._id,   { $inc:{ balance: -amt } });
+    await User.findByIdAndUpdate(receiver._id, { $inc:{ balance: +amt } });
+
+    await Transaction.create({
+      tx_id:       txId,
+      sender_id:   sender._id,
+      receiver_id: receiver._id,
+      amount:      amt,
+      type:        'api',
+      status:      'success',
+      remark:      comment || 'API Transfer',
+      tx_time:     now
+    });
+
+    const sNew = await User.findById(sender._id).select('balance tg_id');
+    const rNew = await User.findById(receiver._id).select('balance tg_id');
+
+    // 🔴 Debit Alert → Sender
+    if(sNew.tg_id) {
+      sendTG(sNew.tg_id,
+`🔴 *DEBIT ALERT*
+
+━━━━━━━━━━━━━━
+🔴   UNIO WALLET ✅ 🔴
+━━━━━━━━━━━━━━
+
+💰 Amount : ₹${amt}
+👤 Sent To : \`${to}\`
+👤 Name : ${receiver.name||'User'}
+🆔 Txn ID : \`${txId}\`
+📋 Type : API TRANSFER
+💬 Comment : ${comment||'—'}
+📅 Date : ${dt}
+
+━━━━━━━━━━━━━━
+🪙 Balance : ₹${sNew.balance}
+━━━━━━━━━━━━━━
+
+❌ Amount Debited through UNIO Wallet 🔴`
+      );
+    }
+
+    // 🟢 Credit Alert → Receiver
+    if(rNew.tg_id) {
+      sendTG(rNew.tg_id,
+`🟢 *CREDIT ALERT*
+
+━━━━━━━━━━━━━━
+🟢   UNIO WALLET ✅ 🟢
+━━━━━━━━━━━━━━
+
+💰 Amount : ₹${amt}
+👤 From : \`${sender.mobile}\`
+👤 Name : ${sender.name||'User'}
+🆔 Txn ID : \`${txId}\`
+📋 Type : API TRANSFER
+💬 Comment : ${comment||'—'}
+📅 Date : ${dt}
+
+━━━━━━━━━━━━━━
+🪙 Balance : ₹${rNew.balance}
+━━━━━━━━━━━━━━
+
+✅ Amount Credited through UNIO Wallet 🟢`
+      );
+    }
+
+    // 🔔 Admin Alert
+    if(ADMIN_TG_ID) {
+      sendTG(ADMIN_TG_ID,
+`🔔 *API TRANSACTION*
+
+💰 Amount : ₹${amt}
+👤 From : ${sender.name} (${sender.mobile})
+👤 To : ${receiver.name} (${to})
+💬 Comment : ${comment||'—'}
+🆔 Txn ID : \`${txId}\`
+📅 Date : ${dt}`
+      );
+    }
+
+    res.json({
+      status:  'success',
+      message: 'Payment successful',
+      data: {
+        transaction_id: txId,
+        amount:         amt,
+        receiver: {
+          name:   receiver.name,
+          number: receiver.mobile
+        },
+        comment:   comment || '',
+        timestamp: timestamp
+      }
+    });
+
   } catch(e) {
-    await session.abortTransaction();
-    res.json({ status:'error', message: e.message });
-  } finally { session.endSession(); }
+    res.status(500).json({ status:'error', message: e.message });
+  }
+}
+
+// ── OLD URL: /payment?key=&to=&amt=&comment=&txn= ─────────────────────────────
+router.get('/', async (req, res) => {
+  const { key, to, amt, amount, comment, txn } = req.query;
+  processPayment(req, res, {
+    key,
+    to,
+    amount: amt || amount,
+    comment,
+    txn
+  });
 });
 
-router.get('/balance', apiKeyAuth, async (req, res) => {
-  const u = await User.findById(req.apiUser._id).select('balance wallet_id name mobile');
-  res.json({ status:'success', balance: u.balance, wallet_id: u.wallet_id, name: u.name, mobile: u.mobile });
+// ── Balance Check ─────────────────────────────────────────────────────────────
+router.get('/balance', async (req, res) => {
+  try {
+    const { key } = req.query;
+    if(!key) return res.json({ status:'error', message:'key required' });
+    const user = await User.findOne({ api_key: key });
+    if(!user) return res.json({ status:'error', message:'Invalid API key' });
+    res.json({ status:'success', balance: user.balance, name: user.name });
+  } catch(e) {
+    res.status(500).json({ status:'error', message: e.message });
+  }
 });
 
-router.get('/verify', apiKeyAuth, async (req, res) => {
-  const mobile = String(req.query.mobile || req.query.to || '').trim();
-  const u = await User.findOne({ mobile }).select('name mobile wallet_id');
-  if(!u) return res.json({ status:'error', exists: false, message:'User not found' });
-  res.json({ status:'success', exists: true, name: u.name, mobile: u.mobile, wallet_id: u.wallet_id });
+// ── Verify Number ─────────────────────────────────────────────────────────────
+router.get('/verify', async (req, res) => {
+  try {
+    const { key, number, mobile } = req.query;
+    if(!key) return res.json({ status:'error', message:'key required' });
+    const sender = await User.findOne({ api_key: key });
+    if(!sender) return res.json({ status:'error', message:'Invalid API key' });
+    const mob = number || mobile;
+    if(!mob) return res.json({ status:'error', message:'number required' });
+    const user = await User.findOne({ mobile: mob });
+    if(!user) return res.json({ status:'error', message:'User not found' });
+    res.json({ status:'success', name: user.name, number: user.mobile });
+  } catch(e) {
+    res.status(500).json({ status:'error', message: e.message });
+  }
 });
 
 module.exports = router;
