@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:100vh;color:#e2e8f0}
-#blocked{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#blocked{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .blocked-card{background:#141927;border-radius:2rem;padding:2.5rem;text-align:center;border:1px solid rgba(220,38,38,0.3);max-width:320px;width:90%}
 #dashboard{display:none}
 .top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
@@ -84,7 +84,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
       <i class="fa-solid fa-right-from-bracket"></i> Logout
     </button>
   </div>
-
   <div class="container">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('stats',this)">📊 Stats</button>
@@ -98,50 +97,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
     <!-- STATS -->
     <div id="tab-stats" class="tab-section active">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Users</div>
-          <div class="stat-val" id="s-users">—</div>
-          <div class="stat-sub">Registered</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Transactions</div>
-          <div class="stat-val" id="s-txns">—</div>
-          <div class="stat-sub">Successful</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Balance</div>
-          <div class="stat-val" id="s-bal" style="color:#10b981;font-size:1.1rem">—</div>
-          <div class="stat-sub">All users</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">API Volume</div>
-          <div class="stat-val" id="s-api" style="color:#0057ff;font-size:1.1rem">—</div>
-          <div class="stat-sub">Total API txns</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-val" id="s-users">—</div><div class="stat-sub">Registered</div></div>
+        <div class="stat-card"><div class="stat-label">Transactions</div><div class="stat-val" id="s-txns">—</div><div class="stat-sub">Successful</div></div>
+        <div class="stat-card"><div class="stat-label">Total Balance</div><div class="stat-val" id="s-bal" style="color:#10b981;font-size:1.1rem">—</div><div class="stat-sub">All users</div></div>
+        <div class="stat-card"><div class="stat-label">API Volume</div><div class="stat-val" id="s-api" style="color:#0057ff;font-size:1.1rem">—</div><div class="stat-sub">API txns</div></div>
       </div>
-      <button class="refresh-btn" onclick="loadStats()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
+      <button class="refresh-btn" onclick="loadStats()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
     </div>
 
     <!-- WITHDRAWALS -->
     <div id="tab-withdraw" class="tab-section">
-      <button class="refresh-btn" onclick="loadWithdrawals()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
-      <div id="withdraw-list">
-        <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
-      </div>
+      <button class="refresh-btn" onclick="loadWithdrawals()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+      <div id="withdraw-list"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
     </div>
 
     <!-- DEPOSITS -->
     <div id="tab-deposit" class="tab-section">
-      <button class="refresh-btn" onclick="loadDeposits()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
-      <div id="deposit-list">
-        <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
-      </div>
+      <button class="refresh-btn" onclick="loadDeposits()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+      <div id="deposit-list"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
     </div>
 
     <!-- ADD BALANCE -->
@@ -151,34 +124,26 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
         <div id="bal-msg" class="msg"></div>
         <input type="number" class="a-input" id="b-mobile" placeholder="Mobile Number">
         <input type="number" class="a-input" id="b-amount" placeholder="Amount (₹)">
-        <button class="a-btn" style="background:#10b981" onclick="addBalance()">
-          <i class="fa-solid fa-plus"></i> Add Balance
-        </button>
+        <button class="a-btn" style="background:#10b981" onclick="addBalance()"><i class="fa-solid fa-plus"></i> Add Balance</button>
       </div>
       <div class="section-card">
         <div class="section-title"><i class="fa-solid fa-minus"></i> Deduct Balance</div>
         <div id="ded-msg" class="msg"></div>
         <input type="number" class="a-input" id="d-mobile" placeholder="Mobile Number">
         <input type="number" class="a-input" id="d-amount" placeholder="Amount (₹)">
-        <button class="a-btn" style="background:#dc2626" onclick="deductBalance()">
-          <i class="fa-solid fa-minus"></i> Deduct Balance
-        </button>
+        <button class="a-btn" style="background:#dc2626" onclick="deductBalance()"><i class="fa-solid fa-minus"></i> Deduct Balance</button>
       </div>
     </div>
 
     <!-- TRANSACTIONS -->
     <div id="tab-txns" class="tab-section">
-      <button class="refresh-btn" onclick="loadTxns()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
+      <button class="refresh-btn" onclick="loadTxns()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
       <div id="txns-list"><div class="empty">Click Refresh</div></div>
     </div>
 
     <!-- USERS -->
     <div id="tab-users" class="tab-section">
-      <button class="refresh-btn" onclick="loadUsers()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
+      <button class="refresh-btn" onclick="loadUsers()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
       <div id="users-list"><div class="empty">Click Refresh</div></div>
     </div>
   </div>
@@ -188,13 +153,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 const API       = '';
 const ADMIN_KEY = '8435';
 
-function aH()  { return { 'x-admin-key': ADMIN_KEY }; }
-function aHJ() { return { 'Content-Type':'application/json', 'x-admin-key': ADMIN_KEY }; }
+function aH()  { return {'x-admin-key': ADMIN_KEY}; }
+function aHJ() { return {'Content-Type':'application/json','x-admin-key': ADMIN_KEY}; }
 
-// ── Auth Check ────────────────────────────────────────────────────────────────
-window.onload = function() {
-  const ok = sessionStorage.getItem('admin_ok');
-  if(ok === '1') {
+// ── Auth — URL key ya sessionStorage dono check karo ─────────────────────────
+(function() {
+  const urlKey = new URLSearchParams(window.location.search).get('key');
+  const sesOk  = sessionStorage.getItem('admin_ok');
+
+  if(urlKey === ADMIN_KEY || sesOk === '1') {
+    // Save to session
+    sessionStorage.setItem('admin_ok', '1');
     document.getElementById('blocked').style.display   = 'none';
     document.getElementById('dashboard').style.display = 'block';
     loadStats();
@@ -204,7 +173,7 @@ window.onload = function() {
     document.getElementById('blocked').style.display   = 'flex';
     document.getElementById('dashboard').style.display = 'none';
   }
-};
+})();
 
 function doLogout() {
   sessionStorage.removeItem('admin_ok');
@@ -224,7 +193,7 @@ function switchTab(tab, el) {
 // ── Stats ─────────────────────────────────────────────────────────────────────
 async function loadStats() {
   try {
-    const r = await fetch(API+'/admin/stats', { headers: aH() });
+    const r = await fetch(API+'/admin/stats', {headers: aH()});
     const d = await r.json();
     if(d.status==='success') {
       document.getElementById('s-users').textContent = d.users||0;
@@ -239,7 +208,7 @@ async function loadStats() {
 async function loadWithdrawals() {
   const list = document.getElementById('withdraw-list');
   try {
-    const r = await fetch(API+'/admin/withdrawals', { headers: aH() });
+    const r = await fetch(API+'/admin/withdrawals', {headers: aH()});
     const d = await r.json();
     if(!d.withdrawals||d.withdrawals.length===0) {
       list.innerHTML='<div class="empty"><i class="fa-solid fa-check-circle" style="color:#10b981"></i><br>No pending withdrawals!</div>';
@@ -247,11 +216,11 @@ async function loadWithdrawals() {
     }
     let html='';
     d.withdrawals.forEach(w => {
-      const mobile = w.sender_id?.mobile||'—';
-      const name   = w.sender_id?.name||'User';
-      const upi    = w.remark||'—';
-      const amt    = parseFloat(w.amount).toFixed(2);
-      const time   = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
+      const mobile=w.sender_id?.mobile||'—';
+      const name=w.sender_id?.name||'User';
+      const upi=w.remark||'—';
+      const amt=parseFloat(w.amount).toFixed(2);
+      const time=new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
       html+=`<div class="req-item" id="wd-${w._id}">
         <div class="req-top">
           <div class="req-info"><p>${name}</p><span>📱 ${mobile}</span></div>
@@ -268,21 +237,21 @@ async function loadWithdrawals() {
   } catch(e) { list.innerHTML='<div class="empty">Error!</div>'; }
 }
 
-async function approveWithdraw(tx_id, id) {
+async function approveWithdraw(tx_id,id) {
   if(!confirm('Approve?')) return;
   try {
-    const r = await fetch(API+'/admin/approve-withdraw/'+tx_id, {method:'POST',headers:aH()});
-    const d = await r.json();
+    const r=await fetch(API+'/admin/approve-withdraw/'+tx_id,{method:'POST',headers:aH()});
+    const d=await r.json();
     if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('✅ Approved!');}
     else alert('Error: '+d.message);
   } catch(e){alert('Error!');}
 }
 
-async function rejectWithdraw(tx_id, id) {
+async function rejectWithdraw(tx_id,id) {
   if(!confirm('Reject & refund?')) return;
   try {
-    const r = await fetch(API+'/admin/reject-withdraw/'+tx_id, {method:'POST',headers:aH()});
-    const d = await r.json();
+    const r=await fetch(API+'/admin/reject-withdraw/'+tx_id,{method:'POST',headers:aH()});
+    const d=await r.json();
     if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('❌ Rejected & refunded!');}
     else alert('Error: '+d.message);
   } catch(e){alert('Error!');}
@@ -292,20 +261,20 @@ async function rejectWithdraw(tx_id, id) {
 async function loadDeposits() {
   const list = document.getElementById('deposit-list');
   try {
-    const r = await fetch(API+'/admin/transactions', { headers: aH() });
-    const d = await r.json();
-    const deps = (d.transactions||[]).filter(t=>t.status==='pending'&&t.remark?.startsWith('UTR:'));
+    const r=await fetch(API+'/admin/transactions',{headers:aH()});
+    const d=await r.json();
+    const deps=(d.transactions||[]).filter(t=>t.status==='pending'&&t.remark?.startsWith('UTR:'));
     if(deps.length===0){
       list.innerHTML='<div class="empty"><i class="fa-solid fa-check-circle" style="color:#10b981"></i><br>No pending deposits!</div>';
       return;
     }
     let html='';
-    deps.forEach(dep => {
-      const mobile = dep.receiver_id?.mobile||'—';
-      const name   = dep.receiver_id?.name||'User';
-      const utr    = dep.remark.replace('UTR:','');
-      const amt    = parseFloat(dep.amount).toFixed(2);
-      const time   = new Date(dep.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
+    deps.forEach(dep=>{
+      const mobile=dep.receiver_id?.mobile||'—';
+      const name=dep.receiver_id?.name||'User';
+      const utr=dep.remark.replace('UTR:','');
+      const amt=parseFloat(dep.amount).toFixed(2);
+      const time=new Date(dep.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
       html+=`<div class="req-item" id="dep-${dep._id}">
         <div class="req-top">
           <div class="req-info"><p>${name}</p><span>📱 ${mobile}</span></div>
@@ -322,11 +291,11 @@ async function loadDeposits() {
   } catch(e){list.innerHTML='<div class="empty">Error!</div>';}
 }
 
-async function approveDeposit(id, mobile, amount) {
+async function approveDeposit(id,mobile,amount) {
   if(!confirm('Approve ₹'+amount+' for '+mobile+'?')) return;
   try {
-    const r = await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
-    const d = await r.json();
+    const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
+    const d=await r.json();
     if(d.status==='success'){document.getElementById('dep-'+id)?.remove();alert('✅ ₹'+amount+' added!');}
     else alert('Error: '+d.message);
   } catch(e){alert('Error!');}
@@ -389,4 +358,6 @@ async function loadTxns() {
       const from=t.sender_id?.mobile||'—';
       const to=t.receiver_id?.mobile||'—';
       const amt=parseFloat(t.amount).toFixed(2);
-      const time=new Date(t
+      const time=new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      html+=`<div class="txn-item">
+        <div class="txn-left"><p>${from} → ${to}</p><span>${time} • ${t.type} <span class="badge ${t.status}">$
