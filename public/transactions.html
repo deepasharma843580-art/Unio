@@ -13,20 +13,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
-/* Balance pill */
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
 .bal-pill-left h2{font-size:1.75rem;font-weight:900;letter-spacing:-1px}
 .bal-pill-right{opacity:.3;font-size:2rem}
-/* Tabs */
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
 .tab-section{display:none}
 .tab-section.active{display:block}
-/* Txn items */
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:all .2s;active:scale-95}
+.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:all .2s}
 .txn-item:last-child{border-bottom:none}
 .txn-item:active{background:#f8fafc}
 .txn-left{display:flex;align-items:center;gap:.75rem}
@@ -34,7 +31,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-icon.cr{background:#f0fdf4;color:#16a34a}
 .txn-icon.dr{background:#fff1f2;color:#dc2626}
 .txn-icon.api{background:#eff6ff;color:#0057ff}
-.txn-icon.wd{background:#fff7ed;color:#ea580c}
 .txn-name{font-size:.8rem;font-weight:700;color:#0f172a;margin-bottom:2px}
 .txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
 .txn-type-badge.p2p{background:#eff6ff;color:#0057ff}
@@ -46,7 +42,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-amt.cr{color:#16a34a}
 .txn-amt.dr{color:#dc2626}
 .txn-status{font-size:.6rem;font-weight:700;margin-top:2px;text-align:right}
-/* Withdraw items */
 .wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
 .wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
 .wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
@@ -60,7 +55,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
 .empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
 .empty p{font-size:.8rem;font-weight:600}
-/* Receipt Modal */
 #receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
 #receipt-modal.open{display:flex}
 .receipt-card{background:white;border-radius:2rem 2rem 0 0;padding:1.75rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
@@ -72,10 +66,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .receipt-label{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.25rem}
 .receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid #f8fafc}
 .receipt-row:last-child{border:none}
-.receipt-row span{font-size:.72rem;color:#94a3b8;font-weight:600}
-.receipt-row strong{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:60%;word-break:break-all}
+.receipt-row span{font-size:.72rem;color:#94a3b8;font-weight:600;flex-shrink:0}
+.receipt-row strong{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:65%;word-break:break-all}
 .receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem 0;color:#94a3b8;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
 .done-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;margin-top:.5rem}
+.comment-box{background:#f0f4ff;border-radius:.75rem;padding:.6rem .75rem;margin:.5rem 0;font-size:.72rem;font-weight:700;color:#0057ff;display:none}
+.comment-box.show{display:block}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
@@ -93,16 +89,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 <div class="container">
 
-  <!-- Balance -->
   <div class="bal-pill">
     <div class="bal-pill-left">
       <p>Available Balance</p>
-      <h2>₹<span id="balance">0.00</span></h2>
+      <h2>&#8377;<span id="balance">0.00</span></h2>
     </div>
     <div class="bal-pill-right"><i class="fa-solid fa-wallet"></i></div>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" onclick="switchTab('txns',this)">
       <i class="fa-solid fa-receipt"></i> Transactions
@@ -112,23 +106,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </button>
   </div>
 
-  <!-- TRANSACTIONS TAB -->
   <div id="tab-txns" class="tab-section active">
     <div id="txn-list" class="txn-card">
-      <div class="empty">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <p>Loading...</p>
-      </div>
+      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
 
-  <!-- WITHDRAWALS TAB -->
   <div id="tab-withdrawals" class="tab-section">
     <div id="wd-list">
-      <div class="empty">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <p>Loading...</p>
-      </div>
+      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
 
@@ -146,10 +132,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="receipt-label" id="r-label"></div>
     <div class="receipt-row"><span>Transaction ID</span><strong id="r-txid"></strong></div>
     <div class="receipt-row"><span>Type</span><strong id="r-type"></strong></div>
-    <div class="receipt-row"><span>🇮🇳 India Time</span><strong id="r-ist"></strong></div>
-    <div class="receipt-row"><span>🇺🇸 USA Time</span><strong id="r-usa"></strong></div>
+    <div class="receipt-row"><span>&#127470;&#127475; India Time</span><strong id="r-ist"></strong></div>
+    <div class="receipt-row"><span>&#127482;&#127480; USA Time</span><strong id="r-usa"></strong></div>
     <div class="receipt-row"><span>From</span><strong id="r-from"></strong></div>
     <div class="receipt-row"><span>To</span><strong id="r-to"></strong></div>
+    <div class="receipt-row" id="r-comment-row" style="display:none"><span>Comment</span><strong id="r-comment"></strong></div>
     <div class="receipt-row"><span>Status</span><strong id="r-status"></strong></div>
     <div class="receipt-brand">
       <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
@@ -162,8 +149,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="bottom-nav">
   <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
   <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="qr.html" class="nav-item"><i class="fa-solid fa-qrcode"></i>QR</a>
   <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
-  <a href="withdraw.html" class="nav-item"><i class="fa-solid fa-arrow-up"></i>Withdraw</a>
   <a href="transactions.html" class="nav-item active"><i class="fa-solid fa-receipt"></i>History</a>
 </div>
 
@@ -175,13 +162,11 @@ if(!token) window.location.href = 'index.html';
 
 let allTxns = [];
 
-// Load balance
 fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
   });
 
-// Load transactions
 async function loadTxns() {
   try {
     const r = await fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}});
@@ -209,7 +194,6 @@ function renderTxns() {
     const isAdmin  = t.type === 'admin_add' || t.type === 'admin_deduct';
     const time     = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
 
-    // Type badge
     let typeBadge = '';
     let iconClass = '';
     let typeLabel = '';
@@ -227,19 +211,29 @@ function renderTxns() {
       typeLabel = 'P2P Transfer';
     }
 
-    const other = isCredit
-      ? (t.sender_id?.name || t.sender_id?.mobile || 'System')
-      : (t.receiver_id?.name || t.receiver_id?.mobile || 'System');
+    // Name + Number dono dikhao
+    const fromName   = t.sender_id?.name   || '';
+    const fromMobile = t.sender_id?.mobile || 'System';
+    const toName     = t.receiver_id?.name   || '';
+    const toMobile   = t.receiver_id?.mobile || 'System';
+
+    const fromFull = fromName ? fromName + ' (' + fromMobile + ')' : fromMobile;
+    const toFull   = toName   ? toName   + ' (' + toMobile   + ')' : toMobile;
+
+    const other = isCredit ? fromFull : toFull;
+
+    const comment = t.remark || '';
 
     const txData = JSON.stringify({
-      tx_id:  t.tx_id || t._id,
-      type:   typeLabel,
-      amt:    amt,
-      credit: isCredit,
-      from:   t.sender_id?.name   || t.sender_id?.mobile   || 'System',
-      to:     t.receiver_id?.name || t.receiver_id?.mobile || 'System',
-      time:   t.tx_time,
-      status: t.status
+      tx_id:   t.tx_id || t._id,
+      type:    typeLabel,
+      amt:     amt,
+      credit:  isCredit,
+      from:    fromFull,
+      to:      toFull,
+      time:    t.tx_time,
+      status:  t.status,
+      comment: comment
     }).replace(/'/g,"&#39;");
 
     html += `<div class="txn-item" onclick='openReceipt(${txData})'>
@@ -254,7 +248,7 @@ function renderTxns() {
         </div>
       </div>
       <div>
-        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${amt}</div>
+        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
         <div class="txn-status" style="color:${t.status==='success'?'#16a34a':t.status==='pending'?'#f59e0b':'#dc2626'}">${t.status}</div>
       </div>
     </div>`;
@@ -276,11 +270,8 @@ function renderWithdrawals() {
     const badgeClass = w.status === 'success' ? 'success' : w.status === 'pending' ? 'pending' : 'rejected';
     html += `<div class="wd-item">
       <div class="wd-top">
-        <div class="wd-info">
-          <p>Withdrawal Request</p>
-          <span>${time}</span>
-        </div>
-        <div class="wd-amt">-₹${amt}</div>
+        <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
+        <div class="wd-amt">-&#8377;${amt}</div>
       </div>
       <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
       <span class="wd-badge ${badgeClass}">${w.status}</span>
@@ -289,7 +280,6 @@ function renderWithdrawals() {
   list.innerHTML = html;
 }
 
-// Tabs
 function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
@@ -297,23 +287,19 @@ function switchTab(tab, el) {
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
-// Receipt Modal
 function openReceipt(d) {
   const isCredit = d.credit;
   const txDate   = new Date(d.time);
 
-  // Icon
   const icon = document.getElementById('r-icon');
-  icon.className = 'receipt-icon ' + (isCredit ? 'cr' : 'dr');
+  icon.className = 'receipt-icon';
   icon.style.background = isCredit ? '#f0fdf4' : '#fff1f2';
   icon.innerHTML = `<i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}" style="color:${isCredit?'#16a34a':'#dc2626'};font-size:1.5rem"></i>`;
 
-  // Amount
-  document.getElementById('r-amt').textContent  = (isCredit?'+':'-') + '₹' + d.amt;
-  document.getElementById('r-amt').style.color  = isCredit ? '#16a34a' : '#dc2626';
+  document.getElementById('r-amt').textContent   = (isCredit?'+':'-') + '&#8377;' + d.amt;
+  document.getElementById('r-amt').style.color   = isCredit ? '#16a34a' : '#dc2626';
   document.getElementById('r-label').textContent = isCredit ? 'Transfer Received' : 'Transfer Sent';
 
-  // Details
   document.getElementById('r-txid').textContent   = d.tx_id || '—';
   document.getElementById('r-type').textContent   = d.type;
   document.getElementById('r-from').textContent   = d.from;
@@ -321,11 +307,19 @@ function openReceipt(d) {
   document.getElementById('r-status').textContent = d.status;
   document.getElementById('r-status').style.color = d.status==='success' ? '#16a34a' : '#f59e0b';
 
-  // IST & USA time
+  // Comment — API transaction mein remark dikhao
+  const commentRow = document.getElementById('r-comment-row');
+  const commentEl  = document.getElementById('r-comment');
+  if(d.comment && d.comment !== '') {
+    commentEl.textContent = d.comment;
+    commentRow.style.display = 'flex';
+  } else {
+    commentRow.style.display = 'none';
+  }
+
   document.getElementById('r-ist').textContent = txDate.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
   document.getElementById('r-usa').textContent = txDate.toLocaleString('en-US',{timeZone:'America/New_York',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
 
-  // Open modal
   const modal = document.getElementById('receipt-modal');
   const card  = document.getElementById('receipt-card');
   modal.classList.add('open');
@@ -338,7 +332,6 @@ function closeReceipt() {
   document.getElementById('receipt-modal').classList.remove('open');
 }
 
-// Backdrop close
 document.getElementById('receipt-modal').addEventListener('click', function(e) {
   if(e.target === this) closeReceipt();
 });
@@ -346,4 +339,4 @@ document.getElementById('receipt-modal').addEventListener('click', function(e) {
 loadTxns();
 </script>
 </body>
-                                                  </html>
+</html>
