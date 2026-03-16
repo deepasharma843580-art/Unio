@@ -84,9 +84,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
   <div class="card">
 
-    <!-- Receiver Mobile + QR -->
+    <!-- Receiver Number + QR -->
     <div class="input-group">
-      <label>Receiver Mobile</label>
+      <label>Receiver Number</label>
       <div class="input-wrap">
         <input type="number" id="mobile" placeholder="Enter mobile number"
           oninput="fetchName(this.value)">
@@ -108,14 +108,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <label>Amount (₹)</label>
       <div class="input-wrap">
         <input type="number" id="amount" placeholder="0.00" step="0.01">
-      </div>
-    </div>
-
-    <!-- PIN -->
-    <div class="input-group">
-      <label>Security PIN</label>
-      <div class="input-wrap">
-        <input type="password" id="pin" placeholder="4-digit PIN" maxlength="4">
       </div>
     </div>
 
@@ -150,7 +142,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <i class="fa-solid fa-check" style="color:#dc2626;font-size:1.5rem"></i>
     </div>
     <div class="receipt-amt" id="r-amt"></div>
-    <div class="receipt-label">Transfer Sent</div>
+    <div class="receipt-label">Transfer Sent ✅</div>
     <div class="receipt-row"><span>Transaction ID</span><strong id="r-txid"></strong></div>
     <div class="receipt-row"><span>To</span><strong id="r-to"></strong></div>
     <div class="receipt-row"><span>🇮🇳 India Time</span><strong id="r-ist"></strong></div>
@@ -207,7 +199,6 @@ function fetchName(val) {
   }, 400);
 }
 
-// Send Money
 function showMsg(text, type) {
   const m = document.getElementById('msg');
   m.textContent = text;
@@ -217,25 +208,25 @@ function showMsg(text, type) {
 async function sendMoney() {
   const mobile = document.getElementById('mobile').value;
   const amount = document.getElementById('amount').value;
-  const pin    = document.getElementById('pin').value;
-  if(!mobile||!amount||!pin) return showMsg('Please fill all fields!','error');
+  if(!mobile) return showMsg('Number enter karo!', 'error');
+  if(!amount) return showMsg('Amount enter karo!', 'error');
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
 
   try {
-    const r = await fetch(API+'/transfer/send',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({receiver_mobile:mobile, amount, pin})
+    const r = await fetch(API+'/transfer/send', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:    JSON.stringify({ receiver_mobile: mobile, amount })
     });
     const d = await r.json();
     if(d.status==='success') {
       const now = new Date();
       document.getElementById('r-amt').textContent  = '-₹'+parseFloat(amount).toFixed(2);
       document.getElementById('r-txid').textContent = d.tx_id;
-      document.getElementById('r-to').textContent   = (d.receiver.name||'User')+' ('+mobile+')';
+      document.getElementById('r-to').textContent   = (d.receiver?.name||'User')+' ('+mobile+')';
       document.getElementById('r-ist').textContent  = now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
       document.getElementById('r-usa').textContent  = now.toLocaleString('en-US',{timeZone:'America/New_York',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
 
@@ -248,19 +239,18 @@ async function sendMoney() {
 
       document.getElementById('mobile').value = '';
       document.getElementById('amount').value = '';
-      document.getElementById('pin').value    = '';
       document.getElementById('name-tag').classList.remove('show');
       document.getElementById('msg').className = 'msg';
 
       // Refresh balance
       fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
         .then(r=>r.json()).then(d=>{
-          if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
+          if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
         });
     } else {
-      showMsg(d.message||'Transfer failed!','error');
+      showMsg(d.message||'Transfer failed!', 'error');
     }
-  } catch(e) { showMsg('Server error!','error'); }
+  } catch(e) { showMsg('Server error!', 'error'); }
 
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Money';
@@ -306,7 +296,7 @@ function closeQR() {
   }
 }
 
-// Auto fill from URL (QR page se aaya ho to)
+// Auto fill from URL
 const urlTo = new URLSearchParams(window.location.search).get('to');
 if(urlTo) {
   document.getElementById('mobile').value = urlTo;
