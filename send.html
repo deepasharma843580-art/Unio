@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Transfer | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-wrap input:focus{border-color:#0057ff;background:white}
+.qr-scan-btn{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:#eff6ff;border:none;color:#0057ff;width:34px;height:34px;border-radius:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.name-tag{display:none;align-items:center;gap:.5rem;margin-top:.5rem;margin-left:.25rem}
+.name-tag.show{display:flex}
+.name-tag span{font-size:.75rem;font-weight:700;color:#16a34a}
+.name-not-found{display:none;font-size:.7rem;font-weight:700;color:#dc2626;margin-top:.5rem;margin-left:.25rem}
+.name-not-found.show{display:block}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+#qr-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-end;justify-content:center}
+#qr-modal.open{display:flex}
+.qr-modal-card{background:white;border-radius:2rem 2rem 0 0;padding:1.5rem;width:100%;max-width:480px}
+.qr-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.qr-modal-header h3{font-size:.9rem;font-weight:800;color:#0f172a}
+.close-qr{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
+#qr-reader{border-radius:1rem;overflow:hidden;border:2px solid #0057ff}
+.qr-cancel{width:100%;margin-top:1rem;padding:.75rem;background:#fee2e2;border:none;color:#dc2626;border-radius:1rem;font-size:.75rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
+#receipt-modal.open{display:flex}
+.receipt-card{background:linear-gradient(160deg,#f0f4ff 0%,#fff 100%);border-radius:2rem 2rem 0 0;padding:2rem;width:100%;max-width:480px}
+.receipt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.receipt-header h3{font-size:1rem;font-weight:800;color:#0f172a}
+.close-btn{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
+.receipt-icon{width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem}
+.receipt-amt{text-align:center;font-size:2.25rem;font-weight:900;color:#dc2626}
+.receipt-label{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:1.25rem}
+.receipt-row{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f8fafc}
+.receipt-row:last-child{border:none}
+.receipt-row span{font-size:.72rem;color:#94a3b8;font-weight:600}
+.receipt-row strong{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:60%}
+.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem 0;color:#94a3b8;font-size:.7rem;font-weight:700;text-transform:uppercase}
+.done-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
+.nav-item.active{color:#0057ff}
+.nav-item i{font-size:1.2rem}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) forwards}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+  <h1>Send Money</h1>
+</div>
+
+<div class="container">
+
+  <div class="balance-pill">
+    <span>Balance</span>
+    <strong>&#8377;<span id="balance">0.00</span></strong>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="card">
+    <div class="input-group">
+      <label>Receiver Number</label>
+      <div class="input-wrap">
+        <input type="number" id="mobile" placeholder="Enter mobile number" oninput="fetchName(this.value)">
+        <button class="qr-scan-btn" onclick="openQR()" title="Scan QR">
+          <i class="fa-solid fa-qrcode"></i>
+        </button>
+      </div>
+      <div class="name-tag" id="name-tag">
+        <i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:.8rem"></i>
+        <span id="fetched-name"></span>
+      </div>
+      <div class="name-not-found" id="name-not-found">
+        <i class="fa-solid fa-circle-xmark"></i> User not found
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Amount (&#8377;)</label>
+      <div class="input-wrap">
+        <input type="number" id="amount" placeholder="0.00" step="0.01">
+      </div>
+    </div>
+
+    <button class="btn" id="send-btn" onclick="sendMoney()">
+      <i class="fa-solid fa-paper-plane"></i> Send Money
+    </button>
+  </div>
+</div>
+
+<div id="qr-modal">
+  <div class="qr-modal-card">
+    <div class="qr-modal-header">
+      <h3><i class="fa-solid fa-qrcode" style="color:#0057ff"></i> Scan UNIO QR</h3>
+      <button class="close-qr" onclick="closeQR()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="qr-reader"></div>
+    <button class="qr-cancel" onclick="closeQR()">
+      <i class="fa-solid fa-xmark"></i> Cancel
+    </button>
+  </div>
+</div>
+
+<div id="receipt-modal">
+  <div id="receipt-card" class="receipt-card">
+    <div class="receipt-header">
+      <h3>Transaction Receipt</h3>
+      <button class="close-btn" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="receipt-icon">
+      <i class="fa-solid fa-check" style="color:#16a34a;font-size:1.5rem"></i>
+    </div>
+    <div class="receipt-amt" id="r-amt"></div>
+    <div class="receipt-label">Transfer Sent</div>
+    <div class="receipt-row"><span>Transaction ID</span><strong id="r-txid"></strong></div>
+    <div class="receipt-row"><span>To</span><strong id="r-to"></strong></div>
+    <div class="receipt-row"><span>India Time</span><strong id="r-ist"></strong></div>
+    <div class="receipt-row"><span>USA Time</span><strong id="r-usa"></strong></div>
+    <div class="receipt-row"><span>Status</span><strong style="color:#16a34a">Success</strong></div>
+    <div class="receipt-brand">
+      <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
+    </div>
+    <button class="done-btn" onclick="closeReceipt()">Done</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="transfer.html" class="nav-item active"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="qr.html" class="nav-item"><i class="fa-solid fa-qrcode"></i>QR</a>
+  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
+  <a href="transactions.html" class="nav-item"><i class="fa-solid fa-receipt"></i>History</a>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+var API = '';
+var token = localStorage.getItem('token');
+if(!token) window.location.href = 'index.html';
+var fetchTimer = null;
+var html5QrCode = null;
+
+fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+  .then(function(r){return r.json();}).then(function(d){
+    if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
+  });
+
+function fetchName(val){
+  clearTimeout(fetchTimer);
+  document.getElementById('name-tag').classList.remove('show');
+  document.getElementById('name-not-found').classList.remove('show');
+  if(val.length<10) return;
+  fetchTimer=setTimeout(function(){
+    fetch(API+'/transfer/lookup/'+val,{headers:{'Authorization':'Bearer '+token}})
+      .then(function(r){return r.json();}).then(function(d){
+        if(d.status==='success'){
+          document.getElementById('fetched-name').textContent=d.name||'User';
+          document.getElementById('name-tag').classList.add('show');
+        } else {
+          document.getElementById('name-not-found').classList.add('show');
+        }
+      }).catch(function(){});
+  },400);
+}
+
+function showMsg(text,type){
+  var m=document.getElementById('msg');
+  m.textContent=text;
+  m.className='msg '+type;
+}
+
+function sendMoney(){
+  var mobile=document.getElementById('mobile').value;
+  var amount=document.getElementById('amount').value;
+  if(!mobile) return showMsg('Number enter karo!','error');
+  if(!amount) return showMsg('Amount enter karo!','error');
+  var btn=document.getElementById('send-btn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+  fetch(API+'/transfer/send',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({receiver_mobile:mobile,amount:amount})
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.status==='success'){
+      var now=new Date();
+      document.getElementById('r-amt').textContent='-'+amount;
+      document.getElementById('r-txid').textContent=d.tx_id;
+      document.getElementById('r-to').textContent=(d.receiver&&d.receiver.name?d.receiver.name:'User')+' ('+mobile+')';
+      document.getElementById('r-ist').textContent=now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+      document.getElementById('r-usa').textContent=now.toLocaleString('en-US',{timeZone:'America/New_York',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+      var modal=document.getElementById('receipt-modal');
+      var card=document.getElementById('receipt-card');
+      modal.classList.add('open');
+      card.classList.remove('slide-up');
+      void card.offsetWidth;
+      card.classList.add('slide-up');
+      document.getElementById('mobile').value='';
+      document.getElementById('amount').value='';
+      document.getElementById('name-tag').classList.remove('show');
+      document.getElementById('msg').className='msg';
+      fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+        .then(function(r){return r.json();}).then(function(d){
+          if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
+        });
+    } else {
+      showMsg(d.message||'Transfer failed!','error');
+    }
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send Money';
+  }).catch(function(){
+    showMsg('Server error!','error');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send Money';
+  });
+}
+
+function closeReceipt(){
+  document.getElementById('receipt-modal').classList.remove('open');
+}
+
+function openQR(){
+  document.getElementById('qr-modal').classList.add('open');
+  html5QrCode=new Html5Qrcode('qr-reader');
+  html5QrCode.start(
+    {facingMode:'environment'},
+    {fps:10,qrbox:{width:250,height:250}},
+    onQRScan
+  ).catch(function(){alert('Camera permission denied!');closeQR();});
+}
+
+function onQRScan(decoded){
+  html5QrCode.stop().then(function(){
+    closeQR();
+    var mobile=decoded.trim();
+    if(!isNaN(mobile)&&mobile.length>=10){
+      document.getElementById('mobile').value=mobile;
+      fetchName(mobile);
+    } else {
+      alert('Invalid UNIO QR!');
+    }
+  });
+}
+
+function closeQR(){
+  if(html5QrCode){
+    html5QrCode.stop().catch(function(){}).then(function(){
+      document.getElementById('qr-modal').classList.remove('open');
+    });
+  } else {
+    document.getElementById('qr-modal').classList.remove('open');
+  }
+}
+
+var urlTo=new URLSearchParams(window.location.search).get('to');
+if(urlTo){
+  document.getElementById('mobile').value=urlTo;
+  fetchName(urlTo);
+}
+</script>
+</body>
+  </html>
+
