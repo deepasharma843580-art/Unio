@@ -1,9 +1,9 @@
 require('dotenv').config();
-const express  = require('express');
-const mongoose = require('mongoose');
-const cors     = require('cors');
+const express   = require('express');
+const mongoose  = require('mongoose');
+const cors      = require('cors');
 const rateLimit = require('express-rate-limit');
-const path     = require('path');
+const path      = require('path');
 
 const app = express();
 
@@ -13,7 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── MongoDB ───────────────────────────────────────────────────────────────────
 const MONGO_URI = process.env.MONGO_URI;
-
 mongoose.set('bufferCommands', true);
 mongoose.set('bufferTimeoutMS', 60000);
 
@@ -32,7 +31,6 @@ async function connectDB() {
         retryWrites:              true,
       });
     } else {
-      // Wait for connection
       await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => reject(new Error('Connection timeout')), 30000);
         mongoose.connection.once('connected', () => { clearTimeout(timeout); resolve(); });
@@ -50,21 +48,26 @@ async function connectDB() {
 
 // ── DB Middleware ─────────────────────────────────────────────────────────────
 app.use(async (req, res, next) => {
-  if(req.path.endsWith('.html') || req.path.endsWith('.css') || req.path.endsWith('.js') || req.path === '/favicon.ico') {
+  if(req.path.endsWith('.html') || req.path.endsWith('.css') ||
+     req.path.endsWith('.js')   || req.path === '/favicon.ico') {
     return next();
   }
   try {
     await connectDB();
     next();
   } catch(e) {
-    console.error('DB connect failed:', e.message);
-    res.status(500).json({ status:'error', message:'Database connection failed: ' + e.message });
+    res.status(500).json({ status:'error', message:'Database connection failed: '+e.message });
   }
 });
 
-// ── Static ────────────────────────────────────────────────────────────────────
+// ── Static files — no cache ───────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public'), {
+  etag: false,
+  lastModified: false,
   setHeaders: (res, filePath) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     if(filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
     if(filePath.endsWith('.css'))  res.setHeader('Content-Type', 'text/css');
     if(filePath.endsWith('.js'))   res.setHeader('Content-Type', 'application/javascript');
