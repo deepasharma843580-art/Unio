@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deposit Admin | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:100vh;color:#e2e8f0;display:flex;flex-direction:column}
+.login-screen{position:fixed;inset:0;background:#0a0f1e;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#141927;padding:2rem;border-radius:1.5rem;border:1px solid rgba(255,255,255,0.06);width:100%;max-width:350px;text-align:center}
+.top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.top-bar h1{font-size:.9rem;font-weight:900;color:#10b981;font-style:italic;text-transform:uppercase}
+.container{max-width:600px;margin:0 auto;padding:1.25rem;width:100%}
+.refresh-area{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.section-title{font-size:.75rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.05em}
+.req-item{background:#141927;border-radius:1.25rem;padding:1.25rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s ease}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.req-info p{font-size:.85rem;font-weight:700;color:white;margin-bottom:2px}
+.req-info span{font-size:.65rem;color:#475569;font-weight:600}
+.req-amt{font-size:1.1rem;font-weight:900;color:#10b981;text-align:right}
+.req-amt small{display:block;font-size:.6rem;color:#475569;font-weight:600}
+.req-detail{background:#0d1220;border-radius:.75rem;padding:.75rem;margin-bottom:.75rem;font-size:.7rem;font-weight:700;color:#94a3b8;border:1px solid rgba(255,255,255,0.03)}
+.req-detail span{color:white;user-select:all}
+.req-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.btn{padding:.8rem;border-radius:.75rem;font-size:.7rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;border:none;transition:0.2s}
+.approve-btn{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
+.approve-btn:active{background:#10b981;color:white}
+.reject-btn{background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);color:#dc2626}
+.reject-btn:active{background:#dc2626;color:white}
+.a-input{width:100%;padding:1rem;background:#1e2535;border:2px solid rgba(255,255,255,0.08);border-radius:1rem;font-size:1rem;color:white;outline:none;margin-bottom:1rem;text-align:center}
+.refresh-btn{background:#0057ff;color:white;padding:.6rem 1.25rem;border-radius:.75rem;font-size:.7rem;font-weight:800;border:none;cursor:pointer}
+.empty{text-align:center;padding:3rem;color:#475569;font-size:.8rem}
+</style>
+</head>
+<body>
+
+<div id="loginPanel" class="login-screen">
+  <div class="login-box">
+    <h2 style="margin-bottom:1.5rem;font-size:1rem">Admin Access</h2>
+    <input type="password" id="passInput" class="a-input" placeholder="Enter Password">
+    <button class="refresh-btn" style="width:100%" onclick="checkPass()">Unlock</button>
+  </div>
+</div>
+
+<div id="adminContent" style="display:none">
+  <div class="top-bar">
+    <h1>UNIO Deposits</h1>
+    <span style="font-size:.65rem;color:#475569;font-weight:700" onclick="location.reload()">🔒 Logout</span>
+  </div>
+
+  <div class="container">
+    <div class="refresh-area">
+      <div class="section-title">Pending Requests</div>
+      <button class="refresh-btn" onclick="loadDeposits()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+    </div>
+    
+    <div id="deposit-list">
+        <div class="empty">Click Refresh to Load</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = ''; // Yaha apna API URL dalein
+const ADMIN_KEY = '8435';
+
+function checkPass() {
+  const val = document.getElementById('passInput').value;
+  if(val === ADMIN_KEY) {
+    document.getElementById('loginPanel').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    loadDeposits();
+  } else {
+    alert('Wrong Password!');
+  }
+}
+
+async function loadDeposits() {
+  const list = document.getElementById('deposit-list');
+  list.innerHTML = '<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Fetching...</div>';
+  
+  try {
+    const r = await fetch(API + '/admin/transactions', {
+      headers: { 'x-admin-key': ADMIN_KEY }
+    });
+    const d = await r.json();
+    
+    // Filter only pending deposits
+    const deps = (d.transactions || []).filter(t => t.status === 'pending' && t.type === 'deposit');
+
+    if(deps.length === 0) {
+      list.innerHTML = '<div class="empty"><i class="fa-solid fa-circle-check" style="color:#10b981;font-size:2rem;display:block;margin-bottom:10px"></i>All Clear!<br>No pending deposits.</div>';
+      return;
+    }
+
+    let html = '';
+    deps.forEach(dep => {
+      const mobile = dep.receiver_id?.mobile || 'N/A';
+      const name = dep.receiver_id?.name || 'User';
+      const utr = dep.remark ? dep.remark.replace('UTR:', '').trim() : 'N/A';
+      const amt = parseFloat(dep.amount).toFixed(2);
+      const time = new Date(dep.tx_time).toLocaleString('en-IN', {timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit'});
+
+      html += `
+      <div class="req-item" id="card-${dep._id}">
+        <div class="req-top">
+          <div class="req-info">
+            <p>${name}</p>
+            <span>📱 ${mobile}</span>
+          </div>
+          <div class="req-amt">₹${amt}<small>${time}</small></div>
+        </div>
+        <div class="req-detail">
+          <i class="fa-solid fa-receipt" style="color:#10b981"></i> UTR: <span>${utr}</span>
+        </div>
+        <div class="req-btns">
+          <button class="btn approve-btn" onclick="approveDep('${dep._id}','${mobile}','${amt}')">
+            <i class="fa-solid fa-check"></i> Approve
+          </button>
+          <button class="btn reject-btn" onclick="rejectDep('${dep._id}')">
+            <i class="fa-solid fa-xmark"></i> Reject
+          </button>
+        </div>
+      </div>`;
+    });
+    list.innerHTML = html;
+  } catch(e) {
+    list.innerHTML = '<div class="empty" style="color:#dc2626">Error loading data. Check API!</div>';
+  }
+}
+
+async function approveDep(id, mobile, amount) {
+  if(!confirm(`Approve ₹${amount} for ${mobile}?`)) return;
+  
+  try {
+    const r = await fetch(API + '/admin/add-balance', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-admin-key': ADMIN_KEY 
+      },
+      body: JSON.stringify({ mobile, amount })
+    });
+    const d = await r.json();
+    
+    if(d.status === 'success') {
+      removeCard(id);
+    } else {
+      alert('Error: ' + d.message);
+    }
+  } catch(e) {
+    alert('Server Error!');
+  }
+}
+
+function rejectDep(id) {
+  if(!confirm('Reject this deposit?')) return;
+  // Since rejection usually doesn't have a specific API endpoint in your snippet, 
+  // we just remove it from UI for now as requested.
+  removeCard(id);
+}
+
+function removeCard(id) {
+  const el = document.getElementById('card-' + id);
+  if(el) {
+    el.style.transform = 'translateX(100px)';
+    el.style.opacity = '0';
+    setTimeout(() => {
+        el.remove();
+        if(document.querySelectorAll('.req-item').length === 0) {
+            loadDeposits(); // Show empty state
+        }
+    }, 300);
+  }
+}
+</script>
+</body>
+</html>
+
