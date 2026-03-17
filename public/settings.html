@@ -158,7 +158,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       "name": "Name",
       "number": "number"
     },
-    "comment": "comment",
+    "comment": "payout",
     "timestamp": "16-03-2026 15:12:06"
   }
 }</div>
@@ -259,7 +259,7 @@ function loadData() {
     `<span style="color:#94a3b8">&amount=</span>` +
     `<span class="param-highlight">{amount}</span>` +
     `<span style="color:#94a3b8">&comment=</span>` +
-    `<span class="param-highlight">{comment}</span>`;
+    `<span class="param-highlight">payout</span>`;
   document.getElementById('full-url-raw').value = `https://unio-hazel.vercel.app/api?key=${apiKey}&paytm={number}&amount={amount}&comment=payout`;
   document.getElementById('full-url-raw').value = fullUrl;
 
@@ -322,4 +322,3 @@ loadData();
 </script>
 </body>
 </html>
-
