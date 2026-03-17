@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All History | UNIO Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:100vh;color:#e2e8f0}
+.login-screen{position:fixed;inset:0;background:#0a0f1e;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#141927;padding:2rem;border-radius:1.5rem;border:1px solid rgba(255,255,255,0.06);width:100%;max-width:350px;text-align:center}
+.top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.top-bar h1{font-size:.9rem;font-weight:900;color:#0057ff;text-transform:uppercase}
+.container{max-width:600px;margin:0 auto;padding:1.25rem}
+.tabs{display:flex;background:#141927;border-radius:1rem;padding:4px;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,0.06);gap:4px}
+.tab{flex:1;padding:.7rem;font-weight:700;font-size:.7rem;border-radius:.75rem;cursor:pointer;color:#475569;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:0.2s}
+.tab.active{background:#0057ff;color:white}
+.req-item{background:#141927;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;border:1px solid rgba(255,255,255,0.06)}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.req-info p{font-size:.8rem;font-weight:700;color:white}
+.req-info span{font-size:.65rem;color:#475569}
+.req-amt{font-size:1rem;font-weight:900;text-align:right}
+.req-amt.dep{color:#10b981}
+.req-amt.wd{color:#ef4444}
+.req-amt small{display:block;font-size:.6rem;color:#475569}
+.req-detail{background:#0d1220;border-radius:.7rem;padding:.6rem;margin:.5rem 0;font-size:.65rem;color:#94a3b8;border:1px solid rgba(255,255,255,0.03)}
+.req-detail b{color:white}
+.status-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.badge{font-size:.6rem;font-weight:800;padding:.3rem .6rem;border-radius:.5rem;text-transform:uppercase}
+.badge.pending{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
+.badge.success{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.badge.failed{background:rgba(220,38,38,0.15);color:#dc2626;border:1px solid rgba(220,38,38,0.3)}
+.action-btns{display:flex;gap:5px}
+.mini-btn{padding:.4rem .7rem;border-radius:.5rem;font-size:.6rem;font-weight:800;border:none;cursor:pointer;text-transform:uppercase}
+.btn-app{background:#10b981;color:white}
+.btn-rej{background:#dc2626;color:white}
+.a-input{width:100%;padding:1rem;background:#1e2535;border:2px solid rgba(255,255,255,0.08);border-radius:1rem;font-size:1rem;color:white;outline:none;margin-bottom:1rem;text-align:center}
+.refresh-btn{background:#0057ff;color:white;padding:.6rem 1rem;border-radius:.75rem;font-size:.7rem;font-weight:800;border:none;cursor:pointer;margin-bottom:1rem}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.empty{text-align:center;padding:3rem;color:#475569;font-size:.8rem}
+</style>
+</head>
+<body>
+
+<div id="loginPanel" class="login-screen">
+  <div class="login-box">
+    <h2 style="margin-bottom:1rem;font-size:1rem">History Access</h2>
+    <input type="password" id="passInput" class="a-input" placeholder="Enter PIN">
+    <button class="refresh-btn" style="width:100%" onclick="checkPass()">Unlock</button>
+  </div>
+</div>
+
+<div id="adminContent" style="display:none">
+  <div class="top-bar">
+    <h1>UNIO History</h1>
+    <button class="refresh-btn" style="margin:0" onclick="fetchAll()"><i class="fa-solid fa-sync"></i></button>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('hist-dep',this)">📥 Deposits</button>
+      <button class="tab" onclick="switchTab('hist-wd',this)">📤 Withdrawals</button>
+    </div>
+
+    <div id="hist-dep" class="tab-content active">
+      <div id="dep-list-all"><div class="empty">Loading...</div></div>
+    </div>
+
+    <div id="hist-wd" class="tab-content">
+      <div id="wd-list-all"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = ''; // Your API URL
+const ADMIN_KEY = '8435';
+
+function checkPass() {
+  if(document.getElementById('passInput').value === ADMIN_KEY) {
+    document.getElementById('loginPanel').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    fetchAll();
+  } else { alert('Wrong PIN'); }
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+async function fetchAll() {
+  await loadHistory('deposit', 'dep-list-all');
+  await loadHistory('withdraw', 'wd-list-all');
+}
+
+async function loadHistory(type, containerId) {
+  const list = document.getElementById(containerId);
+  try {
+    const r = await fetch(API + (type==='deposit' ? '/admin/transactions' : '/admin/withdrawals'), {
+        headers: { 'x-admin-key': ADMIN_KEY }
+    });
+    const d = await r.json();
+    let data = type==='deposit' ? (d.transactions || []).filter(t=>t.type==='deposit') : (d.withdrawals || []);
+    
+    if(data.length === 0) {
+      list.innerHTML = '<div class="empty">No records found</div>';
+      return;
+    }
+
+    let html = '';
+    data.sort((a,b)=> new Date(b.tx_time) - new Date(a.tx_time)).forEach(item => {
+      const isPending = item.status === 'pending';
+      const statusClass = item.status === 'success' || item.status === 'approved' ? 'success' : (item.status === 'pending' ? 'pending' : 'failed');
+      const mobile = (type === 'deposit' ? item.receiver_id?.mobile : item.sender_id?.mobile) || 'N/A';
+      const date = new Date(item.tx_time).toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+      const remark = item.remark || 'N/A';
+
+      html += `
+      <div class="req-item" id="item-${item._id}">
+        <div class="req-top">
+          <div class="req-info">
+            <p>${mobile}</p>
+            <span>${date}</span>
+          </div>
+          <div class="req-amt ${type==='deposit'?'dep':'wd'}">
+            ₹${parseFloat(item.amount).toFixed(2)}
+          </div>
+        </div>
+        <div class="req-detail">
+          ${type==='deposit' ? '<b>UTR:</b> ' : '<b>UPI:</b> '} ${remark.replace('UTR:','')}
+        </div>
+        <div class="status-row">
+          <span class="badge ${statusClass}">${item.status}</span>
+          ${isPending ? `
+            <div class="action-btns">
+              <button class="mini-btn btn-app" onclick="process('${type}','approve','${item.tx_id || item._id}','${item._id}','${mobile}','${item.amount}')">Approve</button>
+              <button class="mini-btn btn-rej" onclick="process('${type}','reject','${item.tx_id || item._id}','${item._id}')">Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      </div>`;
+    });
+    list.innerHTML = html;
+  } catch(e) { list.innerHTML = '<div class="empty">Error fetching data</div>'; }
+}
+
+async function process(type, action, tx_id, id, mobile, amount) {
+  if(!confirm(`${action.toUpperCase()} this request?`)) return;
+  
+  let endpoint = '';
+  let options = { method: 'POST', headers: { 'x-admin-key': ADMIN_KEY } };
+
+  if(type === 'deposit') {
+    if(action === 'approve') {
+        endpoint = '/admin/add-balance';
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify({ mobile, amount });
+    } else {
+        // Local UI removal for deposit rejection as no specific endpoint provided
+        alert('Rejected Locally');
+        document.getElementById('item-'+id).remove();
+        return;
+    }
+  } else {
+    endpoint = action === 'approve' ? '/admin/approve-withdraw/'+tx_id : '/admin/reject-withdraw/'+tx_id;
+  }
+
+  try {
+    const r = await fetch(API + endpoint, options);
+    const d = await r.json();
+    if(d.status === 'success') {
+      alert('Done!');
+      fetchAll(); // Refresh to update status badges
+    } else { alert(d.message); }
+  } catch(e) { alert('Request Failed'); }
+}
+</script>
+</body>
+  </html>
+  
