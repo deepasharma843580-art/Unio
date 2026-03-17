@@ -237,18 +237,44 @@ async function loadDeposits(){
 
 async function approveDeposit(id,mobile,amount){
   if(!confirm('Approve ₹'+amount+' for '+mobile+'?')) return;
+  const btn = document.querySelector('#dep-'+id+' .approve-btn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i>'; }
   try{
-    const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
+    const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount:parseFloat(amount)})});
     const d=await r.json();
-    if(d.status==='success'){document.getElementById('dep-'+id)?.remove();alert('✅ ₹'+amount+' added!');}
-    else alert('Error: '+d.message);
-  }catch(e){alert('Error!');}
+    if(d.status==='success'){
+      const el = document.getElementById('dep-'+id);
+      if(el){ el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); }
+      showToast('✅ ₹'+amount+' added to '+mobile+'!');
+    } else {
+      showToast('Error: '+d.message);
+      if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Approve'; }
+    }
+  }catch(e){
+    showToast('Server error!');
+    if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Approve'; }
+  }
 }
 
 async function rejectDeposit(id){
-  if(!confirm('Reject?')) return;
-  document.getElementById('dep-'+id)?.remove();
-  alert('❌ Rejected!');
+  if(!confirm('Reject this deposit request?')) return;
+  const el = document.getElementById('dep-'+id);
+  if(el){ el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); }
+  showToast('Deposit rejected!');
+}
+
+function showToast(msg){
+  var existing = document.getElementById('admin-toast');
+  if(!existing){
+    existing = document.createElement('div');
+    existing.id = 'admin-toast';
+    existing.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:#0f172a;color:white;padding:.75rem 1.5rem;border-radius:2rem;font-size:.8rem;font-weight:700;transition:all .3s;z-index:999;opacity:0;white-space:nowrap';
+    document.body.appendChild(existing);
+  }
+  existing.textContent = msg;
+  existing.style.transform = 'translateX(-50%) translateY(0)';
+  existing.style.opacity = '1';
+  setTimeout(function(){ existing.style.transform='translateX(-50%) translateY(100px)'; existing.style.opacity='0'; }, 2500);
 }
 
 function showMsg(id,text,type){
@@ -323,11 +349,4 @@ async function loadUsers(){
       html+=`<div class="user-item">
         <div><div class="user-name">${u.name||'User'}</div><div class="user-mob">📱 ${u.mobile} • ${tg}</div></div>
         <div class="user-bal">₹${parseFloat(u.balance||0).toFixed(2)}</div>
-      </div>`;
-    });
-    list.innerHTML=html;
-  }catch(e){list.innerHTML='<div class="empty">Error!</div>';}
-}
-</script>
-</body>
-  </html>
+      </
