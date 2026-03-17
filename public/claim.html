@@ -138,18 +138,44 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc;margin-bottom:.75rem;display:block"></i>
       <div style="font-size:.9rem;font-weight:800;color:#0f172a;margin-bottom:.5rem">Telegram Not Connected!</div>
       <div style="font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:1rem">Channel verify karne ke liye Telegram ID connect karo</div>
-      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin-bottom:.75rem">
-        <i class="fa-brands fa-telegram"></i> Open @OTP_UNIO_BOT
+    </div>
+
+    <!-- Step A: Get Code from Bot -->
+    <div id="tg-step-a">
+      <div style="background:#f8fafc;border-radius:1rem;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.75rem">Steps to Connect</div>
+        <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:.6rem">
+          <div style="width:24px;height:24px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#0057ff;flex-shrink:0">1</div>
+          <div style="font-size:.75rem;font-weight:600;color:#0f172a">Neeche button pe click karo — Bot khulega</div>
+        </div>
+        <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:.6rem">
+          <div style="width:24px;height:24px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#0057ff;flex-shrink:0">2</div>
+          <div style="font-size:.75rem;font-weight:600;color:#0f172a">Bot mein <b>/start</b> bhejo — Bot aapka code dega</div>
+        </div>
+        <div style="display:flex;gap:.75rem;align-items:flex-start">
+          <div style="width:24px;height:24px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#0057ff;flex-shrink:0">3</div>
+          <div style="font-size:.75rem;font-weight:600;color:#0f172a">Code copy karke neeche paste karo</div>
+        </div>
+      </div>
+
+      <a id="tg-bot-link" href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin-bottom:.75rem;text-decoration:none">
+        <i class="fa-brands fa-telegram"></i> Open @OTP_UNIO_BOT → Get Code
       </a>
+
+      <div id="tg-msg" class="msg"></div>
+      <div class="input-group">
+        <label>Bot se mila Code paste karo</label>
+        <input type="number" id="tg-id-input" placeholder="e.g. 8509393869" style="text-align:center;font-size:1.1rem;letter-spacing:.1em">
+      </div>
+
+      <div style="background:#fff7ed;border-radius:.75rem;padding:.75rem;font-size:.68rem;font-weight:600;color:#92400e;margin-bottom:1rem;text-align:center">
+        ⚠️ Ye code aapka Telegram ID hai — Bot /start pe milega
+      </div>
+
+      <button class="btn green" onclick="saveTgId()">
+        <i class="fa-solid fa-floppy-disk"></i> Save & Continue
+      </button>
     </div>
-    <div id="tg-msg" class="msg"></div>
-    <div class="input-group">
-      <label>Enter Your Telegram ID</label>
-      <input type="number" id="tg-id-input" placeholder="e.g. 8509393869">
-    </div>
-    <button class="btn green" onclick="saveTgId()">
-      <i class="fa-solid fa-floppy-disk"></i> Save & Continue
-    </button>
   </div>
 
   <!-- STEP 4: Channels + Claim -->
@@ -395,56 +421,4 @@ async function verifyChannel(i, link) {
     }
   } catch(e) {
     btn.disabled  = false;
-    btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Retry';
-  }
-}
-
-function checkAllVerified() {
-  if(!verifiedChannels.every(v => v)) return;
-  showClaimButton();
-}
-
-function showClaimButton() {
-  if(currentLifafa.type === 'toss') {
-    document.getElementById('toss-wrap').style.display = 'block';
-  } else {
-    document.getElementById('claim-btn-wrap').style.display = 'block';
-  }
-}
-
-// Final Claim
-async function claimNow(guess) {
-  const btn = document.getElementById('claim-btn');
-  if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Claiming...'; }
-
-  try {
-    const r = await fetch(API+'/lifafa/claim', {
-      method:  'POST',
-      headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify({
-        code:   currentCode,
-        mobile: userMobile,
-        guess:  guess || ''
-      })
-    });
-    const d = await r.json();
-
-    if(d.status === 'success') {
-      document.getElementById('channels-wrap').style.display   = 'none';
-      document.getElementById('toss-wrap').style.display       = 'none';
-      document.getElementById('claim-btn-wrap').style.display  = 'none';
-      document.getElementById('claim-msg').className           = 'msg';
-      document.getElementById('won-amt').textContent           = '+₹' + d.amount;
-      document.getElementById('step-success').style.display    = 'block';
-    } else {
-      showMsg('claim-msg', '❌ '+(d.message||'Claim failed!'), 'error');
-      if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
-    }
-  } catch(e) {
-    showMsg('claim-msg', '❌ Server error!', 'error');
-    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
-  }
-}
-</script>
-</body>
-</html>
+    btn.innerHTML = '<i 
