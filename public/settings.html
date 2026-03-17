@@ -249,7 +249,7 @@ function loadData() {
   const jwt    = token || 'YOUR_TOKEN';
 
   // Full URL
-  const fullUrl = `${BASE}/api?key=${apiKey}&paytm={number}&amount={amount}&comment={comment}`;
+  const fullUrl = `${BASE}/api?key=${apiKey}&paytm={number}&amount={amount}&comment=payout`;
   document.getElementById('full-url').innerHTML =
     `<span style="color:#94a3b8">https://unio-hazel.vercel.app/api?</span>` +
     `<span style="color:#94a3b8">key=</span>` +
@@ -260,7 +260,7 @@ function loadData() {
     `<span class="param-highlight">{amount}</span>` +
     `<span style="color:#94a3b8">&comment=</span>` +
     `<span class="param-highlight">{comment}</span>`;
-  document.getElementById('full-url-raw').value = `https://unio-hazel.vercel.app/api?key=${apiKey}&paytm={number}&amount={amount}&comment={comment}`;
+  document.getElementById('full-url-raw').value = `https://unio-hazel.vercel.app/api?key=${apiKey}&paytm={number}&amount={amount}&comment=payout`;
   document.getElementById('full-url-raw').value = fullUrl;
 
   // API Key
