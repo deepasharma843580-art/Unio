@@ -12,8 +12,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 .top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
 .top-bar h1{font-size:.9rem;font-weight:900;color:#0057ff;font-style:italic;text-transform:uppercase}
 .container{max-width:600px;margin:0 auto;padding:1.25rem}
-.tabs{display:flex;background:#141927;border-radius:1rem;padding:4px;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;gap:4px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
+.tabs{display:flex;background:#141927;border-radius:1rem;padding:4px;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,0.06);overflow-x:auto;gap:4px}
 .tab{flex-shrink:0;padding:.6rem .9rem;font-weight:700;font-size:.65rem;border-radius:.75rem;cursor:pointer;color:#475569;text-transform:uppercase;white-space:nowrap;border:none;background:none;font-family:inherit;transition:all .2s}
 .tab.active{background:#0057ff;color:white}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
@@ -23,7 +22,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 .stat-sub{font-size:.65rem;color:#475569;margin-top:2px}
 .section-card{background:#141927;border-radius:1.5rem;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:1rem}
 .section-title{font-size:.7rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
-.req-item{background:#1e2535;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;border:1px solid rgba(255,255,255,0.05);transition: opacity 0.3s ease}
+.req-item{background:#1e2535;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;border:1px solid rgba(255,255,255,0.05)}
 .req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
 .req-info p{font-size:.8rem;font-weight:700;color:white;margin-bottom:2px}
 .req-info span{font-size:.65rem;color:#475569;font-weight:600}
@@ -47,8 +46,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 .txn-amt{font-size:.85rem;font-weight:800;color:#10b981}
 .badge{font-size:.6rem;font-weight:800;padding:.2rem .5rem;border-radius:.5rem;text-transform:uppercase}
 .badge.pending{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
-.badge.success,.badge.approved{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
-.badge.failed,.badge.rejected{background:rgba(220,38,38,0.15);color:#dc2626;border:1px solid rgba(220,38,38,0.3)}
+.badge.success{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.badge.failed{background:rgba(220,38,38,0.15);color:#dc2626;border:1px solid rgba(220,38,38,0.3)}
 .user-item{background:#1e2535;border-radius:1rem;padding:.9rem 1rem;margin-bottom:.6rem;border:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center}
 .user-name{font-size:.8rem;font-weight:700;color:white}
 .user-mob{font-size:.65rem;color:#475569;font-weight:600;margin-top:2px}
@@ -71,12 +70,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
     <button class="tab active" onclick="switchTab('stats',this)">📊 Stats</button>
     <button class="tab" onclick="switchTab('withdraw',this)">💸 Withdraw</button>
     <button class="tab" onclick="switchTab('deposit',this)">💳 Deposits</button>
-    <button class="tab" onclick="switchTab('history',this)">📜 History</button>
     <button class="tab" onclick="switchTab('balance',this)">➕ Balance</button>
     <button class="tab" onclick="switchTab('txns',this)">📋 Txns</button>
     <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
   </div>
 
+  <!-- STATS -->
   <div id="tab-stats" class="tab-section active">
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-val" id="s-users">—</div><div class="stat-sub">Registered</div></div>
@@ -87,22 +86,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
     <button class="refresh-btn" onclick="loadStats()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
   </div>
 
+  <!-- WITHDRAWALS -->
   <div id="tab-withdraw" class="tab-section">
     <button class="refresh-btn" onclick="loadWithdrawals()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
     <div id="withdraw-list"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
   </div>
 
+  <!-- DEPOSITS -->
   <div id="tab-deposit" class="tab-section">
     <button class="refresh-btn" onclick="loadDeposits()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
     <div id="deposit-list"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
   </div>
 
-  <div id="tab-history" class="tab-section">
-    <div class="section-title" style="margin-top:10px">Recent Approvals/Rejections</div>
-    <button class="refresh-btn" onclick="loadHistory()"><i class="fa-solid fa-rotate-right"></i> Refresh History</button>
-    <div id="history-list"><div class="empty">No history loaded</div></div>
-  </div>
-
+  <!-- ADD BALANCE -->
   <div id="tab-balance" class="tab-section">
     <div class="section-card">
       <div class="section-title"><i class="fa-solid fa-plus"></i> Add Balance</div>
@@ -120,11 +116,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
     </div>
   </div>
 
+  <!-- TRANSACTIONS -->
   <div id="tab-txns" class="tab-section">
     <button class="refresh-btn" onclick="loadTxns()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
     <div id="txns-list"><div class="empty">Click Refresh</div></div>
   </div>
 
+  <!-- USERS -->
   <div id="tab-users" class="tab-section">
     <button class="refresh-btn" onclick="loadUsers()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
     <div id="users-list"><div class="empty">Click Refresh</div></div>
@@ -132,12 +130,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 </div>
 
 <script>
-const API       = ''; // Put your API URL here
+const API       = '';
 const ADMIN_KEY = '8435';
 function aH()  { return {'x-admin-key': ADMIN_KEY}; }
 function aHJ() { return {'Content-Type':'application/json','x-admin-key': ADMIN_KEY}; }
 
-// Initial Load
+// Auto load on open
 loadStats(); loadWithdrawals(); loadDeposits();
 
 function switchTab(tab,el) {
@@ -147,10 +145,8 @@ function switchTab(tab,el) {
   document.getElementById('tab-'+tab).classList.add('active');
   if(tab==='txns')  loadTxns();
   if(tab==='users') loadUsers();
-  if(tab==='history') loadHistory();
 }
 
-// Update Stats
 async function loadStats() {
   try {
     const r=await fetch(API+'/admin/stats',{headers:aH()});
@@ -164,18 +160,16 @@ async function loadStats() {
   } catch(e){}
 }
 
-// Pending Withdrawals
 async function loadWithdrawals() {
   const list=document.getElementById('withdraw-list');
   try {
     const r=await fetch(API+'/admin/withdrawals',{headers:aH()});
     const d=await r.json();
-    const pending = (d.withdrawals||[]).filter(w => w.status === 'pending');
-    if(pending.length===0){
+    if(!d.withdrawals||d.withdrawals.length===0){
       list.innerHTML='<div class="empty"><i class="fa-solid fa-check-circle" style="color:#10b981"></i><br>No pending withdrawals!</div>';return;
     }
     let html='';
-    pending.forEach(w=>{
+    d.withdrawals.forEach(w=>{
       const mobile=w.sender_id?.mobile||'—';
       const name=w.sender_id?.name||'User';
       const upi=w.remark||'—';
@@ -195,16 +189,12 @@ async function loadWithdrawals() {
 }
 
 async function approveWithdraw(tx_id,id){
-  if(!confirm('Approve withdrawal?')) return;
+  if(!confirm('Approve?')) return;
   try{
     const r=await fetch(API+'/admin/approve-withdraw/'+tx_id,{method:'POST',headers:aH()});
     const d=await r.json();
-    if(d.status==='success'){
-        const el = document.getElementById('wd-'+id);
-        if(el) el.style.opacity = '0';
-        setTimeout(() => el?.remove(), 300);
-        alert('✅ Approved!');
-    } else alert('Error: '+d.message);
+    if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('✅ Approved!');}
+    else alert('Error: '+d.message);
   }catch(e){alert('Error!');}
 }
 
@@ -213,28 +203,23 @@ async function rejectWithdraw(tx_id,id){
   try{
     const r=await fetch(API+'/admin/reject-withdraw/'+tx_id,{method:'POST',headers:aH()});
     const d=await r.json();
-    if(d.status==='success'){
-        const el = document.getElementById('wd-'+id);
-        if(el) el.style.opacity = '0';
-        setTimeout(() => el?.remove(), 300);
-        alert('❌ Rejected!');
-    } else alert('Error: '+d.message);
+    if(d.status==='success'){document.getElementById('wd-'+id)?.remove();alert('❌ Rejected!');}
+    else alert('Error: '+d.message);
   }catch(e){alert('Error!');}
 }
 
-// Pending Deposits
 async function loadDeposits(){
   const list=document.getElementById('deposit-list');
   try{
     const r=await fetch(API+'/admin/transactions',{headers:aH()});
     const d=await r.json();
-    const deps=(d.transactions||[]).filter(t=>t.status==='pending' && t.type==='deposit');
+    const deps=(d.transactions||[]).filter(t=>t.status==='pending'&&t.remark?.startsWith('UTR:'));
     if(deps.length===0){list.innerHTML='<div class="empty"><i class="fa-solid fa-check-circle" style="color:#10b981"></i><br>No pending deposits!</div>';return;}
     let html='';
     deps.forEach(dep=>{
       const mobile=dep.receiver_id?.mobile||'—';
       const name=dep.receiver_id?.name||'User';
-      const utr=dep.remark ? dep.remark.replace('UTR:','') : 'N/A';
+      const utr=dep.remark.replace('UTR:','');
       const amt=parseFloat(dep.amount).toFixed(2);
       const time=new Date(dep.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
       html+=`<div class="req-item" id="dep-${dep._id}">
@@ -255,58 +240,17 @@ async function approveDeposit(id,mobile,amount){
   try{
     const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
     const d=await r.json();
-    if(d.status==='success'){
-      const el = document.getElementById('dep-'+id);
-      if(el) el.style.opacity = '0';
-      setTimeout(() => el?.remove(), 300);
-      alert('✅ ₹'+amount+' added!');
-    } else alert('Error: '+d.message);
+    if(d.status==='success'){document.getElementById('dep-'+id)?.remove();alert('✅ ₹'+amount+' added!');}
+    else alert('Error: '+d.message);
   }catch(e){alert('Error!');}
 }
 
 async function rejectDeposit(id){
-  if(!confirm('Reject this deposit?')) return;
-  const el = document.getElementById('dep-'+id);
-  if(el) el.style.opacity = '0';
-  setTimeout(() => el?.remove(), 300);
+  if(!confirm('Reject?')) return;
+  document.getElementById('dep-'+id)?.remove();
   alert('❌ Rejected!');
 }
 
-// History Tab (Approved/Rejected)
-async function loadHistory(){
-    const list = document.getElementById('history-list');
-    list.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
-    try {
-        const r=await fetch(API+'/admin/transactions',{headers:aH()});
-        const d=await r.json();
-        // Filtering history (Success or Failed)
-        const hist = (d.transactions||[]).filter(t => t.status !== 'pending').slice(0, 50);
-        
-        if(hist.length === 0){
-            list.innerHTML = '<div class="empty">No history found</div>';
-            return;
-        }
-        
-        let html = '';
-        hist.forEach(h => {
-            const statusClass = h.status === 'success' || h.status === 'approved' ? 'success' : 'failed';
-            const typeLabel = h.type === 'deposit' ? '📥 Deposit' : '📤 Withdraw';
-            const party = h.type === 'deposit' ? (h.receiver_id?.mobile || 'User') : (h.sender_id?.mobile || 'User');
-            const time = new Date(h.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
-            
-            html += `<div class="txn-item">
-                <div class="txn-left">
-                    <p>${typeLabel} - ${party}</p>
-                    <span>${time} • <span class="badge ${statusClass}">${h.status}</span></span>
-                </div>
-                <div class="txn-amt">₹${parseFloat(h.amount).toFixed(2)}</div>
-            </div>`;
-        });
-        list.innerHTML = html;
-    } catch(e){ list.innerHTML = '<div class="empty">Error loading history</div>'; }
-}
-
-// Balance Management
 function showMsg(id,text,type){
   const m=document.getElementById(id);
   m.textContent=text;m.className='msg '+type;
@@ -321,7 +265,7 @@ async function addBalance(){
     const r=await fetch(API+'/admin/add-balance',{method:'POST',headers:aHJ(),body:JSON.stringify({mobile,amount})});
     const d=await r.json();
     if(d.status==='success'){
-      showMsg('bal-msg','✅ ₹'+amount+' added!','success');
+      showMsg('bal-msg','✅ ₹'+amount+' added! Balance: ₹'+d.new_balance,'success');
       document.getElementById('b-mobile').value='';
       document.getElementById('b-amount').value='';
     } else showMsg('bal-msg',d.message||'Failed!','error');
@@ -344,7 +288,6 @@ async function deductBalance(){
   }catch(e){showMsg('ded-msg','Server error!','error');}
 }
 
-// Full Transaction List
 async function loadTxns(){
   const list=document.getElementById('txns-list');
   list.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
@@ -359,4 +302,32 @@ async function loadTxns(){
       const amt=parseFloat(t.amount).toFixed(2);
       const time=new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
       html+=`<div class="txn-item">
-        <div class="txn-left"><p>${from} → ${to}</p><span>${time} • ${t
+        <div class="txn-left"><p>${from} → ${to}</p><span>${time} • ${t.type} <span class="badge ${t.status}">${t.status}</span></span></div>
+        <div class="txn-amt">₹${amt}</div>
+      </div>`;
+    });
+    list.innerHTML=html;
+  }catch(e){list.innerHTML='<div class="empty">Error!</div>';}
+}
+
+async function loadUsers(){
+  const list=document.getElementById('users-list');
+  list.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  try{
+    const r=await fetch(API+'/admin/users',{headers:aH()});
+    const d=await r.json();
+    if(!d.users||d.users.length===0){list.innerHTML='<div class="empty">No users</div>';return;}
+    let html=`<div style="font-size:.65rem;font-weight:700;color:#475569;margin-bottom:.75rem">Total: ${d.users.length} users</div>`;
+    d.users.forEach(u=>{
+      const tg=u.tg_id?'<span style="color:#0088cc;font-size:.6rem"><i class="fa-brands fa-telegram"></i> TG</span>':'<span style="color:#475569;font-size:.6rem">No TG</span>';
+      html+=`<div class="user-item">
+        <div><div class="user-name">${u.name||'User'}</div><div class="user-mob">📱 ${u.mobile} • ${tg}</div></div>
+        <div class="user-bal">₹${parseFloat(u.balance||0).toFixed(2)}</div>
+      </div>`;
+    });
+    list.innerHTML=html;
+  }catch(e){list.innerHTML='<div class="empty">Error!</div>';}
+}
+</script>
+</body>
+</html>
