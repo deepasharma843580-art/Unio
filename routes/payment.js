@@ -10,9 +10,13 @@ async function sendTG(tg_id, text) {
   if(!tg_id) return;
   try {
     await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      chat_id: tg_id, text, parse_mode: 'Markdown'
+      chat_id:    tg_id,
+      text:       text,
+      parse_mode: 'Markdown'
     }, { timeout: 8000 });
-  } catch(e) {}
+  } catch(e) {
+    console.error('TG Error:', e.message);
+  }
 }
 
 async function processPayment(req, res, query) {
@@ -75,12 +79,12 @@ async function processPayment(req, res, query) {
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
     // Debit Alert → Sender
-    if(sNew.tg_id) {
+    if(sNew && sNew.tg_id) {
       sendTG(sNew.tg_id,
-`🔴 *DEBIT ALERT*
+`⚡ *DEBIT ALERT*
 
 ━━━━━━━━━━━━━━
-🔴   UNIO WALLET ✅ 🔴
+⚡   UNIO WALLET ✅ ⚡
 ━━━━━━━━━━━━━━
 
 💰 Amount : ₹${amt}
@@ -95,17 +99,17 @@ async function processPayment(req, res, query) {
 🪙 Balance : ₹${sNew.balance}
 ━━━━━━━━━━━━━━
 
-❌ Amount Debited through UNIO Wallet 🔴`
+⚡ Amount Debited through UNIO Wallet`
       );
     }
 
     // Credit Alert → Receiver
-    if(rNew.tg_id) {
+    if(rNew && rNew.tg_id) {
       sendTG(rNew.tg_id,
-`🟢 *CREDIT ALERT*
+`⚡ *CREDIT ALERT*
 
 ━━━━━━━━━━━━━━
-🟢   UNIO WALLET ✅ 🟢
+⚡   UNIO WALLET ✅ ⚡
 ━━━━━━━━━━━━━━
 
 💰 Amount : ₹${amt}
@@ -120,14 +124,14 @@ async function processPayment(req, res, query) {
 🪙 Balance : ₹${rNew.balance}
 ━━━━━━━━━━━━━━
 
-✅ Amount Credited through UNIO Wallet 🟢`
+⚡ Amount Credited through UNIO Wallet`
       );
     }
 
     // Admin Alert
     if(ADMIN_TG_ID) {
       sendTG(ADMIN_TG_ID,
-`🔔 *API TRANSACTION*
+`⚡ *API TRANSACTION*
 
 💰 Amount : ₹${amt}
 👤 From : ${sender.name} (${sender.mobile})
@@ -154,6 +158,7 @@ async function processPayment(req, res, query) {
     });
 
   } catch(e) {
+    console.error('Payment error:', e.message);
     res.status(500).json({ status:'error', message: e.message });
   }
 }
