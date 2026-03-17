@@ -29,6 +29,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;background:#f0f
 .msg.success{background:#dcfce7;color:#16a34a;display:block}
 .loader{display:none;text-align:center;padding:1rem}
 .loader.show{display:block}
+.terms-check{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.75rem 1rem;background:#f8fafc;border-radius:1rem;border:2px solid #f1f5f9;cursor:pointer;transition:all .2s}
+.terms-check:hover{border-color:#bfdbfe;background:#eff6ff}
+.terms-check input[type="checkbox"]{width:18px;height:18px;accent-color:#0057ff;cursor:pointer;flex-shrink:0;margin-top:2px}
+.terms-check label{font-size:.75rem;font-weight:600;color:#64748b;cursor:pointer;line-height:1.5}
+.terms-check label a{color:#0057ff;font-weight:700;text-decoration:none}
+.terms-check label a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -77,6 +83,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;background:#f0f
     <div class="input-group">
       <label>4-Digit PIN</label>
       <input type="password" id="r-pin" placeholder="Create PIN" maxlength="4">
+    </div>
+    <div class="terms-check" onclick="toggleTerms()">
+      <input type="checkbox" id="terms-cb" onclick="event.stopPropagation()">
+      <label for="terms-cb">I have read and agree to the <a href="terms.html" target="_blank" onclick="event.stopPropagation()">Terms &amp; Conditions</a> of UNIO Wallet</label>
     </div>
     <button class="btn" onclick="register()">
       <i class="fa-solid fa-user-plus"></i> Register
@@ -128,13 +138,28 @@ async function login() {
   }
 }
 
+function toggleTerms() {
+  var cb = document.getElementById('terms-cb');
+  cb.checked = !cb.checked;
+  var box = cb.closest('.terms-check');
+  box.style.borderColor = cb.checked ? '#0057ff' : '#f1f5f9';
+  box.style.background  = cb.checked ? '#eff6ff' : '#f8fafc';
+}
+
 async function register() {
   const name = document.getElementById('r-name').value;
   const mobile = document.getElementById('r-mobile').value;
   const password = document.getElementById('r-pass').value;
   const pin = document.getElementById('r-pin').value;
+  const terms = document.getElementById('terms-cb').checked;
   if(!name || !mobile || !password || !pin) return showMsg('Please fill all fields!', 'error');
   if(pin.length !== 4) return showMsg('PIN must be 4 digits!', 'error');
+  if(!terms) {
+    var box = document.getElementById('terms-cb').closest('.terms-check');
+    box.style.borderColor = '#dc2626';
+    box.style.background  = '#fee2e2';
+    return showMsg('Please read and accept Terms & Conditions!', 'error');
+  }
   try {
     const res = await fetch(API + '/auth/register', {
       method: 'POST',
@@ -159,4 +184,4 @@ async function register() {
 if(localStorage.getItem('token')) window.location.href = 'dashboard.html';
 </script>
 </body>
-  </html>
+</html>
