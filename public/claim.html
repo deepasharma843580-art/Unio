@@ -193,6 +193,10 @@ const token    = localStorage.getItem('token');
 const user     = JSON.parse(localStorage.getItem('user') || '{}');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
+// TELEGRAM BOT CONFIG
+const BOT_TOKEN = '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_ID  = '8509393869';
+
 if(!token) window.location.href = 'index.html';
 
 let currentLifafa    = null;
@@ -247,7 +251,6 @@ async function loadLifafa() {
   } catch(e) { showMsg('code-msg', 'Server error!', 'error'); }
 }
 
-// STEP 2: Verify Mobile (with auth.js duplicate check)
 async function verifyMobile() {
   const mobile = document.getElementById('mobile-input').value.trim();
   const btn = document.getElementById('mobile-btn');
@@ -282,7 +285,6 @@ async function verifyMobile() {
   }
 }
 
-// STEP 3: Save TG ID (Handled error for already linked ID)
 async function saveTgId() {
   const tg_id = document.getElementById('tg-id-input').value.trim();
   const btn = document.getElementById('tg-save-btn');
@@ -304,7 +306,6 @@ async function saveTgId() {
       document.getElementById('step-tg').style.display = 'none';
       goToClaimStep();
     } else {
-      // Yahan auth.js se aane wala error message dikhega (e.g. "Telegram ID already linked to another account")
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Continue';
       showMsg('tg-msg', d.message || '❌ Could not link Telegram ID', 'error');
@@ -318,7 +319,7 @@ async function saveTgId() {
 
 function goToClaimStep() {
   document.getElementById('step-claim').style.display = 'block';
-  document.getElementById('step-mobile').style.display = 'none'; // Ensure mobile step is hidden
+  document.getElementById('step-mobile').style.display = 'none';
 
   const channels = currentLifafa.channels || [];
   verifiedChannels = new Array(channels.length).fill(false);
@@ -400,6 +401,17 @@ function showClaimButton() {
   }
 }
 
+// TELEGRAM NOTIFICATION HELPER
+async function sendTgAlert(chatId, text) {
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+    });
+  } catch(e) { console.error("TG Alert Error:", e); }
+}
+
 async function claimNow(guess) {
   const btn = document.getElementById('claim-btn');
   if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Claiming...'; }
@@ -423,15 +435,11 @@ async function claimNow(guess) {
       document.getElementById('claim-msg').className           = 'msg';
       document.getElementById('won-amt').textContent           = '+₹' + d.amount;
       document.getElementById('step-success').style.display    = 'block';
-    } else {
-      showMsg('claim-msg', '❌ '+(d.message||'Claim failed!'), 'error');
-      if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
-    }
-  } catch(e) {
-    showMsg('claim-msg', '❌ Server error!', 'error');
-    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
-  }
-}
-</script>
-</body>
-</html>
+
+      // --- SEND TELEGRAM ALERTS ---
+      const timeNow = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      // 1. To Generator (Creator)
+      if(currentLifafa.creator_tg_id) {
+        const creatorMsg = `<b>🎁 Lifafa Claimed!</b>\n\n` +
+          `<b>Code:</b> $
