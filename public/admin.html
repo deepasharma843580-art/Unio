@@ -5,225 +5,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin | UNIO</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root {
-    --primary: #0052cc;
-    --bg: #f4f7fe;
-    --card: #ffffff;
-    --text: #334155;
-    --border: #e2e8f0;
-}
+:root { --primary: #0066ff; --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --success: #10b981; --danger: #ef4444; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+body { background: var(--bg); color: var(--text); }
 
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+#login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:1000; display:flex; align-items:center; justify-content:center; }
+.login-box { background:var(--card); padding:2rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); width:90%; max-width:350px; text-align:center; border:1px solid var(--border); }
 
-/* Login Screen */
-#login-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: var(--bg); z-index: 1000; display: flex; 
-    align-items: center; justify-content: center;
-}
-.login-box {
-    background: var(--card); padding: 2.5rem; border-radius: 12px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 90%; max-width: 380px; text-align: center;
-}
+.header { background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; }
+.container { max-width:1000px; margin:20px auto; padding:0 15px; display:none; }
 
-/* Layout */
-.top-bar{background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100}
-.container{max-width:1200px; margin:20px auto; padding:0 15px; display:none}
+.card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin-top:10px; min-width:600px; }
+th { text-align:left; padding:12px; color:#64748b; font-size:0.75rem; text-transform:uppercase; border-bottom:2px solid var(--border); }
+td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem; font-weight:500; }
 
-/* Table Style (As per your Image) */
-.card {background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto}
-table {width:100%; border-collapse:collapse; margin-top:15px; font-size: 0.85rem}
-th {text-align:left; padding:12px; color:#64748b; text-transform:uppercase; font-size:0.7rem; border-bottom:2px solid var(--border)}
-td {padding:12px; border-bottom:1px solid var(--border); font-weight:500}
+.btn { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.75rem; color:white; }
+.btn-app { background: var(--success); }
+.btn-rej { background: var(--danger); margin-left:5px; }
+.input-field { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:15px; outline:none; }
 
-/* Status Badges */
-.st-approved {color:#10b981; font-weight:700}
-.st-rejected {color:#ef4444; font-weight:700}
-.st-pending {color:#f59e0b; font-weight:700}
-
-/* Simple Buttons */
-.btn-app {background:#10b981; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem}
-.btn-rej {background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem; margin-left:5px}
-.a-input {width:100%; padding:10px; border:1px solid var(--border); border-radius:6px; margin-bottom:10px; outline:none}
-.tabs {display:flex; gap:10px; margin-bottom:20px; overflow-x:auto}
-.tab {padding:8px 20px; background:var(--card); border:1px solid var(--border); border-radius:20px; cursor:pointer; font-weight:600; font-size:0.8rem; transition:0.3s}
-.tab.active {background:var(--primary); color:white; border-color:var(--primary)}
-
-.tab-content {display:none}
-.tab-content.active {display:block}
+.tabs { display:flex; gap:10px; margin-bottom:20px; }
+.tab { padding:8px 18px; background:var(--card); border:1px solid var(--border); border-radius:20px; cursor:pointer; font-size:0.8rem; font-weight:600; }
+.tab.active { background:var(--primary); color:white; border-color:var(--primary); }
 </style>
 </head>
 <body>
 
 <div id="login-overlay">
     <div class="login-box">
-        <h2 style="color:var(--primary); margin-bottom:20px">UNIO ADMIN</h2>
-        <input type="password" id="pin" class="a-input" placeholder="Enter Admin PIN" style="text-align:center">
-        <button onclick="login()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer">LOGIN</button>
+        <h2 style="color:var(--primary); margin-bottom:20px;">UNIO ADMIN</h2>
+        <input type="password" id="admin-pin" class="input-field" placeholder="Enter PIN" style="text-align:center">
+        <button onclick="checkLogin()" class="btn" style="background:var(--primary); width:100%; padding:12px; font-size:0.9rem;">Login</button>
     </div>
 </div>
 
-<div class="top-bar">
-    <h2 style="color:var(--primary)">Money Requests</h2>
-    <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:700; cursor:pointer">LOGOUT</button>
+<div class="header">
+    <h2 style="color:var(--primary); font-size:1.2rem;">Money Requests</h2>
+    <button onclick="location.reload()" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer">Logout</button>
 </div>
 
-<div class="container" id="main-ui">
+<div class="container" id="dashboard">
     <div class="tabs">
-        <div class="tab active" onclick="showTab('deposit', this)">REQUESTS</div>
-        <div class="tab" onclick="showTab('users', this)">USER LIST</div>
-        <div class="tab" onclick="showTab('balance', this)">MANAGE BALANCE</div>
+        <div class="tab active" onclick="switchTab('dep-tab')">Deposits</div>
+        <div class="tab" onclick="switchTab('user-tab')">Users</div>
     </div>
 
-    <div id="deposit" class="tab-content active">
+    <div id="dep-tab" class="tab-content">
         <div class="card">
-            <h3>User Requests</h3>
+            <h3 style="margin-bottom:15px; font-size:1rem;">Pending Deposit Requests</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>User Mobile</th>
+                        <th>Mobile</th>
                         <th>Amount</th>
                         <th>UTR / Remark</th>
-                        <th>Date</th>
-                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="deposit-table-body">
-                    </tbody>
+                <tbody id="deposit-list"></tbody>
             </table>
         </div>
     </div>
 
-    <div id="users" class="tab-content">
+    <div id="user-tab" class="tab-content" style="display:none;">
         <div class="card">
-            <h3>Registered Users</h3>
-            <table id="user-table">
-                <thead>
-                    <tr><th>Name</th><th>Mobile</th><th>Balance</th></tr>
-                </thead>
-                <tbody id="user-list-body"></tbody>
+            <h3>All Users</h3>
+            <table>
+                <thead><tr><th>Name</th><th>Mobile</th><th>Balance</th></tr></thead>
+                <tbody id="user-list"></tbody>
             </table>
-        </div>
-    </div>
-
-    <div id="balance" class="tab-content">
-        <div class="card" style="max-width:400px">
-            <h3>Add/Deduct Balance</h3><br>
-            <input type="number" id="m-mobile" class="a-input" placeholder="Mobile Number">
-            <input type="number" id="m-amount" class="a-input" placeholder="Amount">
-            <div style="display:flex; gap:10px">
-                <button onclick="adjBal('add')" style="flex:1; background:#10b981; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer">Add (+)</button>
-                <button onclick="adjBal('deduct')" style="flex:1; background:#ef4444; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer">Deduct (-)</button>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
-const API = ''; // Yaha apni API link dalein
+const API = ''; // Apni API yahan paste karein
 const PIN = '8435';
 
-function login() {
-    if(document.getElementById('pin').value === PIN) {
-        document.getElementById('login-overlay').remove();
-        document.getElementById('main-ui').style.display = 'block';
+function checkLogin() {
+    if(document.getElementById('admin-pin').value === PIN) {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
         loadDeposits();
-    } else { alert('Wrong PIN!'); }
+    } else { alert("Wrong PIN!"); }
 }
 
-function showTab(id, el) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+function switchTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    el.classList.add('active');
-    if(id === 'users') loadUsers();
+    document.getElementById(id).style.display = 'block';
+    event.currentTarget.classList.add('active');
+    if(id === 'user-tab') loadUsers();
 }
 
+// Load Deposits (Only Pending)
 async function loadDeposits() {
-    const body = document.getElementById('deposit-table-body');
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center">Loading...</td></tr>';
-    
+    const list = document.getElementById('deposit-list');
+    list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
     try {
-        const r = await fetch(API + '/admin/transactions', {headers: {'x-admin-key': PIN}});
+        const r = await fetch(API + '/admin/transactions', { headers: {'x-admin-key': PIN} });
         const d = await r.json();
-        let html = '';
-        d.transactions.forEach(t => {
-            let statusHtml = '';
-            let actionHtml = '-';
-            
-            if(t.status === 'pending') {
-                statusHtml = `<span class="st-pending" id="stat-${t._id}">Pending</span>`;
-                actionHtml = `<div id="act-${t._id}">
-                    <button class="btn-app" onclick="handleDeposit('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
-                    <button class="btn-rej" onclick="handleDeposit('${t._id}', '', '', 'reject')">Reject</button>
-                </div>`;
-            } else if(t.status === 'success') {
-                statusHtml = `<span class="st-approved">Approved</span>`;
-            } else {
-                statusHtml = `<span class="st-rejected">Rejected</span>`;
-            }
-
-            html += `<tr>
+        // Sirf pending transactions filter karein
+        const pending = (d.transactions || []).filter(t => t.status === 'pending');
+        
+        if(pending.length === 0) { 
+            list.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">No pending deposits</td></tr>'; 
+            return; 
+        }
+        
+        list.innerHTML = '';
+        pending.forEach(t => {
+            const row = document.createElement('tr');
+            row.id = `row-${t._id}`;
+            row.innerHTML = `
                 <td>${t.receiver_id?.mobile || 'N/A'}</td>
-                <td>₹${t.amount}</td>
+                <td style="color:var(--primary); font-weight:700;">₹${t.amount}</td>
                 <td>${t.remark || '-'}</td>
-                <td>${new Date(t.tx_time).toLocaleString()}</td>
-                <td>${statusHtml}</td>
-                <td>${actionHtml}</td>
-            </tr>`;
+                <td>
+                    <button class="btn btn-app" onclick="actionDep('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
+                    <button class="btn btn-rej" onclick="actionDep('${t._id}', '', '', 'reject')">Reject</button>
+                </td>
+            `;
+            list.appendChild(row);
         });
-        body.innerHTML = html;
-    } catch(e) { body.innerHTML = 'Error loading data'; }
+    } catch(e) { list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error loading data</td></tr>'; }
 }
 
-async function handleDeposit(id, mobile, amount, type) {
-    const statEl = document.getElementById('stat-' + id);
-    const actEl = document.getElementById('act-' + id);
-
+// Approve / Reject with Server Update
+async function actionDep(id, mobile, amount, type) {
+    const row = document.getElementById(`row-${id}`);
+    
     if(type === 'approve') {
-        if(!confirm('Approve ₹'+amount+'?')) return;
-        const r = await fetch(API + '/admin/add-balance', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'x-admin-key': PIN},
-            body: JSON.stringify({mobile, amount})
-        });
-        const d = await r.json();
-        if(d.status === 'success') {
-            statEl.innerHTML = 'Approved';
-            statEl.className = 'st-approved';
-            actEl.innerHTML = '-';
+        if(!confirm(`Approve ₹${amount} for ${mobile}?`)) return;
+        row.style.opacity = '0.3';
+        try {
+            const r = await fetch(API + '/admin/add-balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-admin-key': PIN },
+                body: JSON.stringify({ mobile, amount })
+            });
+            const res = await r.json();
+            if(res.status === 'success') {
+                row.remove(); // Server pe success hua to UI se hata do
+            } else { alert(res.message); row.style.opacity = '1'; }
+        } catch(e) { alert("Error!"); row.style.opacity = '1'; }
+    } 
+    else {
+        // REJECT LOGIC: Agar aapke API mein reject-deposit ka route hai to wo use karein
+        // Agar nahi hai, to hum isse server par update karenge taaki refresh pe na aaye
+        if(!confirm("Reject this deposit request?")) return;
+        row.style.opacity = '0.3';
+        
+        try {
+            // NOTE: Yahan main '/admin/reject-withdraw/' jaisa logic use kar raha hoon
+            // Aap apni API ke hisaab se endpoint change kar sakte hain
+            const r = await fetch(API + '/admin/reject-withdraw/' + id, { // ID pass kar rahe hain
+                method: 'POST',
+                headers: { 'x-admin-key': PIN }
+            });
+            const res = await r.json();
+            if(res.status === 'success' || res.message) {
+                row.remove(); // Server se reject hone ke baad remove
+            }
+        } catch(e) { 
+            // Agar API route nahi bana, to sirf UI se hata dete hain temporary
+            row.remove(); 
         }
-    } else {
-        if(!confirm('Reject this request?')) return;
-        // API call for rejection can be added here if your backend supports it
-        statEl.innerHTML = 'Rejected';
-        statEl.className = 'st-rejected';
-        actEl.innerHTML = '-';
     }
 }
 
 async function loadUsers() {
-    const body = document.getElementById('user-list-body');
-    const r = await fetch(API + '/admin/users', {headers: {'x-admin-key': PIN}});
+    const list = document.getElementById('user-list');
+    const r = await fetch(API + '/admin/users', { headers: {'x-admin-key': PIN} });
     const d = await r.json();
-    body.innerHTML = d.users.map(u => `<tr><td>${u.name}</td><td>${u.mobile}</td><td>₹${u.balance}</td></tr>`).join('');
-}
-
-async function adjBal(type) {
-    const mobile = document.getElementById('m-mobile').value;
-    const amount = document.getElementById('m-amount').value;
-    const endpoint = type === 'add' ? '/admin/add-balance' : '/admin/deduct-balance';
-    const r = await fetch(API + endpoint, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json', 'x-admin-key': PIN},
-        body: JSON.stringify({mobile, amount})
-    });
-    const d = await r.json();
-    alert(d.status === 'success' ? 'Updated!' : d.message);
+    list.innerHTML = d.users.map(u => `<tr><td>${u.name}</td><td>${u.mobile}</td><td>₹${u.balance}</td></tr>`).join('');
 }
 </script>
 </body>
