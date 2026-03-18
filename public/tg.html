@@ -28,6 +28,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .status-text span{font-size:.7rem;font-weight:600;color:#64748b}
 .btn{width:100%;padding:1rem;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;margin-bottom:.75rem;box-sizing:border-box;background:#0088cc}
 .btn:active{transform:scale(.98)}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
 .btn.blue{background:#0057ff}
 .btn.red{background:#dc2626}
 .step{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem}
@@ -124,8 +125,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="manual-tg-id" placeholder="e.g. Botcode">
     </div>
 
-    <button class="btn blue" onclick="saveManualTG()">
-      <i class="fa-solid fa-floppy-disk"></i> Save & Connect
+    <button class="btn blue" id="save-btn" onclick="saveManualTG()">
+      <i class="fa-solid fa-floppy-disk"></i> Save &amp; Connect
     </button>
   </div>
 </div>
@@ -139,7 +140,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <script>
-const API       = ''; // Apna API URL yahan dalein
+const API       = '';
 const token     = localStorage.getItem('token');
 const BOT_TOKEN = '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
 
@@ -151,7 +152,7 @@ function showMsg(text, type) {
   const m = document.getElementById('msg');
   m.textContent = text;
   m.className = 'msg ' + type;
-  setTimeout(() => { m.style.display = 'none'; }, 5000);
+  setTimeout(() => { m.className = 'msg'; }, 5000);
 }
 
 function showConnected(tg_id) {
@@ -170,7 +171,11 @@ if(user.tg_id) showConnected(user.tg_id);
 async function saveManualTG() {
   const tg_id = document.getElementById('manual-tg-id').value.trim();
   if(!tg_id || tg_id.length < 5) return showMsg('Valid Telegram ID enter karo!', 'error');
-  
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+
   try {
     const r = await fetch(API + '/auth/update-tg', {
       method:  'POST',
@@ -178,29 +183,34 @@ async function saveManualTG() {
       body:    JSON.stringify({ tg_id })
     });
     const d = await r.json();
-    
+
     if(d.status === 'success') {
       user.tg_id = tg_id;
       localStorage.setItem('user', JSON.stringify(user));
-      
-      // Bot verification message (Optional but good)
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+
+      // Bot verification message
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method:  'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
           chat_id:    tg_id,
           parse_mode: 'Markdown',
-          text: `✅ *Telegram Connected Successfully!*\n\nID: \`${tg_id}\` ke sath aapka wallet link ho gaya hai.`
+          text: `✅ *Telegram Connected Successfully!*\n\nID: \`${tg_id}\` ke sath aapka UNIO Wallet link ho gaya hai!\n\nAb aapko sabhi transactions ke alerts milenge. 🎉`
         })
-      });
+      }).catch(()=>{});
 
-      showMsg('✅ Telegram connected successfully!', 'success');
+      showMsg('Telegram connected successfully!', 'success');
       setTimeout(() => showConnected(tg_id), 800);
     } else {
+      // Duplicate ID error bhi yahan aayega
       showMsg(d.message || 'Save failed!', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Connect';
     }
   } catch(e) {
-    showMsg('Server error! Check API connection.', 'error');
+    showMsg('Server error! Try again.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Connect';
   }
 }
 
