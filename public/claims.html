@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim Lifafa | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
+.banner-emoji{font-size:3rem;margin-bottom:.5rem}
+.banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
+.banner-type{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
+.progress-wrap{margin:1rem 0}
+.progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
+.progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
+.progress-text{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;opacity:.7;margin-top:.4rem}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#7c3aed;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
+.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+.btn.green{background:#16a34a}
+.btn.tg{background:#0088cc}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.msg.info{background:#eff6ff;color:#0057ff;display:block}
+.msg.warn{background:#fff7ed;color:#ea580c;display:block}
+.ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;transition:all .2s}
+.ch-item.verified{border-color:#bbf7d0;background:#f0fdf4}
+.ch-item.failed{border-color:#fecaca;background:#fee2e2}
+.ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.ch-name{font-size:.8rem;font-weight:700;color:#0f172a}
+.ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
+.ch-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
+.ch-badge.verified{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.ch-badge.failed{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.ch-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ch-btn{padding:.65rem;border:none;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.35rem;transition:all .2s;text-decoration:none}
+.ch-btn.join{background:#0057ff;color:white}
+.ch-btn.verify{background:#f1f5f9;color:#64748b}
+.ch-btn.done{background:#f0fdf4;color:#16a34a}
+.toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s}
+.toss-btn.heads{background:#0057ff;color:white}
+.toss-btn.tails{background:#0f172a;color:white}
+.success-box{text-align:center;padding:1.5rem 1rem}
+.success-emoji{font-size:4rem;margin-bottom:.75rem}
+.success-amt{font-size:2.5rem;font-weight:900;color:#16a34a;margin-bottom:.25rem}
+.success-label{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.5rem}
+.tg-warn-card{background:#eff6ff;border:2px solid #bfdbfe;border-radius:1.25rem;padding:1.25rem;margin-bottom:1rem;text-align:center}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .3s cubic-bezier(.34,1.3,.64,1) forwards}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn .3s cubic-bezier(.34,1.56,.64,1) forwards}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+  <h1>Claim Lifafa</h1>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: Enter Code -->
+  <div id="step-code" class="card">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
+      <div style="font-size:1rem;font-weight:900;color:#0f172a">Claim Your Reward</div>
+      <div style="font-size:.72rem;color:#94a3b8;font-weight:600;margin-top:.25rem">Enter lifafa code to continue</div>
+    </div>
+    <div id="code-msg" class="msg"></div>
+    <div class="input-group">
+      <label>Lifafa Code</label>
+      <input type="text" id="code-input" placeholder="e.g. DIWALI2025"
+        style="text-transform:uppercase;text-align:center;letter-spacing:.15em;font-size:1rem">
+    </div>
+    <button class="btn purple" onclick="loadLifafa()">
+      <i class="fa-solid fa-search"></i> Find Lifafa
+    </button>
+  </div>
+
+  <!-- STEP 2: Enter Mobile -->
+  <div id="step-mobile" style="display:none">
+    <!-- Banner -->
+    <div class="banner" id="lifafa-banner">
+      <div class="banner-emoji">🎁</div>
+      <div class="banner-code" id="banner-code"></div>
+      <div class="banner-type" id="banner-type"></div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
+        <div class="progress-text">
+          <span id="banner-claimed-text"></span>
+          <span id="banner-pct"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total"></div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a"></div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626"></div></div>
+    </div>
+
+    <div class="card">
+      <div id="mobile-msg" class="msg"></div>
+      <div class="input-group">
+        <label>Your Mobile Number</label>
+        <input type="number" id="mobile-input" placeholder="Enter your number">
+      </div>
+      <button class="btn purple" onclick="verifyMobile()">
+        <i class="fa-solid fa-arrow-right"></i> Next
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: TG Not Linked -->
+  <div id="step-tg" style="display:none" class="card">
+    <div class="tg-warn-card">
+      <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc;margin-bottom:.75rem;display:block"></i>
+      <div style="font-size:.9rem;font-weight:800;color:#0f172a;margin-bottom:.5rem">Telegram Not Connected!</div>
+      <div style="font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:1rem">Channel verify karne ke liye Telegram ID connect karo</div>
+      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin-bottom:.75rem">
+        <i class="fa-brands fa-telegram"></i> Open @OTP_UNIO_BOT
+      </a>
+    </div>
+    <div id="tg-msg" class="msg"></div>
+    <div class="input-group">
+      <label>Enter Your Telegram ID</label>
+      <input type="number" id="tg-id-input" placeholder="e.g. Botcode">
+    </div>
+    <button class="btn green" onclick="saveTgId()">
+      <i class="fa-solid fa-floppy-disk"></i> Save & Continue
+    </button>
+  </div>
+
+  <!-- STEP 4: Channels + Claim -->
+  <div id="step-claim" style="display:none">
+    <div id="claim-msg" class="msg"></div>
+
+    <!-- Channels -->
+    <div id="channels-wrap" class="card" style="display:none">
+      <div style="font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:1rem">
+        <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Join & Verify Channels
+      </div>
+      <div id="channels-list"></div>
+    </div>
+
+    <!-- Toss -->
+    <div id="toss-wrap" class="card" style="display:none">
+      <div style="font-size:.75rem;font-weight:800;color:#94a3b8;text-transform:uppercase;text-align:center;margin-bottom:.75rem">
+        🪙 Make Your Guess!
+      </div>
+      <div class="toss-btns">
+        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
+        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
+      </div>
+    </div>
+
+    <!-- Claim Button -->
+    <div id="claim-btn-wrap" class="card" style="display:none">
+      <button class="btn purple" id="claim-btn" onclick="claimNow('')">
+        <i class="fa-solid fa-rocket"></i> Claim Now! 🚀
+      </button>
+    </div>
+
+    <!-- Success -->
+    <div id="step-success" class="card pop-in" style="display:none">
+      <div class="success-box">
+        <div class="success-emoji">🏆</div>
+        <div class="success-amt" id="won-amt"></div>
+        <div class="success-label">Added to Your Wallet!</div>
+        <a href="dashboard.html" class="btn green" style="text-decoration:none">
+          <i class="fa-solid fa-wallet"></i> Go to Wallet
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API      = '';
+const token    = localStorage.getItem('token');
+const user     = JSON.parse(localStorage.getItem('user') || '{}');
+const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
+
+// ── Telegram Config ──────────────────────────────────────────
+const TG_BOT_TOKEN = '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_TG_ID  = '8509393869';
+
+async function sendTelegramMsg(chat_id, text) {
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ chat_id, text, parse_mode: 'HTML' })
+    });
+  } catch(e) {
+    console.error('TG alert failed for', chat_id, e);
+  }
+}
+
+// Send all 3 alerts after successful claim
+async function sendClaimAlerts({ lifafa, claimerName, claimerMobile, claimerTgId, amount, newBalance, generatorTgId, comment, claimTime }) {
+
+  // ── 1. Alert to Generator ────────────────────────────────
+  const generatorMsg =
+`🎁 <b>Lifafa Claimed!</b>
+
+📦 <b>Lifafa Details</b>
+🔖 Code: <code>${lifafa.code}</code>
+💰 Amount: ₹${amount}
+🕐 Time: ${claimTime}
+
+👤 <b>Claimed By</b>
+${claimerName} (${claimerMobile})`;
+
+  // ── 2. Alert to Claimer ──────────────────────────────────
+  const claimerMsg =
+`✅ <b>New Lifafa Claimed Successfully!</b>
+
+🔖 Code: <code>${lifafa.code}</code>
+💰 Amount: ₹${amount}
+💼 Total Balance: ₹${newBalance}
+${comment ? `💬 Comment: ${comment}` : ''}`;
+
+  // ── 3. Alert to Admin ────────────────────────────────────
+  const adminMsg =
+`⚡ <b>Lifafa Claim Alert</b>
+
+🎁 <b>Lifafa</b>
+• Code: <code>${lifafa.code}</code>
+• Amount: ₹${amount}
+• Type: ${(lifafa.type || 'standard').toUpperCase()}
+• Time: ${claimTime}
+
+👤 <b>Claimer</b>
+• Name: ${claimerName}
+• Mobile: ${claimerMobile}
+• TG ID: ${claimerTgId}
+
+🏷️ <b>Generator TG ID:</b> ${generatorTgId || 'N/A'}`;
+
+  // Fire all 3 simultaneously
+  const promises = [
+    sendTelegramMsg(ADMIN_TG_ID, adminMsg)
+  ];
+
+  if (generatorTgId) promises.push(sendTelegramMsg(generatorTgId, generatorMsg));
+  if (claimerTgId)   promises.push(sendTelegramMsg(claimerTgId,   claimerMsg));
+
+  await Promise.allSettled(promises);
+}
+// ────────────────────────────────────────────────────────────
+
+if(!token) window.location.href = 'index.html';
+
+let currentLifafa    = null;
+let userMobile       = '';
+let userTgId         = '';
+let userName         = '';
+let verifiedChannels = [];
+let currentCode      = '';
+
+function showMsg(id, text, type) {
+  const m = document.getElementById(id);
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+
+// Auto load from URL
+const urlCode = new URLSearchParams(window.location.search).get('code');
+if(urlCode) {
+  document.getElementById('code-input').value = urlCode.toUpperCase();
+  loadLifafa();
+}
+
+// STEP 1: Load Lifafa
+async function loadLifafa() {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
+
+  try {
+    const r = await fetch(API+'/lifafa/'+code);
+    const d = await r.json();
+    if(d.status !== 'success') return showMsg('code-msg', d.message||'Invalid code!', 'error');
+
+    currentLifafa = d.lifafa;
+    currentCode   = code;
+
+    // Update banner
+    document.getElementById('banner-code').textContent = currentLifafa.code;
+    document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
+
+    const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+    document.getElementById('banner-progress').style.width = pct + '%';
+    document.getElementById('banner-pct').textContent      = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent = currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
+
+    document.getElementById('stat-total').textContent   = currentLifafa.max_users;
+    document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
+    document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
+
+    // Check full
+    if(currentLifafa.claimed_users >= currentLifafa.max_users) {
+      return showMsg('code-msg', '❌ Lifafa Full! Koi slot nahi bacha.', 'error');
+    }
+
+    document.getElementById('step-code').style.display   = 'none';
+    document.getElementById('step-mobile').style.display = 'block';
+
+  } catch(e) { showMsg('code-msg', 'Server error!', 'error'); }
+}
+
+// STEP 2: Verify Mobile
+async function verifyMobile() {
+  const mobile = document.getElementById('mobile-input').value.trim();
+  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
+
+  try {
+    const r = await fetch(API+'/auth/check-mobile', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body:    JSON.stringify({ mobile })
+    });
+    const d = await r.json();
+
+    if(d.status !== 'success') return showMsg('mobile-msg', '❌ Number not found in UNIO!', 'error');
+
+    userMobile = mobile;
+    userTgId   = d.tg_id || '';
+    userName   = d.name  || d.username || mobile;
+
+    if(!userTgId) {
+      document.getElementById('step-mobile').style.display = 'none';
+      document.getElementById('step-tg').style.display     = 'block';
+    } else {
+      goToClaimStep();
+    }
+  } catch(e) {
+    // Fallback - user ka apna account check karo
+    if(user.mobile === mobile) {
+      userMobile = mobile;
+      userTgId   = user.tg_id || '';
+      userName   = user.name  || user.username || mobile;
+      if(!userTgId) {
+        document.getElementById('step-mobile').style.display = 'none';
+        document.getElementById('step-tg').style.display     = 'block';
+      } else {
+        goToClaimStep();
+      }
+    } else {
+      showMsg('mobile-msg', '❌ Number not found!', 'error');
+    }
+  }
+}
+
+// STEP 3: Save TG ID
+async function saveTgId() {
+  const tg_id = document.getElementById('tg-id-input').value.trim();
+  if(!tg_id || tg_id.length < 5) return showMsg('tg-msg', 'Valid Telegram ID enter karo!', 'error');
+
+  try {
+    const r = await fetch(API+'/auth/update-tg-by-mobile', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body:    JSON.stringify({ mobile: userMobile, tg_id })
+    });
+    const d = await r.json();
+    userTgId = tg_id;
+    document.getElementById('step-tg').style.display = 'none';
+    goToClaimStep();
+  } catch(e) {
+    userTgId = tg_id;
+    document.getElementById('step-tg').style.display = 'none';
+    goToClaimStep();
+  }
+}
+
+// STEP 4: Go to Claim
+function goToClaimStep() {
+  document.getElementById('step-claim').style.display = 'block';
+
+  const channels = currentLifafa.channels || [];
+  verifiedChannels = new Array(channels.length).fill(false);
+
+  if(channels.length > 0) {
+    buildChannels(channels);
+    document.getElementById('channels-wrap').style.display = 'block';
+  } else {
+    showClaimButton();
+  }
+}
+
+// Build Channels
+function buildChannels(channels) {
+  let html = '';
+  channels.forEach((link, i) => {
+    const name = link.match(/t\.me\/([a-zA-Z0-9_]+)/)?.[1] || 'Channel '+(i+1);
+    html += `<div class="ch-item" id="ch-${i}">
+      <div class="ch-top">
+        <div class="ch-name"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> @${name}</div>
+        <div class="ch-badge pending" id="badge-${i}">⏳ Pending</div>
+      </div>
+      <div class="ch-btns">
+        <a href="${link}" target="_blank" class="ch-btn join"><i class="fa-solid fa-arrow-up-right-from-square"></i> Join</a>
+        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}')">
+          <i class="fa-solid fa-circle-check"></i> Verify
+        </button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('channels-list').innerHTML = html;
+}
+
+// Verify Channel
+async function verifyChannel(i, link) {
+  const btn   = document.getElementById('vbtn-'+i);
+  const badge = document.getElementById('badge-'+i);
+  const item  = document.getElementById('ch-'+i);
+
+  btn.disabled  = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+  const match   = link.match(/t\.me\/([a-zA-Z0-9_]+)/);
+  const channel = match ? '@'+match[1] : link;
+
+  try {
+    const res  = await fetch(`${G_SCRIPT}?tg_id=${encodeURIComponent(userTgId)}&channel=${encodeURIComponent(channel)}`);
+    const data = await res.json();
+
+    if(data.ok && data.joined) {
+      verifiedChannels[i]   = true;
+      badge.className       = 'ch-badge verified';
+      badge.textContent     = '✅ Verified';
+      btn.className         = 'ch-btn done';
+      btn.innerHTML         = '<i class="fa-solid fa-check"></i> Done';
+      item.className        = 'ch-item verified';
+      checkAllVerified();
+    } else {
+      badge.className   = 'ch-badge failed';
+      badge.textContent = '❌ Not Joined';
+      btn.disabled      = false;
+      btn.innerHTML  
