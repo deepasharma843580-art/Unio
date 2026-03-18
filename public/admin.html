@@ -8,18 +8,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root {
-    --primary: #0066ff;
-    --bg: #f8fafc;
+    --primary: #0052cc;
+    --bg: #f4f7fe;
     --card: #ffffff;
-    --text-main: #1e293b;
-    --text-sub: #64748b;
+    --text: #334155;
     --border: #e2e8f0;
-    --success: #10b981;
-    --danger: #ef4444;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-main);min-height:100vh}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 
 /* Login Screen */
 #login-overlay {
@@ -28,270 +25,205 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-main);
     align-items: center; justify-content: center;
 }
 .login-box {
-    background: var(--card); padding: 2rem; border-radius: 12px; 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 90%; max-width: 360px; text-align: center;
-    border: 1px solid var(--border);
+    background: var(--card); padding: 2.5rem; border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 90%; max-width: 380px; text-align: center;
 }
 
-/* Header */
-.top-bar{background:var(--card);border-bottom:1px solid var(--border);padding:1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
-.top-bar h1{font-size:1.1rem;font-weight:700;color:var(--primary)}
+/* Layout */
+.top-bar{background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100}
+.container{max-width:1200px; margin:20px auto; padding:0 15px; display:none}
 
-.container{max-width:600px;margin:0 auto;padding:1rem; display: none;}
+/* Table Style (As per your Image) */
+.card {background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto}
+table {width:100%; border-collapse:collapse; margin-top:15px; font-size: 0.85rem}
+th {text-align:left; padding:12px; color:#64748b; text-transform:uppercase; font-size:0.7rem; border-bottom:2px solid var(--border)}
+td {padding:12px; border-bottom:1px solid var(--border); font-weight:500}
 
-/* Tabs */
-.tabs{display:flex;background:var(--card);border-radius:8px;padding:4px;margin-bottom:1.5rem;border:1px solid var(--border);overflow-x:auto;gap:4px}
-.tab{flex: 1; min-width: 80px; padding:.6rem; font-weight:600;font-size:.75rem;border-radius:6px;cursor:pointer;color:var(--text-sub);border:none;background:none;transition:all 0.2s; white-space: nowrap;}
-.tab.active{background:var(--primary);color:white}
+/* Status Badges */
+.st-approved {color:#10b981; font-weight:700}
+.st-rejected {color:#ef4444; font-weight:700}
+.st-pending {color:#f59e0b; font-weight:700}
 
-/* Stats */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
-.stat-card{background:var(--card);border-radius:12px;padding:1rem;border:1px solid var(--border);box-shadow: 0 2px 4px rgba(0,0,0,0.02)}
-.stat-label{font-size:.7rem;font-weight:600;color:var(--text-sub);text-transform:uppercase;margin-bottom:5px}
-.stat-val{font-size:1.2rem;font-weight:700;color:var(--text-main)}
+/* Simple Buttons */
+.btn-app {background:#10b981; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem}
+.btn-rej {background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem; margin-left:5px}
+.a-input {width:100%; padding:10px; border:1px solid var(--border); border-radius:6px; margin-bottom:10px; outline:none}
+.tabs {display:flex; gap:10px; margin-bottom:20px; overflow-x:auto}
+.tab {padding:8px 20px; background:var(--card); border:1px solid var(--border); border-radius:20px; cursor:pointer; font-weight:600; font-size:0.8rem; transition:0.3s}
+.tab.active {background:var(--primary); color:white; border-color:var(--primary)}
 
-/* List Items */
-.req-item, .user-item, .txn-item{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:0.8rem;border:1px solid var(--border)}
-.req-info p{font-weight:700; font-size: 0.9rem}
-.req-info span{font-size:0.75rem; color:var(--text-sub)}
-.req-amt{font-weight:700; color:var(--success); text-align:right}
-.req-detail{background:#f1f5f9; padding:8px; border-radius:6px; margin:10px 0; font-size:0.8rem; font-weight:600}
-
-/* Form Inputs */
-.a-input{width:100%;padding:12px;background:white;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;margin-bottom:10px;outline:none}
-.a-input:focus{border-color:var(--primary)}
-.a-btn{width:100%;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;color:white;margin-bottom:10px}
-
-/* Buttons */
-.req-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.approve-btn{padding:10px; background:var(--success); color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer}
-.reject-btn{padding:10px; background:var(--danger); color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer}
-.refresh-btn{background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; margin-bottom:15px; font-size: 0.8rem}
-
-.tab-section{display:none}
-.tab-section.active{display:block}
-.msg{padding:10px; border-radius:6px; font-size:0.8rem; text-align:center; margin-bottom:10px; display:none}
-.msg.success{background:#d1fae5; color:#065f46; display:block}
-.msg.error{background:#fee2e2; color:#991b1b; display:block}
-.empty{text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem}
+.tab-content {display:none}
+.tab-content.active {display:block}
 </style>
 </head>
 <body>
 
 <div id="login-overlay">
     <div class="login-box">
-        <h2 style="margin-bottom:15px; color:var(--primary)">UNIO Admin</h2>
-        <input type="password" id="admin-pass" class="a-input" placeholder="Enter Pin" style="text-align:center">
-        <button class="a-btn" style="background:var(--primary)" onclick="checkPass()">Unlock Dashboard</button>
-        <p id="login-err" style="color:var(--danger); font-size:0.8rem; display:none">Incorrect PIN</p>
+        <h2 style="color:var(--primary); margin-bottom:20px">UNIO ADMIN</h2>
+        <input type="password" id="pin" class="a-input" placeholder="Enter Admin PIN" style="text-align:center">
+        <button onclick="login()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer">LOGIN</button>
     </div>
 </div>
 
 <div class="top-bar">
-    <h1>UNIO Admin</h1>
-    <span style="font-size:0.7rem; color:var(--text-sub)">● Live Control</span>
+    <h2 style="color:var(--primary)">Money Requests</h2>
+    <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:700; cursor:pointer">LOGOUT</button>
 </div>
 
-<div class="container" id="main-content">
+<div class="container" id="main-ui">
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('stats',this)">Stats</button>
-        <button class="tab" onclick="switchTab('withdraw',this)">Withdraw</button>
-        <button class="tab" onclick="switchTab('deposit',this)">Deposit</button>
-        <button class="tab" onclick="switchTab('balance',this)">Balance</button>
-        <button class="tab" onclick="switchTab('users',this)">Users</button>
+        <div class="tab active" onclick="showTab('deposit', this)">REQUESTS</div>
+        <div class="tab" onclick="showTab('users', this)">USER LIST</div>
+        <div class="tab" onclick="showTab('balance', this)">MANAGE BALANCE</div>
     </div>
 
-    <div id="tab-stats" class="tab-section active">
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-label">Users</div><div class="stat-val" id="s-users">0</div></div>
-            <div class="stat-card"><div class="stat-label">Successful Txns</div><div class="stat-val" id="s-txns">0</div></div>
-            <div class="stat-card" style="grid-column: span 2"><div class="stat-label">Total Volume</div><div class="stat-val" id="s-bal" style="color:var(--primary)">₹ 0.00</div></div>
+    <div id="deposit" class="tab-content active">
+        <div class="card">
+            <h3>User Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Mobile</th>
+                        <th>Amount</th>
+                        <th>UTR / Remark</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="deposit-table-body">
+                    </tbody>
+            </table>
         </div>
-        <button class="refresh-btn" onclick="loadStats()"><i class="fa-solid fa-sync"></i> Refresh Data</button>
     </div>
 
-    <div id="tab-withdraw" class="tab-section">
-        <div id="withdraw-list"><div class="empty">Loading...</div></div>
+    <div id="users" class="tab-content">
+        <div class="card">
+            <h3>Registered Users</h3>
+            <table id="user-table">
+                <thead>
+                    <tr><th>Name</th><th>Mobile</th><th>Balance</th></tr>
+                </thead>
+                <tbody id="user-list-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="tab-deposit" class="tab-section">
-        <div id="deposit-list"><div class="empty">Loading...</div></div>
-    </div>
-
-    <div id="tab-balance" class="tab-section">
-        <div class="stat-card" style="margin-bottom:15px">
-            <p style="font-weight:700; margin-bottom:10px">Manage Balance</p>
-            <div id="bal-msg" class="msg"></div>
-            <input type="number" id="b-mobile" class="a-input" placeholder="User Mobile">
-            <input type="number" id="b-amount" class="a-input" placeholder="Amount">
-            <div class="req-btns">
-                <button class="approve-btn" onclick="addBalance()">Add (+)</button>
-                <button class="reject-btn" onclick="deductBalance()">Deduct (-)</button>
+    <div id="balance" class="tab-content">
+        <div class="card" style="max-width:400px">
+            <h3>Add/Deduct Balance</h3><br>
+            <input type="number" id="m-mobile" class="a-input" placeholder="Mobile Number">
+            <input type="number" id="m-amount" class="a-input" placeholder="Amount">
+            <div style="display:flex; gap:10px">
+                <button onclick="adjBal('add')" style="flex:1; background:#10b981; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer">Add (+)</button>
+                <button onclick="adjBal('deduct')" style="flex:1; background:#ef4444; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer">Deduct (-)</button>
             </div>
         </div>
-    </div>
-
-    <div id="tab-users" class="tab-section">
-        <div id="users-list"></div>
     </div>
 </div>
 
 <script>
-const API = ''; 
-const ADMIN_KEY = '8435';
+const API = ''; // Yaha apni API link dalein
+const PIN = '8435';
 
-function checkPass() {
-    if(document.getElementById('admin-pass').value === ADMIN_KEY) {
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
-        loadStats(); loadWithdrawals(); loadDeposits();
+function login() {
+    if(document.getElementById('pin').value === PIN) {
+        document.getElementById('login-overlay').remove();
+        document.getElementById('main-ui').style.display = 'block';
+        loadDeposits();
+    } else { alert('Wrong PIN!'); }
+}
+
+function showTab(id, el) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    if(id === 'users') loadUsers();
+}
+
+async function loadDeposits() {
+    const body = document.getElementById('deposit-table-body');
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center">Loading...</td></tr>';
+    
+    try {
+        const r = await fetch(API + '/admin/transactions', {headers: {'x-admin-key': PIN}});
+        const d = await r.json();
+        let html = '';
+        d.transactions.forEach(t => {
+            let statusHtml = '';
+            let actionHtml = '-';
+            
+            if(t.status === 'pending') {
+                statusHtml = `<span class="st-pending" id="stat-${t._id}">Pending</span>`;
+                actionHtml = `<div id="act-${t._id}">
+                    <button class="btn-app" onclick="handleDeposit('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
+                    <button class="btn-rej" onclick="handleDeposit('${t._id}', '', '', 'reject')">Reject</button>
+                </div>`;
+            } else if(t.status === 'success') {
+                statusHtml = `<span class="st-approved">Approved</span>`;
+            } else {
+                statusHtml = `<span class="st-rejected">Rejected</span>`;
+            }
+
+            html += `<tr>
+                <td>${t.receiver_id?.mobile || 'N/A'}</td>
+                <td>₹${t.amount}</td>
+                <td>${t.remark || '-'}</td>
+                <td>${new Date(t.tx_time).toLocaleString()}</td>
+                <td>${statusHtml}</td>
+                <td>${actionHtml}</td>
+            </tr>`;
+        });
+        body.innerHTML = html;
+    } catch(e) { body.innerHTML = 'Error loading data'; }
+}
+
+async function handleDeposit(id, mobile, amount, type) {
+    const statEl = document.getElementById('stat-' + id);
+    const actEl = document.getElementById('act-' + id);
+
+    if(type === 'approve') {
+        if(!confirm('Approve ₹'+amount+'?')) return;
+        const r = await fetch(API + '/admin/add-balance', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'x-admin-key': PIN},
+            body: JSON.stringify({mobile, amount})
+        });
+        const d = await r.json();
+        if(d.status === 'success') {
+            statEl.innerHTML = 'Approved';
+            statEl.className = 'st-approved';
+            actEl.innerHTML = '-';
+        }
     } else {
-        document.getElementById('login-err').style.display = 'block';
+        if(!confirm('Reject this request?')) return;
+        // API call for rejection can be added here if your backend supports it
+        statEl.innerHTML = 'Rejected';
+        statEl.className = 'st-rejected';
+        actEl.innerHTML = '-';
     }
 }
 
-function aH() { return {'x-admin-key': ADMIN_KEY}; }
-function aHJ() { return {'Content-Type':'application/json','x-admin-key': ADMIN_KEY}; }
-
-function switchTab(tab, el) {
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('tab-'+tab).classList.add('active');
-    if(tab==='users') loadUsers();
-}
-
-// Stats
-async function loadStats() {
-    try {
-        const r = await fetch(API+'/admin/stats', {headers: aH()});
-        const d = await r.json();
-        if(d.status==='success'){
-            document.getElementById('s-users').innerText = d.users || 0;
-            document.getElementById('s-txns').innerText = d.transactions || 0;
-            document.getElementById('s-bal').innerText = '₹' + parseFloat(d.total_balance||0).toFixed(2);
-        }
-    } catch(e){}
-}
-
-// Load Deposits with Instant Remove
-async function loadDeposits() {
-    const list = document.getElementById('deposit-list');
-    try {
-        const r = await fetch(API+'/admin/transactions', {headers: aH()});
-        const d = await r.json();
-        const deps = (d.transactions || []).filter(t => t.status==='pending' && t.remark?.startsWith('UTR:'));
-        if(deps.length === 0) { list.innerHTML = '<div class="empty">No pending deposits</div>'; return; }
-        
-        let html = '';
-        deps.forEach(dep => {
-            html += `<div class="req-item" id="dep-${dep._id}">
-                <div style="display:flex; justify-content:space-between">
-                    <div class="req-info"><p>${dep.receiver_id?.name || 'User'}</p><span>${dep.receiver_id?.mobile}</span></div>
-                    <div class="req-amt">₹${dep.amount}</div>
-                </div>
-                <div class="req-detail">UTR: ${dep.remark.replace('UTR:','')}</div>
-                <div class="req-btns">
-                    <button class="approve-btn" onclick="approveDep('${dep._id}','${dep.receiver_id?.mobile}','${dep.amount}')">Approve</button>
-                    <button class="reject-btn" onclick="rejectReq('dep-${dep._id}')">Reject</button>
-                </div>
-            </div>`;
-        });
-        list.innerHTML = html;
-    } catch(e) { list.innerHTML = '<div class="empty">Error loading</div>'; }
-}
-
-async function approveDep(id, mobile, amt) {
-    if(!confirm('Approve ₹' + amt + '?')) return;
-    const el = document.getElementById('dep-'+id);
-    el.style.opacity = '0.4'; el.style.pointerEvents = 'none';
-    
-    try {
-        const r = await fetch(API+'/admin/add-balance', {
-            method:'POST', headers: aHJ(), 
-            body: JSON.stringify({mobile, amount: amt})
-        });
-        const d = await r.json();
-        if(d.status==='success') { el.remove(); alert('Success!'); } 
-        else { el.style.opacity = '1'; alert(d.message); }
-    } catch(e) { el.style.opacity = '1'; alert('Server Error'); }
-}
-
-// Withdrawals
-async function loadWithdrawals() {
-    const list = document.getElementById('withdraw-list');
-    try {
-        const r = await fetch(API+'/admin/withdrawals', {headers: aH()});
-        const d = await r.json();
-        if(!d.withdrawals || d.withdrawals.length === 0) { list.innerHTML = '<div class="empty">No pending withdrawals</div>'; return; }
-        
-        let html = '';
-        d.withdrawals.forEach(w => {
-            html += `<div class="req-item" id="wd-${w._id}">
-                <div style="display:flex; justify-content:space-between">
-                    <div class="req-info"><p>${w.sender_id?.name || 'User'}</p><span>${w.sender_id?.mobile}</span></div>
-                    <div class="req-amt" style="color:var(--danger)">₹${w.amount}</div>
-                </div>
-                <div class="req-detail">UPI: ${w.remark}</div>
-                <div class="req-btns">
-                    <button class="approve-btn" onclick="approveWD('${w.tx_id}','wd-${w._id}')">Approve</button>
-                    <button class="reject-btn" onclick="rejectWD('${w.tx_id}','wd-${w._id}')">Reject</button>
-                </div>
-            </div>`;
-        });
-        list.innerHTML = html;
-    } catch(e) {}
-}
-
-async function approveWD(txid, domId) {
-    if(!confirm('Approve Withdrawal?')) return;
-    const el = document.getElementById(domId);
-    el.remove(); // Fast removal
-    await fetch(API+'/admin/approve-withdraw/'+txid, {method:'POST', headers:aH()});
-}
-
-async function rejectWD(txid, domId) {
-    if(!confirm('Reject?')) return;
-    const el = document.getElementById(domId);
-    el.remove();
-    await fetch(API+'/admin/reject-withdraw/'+txid, {method:'POST', headers:aH()});
-}
-
-function rejectReq(id) {
-    if(confirm('Reject this request?')) document.getElementById(id).remove();
-}
-
-// Balance Manual
-async function addBalance() {
-    const mobile = document.getElementById('b-mobile').value;
-    const amount = document.getElementById('b-amount').value;
-    const res = await fetch(API+'/admin/add-balance', {method:'POST', headers: aHJ(), body: JSON.stringify({mobile, amount})});
-    const d = await res.json();
-    alert(d.status === 'success' ? 'Added!' : d.message);
-}
-
-async function deductBalance() {
-    const mobile = document.getElementById('b-mobile').value;
-    const amount = document.getElementById('b-amount').value;
-    const res = await fetch(API+'/admin/deduct-balance', {method:'POST', headers: aHJ(), body: JSON.stringify({mobile, amount})});
-    const d = await res.json();
-    alert(d.status === 'success' ? 'Deducted!' : d.message);
-}
-
-// Users
 async function loadUsers() {
-    const list = document.getElementById('users-list');
-    list.innerHTML = '<div class="empty">Loading users...</div>';
-    const r = await fetch(API+'/admin/users', {headers:aH()});
+    const body = document.getElementById('user-list-body');
+    const r = await fetch(API + '/admin/users', {headers: {'x-admin-key': PIN}});
     const d = await r.json();
-    let html = '';
-    d.users.forEach(u => {
-        html += `<div class="user-item" style="display:flex; justify-content:space-between; align-items:center">
-            <div><p style="font-weight:700">${u.name}</p><span style="font-size:0.75rem; color:var(--text-sub)">${u.mobile}</span></div>
-            <div style="font-weight:700; color:var(--primary)">₹${parseFloat(u.balance||0).toFixed(2)}</div>
-        </div>`;
+    body.innerHTML = d.users.map(u => `<tr><td>${u.name}</td><td>${u.mobile}</td><td>₹${u.balance}</td></tr>`).join('');
+}
+
+async function adjBal(type) {
+    const mobile = document.getElementById('m-mobile').value;
+    const amount = document.getElementById('m-amount').value;
+    const endpoint = type === 'add' ? '/admin/add-balance' : '/admin/deduct-balance';
+    const r = await fetch(API + endpoint, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'x-admin-key': PIN},
+        body: JSON.stringify({mobile, amount})
     });
-    list.innerHTML = html;
+    const d = await r.json();
+    alert(d.status === 'success' ? 'Updated!' : d.message);
 }
 </script>
 </body>
