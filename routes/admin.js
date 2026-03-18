@@ -85,6 +85,37 @@ router.post('/reject-withdraw/:txn_id', async (req, res) => {
   res.json({ status:'success' });
 });
 
+// ── Approve Deposit ───────────────────────────────────────────────────────────
+router.post('/approve-deposit/:id', async (req, res) => {
+  try {
+    const txn = await Transaction.findById(req.params.id)
+      .populate('receiver_id', 'name mobile balance');
+    if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
+    if(txn.status !== 'pending')
+      return res.json({ status:'error', message:'Already processed' });
+
+    // Add balance to user
+    await User.findByIdAndUpdate(txn.receiver_id._id, { $inc:{ balance: txn.amount } });
+    // Update transaction status
+    await Transaction.findByIdAndUpdate(req.params.id, { status:'success' });
+
+    res.json({ status:'success', message:'Deposit approved' });
+  } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
+});
+
+// ── Reject Deposit ────────────────────────────────────────────────────────────
+router.post('/reject-deposit/:id', async (req, res) => {
+  try {
+    const txn = await Transaction.findById(req.params.id);
+    if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
+    if(txn.status !== 'pending')
+      return res.json({ status:'error', message:'Already processed' });
+
+    await Transaction.findByIdAndUpdate(req.params.id, { status:'rejected' });
+    res.json({ status:'success', message:'Deposit rejected' });
+  } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
+});
+
 router.get('/api-transactions', async (req, res) => {
   const txns = await Transaction.find({ type:'api' }).sort({ tx_time:-1 }).limit(200)
     .populate('sender_id','name mobile tg_id balance')
@@ -108,3 +139,4 @@ router.post('/notify-txn/:id', async (req, res) => {
 });
 
 module.exports = router;
+              
