@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deposits | UNIO Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:40px}
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:white;border-radius:1.75rem;padding:2rem;width:100%;max-width:360px;box-shadow:0 4px 20px rgba(0,87,255,0.1)}
+.login-logo{text-align:center;margin-bottom:1.5rem}
+.login-logo h1{font-size:2rem;font-weight:900;color:#0057ff;font-style:italic}
+.login-logo p{font-size:.7rem;font-weight:700;color:#94a3b8;letter-spacing:.3em;text-transform:uppercase;margin-top:4px}
+.input-group{margin-bottom:1rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;transition:all .2s}
+.input-group input:focus{border-color:#0057ff;background:white}
+.login-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
+.login-err{background:#fee2e2;color:#dc2626;padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.login-err.show{display:block}
+/* Dashboard */
+.header{background:white;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
+.header h1{font-size:.9rem;font-weight:900;color:#0057ff;font-style:italic}
+.header-right{display:flex;align-items:center;gap:.5rem}
+.pending-badge{background:#ea580c;color:white;font-size:.65rem;font-weight:800;padding:.2rem .55rem;border-radius:2rem;display:none}
+.refresh-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .75rem;border-radius:.75rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit}
+.container{max-width:500px;margin:0 auto;padding:1.25rem}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:white;border-radius:1.25rem;padding:1rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.stat-val{font-size:1.25rem;font-weight:900;margin-top:4px}
+.msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.req-item{background:white;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);transition:opacity .3s,transform .3s}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.req-name{font-size:.85rem;font-weight:800;color:#0f172a}
+.req-mobile{font-size:.65rem;color:#94a3b8;font-weight:600;margin-top:2px}
+.req-amt{font-size:1rem;font-weight:900;color:#0057ff;text-align:right}
+.req-time{font-size:.6rem;color:#94a3b8;font-weight:600;margin-top:2px;text-align:right}
+.req-utr{background:#f8fafc;border-radius:.75rem;padding:.5rem .75rem;font-size:.72rem;font-weight:700;color:#64748b;margin-bottom:.75rem}
+.req-utr span{color:#0f172a;font-weight:800}
+.req-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.approve-btn{padding:.65rem;background:#dcfce7;border:none;color:#16a34a;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.approve-btn:disabled{opacity:.5;cursor:not-allowed}
+.reject-btn{padding:.65rem;background:#fee2e2;border:none;color:#dc2626;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
+.empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
+.empty p{font-size:.8rem;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-wrap" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <h1>UNIO</h1>
+      <p>Deposit Manager</p>
+    </div>
+    <div id="login-err" class="login-err">Wrong password!</div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="pass-input" placeholder="Enter admin password"
+        onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">
+      <i class="fa-solid fa-lock-open"></i> Login
+    </button>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" style="display:none">
+  <div class="header">
+    <h1>Deposits</h1>
+    <div class="header-right">
+      <span id="pending-badge" class="pending-badge">0</span>
+      <button class="refresh-btn" onclick="loadDeposits()">
+        <i class="fa-solid fa-rotate-right"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Pending</div>
+        <div class="stat-val" id="s-pending" style="color:#ea580c">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Approved</div>
+        <div class="stat-val" id="s-approved" style="color:#16a34a">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total</div>
+        <div class="stat-val" id="s-total" style="color:#0057ff">0</div>
+      </div>
+    </div>
+
+    <div id="msg" class="msg"></div>
+    <div id="deposit-list">
+      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API       = '';
+var ADMIN_KEY = '8435';
+function aH()  { return {'x-admin-key': ADMIN_KEY}; }
+function aHJ() { return {'Content-Type':'application/json','x-admin-key': ADMIN_KEY}; }
+
+// Auto login from URL or localStorage
+window.onload = function() {
+  var urlKey = new URLSearchParams(window.location.search).get('key');
+  var saved  = localStorage.getItem('unio_dep_admin');
+  if(urlKey === ADMIN_KEY || saved === ADMIN_KEY) {
+    localStorage.setItem('unio_dep_admin', ADMIN_KEY);
+    showDashboard();
+  }
+};
+
+function doLogin() {
+  var pass = document.getElementById('pass-input').value;
+  if(pass === ADMIN_KEY) {
+    localStorage.setItem('unio_dep_admin', ADMIN_KEY);
+    document.getElementById('login-err').classList.remove('show');
+    showDashboard();
+  } else {
+    document.getElementById('login-err').classList.add('show');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('login-wrap').style.display = 'none';
+  document.getElementById('dashboard').style.display  = 'block';
+  loadDeposits();
+  setInterval(loadDeposits, 30000);
+}
+
+function showMsg(text, type) {
+  var m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+  setTimeout(function(){ m.className = 'msg'; }, 3000);
+}
+
+async function loadDeposits() {
+  var list = document.getElementById('deposit-list');
+  try {
+    var r = await fetch(API+'/admin/transactions', {headers: aH()});
+    var d = await r.json();
+    var all  = (d.transactions||[]).filter(function(t){ return t.remark && t.remark.startsWith('UTR:'); });
+    var deps = all.filter(function(t){ return t.status === 'pending'; });
+    var done = all.filter(function(t){ return t.status !== 'pending'; });
+
+    document.getElementById('s-pending').textContent  = deps.length;
+    document.getElementById('s-approved').textContent = done.length;
+    document.getElementById('s-total').textContent    = all.length;
+
+    var badge = document.getElementById('pending-badge');
+    if(deps.length > 0){ badge.style.display='inline'; badge.textContent=deps.length; }
+    else badge.style.display='none';
+
+    if(deps.length === 0) {
+      list.innerHTML = '<div class="empty"><i class="fa-solid fa-check-circle" style="color:#16a34a"></i><p>All deposits processed!</p></div>';
+      return;
+    }
+
+    var html = '';
+    deps.forEach(function(dep) {
+      var mobile = dep.receiver_id && dep.receiver_id.mobile ? dep.receiver_id.mobile : '—';
+      var name   = dep.receiver_id && dep.receiver_id.name   ? dep.receiver_id.name   : 'User';
+      var utr    = dep.remark.replace('UTR:','').trim();
+      var amt    = parseFloat(dep.amount).toFixed(2);
+      var time   = new Date(dep.tx_time).toLocaleString('en-IN',{
+        timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true
+      });
+
+      html += '<div class="req-item" id="dep-'+dep._id+'">' +
+        '<div class="req-top">' +
+          '<div><div class="req-name">'+name+'</div><div class="req-mobile">&#128241; '+mobile+'</div></div>' +
+          '<div><div class="req-amt">&#8377;'+amt+'</div><div class="req-time">'+time+'</div></div>' +
+        '</div>' +
+        '<div class="req-utr"><i class="fa-solid fa-receipt" style="color:#0057ff"></i> UTR: <span>'+utr+'</span></div>' +
+        '<div class="req-btns">' +
+          '<button class="approve-btn" id="abtn-'+dep._id+'" onclick="approveDeposit(\''+dep._id+'\',\''+mobile+'\',\''+amt+'\')"><i class="fa-solid fa-check"></i> Approve</button>' +
+          '<button class="reject-btn" onclick="rejectDeposit(\''+dep._id+'\')"><i class="fa-solid fa-xmark"></i> Reject</button>' +
+        '</div>' +
+      '</div>';
+    });
+    list.innerHTML = html;
+
+  } catch(e) {
+    list.innerHTML = '<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
+  }
+}
+
+async function approveDeposit(id, mobile, amount) {
+  if(!confirm('Approve ₹'+amount+' for '+mobile+'?')) return;
+  var btn = document.getElementById('abtn-'+id);
+  var el  = document.getElementById('dep-'+id);
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i>'; }
+
+  try {
+    var r = await fetch(API+'/admin/add-balance', {
+      method:'POST', headers:aHJ(),
+      body: JSON.stringify({mobile:mobile, amount:parseFloat(amount)})
+    });
+    var d = await r.json();
+    if(d.status==='success') {
+      if(el){ el.style.opacity='0'; el.style.transform='scale(.97)'; setTimeout(function(){ el.remove(); updateCount(-1); },300); }
+      showMsg('Rs.'+amount+' added to '+mobile+'!', 'success');
+    } else {
+      showMsg(d.message||'Failed!', 'error');
+      if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Approve'; }
+    }
+  } catch(e) {
+    showMsg('Server error!', 'error');
+    if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Approve'; }
+  }
+}
+
+function rejectDeposit(id) {
+  if(!confirm('Reject this deposit?')) return;
+  var el = document.getElementById('dep-'+id);
+  if(el){ el.style.opacity='0'; el.style.transform='scale(.97)'; setTimeout(function(){ el.remove(); updateCount(-1); },300); }
+  showMsg('Deposit rejected!', 'success');
+}
+
+function updateCount(change) {
+  var cur = Math.max(0, parseInt(document.getElementById('s-pending').textContent)+change);
+  document.getElementById('s-pending').textContent = cur;
+  var badge = document.getElementById('pending-badge');
+  if(cur>0){ badge.style.display='inline'; badge.textContent=cur; }
+  else badge.style.display='none';
+}
+</script>
+</body>
+  </html>
+
