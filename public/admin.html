@@ -10,28 +10,30 @@
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 body { background: var(--bg); color: var(--text); }
 
-/* Login Box */
+/* Login */
 #login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:1000; display:flex; align-items:center; justify-content:center; }
 .login-box { background:var(--card); padding:2rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); width:90%; max-width:350px; text-align:center; border:1px solid var(--border); }
 
-/* Header & Layout */
-.header { background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; }
-.container { max-width:1000px; margin:20px auto; padding:0 15px; display:none; }
+/* Layout */
+.header { background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:99; }
+.container { max-width:1100px; margin:20px auto; padding:0 15px; display:none; }
 
-/* Table Design (Image Jaisa) */
+/* Table Style */
 .card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-table { width:100%; border-collapse:collapse; margin-top:10px; min-width:600px; }
+table { width:100%; border-collapse:collapse; margin-top:10px; min-width:700px; }
 th { text-align:left; padding:12px; color:#64748b; font-size:0.75rem; text-transform:uppercase; border-bottom:2px solid var(--border); }
 td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem; font-weight:500; }
 
 /* Action Buttons */
-.btn { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.75rem; color:white; }
+.btn { padding:7px 14px; border:none; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.75rem; color:white; transition: 0.2s; }
 .btn-app { background: var(--success); }
 .btn-rej { background: var(--danger); margin-left:5px; }
-.input-field { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:15px; outline:none; }
+.btn:active { transform: scale(0.95); }
+.input-field { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:15px; outline:none; text-align:center; }
 
-.tabs { display:flex; gap:10px; margin-bottom:20px; }
-.tab { padding:8px 18px; background:var(--card); border:1px solid var(--border); border-radius:20px; cursor:pointer; font-size:0.8rem; font-weight:600; }
+/* Tabs */
+.tabs { display:flex; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:5px; }
+.tab { padding:8px 20px; background:var(--card); border:1px solid var(--border); border-radius:25px; cursor:pointer; font-size:0.8rem; font-weight:600; white-space:nowrap; }
 .tab.active { background:var(--primary); color:white; border-color:var(--primary); }
 </style>
 </head>
@@ -40,35 +42,40 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="color:var(--primary); margin-bottom:20px;">UNIO ADMIN</h2>
-        <input type="password" id="admin-pin" class="input-field" placeholder="Enter PIN" style="text-align:center">
-        <button onclick="checkLogin()" class="btn" style="background:var(--primary); width:100%; padding:12px; font-size:0.9rem;">Login Now</button>
+        <input type="password" id="admin-pin" class="input-field" placeholder="Enter Admin PIN">
+        <button onclick="checkLogin()" class="btn" style="background:var(--primary); width:100%; padding:12px;">Login Dashboard</button>
     </div>
 </div>
 
 <div class="header">
-    <h2 style="color:var(--primary); font-size:1.2rem;">Money Requests</h2>
-    <button onclick="location.reload()" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer">Logout</button>
+    <h2 style="color:var(--primary); font-size:1.1rem;">Deposit Management</h2>
+    <span id="status-tag" style="font-size:0.7rem; color:var(--success); font-weight:700;">● SYSTEM ACTIVE</span>
 </div>
 
-<div class="container" id="dashboard">
+<div class="container" id="main-content">
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('dep-tab')">Deposit Requests</div>
-        <div class="tab" onclick="switchTab('user-tab')">All Users</div>
+        <div class="tab active" onclick="switchTab('dep-tab')">New Requests</div>
+        <div class="tab" onclick="switchTab('user-tab')">User List</div>
     </div>
 
     <div id="dep-tab" class="tab-content">
         <div class="card">
-            <h3 style="margin-bottom:15px; font-size:1rem;">Pending Deposits</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="font-size:0.95rem;">Pending Deposits</h3>
+                <button onclick="loadDeposits()" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; font-size:0.8rem;">Refresh List</button>
+            </div>
             <table>
                 <thead>
                     <tr>
-                        <th>User Mobile</th>
+                        <th>Mobile Number</th>
                         <th>Amount</th>
                         <th>UTR / Remark</th>
+                        <th>Time</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="deposit-list"></tbody>
+                <tbody id="deposit-list">
+                    </tbody>
             </table>
         </div>
     </div>
@@ -85,15 +92,15 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
 </div>
 
 <script>
-const API = ''; // Apni API link yahan dalein
+const API = ''; // Yahan apni API Link dalein
 const PIN = '8435';
 
 function checkLogin() {
     if(document.getElementById('admin-pin').value === PIN) {
         document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('main-content').style.display = 'block';
         loadDeposits();
-    } else { alert("Wrong PIN!"); }
+    } else { alert("Incorrect PIN!"); }
 }
 
 function switchTab(id) {
@@ -104,76 +111,92 @@ function switchTab(id) {
     if(id === 'user-tab') loadUsers();
 }
 
+// 1. LOAD DEPOSITS (Only Status: Pending)
 async function loadDeposits() {
     const list = document.getElementById('deposit-list');
-    list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+    list.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#64748b;">Fetching requests...</td></tr>';
+    
     try {
         const r = await fetch(API + '/admin/transactions', { headers: {'x-admin-key': PIN} });
         const d = await r.json();
+        
+        // Sirf pending deposit filter karein
         const pending = (d.transactions || []).filter(t => t.status === 'pending');
         
-        if(pending.length === 0) { 
-            list.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">No pending deposits found.</td></tr>'; 
-            return; 
+        if(pending.length === 0) {
+            list.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#64748b;">No pending requests found.</td></tr>';
+            return;
         }
-        
+
         list.innerHTML = '';
         pending.forEach(t => {
             const row = document.createElement('tr');
             row.id = `row-${t._id}`;
+            const time = new Date(t.tx_time).toLocaleString('en-IN', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+            
             row.innerHTML = `
                 <td>${t.receiver_id?.mobile || 'N/A'}</td>
-                <td style="color:var(--primary); font-weight:700;">₹${t.amount}</td>
-                <td>${t.remark || '-'}</td>
+                <td style="color:var(--primary); font-weight:800;">₹${t.amount}</td>
+                <td style="font-family:monospace; font-size:0.8rem; color:#64748b;">${t.remark || '-'}</td>
+                <td style="font-size:0.75rem; color:#94a3b8;">${time}</td>
                 <td>
-                    <button class="btn btn-app" onclick="permanentAction('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
-                    <button class="btn btn-rej" onclick="permanentAction('${t._id}', '${t.receiver_id?.mobile}', '0', 'reject')">Reject</button>
+                    <button class="btn btn-app" onclick="handleDeposit('${t._id}', 'approve')">Approve</button>
+                    <button class="btn btn-rej" onclick="handleDeposit('${t._id}', 'reject')">Reject</button>
                 </td>
             `;
             list.appendChild(row);
         });
-    } catch(e) { list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error loading data</td></tr>'; }
+    } catch(e) { 
+        list.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger);">Connection Error! Check API link.</td></tr>'; 
+    }
 }
 
-// PERMANENT REMOVE LOGIC
-async function permanentAction(id, mobile, amount, type) {
+// 2. APPROVE / REJECT DEPOSIT (INSTANT REMOVE)
+async function handleDeposit(id, type) {
     const row = document.getElementById(`row-${id}`);
-    const confirmMsg = type === 'approve' ? `Approve ₹${amount}?` : "Reject this request permanently?";
+    const actionName = type === 'approve' ? 'Approve' : 'Reject';
     
-    if(!confirm(confirmMsg)) return;
+    if(!confirm(`${actionName} this deposit request?`)) return;
 
-    row.style.opacity = '0.3'; // Visual feedback
-    
+    row.style.opacity = '0.3'; // Visual loading
+    row.style.pointerEvents = 'none';
+
+    const endpoint = type === 'approve' ? `/admin/approve-deposit/${id}` : `/admin/reject-deposit/${id}`;
+
     try {
-        // Hum dono cases mein 'add-balance' call karenge. 
-        // Reject ke liye amount '0' bhejenge taaki server status change kar de par balance na badhe.
-        const r = await fetch(API + '/admin/add-balance', {
+        const r = await fetch(API + endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-admin-key': PIN },
-            body: JSON.stringify({ mobile, amount: amount })
+            headers: { 'x-admin-key': PIN }
         });
-        
         const res = await r.json();
-        
+
         if(res.status === 'success') {
-            row.remove(); // Server ne status badal diya, ab refresh pe nahi aayega
-            if(type === 'approve') alert("✅ Approved!");
-            else alert("❌ Rejected Permanently!");
+            // SUCCESS: List se turant hata do (Ab refresh pe nahi aayega kyunki DB status change ho gaya)
+            row.remove();
+            
+            // Agar list khali ho jaye to refresh message dikhao
+            if(document.getElementById('deposit-list').children.length === 0) {
+                document.getElementById('deposit-list').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#64748b;">All requests processed.</td></tr>';
+            }
         } else {
             alert("Error: " + res.message);
             row.style.opacity = '1';
+            row.style.pointerEvents = 'auto';
         }
     } catch(e) {
-        alert("Server Error! Check API link.");
+        alert("Server Error! Check your Backend.");
         row.style.opacity = '1';
+        row.style.pointerEvents = 'auto';
     }
 }
 
 async function loadUsers() {
     const list = document.getElementById('user-list');
-    const r = await fetch(API + '/admin/users', { headers: {'x-admin-key': PIN} });
-    const d = await r.json();
-    list.innerHTML = d.users.map(u => `<tr><td>${u.name}</td><td>${u.mobile}</td><td>₹${u.balance}</td></tr>`).join('');
+    try {
+        const r = await fetch(API + '/admin/users', { headers: {'x-admin-key': PIN} });
+        const d = await r.json();
+        list.innerHTML = d.users.map(u => `<tr><td>${u.name}</td><td>${u.mobile}</td><td style="color:var(--primary); font-weight:700;">₹${parseFloat(u.balance||0).toFixed(2)}</td></tr>`).join('');
+    } catch(e) {}
 }
 </script>
 </body>
