@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All History | UNIO Admin</title>
+<title>UNIO | Master Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -13,31 +13,31 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 .login-box{background:#141927;padding:2rem;border-radius:1.5rem;border:1px solid rgba(255,255,255,0.06);width:100%;max-width:350px;text-align:center}
 .top-bar{background:#141927;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
 .top-bar h1{font-size:.9rem;font-weight:900;color:#0057ff;text-transform:uppercase}
-.container{max-width:600px;margin:0 auto;padding:1.25rem}
+.container{max-width:500px;margin:0 auto;padding:1.25rem}
 .tabs{display:flex;background:#141927;border-radius:1rem;padding:4px;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,0.06);gap:4px}
 .tab{flex:1;padding:.7rem;font-weight:700;font-size:.7rem;border-radius:.75rem;cursor:pointer;color:#475569;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:0.2s}
 .tab.active{background:#0057ff;color:white}
-.req-item{background:#141927;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;border:1px solid rgba(255,255,255,0.06)}
+.req-item{background:#141927;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s ease}
 .req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
-.req-info p{font-size:.8rem;font-weight:700;color:white}
-.req-info span{font-size:.65rem;color:#475569}
+.req-info p{font-size:.85rem;font-weight:700;color:white}
+.req-info span{font-size:.65rem;color:#475569;font-weight:600}
 .req-amt{font-size:1rem;font-weight:900;text-align:right}
 .req-amt.dep{color:#10b981}
 .req-amt.wd{color:#ef4444}
-.req-amt small{display:block;font-size:.6rem;color:#475569}
-.req-detail{background:#0d1220;border-radius:.7rem;padding:.6rem;margin:.5rem 0;font-size:.65rem;color:#94a3b8;border:1px solid rgba(255,255,255,0.03)}
+.req-amt small{display:block;font-size:.6rem;color:#475569;margin-top:2px}
+.req-detail{background:#0d1220;border-radius:.7rem;padding:.7rem;margin:.6rem 0;font-size:.7rem;color:#94a3b8;border:1px solid rgba(255,255,255,0.03)}
 .req-detail b{color:white}
 .status-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .badge{font-size:.6rem;font-weight:800;padding:.3rem .6rem;border-radius:.5rem;text-transform:uppercase}
 .badge.pending{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
-.badge.success{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
-.badge.failed{background:rgba(220,38,38,0.15);color:#dc2626;border:1px solid rgba(220,38,38,0.3)}
-.action-btns{display:flex;gap:5px}
-.mini-btn{padding:.4rem .7rem;border-radius:.5rem;font-size:.6rem;font-weight:800;border:none;cursor:pointer;text-transform:uppercase}
+.badge.success,.badge.approved{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.badge.failed,.badge.rejected{background:rgba(220,38,38,0.15);color:#dc2626;border:1px solid rgba(220,38,38,0.3)}
+.action-btns{display:flex;gap:8px}
+.mini-btn{padding:.5rem .8rem;border-radius:.6rem;font-size:.65rem;font-weight:800;border:none;cursor:pointer;text-transform:uppercase;transition: 0.2s}
 .btn-app{background:#10b981;color:white}
 .btn-rej{background:#dc2626;color:white}
 .a-input{width:100%;padding:1rem;background:#1e2535;border:2px solid rgba(255,255,255,0.08);border-radius:1rem;font-size:1rem;color:white;outline:none;margin-bottom:1rem;text-align:center}
-.refresh-btn{background:#0057ff;color:white;padding:.6rem 1rem;border-radius:.75rem;font-size:.7rem;font-weight:800;border:none;cursor:pointer;margin-bottom:1rem}
+.refresh-btn{background:#0057ff;color:white;padding:.6rem 1rem;border-radius:.75rem;font-size:.7rem;font-weight:800;border:none;cursor:pointer}
 .tab-content{display:none}
 .tab-content.active{display:block}
 .empty{text-align:center;padding:3rem;color:#475569;font-size:.8rem}
@@ -47,16 +47,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 
 <div id="loginPanel" class="login-screen">
   <div class="login-box">
-    <h2 style="margin-bottom:1rem;font-size:1rem">History Access</h2>
-    <input type="password" id="passInput" class="a-input" placeholder="Enter PIN">
-    <button class="refresh-btn" style="width:100%" onclick="checkPass()">Unlock</button>
+    <h2 style="margin-bottom:1.5rem;font-size:1.1rem;color:#0057ff">UNIO ADMIN</h2>
+    <input type="password" id="passInput" class="a-input" placeholder="Enter Admin PIN">
+    <button class="refresh-btn" style="width:100%" onclick="checkPass()">Unlock History</button>
   </div>
 </div>
 
 <div id="adminContent" style="display:none">
   <div class="top-bar">
-    <h1>UNIO History</h1>
-    <button class="refresh-btn" style="margin:0" onclick="fetchAll()"><i class="fa-solid fa-sync"></i></button>
+    <h1>Master History</h1>
+    <button class="refresh-btn" onclick="fetchAll()"><i class="fa-solid fa-sync"></i> Refresh</button>
   </div>
 
   <div class="container">
@@ -76,7 +76,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0f1e;min-height:10
 </div>
 
 <script>
-const API = ''; // Your API URL
+const API = ''; // Apna API URL yahan dalein
 const ADMIN_KEY = '8435';
 
 function checkPass() {
@@ -84,7 +84,7 @@ function checkPass() {
     document.getElementById('loginPanel').style.display = 'none';
     document.getElementById('adminContent').style.display = 'block';
     fetchAll();
-  } else { alert('Wrong PIN'); }
+  } else { alert('Galt Password!'); }
 }
 
 function switchTab(id, el) {
@@ -95,8 +95,8 @@ function switchTab(id, el) {
 }
 
 async function fetchAll() {
-  await loadHistory('deposit', 'dep-list-all');
-  await loadHistory('withdraw', 'wd-list-all');
+  loadHistory('deposit', 'dep-list-all');
+  loadHistory('withdraw', 'wd-list-all');
 }
 
 async function loadHistory(type, containerId) {
@@ -106,7 +106,11 @@ async function loadHistory(type, containerId) {
         headers: { 'x-admin-key': ADMIN_KEY }
     });
     const d = await r.json();
-    let data = type==='deposit' ? (d.transactions || []).filter(t=>t.type==='deposit') : (d.withdrawals || []);
+    
+    // Yahan Filter ko broad rakha hai taaki deposits miss na ho
+    let data = type==='deposit' 
+        ? (d.transactions || []).filter(t => t.type === 'deposit') 
+        : (d.withdrawals || []);
     
     if(data.length === 0) {
       list.innerHTML = '<div class="empty">No records found</div>';
@@ -114,26 +118,29 @@ async function loadHistory(type, containerId) {
     }
 
     let html = '';
+    // Latest transactions upar aayengi
     data.sort((a,b)=> new Date(b.tx_time) - new Date(a.tx_time)).forEach(item => {
       const isPending = item.status === 'pending';
-      const statusClass = item.status === 'success' || item.status === 'approved' ? 'success' : (item.status === 'pending' ? 'pending' : 'failed');
-      const mobile = (type === 'deposit' ? item.receiver_id?.mobile : item.sender_id?.mobile) || 'N/A';
+      const statusClass = (item.status === 'success' || item.status === 'approved') ? 'success' : (isPending ? 'pending' : 'failed');
+      const mobile = (type === 'deposit' ? (item.receiver_id?.mobile || 'N/A') : (item.sender_id?.mobile || 'N/A'));
+      const name = (type === 'deposit' ? (item.receiver_id?.name || 'User') : (item.sender_id?.name || 'User'));
       const date = new Date(item.tx_time).toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
-      const remark = item.remark || 'N/A';
+      const info = item.remark || 'No Info';
 
       html += `
       <div class="req-item" id="item-${item._id}">
         <div class="req-top">
           <div class="req-info">
-            <p>${mobile}</p>
-            <span>${date}</span>
+            <p>${name}</p>
+            <span>📱 ${mobile}</span>
           </div>
           <div class="req-amt ${type==='deposit'?'dep':'wd'}">
             ₹${parseFloat(item.amount).toFixed(2)}
+            <small>${date}</small>
           </div>
         </div>
         <div class="req-detail">
-          ${type==='deposit' ? '<b>UTR:</b> ' : '<b>UPI:</b> '} ${remark.replace('UTR:','')}
+          <b>${type==='deposit'?'UTR:':'UPI:'}</b> <span>${info.replace('UTR:','')}</span>
         </div>
         <div class="status-row">
           <span class="badge ${statusClass}">${item.status}</span>
@@ -147,7 +154,7 @@ async function loadHistory(type, containerId) {
       </div>`;
     });
     list.innerHTML = html;
-  } catch(e) { list.innerHTML = '<div class="empty">Error fetching data</div>'; }
+  } catch(e) { list.innerHTML = '<div class="empty">Error loading data</div>'; }
 }
 
 async function process(type, action, tx_id, id, mobile, amount) {
@@ -160,11 +167,11 @@ async function process(type, action, tx_id, id, mobile, amount) {
     if(action === 'approve') {
         endpoint = '/admin/add-balance';
         options.headers['Content-Type'] = 'application/json';
-        options.body = JSON.stringify({ mobile, amount });
+        options.body = JSON.stringify({ mobile, amount: parseFloat(amount) });
     } else {
-        // Local UI removal for deposit rejection as no specific endpoint provided
-        alert('Rejected Locally');
-        document.getElementById('item-'+id).remove();
+        // Reject local animation for UI cleanup
+        alert('Rejected & Removed');
+        removeAnimation(id);
         return;
     }
   } else {
@@ -176,11 +183,20 @@ async function process(type, action, tx_id, id, mobile, amount) {
     const d = await r.json();
     if(d.status === 'success') {
       alert('Done!');
-      fetchAll(); // Refresh to update status badges
+      removeAnimation(id);
+      setTimeout(fetchAll, 500); // Reload for history save
     } else { alert(d.message); }
-  } catch(e) { alert('Request Failed'); }
+  } catch(e) { alert('API Error'); }
+}
+
+function removeAnimation(id) {
+  const el = document.getElementById('item-'+id);
+  if(el) {
+    el.style.transform = 'scale(0.9)';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 300);
+  }
 }
 </script>
 </body>
-  </html>
-  
+</html>
