@@ -9,8 +9,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'unio_secret_2026';
 router.post('/register', async (req, res) => {
   try {
     console.log('DB State:', mongoose.connection.readyState);
+    console.log('Register attempt:', req.body?.mobile);
+
     const { name, mobile, password, pin } = req.body;
-    if(!name || !mobile || !password)
+    if(!name || !mobile || !password || !pin)
       return res.status(400).json({ status:'error', message:'All fields required' });
 
     const exists = await User.findOne({ mobile });
@@ -19,8 +21,7 @@ router.post('/register', async (req, res) => {
     const wallet_id = 'UW' + Date.now().toString().slice(-6);
     const api_key   = 'UW-' + Math.random().toString(36).substr(2,12).toUpperCase();
 
-    const user = await User.create({ name, mobile, password, pin: pin||'', wallet_id, api_key, balance: 0 });
-
+    const user = await User.create({ name, mobile, password, pin, wallet_id, api_key, balance: 0 });
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
 
     res.json({
@@ -46,6 +47,8 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     console.log('DB State:', mongoose.connection.readyState);
+    console.log('Login attempt:', req.body?.mobile);
+
     const { mobile, password } = req.body;
     if(!mobile || !password)
       return res.status(400).json({ status:'error', message:'Mobile and password required' });
@@ -82,8 +85,19 @@ router.post('/update-tg', async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if(!token) return res.status(401).json({ status:'error', message:'No token' });
+
     const decoded = jwt.verify(token, JWT_SECRET);
     const { tg_id } = req.body;
+
+    // Duplicate check
+    if(tg_id) {
+      const existing = await User.findOne({ tg_id, _id: { $ne: decoded.id } });
+      if(existing) return res.json({
+        status:  'error',
+        message: 'Ye Telegram ID pehle se kisi aur account mein linked hai!'
+      });
+    }
+
     await User.findByIdAndUpdate(decoded.id, { tg_id: tg_id || '' });
     res.json({ status:'success', message:'Telegram ID updated' });
   } catch(e) {
@@ -91,11 +105,21 @@ router.post('/update-tg', async (req, res) => {
   }
 });
 
-// ── Update TG by Mobile (claim page ke liye) ──────────────────────────────────
+// ── Update TG by Mobile (claim page) ─────────────────────────────────────────
 router.post('/update-tg-by-mobile', async (req, res) => {
   try {
     const { mobile, tg_id } = req.body;
     if(!mobile || !tg_id) return res.status(400).json({ status:'error', message:'mobile and tg_id required' });
+
+    // Duplicate check
+    if(tg_id) {
+      const existing = await User.findOne({ tg_id, mobile: { $ne: mobile } });
+      if(existing) return res.json({
+        status:  'error',
+        message: 'Ye Telegram ID pehle se kisi aur account mein linked hai!'
+      });
+    }
+
     await User.findOneAndUpdate({ mobile }, { tg_id });
     res.json({ status:'success', message:'Telegram ID updated' });
   } catch(e) {
@@ -103,7 +127,7 @@ router.post('/update-tg-by-mobile', async (req, res) => {
   }
 });
 
-// ── Check Mobile (claim page ke liye) ────────────────────────────────────────
+// ── Check Mobile (claim page) ─────────────────────────────────────────────────
 router.post('/check-mobile', async (req, res) => {
   try {
     const { mobile } = req.body;
@@ -121,8 +145,10 @@ router.post('/regen-key', async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if(!token) return res.status(401).json({ status:'error', message:'No token' });
+
     const decoded = jwt.verify(token, JWT_SECRET);
     const api_key = 'UW-' + Math.random().toString(36).substr(2,12).toUpperCase();
+
     await User.findByIdAndUpdate(decoded.id, { api_key });
     res.json({ status:'success', api_key });
   } catch(e) {
@@ -133,7 +159,7 @@ router.post('/regen-key', async (req, res) => {
 // ── Test Route ────────────────────────────────────────────────────────────────
 router.get('/test', async (req, res) => {
   try {
-    const state  = mongoose.connection.readyState;
+    const state = mongoose.connection.readyState;
     const states = { 0:'disconnected', 1:'connected', 2:'connecting', 3:'disconnecting' };
     res.json({
       status:        'success',
@@ -148,3 +174,4 @@ router.get('/test', async (req, res) => {
 });
 
 module.exports = router;
+    
