@@ -75,6 +75,23 @@ async function processPayment(req, res, query) {
       tx_time:     now
     });
 
+    // Response pehle bhejo
+    res.json({
+      status:  'success',
+      message: 'Payment successful',
+      data: {
+        transaction_id: txId,
+        amount:         amt,
+        receiver: {
+          name:   receiver.name,
+          number: receiver.mobile
+        },
+        comment:   comment || '',
+        timestamp: timestamp
+      }
+    });
+
+    // TG alerts background mein — fire and forget
     const sNew = await User.findById(sender._id).select('balance tg_id');
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
@@ -141,21 +158,6 @@ async function processPayment(req, res, query) {
 📅 Date : ${dt}`
       );
     }
-
-    res.json({
-      status:  'success',
-      message: 'Payment successful',
-      data: {
-        transaction_id: txId,
-        amount:         amt,
-        receiver: {
-          name:   receiver.name,
-          number: receiver.mobile
-        },
-        comment:   comment || '',
-        timestamp: timestamp
-      }
-    });
 
   } catch(e) {
     console.error('Payment error:', e.message);
