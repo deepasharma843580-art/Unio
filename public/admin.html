@@ -10,17 +10,21 @@
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 body { background: var(--bg); color: var(--text); }
 
+/* Login Box */
 #login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:1000; display:flex; align-items:center; justify-content:center; }
 .login-box { background:var(--card); padding:2rem; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); width:90%; max-width:350px; text-align:center; border:1px solid var(--border); }
 
+/* Header & Layout */
 .header { background:var(--card); padding:1rem 5%; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; }
 .container { max-width:1000px; margin:20px auto; padding:0 15px; display:none; }
 
-.card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto; }
+/* Table Design (Image Jaisa) */
+.card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); overflow-x:auto; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
 table { width:100%; border-collapse:collapse; margin-top:10px; min-width:600px; }
 th { text-align:left; padding:12px; color:#64748b; font-size:0.75rem; text-transform:uppercase; border-bottom:2px solid var(--border); }
 td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem; font-weight:500; }
 
+/* Action Buttons */
 .btn { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.75rem; color:white; }
 .btn-app { background: var(--success); }
 .btn-rej { background: var(--danger); margin-left:5px; }
@@ -37,7 +41,7 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
     <div class="login-box">
         <h2 style="color:var(--primary); margin-bottom:20px;">UNIO ADMIN</h2>
         <input type="password" id="admin-pin" class="input-field" placeholder="Enter PIN" style="text-align:center">
-        <button onclick="checkLogin()" class="btn" style="background:var(--primary); width:100%; padding:12px; font-size:0.9rem;">Login</button>
+        <button onclick="checkLogin()" class="btn" style="background:var(--primary); width:100%; padding:12px; font-size:0.9rem;">Login Now</button>
     </div>
 </div>
 
@@ -48,17 +52,17 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
 
 <div class="container" id="dashboard">
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('dep-tab')">Deposits</div>
-        <div class="tab" onclick="switchTab('user-tab')">Users</div>
+        <div class="tab active" onclick="switchTab('dep-tab')">Deposit Requests</div>
+        <div class="tab" onclick="switchTab('user-tab')">All Users</div>
     </div>
 
     <div id="dep-tab" class="tab-content">
         <div class="card">
-            <h3 style="margin-bottom:15px; font-size:1rem;">Pending Deposit Requests</h3>
+            <h3 style="margin-bottom:15px; font-size:1rem;">Pending Deposits</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Mobile</th>
+                        <th>User Mobile</th>
                         <th>Amount</th>
                         <th>UTR / Remark</th>
                         <th>Action</th>
@@ -71,7 +75,7 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
 
     <div id="user-tab" class="tab-content" style="display:none;">
         <div class="card">
-            <h3>All Users</h3>
+            <h3>Registered Users</h3>
             <table>
                 <thead><tr><th>Name</th><th>Mobile</th><th>Balance</th></tr></thead>
                 <tbody id="user-list"></tbody>
@@ -81,7 +85,7 @@ td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:0.85rem
 </div>
 
 <script>
-const API = ''; // Apni API yahan paste karein
+const API = ''; // Apni API link yahan dalein
 const PIN = '8435';
 
 function checkLogin() {
@@ -100,18 +104,16 @@ function switchTab(id) {
     if(id === 'user-tab') loadUsers();
 }
 
-// Load Deposits (Only Pending)
 async function loadDeposits() {
     const list = document.getElementById('deposit-list');
     list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
     try {
         const r = await fetch(API + '/admin/transactions', { headers: {'x-admin-key': PIN} });
         const d = await r.json();
-        // Sirf pending transactions filter karein
         const pending = (d.transactions || []).filter(t => t.status === 'pending');
         
         if(pending.length === 0) { 
-            list.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">No pending deposits</td></tr>'; 
+            list.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">No pending deposits found.</td></tr>'; 
             return; 
         }
         
@@ -124,8 +126,8 @@ async function loadDeposits() {
                 <td style="color:var(--primary); font-weight:700;">₹${t.amount}</td>
                 <td>${t.remark || '-'}</td>
                 <td>
-                    <button class="btn btn-app" onclick="actionDep('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
-                    <button class="btn btn-rej" onclick="actionDep('${t._id}', '', '', 'reject')">Reject</button>
+                    <button class="btn btn-app" onclick="permanentAction('${t._id}', '${t.receiver_id?.mobile}', '${t.amount}', 'approve')">Approve</button>
+                    <button class="btn btn-rej" onclick="permanentAction('${t._id}', '${t.receiver_id?.mobile}', '0', 'reject')">Reject</button>
                 </td>
             `;
             list.appendChild(row);
@@ -133,46 +135,37 @@ async function loadDeposits() {
     } catch(e) { list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error loading data</td></tr>'; }
 }
 
-// Approve / Reject with Server Update
-async function actionDep(id, mobile, amount, type) {
+// PERMANENT REMOVE LOGIC
+async function permanentAction(id, mobile, amount, type) {
     const row = document.getElementById(`row-${id}`);
+    const confirmMsg = type === 'approve' ? `Approve ₹${amount}?` : "Reject this request permanently?";
     
-    if(type === 'approve') {
-        if(!confirm(`Approve ₹${amount} for ${mobile}?`)) return;
-        row.style.opacity = '0.3';
-        try {
-            const r = await fetch(API + '/admin/add-balance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-admin-key': PIN },
-                body: JSON.stringify({ mobile, amount })
-            });
-            const res = await r.json();
-            if(res.status === 'success') {
-                row.remove(); // Server pe success hua to UI se hata do
-            } else { alert(res.message); row.style.opacity = '1'; }
-        } catch(e) { alert("Error!"); row.style.opacity = '1'; }
-    } 
-    else {
-        // REJECT LOGIC: Agar aapke API mein reject-deposit ka route hai to wo use karein
-        // Agar nahi hai, to hum isse server par update karenge taaki refresh pe na aaye
-        if(!confirm("Reject this deposit request?")) return;
-        row.style.opacity = '0.3';
+    if(!confirm(confirmMsg)) return;
+
+    row.style.opacity = '0.3'; // Visual feedback
+    
+    try {
+        // Hum dono cases mein 'add-balance' call karenge. 
+        // Reject ke liye amount '0' bhejenge taaki server status change kar de par balance na badhe.
+        const r = await fetch(API + '/admin/add-balance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-admin-key': PIN },
+            body: JSON.stringify({ mobile, amount: amount })
+        });
         
-        try {
-            // NOTE: Yahan main '/admin/reject-withdraw/' jaisa logic use kar raha hoon
-            // Aap apni API ke hisaab se endpoint change kar sakte hain
-            const r = await fetch(API + '/admin/reject-withdraw/' + id, { // ID pass kar rahe hain
-                method: 'POST',
-                headers: { 'x-admin-key': PIN }
-            });
-            const res = await r.json();
-            if(res.status === 'success' || res.message) {
-                row.remove(); // Server se reject hone ke baad remove
-            }
-        } catch(e) { 
-            // Agar API route nahi bana, to sirf UI se hata dete hain temporary
-            row.remove(); 
+        const res = await r.json();
+        
+        if(res.status === 'success') {
+            row.remove(); // Server ne status badal diya, ab refresh pe nahi aayega
+            if(type === 'approve') alert("✅ Approved!");
+            else alert("❌ Rejected Permanently!");
+        } else {
+            alert("Error: " + res.message);
+            row.style.opacity = '1';
         }
+    } catch(e) {
+        alert("Server Error! Check API link.");
+        row.style.opacity = '1';
     }
 }
 
