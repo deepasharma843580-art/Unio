@@ -81,10 +81,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <p>Admin Panel</p>
     </div>
     <div id="login-err" class="login-err">Wrong password!</div>
-    <input type="password" class="l-input" id="pass-input" placeholder="Enter admin password">
-    <button class="login-btn" id="login-btn">
-      <i class="fa-solid fa-lock-open"></i> Login
-    </button>
+    <div style="position:relative">
+      <input type="tel" inputmode="numeric" maxlength="4" class="l-input" id="pass-input" placeholder="- - - -" style="text-align:center;letter-spacing:.5em;font-size:1.4rem;margin-bottom:0">
+      <div id="login-spinner" style="display:none;position:absolute;right:1rem;top:50%;transform:translateY(-50%)">
+        <i class="fa-solid fa-circle-notch fa-spin" style="color:#0057ff;font-size:1.2rem"></i>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -176,20 +178,16 @@ window.onload = function() {
     showDashboard();
   }
 
-  // Login button - works on all mobile browsers
-  var loginBtn = document.getElementById('login-btn');
+  // Auto login on 4 digit input
   var passInput = document.getElementById('pass-input');
-
-  function handleLogin(e) {
-    e.preventDefault();
-    doLogin();
-  }
-
-  loginBtn.addEventListener('click', handleLogin);
-  loginBtn.addEventListener('touchend', handleLogin, {passive: false});
-
-  passInput.addEventListener('keydown', function(e) {
-    if(e.key === 'Enter') { e.preventDefault(); doLogin(); }
+  passInput.addEventListener('input', function() {
+    var val = this.value.replace(/[^0-9]/g, '');
+    this.value = val;
+    if(val.length === 4) {
+      document.getElementById('login-spinner').style.display = 'block';
+      this.disabled = true;
+      setTimeout(function() { doLogin(); }, 600);
+    }
   });
 };
 
@@ -200,7 +198,12 @@ function doLogin() {
     document.getElementById('login-err').classList.remove('show');
     showDashboard();
   } else {
+    document.getElementById('login-spinner').style.display = 'none';
+    var inp = document.getElementById('pass-input');
+    inp.disabled = false;
+    inp.value = '';
     document.getElementById('login-err').classList.add('show');
+    inp.focus();
   }
 }
 
@@ -358,12 +361,4 @@ async function rejectDeposit(id) {
     const r=await fetch(API+'/admin/reject-deposit/'+id,{method:'POST',headers:aHJ()});
     const d=await r.json();
     if(d.status==='success'){
-      if(el){el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);}
-      showMsg('bal-msg','Deposit rejected!','success');
-    } else showMsg('bal-msg',d.message||'Failed!','error');
-  }catch(e){showMsg('bal-msg','Server error!','error');}
-}
-
-async function addBalance() {
-  const mobile=document.getElementById('b-mobile').value.trim();
-  const amount
+      if(el){el.style
