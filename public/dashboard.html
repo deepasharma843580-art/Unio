@@ -27,11 +27,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 /* ── Header ── */
 .header{background:var(--white);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:1rem}
+.menu-toggle{font-size:1.2rem;color:var(--text);cursor:pointer;background:none;border:none}
 .header-logo{font-size:1.4rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em}
 .header-right{display:flex;align-items:center;gap:.75rem}
 .notif-btn{width:36px;height:36px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:var(--blue);font-size:.85rem;position:relative}
 .avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.85rem;cursor:pointer}
 .logout-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:.85rem;background:none;border:none}
+
+/* ── Sidebar Menu ── */
+.sidebar{position:fixed;top:0;left:-280px;width:280px;height:100%;background:var(--white);z-index:1000;transition:0.3s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:2px 0 20px rgba(0,0,0,0.1);padding:1.5rem}
+.sidebar.open{left:0}
+.sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:999;display:none;backdrop-filter:blur(2px)}
+.sidebar-overlay.active{display:block}
+.side-item{display:flex;align-items:center;gap:1rem;padding:1rem;color:var(--text);text-decoration:none;font-weight:700;font-size:0.9rem;border-radius:1rem;margin-bottom:0.5rem;transition:0.2s}
+.side-item:active{background:var(--blue-light);color:var(--blue)}
+.side-item i{width:20px;color:var(--blue)}
 
 /* ── Container ── */
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
@@ -95,7 +106,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:.58rem;font-weight:800;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1;transition:color .2s;letter-spacing:.03em}
 .nav-item.active{color:var(--blue)}
 .nav-item i{font-size:1.15rem}
-.nav-active-dot{width:4px;height:4px;background:var(--blue);border-radius:50%;margin-top:-2px}
+.nav-active-dot{width:4px;height:4px;background:var(--blue);border-radius:50%;margin-top:-2px;display:none}
+.nav-item.active .nav-active-dot{display:block}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{animation:fadeUp .4s cubic-bezier(.34,1.2,.64,1) forwards;opacity:0}
@@ -107,8 +119,26 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 </head>
 <body>
 
+<div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="header-logo" style="margin-bottom: 2rem;">UNIO</div>
+  <a href="dashboard.html" class="side-item"><i class="fa-solid fa-house"></i> Home</a>
+  <a href="transfer.html" class="side-item"><i class="fa-solid fa-paper-plane"></i> Send Money</a>
+  <a href="deposit.html" class="side-item"><i class="fa-solid fa-plus"></i> Add Money</a>
+  <a href="withdraw.html" class="side-item"><i class="fa-solid fa-arrow-up"></i> Withdraw</a>
+  <a href="transactions.html" class="side-item"><i class="fa-solid fa-receipt"></i> History</a>
+  <a href="lifafa.html" class="side-item"><i class="fa-solid fa-envelope-open-text"></i> Lifafa</a>
+  <a href="qr.html" class="side-item"><i class="fa-solid fa-qrcode"></i> QR Scanner</a>
+  <a href="settings.html" class="side-item"><i class="fa-solid fa-key"></i> API Keys</a>
+  <hr style="border:0; border-top:1px solid var(--border); margin: 1rem 0;">
+  <div class="side-item" onclick="logout()" style="color:var(--red)"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
+</div>
+
 <div class="header">
-  <div class="header-logo">UNIO</div>
+  <div class="header-left">
+    <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars-staggered"></i></button>
+    <div class="header-logo">UNIO</div>
+  </div>
   <div class="header-right">
     <button class="notif-btn" onclick="window.location.href='tg.html'">
       <i class="fa-brands fa-telegram"></i>
@@ -122,7 +152,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 <div class="container">
 
-  <!-- Balance Card -->
   <div class="balance-card fade-up">
     <div class="bal-top">
       <div>
@@ -144,7 +173,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </div>
   </div>
 
-  <!-- Stats -->
   <div class="stats fade-up">
     <div class="stat-card">
       <div class="stat-label">Total In</div>
@@ -162,10 +190,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </div>
   </div>
 
-  <!-- Quick Actions Row 1 -->
   <div class="section-label fade-up">Quick Actions</div>
   <div class="actions-grid fade-up">
-    <a href="transfer.html" class="action">
+    <a href="transfer.html" class="action" onclick="setActiveNav('send')">
       <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-paper-plane" style="color:#0057ff"></i></div>
       <div class="action-label">Send</div>
     </a>
@@ -183,9 +210,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </a>
   </div>
 
-  <!-- Quick Actions Row 2 -->
   <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
-    <a href="transactions.html" class="action">
+    <a href="transactions.html" class="action" onclick="setActiveNav('history')">
       <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-receipt" style="color:#16a34a"></i></div>
       <div class="action-label">History</div>
     </a>
@@ -203,7 +229,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </a>
   </div>
 
-  <!-- Recent Transactions -->
   <div class="txn-section-header fade-up">
     <span>Recent Transactions</span>
     <a href="transactions.html">View All <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></a>
@@ -214,23 +239,26 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 </div>
 
-<!-- Bottom Nav -->
-<div class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active">
+<div class="bottom-nav" id="bottom-nav">
+  <a href="dashboard.html" class="nav-item active" id="nav-home">
     <i class="fa-solid fa-house"></i>Home
     <div class="nav-active-dot"></div>
   </a>
-  <a href="transfer.html" class="nav-item">
+  <a href="transfer.html" class="nav-item" id="nav-send">
     <i class="fa-solid fa-paper-plane"></i>Send
+    <div class="nav-active-dot"></div>
   </a>
-  <a href="qr.html" class="nav-item">
+  <a href="qr.html" class="nav-item" id="nav-qr">
     <i class="fa-solid fa-qrcode"></i>QR
+    <div class="nav-active-dot"></div>
   </a>
-  <a href="transactions.html" class="nav-item">
+  <a href="transactions.html" class="nav-item" id="nav-history">
     <i class="fa-solid fa-receipt"></i>History
+    <div class="nav-active-dot"></div>
   </a>
-  <a href="tg.html" class="nav-item">
+  <a href="tg.html" class="nav-item" id="nav-tg">
     <i class="fa-brands fa-telegram"></i>TG
+    <div class="nav-active-dot"></div>
   </a>
 </div>
 
@@ -241,6 +269,12 @@ const user  = JSON.parse(localStorage.getItem('user') || '{}');
 
 if(!token) window.location.href = 'index.html';
 
+// Toggle Sidebar
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+}
+
 // User info
 document.getElementById('avatar').textContent        = (user.name||'U')[0].toUpperCase();
 document.getElementById('user-name-card').textContent = user.name || '—';
@@ -249,12 +283,10 @@ document.getElementById('wallet-id').textContent     = user.wallet_id || 'UW0000
 
 async function loadData() {
   try {
-    // Balance
     const br = await fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}});
     const bd = await br.json();
     if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
 
-    // Transactions
     const tr = await fetch(API+'/wallet/transactions', {headers:{'Authorization':'Bearer '+token}});
     const td = await tr.json();
 
@@ -319,15 +351,12 @@ function logout() {
 
 loadData();
 
-// IP fetch + TG alert on dashboard load
 async function sendLoginAlert() {
   try {
-    // IP fetch
     const ipRes = await fetch('https://api.ipify.org?format=json');
     const ipData = await ipRes.json();
     const ip = ipData.ip || 'Unknown';
 
-    // Send to backend
     fetch(API+'/auth/login-alert', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
@@ -336,7 +365,6 @@ async function sendLoginAlert() {
   } catch(e) {}
 }
 
-// Sirf ek baar per session
 if(!sessionStorage.getItem('alert_sent')) {
   sessionStorage.setItem('alert_sent', '1');
   sendLoginAlert();
