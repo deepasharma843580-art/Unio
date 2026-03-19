@@ -4,90 +4,167 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard | UNIO</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
-.header{background:white;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.header h1{font-size:1.25rem;font-weight:900;color:#0057ff;font-style:italic}
+:root{
+  --blue:#0057ff;
+  --blue-dark:#0033cc;
+  --blue-light:#eff6ff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --orange:#ea580c;
+  --purple:#9333ea;
+  --tg:#0088cc;
+  --bg:#f0f4ff;
+  --white:#ffffff;
+  --text:#0f172a;
+  --muted:#94a3b8;
+  --border:#f1f5f9;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
+
+/* ── Header ── */
+.header{background:var(--white);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
+.header-logo{font-size:1.4rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em}
 .header-right{display:flex;align-items:center;gap:.75rem}
-.avatar{width:36px;height:36px;background:#0057ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.85rem}
+.notif-btn{width:36px;height:36px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:var(--blue);font-size:.85rem;position:relative}
+.avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.85rem;cursor:pointer}
+.logout-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:.85rem;background:none;border:none}
+
+/* ── Container ── */
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
-.balance-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.75rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
-.balance-card::after{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:rgba(255,255,255,0.08);border-radius:50%}
-.balance-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.5rem}
-.balance-amount{font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:.25rem}
-.wallet-id{font-size:.7rem;opacity:.6;font-weight:600}
+
+/* ── Balance Card ── */
+.balance-card{background:linear-gradient(135deg,#0057ff 0%,#0033cc 60%,#001a8c 100%);border-radius:2rem;padding:1.75rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.balance-card::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
+.balance-card::after{content:'';position:absolute;bottom:-40px;left:-20px;width:140px;height:140px;background:rgba(255,255,255,0.04);border-radius:50%}
+.bal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;position:relative;z-index:1}
+.bal-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:.35rem}
+.bal-amount{font-size:2.75rem;font-weight:900;letter-spacing:-2px;line-height:1}
+.bal-chip{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:2rem;padding:.4rem .85rem;font-size:.65rem;font-weight:800;letter-spacing:.05em;backdrop-filter:blur(10px)}
+.bal-bottom{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.1);padding-top:1rem}
+.bal-user-row{display:flex;align-items:center;justify-content:space-between}
+.bal-name{font-size:.85rem;font-weight:800;opacity:.95}
+.bal-info{display:flex;align-items:center;gap:.5rem}
+.bal-number{font-size:.72rem;font-weight:700;opacity:.75;letter-spacing:.02em}
+.verified-badge{background:rgba(22,163,74,0.25);border:1px solid rgba(22,163,74,0.4);color:#86efac;font-size:.6rem;font-weight:800;padding:.2rem .55rem;border-radius:2rem;display:flex;align-items:center;gap:.3rem}
+
+/* ── Stats ── */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
-.stat-card{background:white;border-radius:1.25rem;padding:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.stat-label{font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
-.stat-val{font-size:1.1rem;font-weight:800;color:#0f172a}
-.stat-val.green{color:#16a34a}
-.stat-val.red{color:#dc2626}
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.75rem}
-.quick-actions-2{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem}
-.action{background:white;border-radius:1.25rem;padding:.85rem .5rem;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.05);cursor:pointer;transition:all .2s;text-decoration:none;display:block}
-.action:active{transform:scale(.95)}
-.action-icon{width:42px;height:42px;border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:1.1rem}
-.action-label{font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase}
-.section-title{font-size:.75rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:center}
-.section-title a{font-size:.65rem;font-weight:700;color:#0057ff;text-decoration:none}
-.txn-list{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc}
+.stat-card{background:var(--white);border-radius:1.25rem;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid var(--border)}
+.stat-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.stat-val{font-size:1.15rem;font-weight:900;display:flex;align-items:center;gap:.35rem}
+.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── Section Title ── */
+.section-label{font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;padding-left:.25rem}
+
+/* ── Quick Actions ── */
+.actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:.6rem}
+.action{background:var(--white);border-radius:1.25rem;padding:.9rem .4rem .75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;display:block;border:1px solid var(--border)}
+.action:active{transform:scale(.93);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.action-icon{width:44px;height:44px;border-radius:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:1.1rem}
+.action-label{font-size:.58rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
+
+/* ── Recent Txns ── */
+.txn-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.txn-section-header span{font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.txn-section-header a{font-size:.68rem;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:.3rem}
+.txn-list{background:var(--white);border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid var(--border)}
+.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;transition:background .15s;cursor:pointer}
 .txn-item:last-child{border-bottom:none}
+.txn-item:active{background:#fafbff}
 .txn-left{display:flex;align-items:center;gap:.75rem}
-.txn-icon{width:38px;height:38px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
-.txn-name{font-size:.8rem;font-weight:700;color:#0f172a}
-.txn-time{font-size:.65rem;color:#94a3b8;font-weight:600;margin-top:2px}
-.txn-amt{font-size:.9rem;font-weight:800}
-.txn-amt.cr{color:#16a34a}
-.txn-amt.dr{color:#dc2626}
-.txn-status{font-size:.6rem;font-weight:700;text-align:right;margin-top:2px}
-.txn-status.pending{color:#f59e0b}
-.txn-status.success{color:#16a34a}
-.txn-status.failed{color:#dc2626}
-.empty{text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem;font-weight:600}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50;max-width:480px;margin:0 auto}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
-.nav-item.active{color:#0057ff}
-.nav-item i{font-size:1.2rem}
+.txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.txn-name{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.txn-time{font-size:.62rem;color:var(--muted);font-weight:600}
+.txn-amt{font-size:.9rem;font-weight:900}
+.txn-amt.cr{color:var(--green)}
+.txn-amt.dr{color:var(--red)}
+.txn-badge{font-size:.55rem;font-weight:800;text-align:right;margin-top:3px;padding:.15rem .45rem;border-radius:2rem;display:inline-block}
+.txn-badge.pending{background:#fff7ed;color:var(--orange)}
+.txn-badge.failed{background:#fee2e2;color:var(--red)}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
+.empty i{font-size:2rem;margin-bottom:.5rem;display:block;opacity:.4}
+.empty p{font-size:.75rem;font-weight:600}
+
+/* ── Bottom Nav ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:.65rem 0 calc(.65rem + env(safe-area-inset-bottom));z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:.58rem;font-weight:800;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1;transition:color .2s;letter-spacing:.03em}
+.nav-item.active{color:var(--blue)}
+.nav-item i{font-size:1.15rem}
+.nav-active-dot{width:4px;height:4px;background:var(--blue);border-radius:50%;margin-top:-2px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .4s cubic-bezier(.34,1.2,.64,1) forwards;opacity:0}
+.fade-up:nth-child(1){animation-delay:.05s}
+.fade-up:nth-child(2){animation-delay:.1s}
+.fade-up:nth-child(3){animation-delay:.15s}
+.fade-up:nth-child(4){animation-delay:.2s}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>UNIO</h1>
+  <div class="header-logo">UNIO</div>
   <div class="header-right">
-    <span style="font-size:.7rem;font-weight:700;color:#64748b" id="user-name"></span>
+    <button class="notif-btn" onclick="window.location.href='tg.html'">
+      <i class="fa-brands fa-telegram"></i>
+    </button>
     <div class="avatar" id="avatar">U</div>
-    <i class="fa-solid fa-right-from-bracket" style="color:#94a3b8;cursor:pointer;font-size:.9rem" onclick="logout()"></i>
+    <button class="logout-btn" onclick="logout()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
   </div>
 </div>
 
 <div class="container">
 
   <!-- Balance Card -->
-  <div class="balance-card">
-    <div class="balance-label">Available Balance</div>
-    <div class="balance-amount">₹<span id="balance">0.00</span></div>
-    <div class="wallet-id" id="wallet-id">UW000000</div>
+  <div class="balance-card fade-up">
+    <div class="bal-top">
+      <div>
+        <div class="bal-label">Available Balance</div>
+        <div class="bal-amount">&#8377;<span id="balance">0.00</span></div>
+      </div>
+      <div class="bal-chip" id="wallet-id">UW000000</div>
+    </div>
+    <div class="bal-bottom">
+      <div class="bal-user-row">
+        <div class="bal-name" id="user-name-card">—</div>
+        <div class="bal-info">
+          <div class="bal-number" id="user-mobile-card">—</div>
+          <div class="verified-badge">
+            <i class="fa-solid fa-circle-check" style="font-size:.55rem"></i> Verified
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Stats -->
-  <div class="stats">
+  <div class="stats fade-up">
     <div class="stat-card">
       <div class="stat-label">Total In</div>
-      <div class="stat-val green">₹<span id="total-in">0.00</span></div>
+      <div class="stat-val" style="color:var(--green)">
+        <span class="stat-dot" style="background:var(--green)"></span>
+        &#8377;<span id="total-in">0.00</span>
+      </div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Total Out</div>
-      <div class="stat-val red">₹<span id="total-out">0.00</span></div>
+      <div class="stat-val" style="color:var(--red)">
+        <span class="stat-dot" style="background:var(--red)"></span>
+        &#8377;<span id="total-out">0.00</span>
+      </div>
     </div>
   </div>
 
   <!-- Quick Actions Row 1 -->
-  <div class="quick-actions">
+  <div class="section-label fade-up">Quick Actions</div>
+  <div class="actions-grid fade-up">
     <a href="transfer.html" class="action">
       <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-paper-plane" style="color:#0057ff"></i></div>
       <div class="action-label">Send</div>
@@ -107,32 +184,32 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   </div>
 
   <!-- Quick Actions Row 2 -->
-  <div class="quick-actions-2">
+  <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
     <a href="transactions.html" class="action">
       <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-receipt" style="color:#16a34a"></i></div>
-      <div class="action-label">Transactions</div>
+      <div class="action-label">History</div>
     </a>
     <a href="settings.html" class="action">
       <div class="action-icon" style="background:#fffbeb"><i class="fa-solid fa-key" style="color:#f59e0b"></i></div>
       <div class="action-label">API Keys</div>
     </a>
-    <a href="qr.html" class="action">
-      <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-qrcode" style="color:#0057ff"></i></div>
-      <div class="action-label">Scan QR</div>
+    <a href="txn.html" class="action">
+      <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-magnifying-glass" style="color:#0057ff"></i></div>
+      <div class="action-label">TXN Find</div>
     </a>
-    <a href="tg.html" class="action">
-      <div class="action-icon" style="background:#e0f2fe"><i class="fa-brands fa-telegram" style="color:#0088cc"></i></div>
-      <div class="action-label">Telegram</div>
+    <a href="help.html" class="action">
+      <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-headset" style="color:#16a34a"></i></div>
+      <div class="action-label">Help</div>
     </a>
   </div>
 
   <!-- Recent Transactions -->
-  <div class="section-title">
-    Recent Transactions
-    <a href="transactions.html">View All →</a>
+  <div class="txn-section-header fade-up">
+    <span>Recent Transactions</span>
+    <a href="transactions.html">View All <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></a>
   </div>
-  <div class="txn-list" id="txn-list">
-    <div class="empty"><i class="fa-solid fa-receipt"></i><br>No transactions yet</div>
+  <div class="txn-list fade-up" id="txn-list">
+    <div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>
   </div>
 
 </div>
@@ -141,6 +218,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="bottom-nav">
   <a href="dashboard.html" class="nav-item active">
     <i class="fa-solid fa-house"></i>Home
+    <div class="nav-active-dot"></div>
   </a>
   <a href="transfer.html" class="nav-item">
     <i class="fa-solid fa-paper-plane"></i>Send
@@ -152,50 +230,63 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <i class="fa-solid fa-receipt"></i>History
   </a>
   <a href="tg.html" class="nav-item">
-    <i class="fa-brands fa-telegram"></i>Telegram
+    <i class="fa-brands fa-telegram"></i>TG
   </a>
 </div>
 
 <script>
-const API = '';
+const API   = '';
 const token = localStorage.getItem('token');
 const user  = JSON.parse(localStorage.getItem('user') || '{}');
 
 if(!token) window.location.href = 'index.html';
 
-document.getElementById('user-name').textContent = user.name || '';
-document.getElementById('avatar').textContent = (user.name||'U')[0].toUpperCase();
-document.getElementById('wallet-id').textContent = user.wallet_id || '';
+// User info
+document.getElementById('avatar').textContent        = (user.name||'U')[0].toUpperCase();
+document.getElementById('user-name-card').textContent = user.name || '—';
+document.getElementById('user-mobile-card').textContent = user.mobile || '—';
+document.getElementById('wallet-id').textContent     = user.wallet_id || 'UW000000';
 
 async function loadData() {
   try {
+    // Balance
     const br = await fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}});
     const bd = await br.json();
     if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
 
+    // Transactions
     const tr = await fetch(API+'/wallet/transactions', {headers:{'Authorization':'Bearer '+token}});
     const td = await tr.json();
-    if(td.status==='success' && td.transactions.length > 0) {
+
+    if(td.status==='success' && td.transactions && td.transactions.length > 0) {
       let totalIn=0, totalOut=0, html='';
+
       td.transactions.slice(0,10).forEach(t => {
         const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
-        const amt = parseFloat(t.amount).toFixed(2);
-        if(isCredit) totalIn += parseFloat(amt);
-        else totalOut += parseFloat(amt);
+        const amt      = parseFloat(t.amount).toFixed(2);
+        if(isCredit) totalIn  += parseFloat(amt);
+        else         totalOut += parseFloat(amt);
+
         const name = isCredit
-          ? (t.sender_id?.name || t.sender_id?.mobile || 'System')
+          ? (t.sender_id?.name   || t.sender_id?.mobile   || 'System')
           : (t.receiver_id?.name || t.receiver_id?.mobile || 'System');
-        const time = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+
+        const time = new Date(t.tx_time).toLocaleString('en-IN',{
+          timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'
+        });
+
         const isPending = t.status === 'pending';
-        const isFailed  = t.status === 'failed';
+        const isFailed  = t.status === 'failed' || t.status === 'rejected';
         const iconColor = isCredit ? '#16a34a' : isPending ? '#f59e0b' : '#dc2626';
-        const iconBg    = isCredit ? '#f0fdf4' : isPending ? '#fffbeb' : '#fff1f2';
+        const iconBg    = isCredit ? '#f0fdf4'  : isPending ? '#fffbeb' : '#fff1f2';
         const iconName  = isCredit ? 'arrow-down' : isPending ? 'clock' : 'arrow-up';
-        const statusHtml = isPending
-          ? `<div class="txn-status pending">PENDING</div>`
+
+        const badge = isPending
+          ? `<div class="txn-badge pending">PENDING</div>`
           : isFailed
-          ? `<div class="txn-status failed">FAILED</div>`
+          ? `<div class="txn-badge failed">FAILED</div>`
           : '';
+
         html += `<div class="txn-item">
           <div class="txn-left">
             <div class="txn-icon" style="background:${iconBg}">
@@ -206,12 +297,13 @@ async function loadData() {
               <div class="txn-time">${time}</div>
             </div>
           </div>
-          <div>
-            <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${amt}</div>
-            ${statusHtml}
+          <div style="text-align:right">
+            <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
+            ${badge}
           </div>
         </div>`;
       });
+
       document.getElementById('txn-list').innerHTML = html;
       document.getElementById('total-in').textContent  = totalIn.toFixed(2);
       document.getElementById('total-out').textContent = totalOut.toFixed(2);
@@ -220,11 +312,35 @@ async function loadData() {
 }
 
 function logout() {
+  if(!confirm('Logout karna chahte ho?')) return;
   localStorage.clear();
   window.location.href = 'index.html';
 }
 
 loadData();
+
+// IP fetch + TG alert on dashboard load
+async function sendLoginAlert() {
+  try {
+    // IP fetch
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    const ip = ipData.ip || 'Unknown';
+
+    // Send to backend
+    fetch(API+'/auth/login-alert', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ ip })
+    }).catch(()=>{});
+  } catch(e) {}
+}
+
+// Sirf ek baar per session
+if(!sessionStorage.getItem('alert_sent')) {
+  sessionStorage.setItem('alert_sent', '1');
+  sendLoginAlert();
+}
 </script>
 </body>
 </html>
