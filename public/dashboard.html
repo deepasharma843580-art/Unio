@@ -2,344 +2,342 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard | UNIO</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>UNIO | Pro Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --blue:#0057ff;
-  --blue-dark:#0033cc;
-  --blue-light:#eff6ff;
-  --green:#16a34a;
-  --red:#dc2626;
-  --orange:#ea580c;
-  --purple:#9333ea;
-  --tg:#0088cc;
-  --bg:#f0f4ff;
-  --white:#ffffff;
-  --text:#0f172a;
-  --muted:#94a3b8;
-  --border:#f1f5f9;
+:root {
+    --primary: #0052ff;
+    --primary-dark: #003eb3;
+    --accent: #00d1ff;
+    --bg: #f8faff;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --border: #e2e8f0;
+    --shadow: 0 10px 25px -5px rgba(0, 82, 255, 0.1), 0 8px 10px -6px rgba(0, 82, 255, 0.1);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text-main); line-height: 1.5; overflow-x: hidden; }
 
 /* ── Header ── */
-.header{background:var(--white);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
-.header-logo{font-size:1.4rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em}
-.header-right{display:flex;align-items:center;gap:.75rem}
-.notif-btn{width:36px;height:36px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:var(--blue);font-size:.85rem;position:relative}
-.avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.85rem;cursor:pointer}
-.logout-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:.85rem;background:none;border:none}
+.header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+}
+.header-logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.avatar { 
+    width: 38px; height: 38px; 
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
+}
 
 /* ── Container ── */
-.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.container { max-width: 480px; margin: 0 auto; padding: 1.5rem; }
 
-/* ── Balance Card ── */
-.balance-card{background:linear-gradient(135deg,#0057ff 0%,#0033cc 60%,#001a8c 100%);border-radius:2rem;padding:1.75rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
-.balance-card::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
-.balance-card::after{content:'';position:absolute;bottom:-40px;left:-20px;width:140px;height:140px;background:rgba(255,255,255,0.04);border-radius:50%}
-.bal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;position:relative;z-index:1}
-.bal-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:.35rem}
-.bal-amount{font-size:2.75rem;font-weight:900;letter-spacing:-2px;line-height:1}
-.bal-chip{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:2rem;padding:.4rem .85rem;font-size:.65rem;font-weight:800;letter-spacing:.05em;backdrop-filter:blur(10px)}
-.bal-bottom{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.1);padding-top:1rem}
-.bal-user-row{display:flex;align-items:center;justify-content:space-between}
-.bal-name{font-size:.85rem;font-weight:800;opacity:.95}
-.bal-info{display:flex;align-items:center;gap:.5rem}
-.bal-number{font-size:.72rem;font-weight:700;opacity:.75;letter-spacing:.02em}
-.verified-badge{background:rgba(22,163,74,0.25);border:1px solid rgba(22,163,74,0.4);color:#86efac;font-size:.6rem;font-weight:800;padding:.2rem .55rem;border-radius:2rem;display:flex;align-items:center;gap:.3rem}
+/* ── Balance Card (Premium) ── */
+.balance-card {
+    background: linear-gradient(135deg, #0052ff 0%, #003199 100%);
+    border-radius: 24px; padding: 2rem; color: white;
+    position: relative; overflow: hidden; margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 82, 255, 0.25);
+}
+.balance-card::after {
+    content: ''; position: absolute; top: -20%; right: -10%;
+    width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%;
+}
+.bal-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; opacity: 0.8; letter-spacing: 1px; }
+.bal-amount { font-size: 2.5rem; font-weight: 800; margin: 0.5rem 0; letter-spacing: -1px; }
+.bal-wallet { background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
 
-/* ── Stats ── */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
-.stat-card{background:var(--white);border-radius:1.25rem;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid var(--border)}
-.stat-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
-.stat-val{font-size:1.15rem;font-weight:900;display:flex;align-items:center;gap:.35rem}
-.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── Stats Grid ── */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+.stat-item { 
+    background: var(--card-bg); padding: 1.25rem; border-radius: 20px; 
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.stat-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
+.stat-val { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 
-/* ── Section Title ── */
-.section-label{font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;padding-left:.25rem}
+/* ── Transactions List ── */
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.section-header h3 { font-size: 1.1rem; font-weight: 700; }
+.section-header a { font-size: 0.8rem; font-weight: 600; color: var(--primary); text-decoration: none; }
 
-/* ── Quick Actions ── */
-.actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:.6rem}
-.action{background:var(--white);border-radius:1.25rem;padding:.9rem .4rem .75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;display:block;border:1px solid var(--border)}
-.action:active{transform:scale(.93);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-.action-icon{width:44px;height:44px;border-radius:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:1.1rem}
-.action-label{font-size:.58rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
+.txn-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+.txn-item { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 1.2rem; border-bottom: 1px solid #f1f5f9; transition: 0.2s;
+}
+.txn-item:active { background: #f8faff; }
+.txn-icon { 
+    width: 46px; height: 46px; border-radius: 14px; 
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.txn-info { margin-left: 1rem; flex-grow: 1; }
+.txn-name { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
+.txn-time { font-size: 0.75rem; color: var(--text-muted); }
+.txn-amt { text-align: right; font-weight: 800; font-size: 1rem; }
+.cr { color: var(--success); }
+.dr { color: var(--danger); }
 
-/* ── Recent Txns ── */
-.txn-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-.txn-section-header span{font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.txn-section-header a{font-size:.68rem;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:.3rem}
-.txn-list{background:var(--white);border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid var(--border)}
-.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;transition:background .15s;cursor:pointer}
-.txn-item:last-child{border-bottom:none}
-.txn-item:active{background:#fafbff}
-.txn-left{display:flex;align-items:center;gap:.75rem}
-.txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
-.txn-name{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:2px}
-.txn-time{font-size:.62rem;color:var(--muted);font-weight:600}
-.txn-amt{font-size:.9rem;font-weight:900}
-.txn-amt.cr{color:var(--green)}
-.txn-amt.dr{color:var(--red)}
-.txn-badge{font-size:.55rem;font-weight:800;text-align:right;margin-top:3px;padding:.15rem .45rem;border-radius:2rem;display:inline-block}
-.txn-badge.pending{background:#fff7ed;color:var(--orange)}
-.txn-badge.failed{background:#fee2e2;color:var(--red)}
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
-.empty i{font-size:2rem;margin-bottom:.5rem;display:block;opacity:.4}
-.empty p{font-size:.75rem;font-weight:600}
+/* ── Floating Menu Button ── */
+.fab-container { position: fixed; bottom: 100px; right: 25px; z-index: 999; }
+.fab-main {
+    width: 60px; height: 60px; background: var(--primary); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(0,82,255,0.4);
+    cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.fab-container.active .fab-main { transform: rotate(45deg); background: var(--text-main); }
 
-/* ── Bottom Nav ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:.65rem 0 calc(.65rem + env(safe-area-inset-bottom));z-index:50}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:.58rem;font-weight:800;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1;transition:color .2s;letter-spacing:.03em}
-.nav-item.active{color:var(--blue)}
-.nav-item i{font-size:1.15rem}
-.nav-active-dot{width:4px;height:4px;background:var(--blue);border-radius:50%;margin-top:-2px}
+.fab-menu {
+    position: absolute; bottom: 70px; right: 0; display: flex; flex-direction: column; gap: 12px;
+    opacity: 0; pointer-events: none; transform: translateY(20px); transition: 0.3s;
+}
+.fab-container.active .fab-menu { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .4s cubic-bezier(.34,1.2,.64,1) forwards;opacity:0}
-.fade-up:nth-child(1){animation-delay:.05s}
-.fade-up:nth-child(2){animation-delay:.1s}
-.fade-up:nth-child(3){animation-delay:.15s}
-.fade-up:nth-child(4){animation-delay:.2s}
+.fab-item {
+    display: flex; align-items: center; gap: 12px; text-decoration: none; justify-content: flex-end;
+}
+.fab-label {
+    background: var(--text-main); color: white; padding: 6px 14px; border-radius: 10px;
+    font-size: 0.75rem; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.fab-icon {
+    width: 48px; height: 48px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary); font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid var(--border);
+}
+
+/* ── Bottom Navigation ── */
+.bottom-nav {
+    position: fixed; bottom: 0; width: 100%; max-width: 480px; left: 50%; transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px);
+    display: grid; grid-template-columns: repeat(4, 1fr); padding: 0.8rem 0;
+    border-top: 1px solid var(--border); padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+}
+.nav-item { text-align: center; text-decoration: none; color: var(--text-muted); transition: 0.3s; }
+.nav-item i { font-size: 1.2rem; display: block; margin-bottom: 4px; }
+.nav-item span { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+.nav-item.active { color: var(--primary); }
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.2; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-logo">UNIO</div>
-  <div class="header-right">
-    <button class="notif-btn" onclick="window.location.href='tg.html'">
-      <i class="fa-brands fa-telegram"></i>
-    </button>
-    <div class="avatar" id="avatar">U</div>
-    <button class="logout-btn" onclick="logout()">
-      <i class="fa-solid fa-right-from-bracket"></i>
-    </button>
-  </div>
-</div>
+<header class="header">
+    <div class="header-logo">UNIO</div>
+    <div class="header-right">
+        <div class="avatar" id="avatar">U</div>
+        <button onclick="logout()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+    </div>
+</header>
 
 <div class="container">
-
-  <!-- Balance Card -->
-  <div class="balance-card fade-up">
-    <div class="bal-top">
-      <div>
+    <div class="balance-card fade-in">
         <div class="bal-label">Available Balance</div>
-        <div class="bal-amount">&#8377;<span id="balance">0.00</span></div>
-      </div>
-      <div class="bal-chip" id="wallet-id">UW000000</div>
-    </div>
-    <div class="bal-bottom">
-      <div class="bal-user-row">
-        <div class="bal-name" id="user-name-card">—</div>
-        <div class="bal-info">
-          <div class="bal-number" id="user-mobile-card">—</div>
-          <div class="verified-badge">
-            <i class="fa-solid fa-circle-check" style="font-size:.55rem"></i> Verified
-          </div>
+        <div class="bal-amount">₹<span id="balance">0.00</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+            <div>
+                <div id="user-name-card" style="font-weight: 700; font-size: 0.9rem;">—</div>
+                <div id="user-mobile-card" style="font-size: 0.75rem; opacity: 0.8;">—</div>
+            </div>
+            <div class="bal-wallet" id="wallet-id">UW000000</div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Stats -->
-  <div class="stats fade-up">
-    <div class="stat-card">
-      <div class="stat-label">Total In</div>
-      <div class="stat-val" style="color:var(--green)">
-        <span class="stat-dot" style="background:var(--green)"></span>
-        &#8377;<span id="total-in">0.00</span>
-      </div>
+    <div class="stats-grid fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-item">
+            <span class="stat-label">Total In</span>
+            <div class="stat-val" style="color: var(--success);">
+                <i class="fa-solid fa-circle-arrow-down" style="font-size: 0.9rem;"></i>
+                ₹<span id="total-in">0.00</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Total Out</span>
+            <div class="stat-val" style="color: var(--danger);">
+                <i class="fa-solid fa-circle-arrow-up" style="font-size: 0.9rem;"></i>
+                ₹<span id="total-out">0.00</span>
+            </div>
+        </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Out</div>
-      <div class="stat-val" style="color:var(--red)">
-        <span class="stat-dot" style="background:var(--red)"></span>
-        &#8377;<span id="total-out">0.00</span>
-      </div>
+
+    <div class="section-header fade-in" style="animation-delay: 0.2s;">
+        <h3>Activity</h3>
+        <a href="transactions.html">View History</a>
     </div>
-  </div>
 
-  <!-- Quick Actions Row 1 -->
-  <div class="section-label fade-up">Quick Actions</div>
-  <div class="actions-grid fade-up">
-    <a href="transfer.html" class="action">
-      <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-paper-plane" style="color:#0057ff"></i></div>
-      <div class="action-label">Send</div>
-    </a>
-    <a href="deposit.html" class="action">
-      <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-plus" style="color:#16a34a"></i></div>
-      <div class="action-label">Add</div>
-    </a>
-    <a href="withdraw.html" class="action">
-      <div class="action-icon" style="background:#fff7ed"><i class="fa-solid fa-arrow-up" style="color:#ea580c"></i></div>
-      <div class="action-label">Withdraw</div>
-    </a>
-    <a href="lifafa.html" class="action">
-      <div class="action-icon" style="background:#fdf4ff"><i class="fa-solid fa-envelope-open-text" style="color:#9333ea"></i></div>
-      <div class="action-label">Lifafa</div>
-    </a>
-  </div>
-
-  <!-- Quick Actions Row 2 -->
-  <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
-    <a href="transactions.html" class="action">
-      <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-receipt" style="color:#16a34a"></i></div>
-      <div class="action-label">History</div>
-    </a>
-    <a href="settings.html" class="action">
-      <div class="action-icon" style="background:#fffbeb"><i class="fa-solid fa-key" style="color:#f59e0b"></i></div>
-      <div class="action-label">API Keys</div>
-    </a>
-    <a href="txn.html" class="action">
-      <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-magnifying-glass" style="color:#0057ff"></i></div>
-      <div class="action-label">TXN Find</div>
-    </a>
-    <a href="help.html" class="action">
-      <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-headset" style="color:#16a34a"></i></div>
-      <div class="action-label">Help</div>
-    </a>
-  </div>
-
-  <!-- Recent Transactions -->
-  <div class="txn-section-header fade-up">
-    <span>Recent Transactions</span>
-    <a href="transactions.html">View All <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></a>
-  </div>
-  <div class="txn-list fade-up" id="txn-list">
-    <div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>
-  </div>
-
+    <div class="txn-card fade-in" style="animation-delay: 0.3s;" id="txn-list">
+        <div class="empty-state">
+            <i class="fa-solid fa-receipt"></i>
+            <p>No transactions yet</p>
+        </div>
+    </div>
 </div>
 
-<!-- Bottom Nav -->
-<div class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active">
-    <i class="fa-solid fa-house"></i>Home
-    <div class="nav-active-dot"></div>
-  </a>
-  <a href="transfer.html" class="nav-item">
-    <i class="fa-solid fa-paper-plane"></i>Send
-  </a>
-  <a href="qr.html" class="nav-item">
-    <i class="fa-solid fa-qrcode"></i>QR
-  </a>
-  <a href="transactions.html" class="nav-item">
-    <i class="fa-solid fa-receipt"></i>History
-  </a>
-  <a href="tg.html" class="nav-item">
-    <i class="fa-brands fa-telegram"></i>TG
-  </a>
+<div class="fab-container" id="fabContainer">
+    <div class="fab-menu">
+        <a href="transfer.html" class="fab-item">
+            <span class="fab-label">Send Money</span>
+            <div class="fab-icon"><i class="fa-solid fa-paper-plane"></i></div>
+        </a>
+        <a href="deposit.html" class="fab-item">
+            <span class="fab-label">Add Funds</span>
+            <div class="fab-icon"><i class="fa-solid fa-plus"></i></div>
+        </a>
+        <a href="withdraw.html" class="fab-item">
+            <span class="fab-label">Withdraw</span>
+            <div class="fab-icon"><i class="fa-solid fa-building-columns"></i></div>
+        </a>
+        <a href="lifafa.html" class="fab-item">
+            <span class="fab-label">Create Lifafa</span>
+            <div class="fab-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+        </a>
+        <a href="settings.html" class="fab-item">
+            <span class="fab-label">API Settings</span>
+            <div class="fab-icon"><i class="fa-solid fa-gears"></i></div>
+        </a>
+    </div>
+    <div class="fab-main" onclick="toggleFab()">
+        <i class="fa-solid fa-plus"></i>
+    </div>
 </div>
+
+<nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active">
+        <i class="fa-solid fa-house-chimney"></i>
+        <span>Home</span>
+    </a>
+    <a href="qr.html" class="nav-item">
+        <i class="fa-solid fa-qrcode"></i>
+        <span>Scan QR</span>
+    </a>
+    <a href="transactions.html" class="nav-item">
+        <i class="fa-solid fa-receipt"></i>
+        <span>History</span>
+    </a>
+    <a href="tg.html" class="nav-item">
+        <i class="fa-brands fa-telegram"></i>
+        <span>Support</span>
+    </a>
+</nav>
 
 <script>
-const API   = '';
+const API   = ''; // Add your API URL
 const token = localStorage.getItem('token');
 const user  = JSON.parse(localStorage.getItem('user') || '{}');
 
 if(!token) window.location.href = 'index.html';
 
-// User info
-document.getElementById('avatar').textContent        = (user.name||'U')[0].toUpperCase();
-document.getElementById('user-name-card').textContent = user.name || '—';
+// Toggle Floating Menu
+function toggleFab() {
+    document.getElementById('fabContainer').classList.toggle('active');
+}
+
+// Set User Data
+document.getElementById('avatar').textContent = (user.name||'U')[0].toUpperCase();
+document.getElementById('user-name-card').textContent = user.name || 'User';
 document.getElementById('user-mobile-card').textContent = user.mobile || '—';
-document.getElementById('wallet-id').textContent     = user.wallet_id || 'UW000000';
+document.getElementById('wallet-id').textContent = user.wallet_id || 'UW000000';
 
 async function loadData() {
-  try {
-    // Balance
-    const br = await fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}});
-    const bd = await br.json();
-    if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
+    try {
+        const br = await fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}});
+        const bd = await br.json();
+        if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
 
-    // Transactions
-    const tr = await fetch(API+'/wallet/transactions', {headers:{'Authorization':'Bearer '+token}});
-    const td = await tr.json();
+        const tr = await fetch(API+'/wallet/transactions', {headers:{'Authorization':'Bearer '+token}});
+        const td = await tr.json();
 
-    if(td.status==='success' && td.transactions && td.transactions.length > 0) {
-      let totalIn=0, totalOut=0, html='';
+        if(td.status==='success' && td.transactions?.length > 0) {
+            let totalIn=0, totalOut=0, html='';
 
-      td.transactions.slice(0,10).forEach(t => {
-        const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
-        const amt      = parseFloat(t.amount).toFixed(2);
-        if(isCredit) totalIn  += parseFloat(amt);
-        else         totalOut += parseFloat(amt);
+            td.transactions.slice(0,8).forEach(t => {
+                const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
+                const amt = parseFloat(t.amount);
+                
+                if(isCredit) totalIn += amt;
+                else totalOut += amt;
 
-        const name = isCredit
-          ? (t.sender_id?.name   || t.sender_id?.mobile   || 'System')
-          : (t.receiver_id?.name || t.receiver_id?.mobile || 'System');
+                const name = isCredit ? (t.sender_id?.name || 'Deposit') : (t.receiver_id?.name || 'Withdraw');
+                const time = new Date(t.tx_time).toLocaleDateString('en-IN', {day:'2-digit', month:'short'}) + ', ' + new Date(t.tx_time).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
 
-        const time = new Date(t.tx_time).toLocaleString('en-IN',{
-          timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'
-        });
+                html += `
+                <div class="txn-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="txn-icon" style="background:${isCredit ? '#ecfdf5' : '#fff1f2'}; color:${isCredit ? '#10b981' : '#ef4444'}">
+                            <i class="fa-solid fa-${isCredit ? 'arrow-down-left' : 'arrow-up-right'}"></i>
+                        </div>
+                        <div class="txn-info">
+                            <div class="txn-name">${name}</div>
+                            <div class="txn-time">${time}</div>
+                        </div>
+                    </div>
+                    <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${amt.toFixed(2)}</div>
+                </div>`;
+            });
 
-        const isPending = t.status === 'pending';
-        const isFailed  = t.status === 'failed' || t.status === 'rejected';
-        const iconColor = isCredit ? '#16a34a' : isPending ? '#f59e0b' : '#dc2626';
-        const iconBg    = isCredit ? '#f0fdf4'  : isPending ? '#fffbeb' : '#fff1f2';
-        const iconName  = isCredit ? 'arrow-down' : isPending ? 'clock' : 'arrow-up';
-
-        const badge = isPending
-          ? `<div class="txn-badge pending">PENDING</div>`
-          : isFailed
-          ? `<div class="txn-badge failed">FAILED</div>`
-          : '';
-
-        html += `<div class="txn-item">
-          <div class="txn-left">
-            <div class="txn-icon" style="background:${iconBg}">
-              <i class="fa-solid fa-${iconName}" style="color:${iconColor}"></i>
-            </div>
-            <div>
-              <div class="txn-name">${name}</div>
-              <div class="txn-time">${time}</div>
-            </div>
-          </div>
-          <div style="text-align:right">
-            <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
-            ${badge}
-          </div>
-        </div>`;
-      });
-
-      document.getElementById('txn-list').innerHTML = html;
-      document.getElementById('total-in').textContent  = totalIn.toFixed(2);
-      document.getElementById('total-out').textContent = totalOut.toFixed(2);
-    }
-  } catch(e) { console.log(e); }
+            document.getElementById('txn-list').innerHTML = html;
+            document.getElementById('total-in').textContent = totalIn.toFixed(2);
+            document.getElementById('total-out').textContent = totalOut.toFixed(2);
+        }
+    } catch(e) { console.error("Data Load Error:", e); }
 }
 
 function logout() {
-  if(!confirm('Logout karna chahte ho?')) return;
-  localStorage.clear();
-  window.location.href = 'index.html';
+    if(confirm('Are you sure you want to logout?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
 }
 
+// Initial Load
 loadData();
 
-// IP fetch + TG alert on dashboard load
+// Modern Login Alert
 async function sendLoginAlert() {
-  try {
-    // IP fetch
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    const ip = ipData.ip || 'Unknown';
-
-    // Send to backend
-    fetch(API+'/auth/login-alert', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ ip })
-    }).catch(()=>{});
-  } catch(e) {}
+    try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        fetch(API+'/auth/login-alert', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ ip: ipData.ip })
+        });
+    } catch(e) {}
 }
 
-// Sirf ek baar per session
 if(!sessionStorage.getItem('alert_sent')) {
-  sessionStorage.setItem('alert_sent', '1');
-  sendLoginAlert();
+    sessionStorage.setItem('alert_sent', '1');
+    sendLoginAlert();
 }
 </script>
 </body>
