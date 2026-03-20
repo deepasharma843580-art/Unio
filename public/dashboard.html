@@ -124,6 +124,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
   <div class="header-logo" style="margin-bottom: 2rem;">UNIO</div>
   <a href="dashboard.html" class="side-item"><i class="fa-solid fa-house"></i> Home</a>
   <a href="transfer.html" class="side-item"><i class="fa-solid fa-paper-plane"></i> Send Money</a>
+  <a href="bulk.html" class="side-item"><i class="fa-solid fa-layer-group"></i> Bulk Payment</a>
   <a href="deposit.html" class="side-item"><i class="fa-solid fa-plus"></i> Add Money</a>
   <a href="withdraw.html" class="side-item"><i class="fa-solid fa-arrow-up"></i> Withdraw</a>
   <a href="transactions.html" class="side-item"><i class="fa-solid fa-receipt"></i> History</a>
@@ -192,9 +193,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
   <div class="section-label fade-up">Quick Actions</div>
   <div class="actions-grid fade-up">
-    <a href="transfer.html" class="action" onclick="setActiveNav('send')">
+    <a href="transfer.html" class="action">
       <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-paper-plane" style="color:#0057ff"></i></div>
       <div class="action-label">Send</div>
+    </a>
+    <a href="bulk.html" class="action">
+      <div class="action-icon" style="background:#fefce8"><i class="fa-solid fa-layer-group" style="color:#ca8a04"></i></div>
+      <div class="action-label">Bulk</div>
     </a>
     <a href="deposit.html" class="action">
       <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-plus" style="color:#16a34a"></i></div>
@@ -204,14 +209,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
       <div class="action-icon" style="background:#fff7ed"><i class="fa-solid fa-arrow-up" style="color:#ea580c"></i></div>
       <div class="action-label">Withdraw</div>
     </a>
+  </div>
+
+  <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
     <a href="lifafa.html" class="action">
       <div class="action-icon" style="background:#fdf4ff"><i class="fa-solid fa-envelope-open-text" style="color:#9333ea"></i></div>
       <div class="action-label">Lifafa</div>
     </a>
-  </div>
-
-  <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
-    <a href="transactions.html" class="action" onclick="setActiveNav('history')">
+    <a href="transactions.html" class="action">
       <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-receipt" style="color:#16a34a"></i></div>
       <div class="action-label">History</div>
     </a>
@@ -222,10 +227,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     <a href="txn.html" class="action">
       <div class="action-icon" style="background:#eff6ff"><i class="fa-solid fa-magnifying-glass" style="color:#0057ff"></i></div>
       <div class="action-label">TXN Find</div>
-    </a>
-    <a href="help.html" class="action">
-      <div class="action-icon" style="background:#f0fdf4"><i class="fa-solid fa-headset" style="color:#16a34a"></i></div>
-      <div class="action-label">Help</div>
     </a>
   </div>
 
