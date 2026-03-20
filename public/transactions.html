@@ -55,80 +55,45 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
 .empty p{font-size:.8rem;font-weight:600}
 
-/* ── RECEIPT MODAL ── */
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(6px);z-index:100;align-items:flex-end;justify-content:center}
+/* ── RECEIPT MODAL ── Revamped */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:flex-end;justify-content:center}
 #receipt-modal.open{display:flex}
-.receipt-card{background:#fff;border-radius:2.25rem 2.25rem 0 0;width:100%;max-width:480px;max-height:93vh;overflow-y:auto;position:relative}
+.receipt-card{background:white;border-radius:2rem 2rem 0 0;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
 
-/* ── TOP HANDLE + CLOSE ── */
-.r-handle-row{display:flex;align-items:center;justify-content:center;padding:1rem 1.25rem .25rem;position:relative}
-.r-handle{width:36px;height:4px;background:#e2e8f0;border-radius:2px}
-.r-close{position:absolute;right:1.25rem;top:.75rem;width:32px;height:32px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b;font-size:.75rem;-webkit-tap-highlight-color:transparent;transition:background .15s}
-.r-close:active{background:#e2e8f0}
+/* Colorful banner */
+.r-banner{padding:2rem 1.5rem 1.75rem;text-align:center;position:relative;overflow:hidden;border-radius:2rem 2rem 0 0}
+.r-banner.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.r-banner.red{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.r-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:rgba(255,255,255,0.07);border-radius:50%}
+.r-banner::after{content:'';position:absolute;bottom:-40px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,0.05);border-radius:50%}
+.r-close{position:absolute;top:.9rem;right:.9rem;width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:white;font-size:.75rem;z-index:2;-webkit-tap-highlight-color:transparent}
+.r-check-circle{width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;position:relative;z-index:1}
+.r-check-circle i{font-size:1.75rem;color:white}
+.r-amount{font-size:2.5rem;font-weight:900;color:white;letter-spacing:-1px;position:relative;z-index:1;line-height:1}
+.r-status-pill{display:inline-block;background:rgba(255,255,255,0.2);color:white;font-size:.68rem;font-weight:800;padding:.3rem .9rem;border-radius:2rem;margin-top:.6rem;text-transform:uppercase;letter-spacing:.1em;position:relative;z-index:1}
 
-/* ── HERO AMOUNT AREA (no banner) ── */
-.r-hero{text-align:center;padding:1.25rem 1.5rem 1.5rem;position:relative}
-.r-icon-ring{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;position:relative}
-.r-icon-ring.green{background:linear-gradient(135deg,#dcfce7,#bbf7d0);box-shadow:0 0 0 8px #f0fdf4}
-.r-icon-ring.red{background:linear-gradient(135deg,#fee2e2,#fecaca);box-shadow:0 0 0 8px #fff1f2}
-.r-icon-ring i{font-size:1.6rem}
-.r-icon-ring.green i{color:#16a34a}
-.r-icon-ring.red i{color:#dc2626}
-.r-amount{font-size:2.75rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:.5rem}
-.r-amount.green{color:#16a34a}
-.r-amount.red{color:#dc2626}
-.r-status-pill{display:inline-flex;align-items:center;gap:.35rem;font-size:.68rem;font-weight:800;padding:.35rem 1rem;border-radius:2rem;text-transform:uppercase;letter-spacing:.08em}
-.r-status-pill.green{background:#dcfce7;color:#16a34a}
-.r-status-pill.red{background:#fee2e2;color:#dc2626}
-.r-status-pill.pending{background:#fef9c3;color:#ca8a04}
-.r-status-pill i{font-size:.6rem}
-
-/* ── DIVIDER ── */
-.r-divider{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem;margin-bottom:1rem}
-.r-divider::before,.r-divider::after{content:'';flex:1;height:1px;background:#f1f5f9}
-.r-divider span{font-size:.6rem;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
-
-/* ── DETAILS CARD ── */
-.r-body{padding:0 1.25rem 1.5rem}
-.r-details-card{background:#f8fafc;border-radius:1.25rem;overflow:hidden;margin-bottom:1rem}
-.r-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.75rem 1.1rem;border-bottom:1px solid #f1f5f9}
+/* Body */
+.r-body{padding:1.25rem 1.5rem 1.5rem}
+.r-rows{margin-bottom:1rem}
+.r-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid #f8fafc}
 .r-row:last-child{border:none}
-.r-label{font-size:.63rem;color:#94a3b8;font-weight:800;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0;padding-top:2px}
+.r-label{font-size:.68rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;padding-top:1px}
 .r-val{font-size:.78rem;color:#0f172a;font-weight:700;text-align:right;max-width:62%;word-break:break-all}
-
-/* ── TXN ID chip ── */
-.r-txid-chip{background:#eff6ff;border-radius:.5rem;padding:.2rem .5rem;font-family:monospace;font-size:.68rem;color:#0057ff;font-weight:700}
-
-/* ── COMMENT ── */
-.r-comment-box{background:#fffbeb;border:1px solid #fde68a;border-radius:1rem;padding:.75rem 1rem;margin-bottom:1rem;display:none}
-.r-comment-box.show{display:flex;gap:.6rem;align-items:flex-start}
-.r-comment-box i{color:#f59e0b;font-size:.9rem;flex-shrink:0;margin-top:1px}
-.r-comment-inner{}
-.r-comment-label{font-size:.58rem;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.2rem}
-.r-comment-val{font-size:.8rem;font-weight:700;color:#78350f}
-
-/* ── BRAND ── */
-.r-brand{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1rem}
-.r-brand-dot{width:6px;height:6px;background:#e2e8f0;border-radius:50%}
-.r-brand span{font-size:.65rem;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.12em}
-
-/* ── DONE BUTTON ── */
-.r-done{width:100%;padding:1rem;border:none;border-radius:1.1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;color:white;letter-spacing:.05em;-webkit-tap-highlight-color:transparent;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:.5rem}
-.r-done:active{opacity:.85}
-.r-done.green{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 16px rgba(22,163,74,.3)}
-.r-done.red{background:linear-gradient(135deg,#f87171,#dc2626);box-shadow:0 4px 16px rgba(220,38,38,.3)}
+.r-comment-box{background:#eff6ff;border-left:3px solid #0057ff;border-radius:0 .75rem .75rem 0;padding:.65rem 1rem;margin-bottom:1rem;display:none}
+.r-comment-box.show{display:block}
+.r-comment-label{font-size:.6rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.25rem}
+.r-comment-val{font-size:.8rem;font-weight:700;color:#0057ff}
+.r-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;color:#94a3b8;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+.r-done{width:100%;padding:1rem;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;color:white;-webkit-tap-highlight-color:transparent}
+.r-done.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.r-done.red{background:linear-gradient(135deg,#dc2626,#b91c1c)}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
-@keyframes shimmer{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.slide-up{animation:slideUp .3s cubic-bezier(.34,1.3,.64,1) forwards}
-@keyframes popIn{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-.pop-in{animation:popIn .45s cubic-bezier(.34,1.56,.64,1) forwards}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .35s ease forwards}
+.slide-up{animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) forwards}
 </style>
 </head>
 <body>
@@ -174,39 +139,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 </div>
 
-<!-- Receipt Modal -->
 <div id="receipt-modal">
   <div id="receipt-card" class="receipt-card">
 
-    <!-- Handle + Close -->
-    <div class="r-handle-row">
-      <div class="r-handle"></div>
+    <div class="r-banner" id="r-banner">
       <button class="r-close" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <!-- Hero: Icon + Amount + Status (no banner) -->
-    <div class="r-hero">
-      <div class="r-icon-ring" id="r-icon-ring">
-        <i class="fa-solid fa-check" id="r-icon"></i>
-      </div>
+      <div class="r-check-circle"><i class="fa-solid fa-check"></i></div>
       <div class="r-amount" id="r-amt"></div>
-      <div style="margin-top:.6rem">
-        <span class="r-status-pill" id="r-status-pill">
-          <i class="fa-solid fa-circle-dot"></i>
-          <span id="r-status-pill-text"></span>
-        </span>
-      </div>
+      <div class="r-status-pill" id="r-status-pill"></div>
     </div>
-
-    <!-- Divider -->
-    <div class="r-divider"><span>Transaction Details</span></div>
 
     <div class="r-body">
-      <!-- Details Card -->
-      <div class="r-details-card">
+      <div class="r-rows">
         <div class="r-row">
-          <span class="r-label">Txn ID</span>
-          <span class="r-val"><span class="r-txid-chip" id="r-txid"></span></span>
+          <span class="r-label">Transaction ID</span>
+          <span class="r-val" id="r-txid" style="font-family:monospace;font-size:.7rem;color:#0057ff"></span>
         </div>
         <div class="r-row">
           <span class="r-label">Type</span>
@@ -230,30 +177,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         </div>
       </div>
 
-      <!-- Comment -->
       <div class="r-comment-box" id="r-comment-box">
-        <i class="fa-solid fa-comment-dots"></i>
-        <div class="r-comment-inner">
-          <div class="r-comment-label">Remark</div>
-          <div class="r-comment-val" id="r-comment"></div>
-        </div>
+        <div class="r-comment-label">Comment</div>
+        <div class="r-comment-val" id="r-comment"></div>
       </div>
 
-      <!-- Brand -->
       <div class="r-brand">
-        <div class="r-brand-dot"></div>
-        <span>UNIO Wallet</span>
-        <div class="r-brand-dot"></div>
+        <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
       </div>
 
-      <button class="r-done" id="r-done" onclick="closeReceipt()">
-        <i class="fa-solid fa-check"></i> Done
-      </button>
+      <button class="r-done" id="r-done" onclick="closeReceipt()">Close Receipt</button>
     </div>
   </div>
 </div>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
   <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
   <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
@@ -270,46 +207,20 @@ if(!token) window.location.href = 'index.html';
 
 let allTxns = [];
 
-// Skeleton loader
-function showSkeleton() {
-  const skRow = `<div style="padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc">
-    <div style="display:flex;gap:.75rem;align-items:center">
-      <div style="width:40px;height:40px;border-radius:1rem;background:#f1f5f9;animation:shimmer 1.2s infinite"></div>
-      <div>
-        <div style="width:120px;height:10px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-bottom:6px"></div>
-        <div style="width:60px;height:8px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite"></div>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="width:60px;height:10px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-bottom:6px;margin-left:auto"></div>
-      <div style="width:40px;height:8px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-left:auto"></div>
-    </div>
-  </div>`;
-  document.getElementById('txn-list').innerHTML = skRow.repeat(5);
-}
-showSkeleton();
-
-// Balance — fetch independently, show immediately when ready
-fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
-  .then(r=>r.json())
-  .then(bd=>{ if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2); })
-  .catch(()=>{});
-
-// Transactions — fetch independently
-fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}})
-  .then(r=>r.json())
-  .then(td=>{
-    if(td.status==='success'){
-      allTxns = td.transactions || [];
-      renderTxns();
-      renderWithdrawals();
-    } else {
-      document.getElementById('txn-list').innerHTML='<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>';
-    }
-  })
-  .catch(()=>{
-    document.getElementById('txn-list').innerHTML='<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
-  });
+// Fast parallel load
+Promise.all([
+  fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()),
+  fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json())
+]).then(([bd, td]) => {
+  if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
+  if(td.status==='success') {
+    allTxns = td.transactions || [];
+    renderTxns();
+    renderWithdrawals();
+  }
+}).catch(e => {
+  document.getElementById('txn-list').innerHTML = '<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
+});
 
 function getIST(dt) {
   return new Date(dt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
@@ -373,4 +284,77 @@ function renderWithdrawals() {
         <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
         <div class="wd-amt">-&#8377;${amt}</div>
       </div>
-      <div class="wd-upi"><i class="fa-solid fa-wallet" style="co
+      <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
+      <span class="wd-badge ${badgeClass}">${w.status}</span>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function openReceipt(d) {
+  const isCredit = d.credit;
+  const color    = isCredit ? 'green' : 'red';
+
+  document.getElementById('r-banner').className = 'r-banner ' + color;
+  document.getElementById('r-amt').textContent  = (isCredit?'+':'-') + '₹' + d.amt;
+  document.getElementById('r-status-pill').textContent = d.status.toUpperCase();
+  document.getElementById('r-done').className   = 'r-done ' + color;
+
+  document.getElementById('r-txid').textContent = d.tx_id || '—';
+  document.getElementById('r-type').textContent = d.type  || '—';
+  document.getElementById('r-ist').textContent  = getIST(d.time);
+  document.getElementById('r-from').textContent = d.from  || '—';
+  document.getElementById('r-to').textContent   = d.to    || '—';
+  document.getElementById('r-status').textContent = d.status || '—';
+  document.getElementById('r-status').style.color  = d.status==='success'?'#16a34a':d.status==='pending'?'#f59e0b':'#dc2626';
+
+  const cBox = document.getElementById('r-comment-box');
+  if(d.comment && d.comment !== '') {
+    document.getElementById('r-comment').textContent = d.comment;
+    cBox.classList.add('show');
+  } else {
+    cBox.classList.remove('show');
+  }
+
+  const modal = document.getElementById('receipt-modal');
+  const card  = document.getElementById('receipt-card');
+  modal.classList.add('open');
+  card.classList.remove('slide-up');
+  void card.offsetWidth;
+  card.classList.add('slide-up');
+}
+
+function closeReceipt() {
+  document.getElementById('receipt-modal').classList.remove('open');
+}
+
+document.getElementById('receipt-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeReceipt();
+});
+
+function downloadHistory() {
+  if(!allTxns.length) return alert('No transactions to download!');
+  const uid = user.id || user._id || '';
+  let csv = 'TXN ID,Type,Amount,Direction,From,To,Comment,Date,Status\n';
+  allTxns.forEach(t => {
+    const rid = t.receiver_id?._id || t.receiver_id || '';
+    const isCredit = rid && rid.toString() === uid.toString();
+    const from = t.sender_id?.name ? t.sender_id.name+' ('+t.sender_id.mobile+')' : (t.sender_id?.mobile||'System');
+    const to   = t.receiver_id?.name ? t.receiver_id.name+' ('+t.receiver_id.mobile+')' : (t.receiver_id?.mobile||'System');
+    csv += [t.tx_id||t._id,t.type,parseFloat(t.amount).toFixed(2),isCredit?'Credit':'Debit','"'+from+'"','"'+to+'"','"'+(t.remark||'')+'"','"'+getIST(t.tx_time)+'"',t.status].join(',')+'\n';
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'UNIO_Transactions_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
