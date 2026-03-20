@@ -11,7 +11,8 @@
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
-.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;flex:1}
+.dl-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.35rem}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
@@ -20,8 +21,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
-.tab-section{display:none}
-.tab-section.active{display:block}
+.tab-section{display:none}.tab-section.active{display:block}
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:all .2s}
 .txn-item:last-child{border-bottom:none}
@@ -35,19 +35,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
 .txn-type-badge.p2p{background:#eff6ff;color:#0057ff}
 .txn-type-badge.api{background:#f0fdf4;color:#16a34a}
-.txn-type-badge.withdraw{background:#fff7ed;color:#ea580c}
 .txn-type-badge.admin{background:#fdf4ff;color:#9333ea}
+.txn-type-badge.bulk{background:#fff7ed;color:#ea580c}
 .txn-time{font-size:.62rem;color:#94a3b8;font-weight:600;margin-top:2px}
 .txn-amt{font-size:.9rem;font-weight:800;text-align:right}
-.txn-amt.cr{color:#16a34a}
-.txn-amt.dr{color:#dc2626}
+.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#dc2626}
 .txn-status{font-size:.6rem;font-weight:700;margin-top:2px;text-align:right}
-.wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer;transition:all .2s}
+.wd-item:active{transform:scale(.98)}
 .wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
 .wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
 .wd-info span{font-size:.65rem;color:#94a3b8;font-weight:600}
 .wd-amt{font-size:1rem;font-weight:900;color:#ea580c}
 .wd-upi{background:#f8fafc;border-radius:.75rem;padding:.5rem .75rem;font-size:.7rem;font-weight:700;color:#64748b;margin-bottom:.5rem}
+.wd-footer{display:flex;justify-content:space-between;align-items:center}
+.wd-txid{font-size:.6rem;font-weight:700;color:#94a3b8;font-family:monospace}
 .wd-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
 .wd-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
 .wd-badge.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
@@ -55,29 +57,60 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
 .empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
 .empty p{font-size:.8rem;font-weight:600}
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
+
+/* ── COLORFUL RECEIPT MODAL ── */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
 #receipt-modal.open{display:flex}
-.receipt-card{background:white;border-radius:2rem 2rem 0 0;padding:1.75rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
-.receipt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
-.receipt-header h3{font-size:1rem;font-weight:800;color:#0f172a}
-.close-btn{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b;font-size:.8rem}
-.receipt-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.5rem}
-.receipt-amt{text-align:center;font-size:2.25rem;font-weight:900;margin-bottom:.25rem}
-.receipt-label{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.25rem}
-.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid #f8fafc}
-.receipt-row:last-child{border:none}
-.receipt-row span{font-size:.72rem;color:#94a3b8;font-weight:600;flex-shrink:0}
-.receipt-row strong{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:65%;word-break:break-all}
-.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem 0;color:#94a3b8;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
-.done-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;margin-top:.5rem}
-.comment-box{background:#f0f4ff;border-radius:.75rem;padding:.6rem .75rem;margin:.5rem 0;font-size:.72rem;font-weight:700;color:#0057ff;display:none}
-.comment-box.show{display:block}
+.receipt-card{background:white;border-radius:2rem 2rem 0 0;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+
+/* Receipt Top Banner */
+.receipt-banner{padding:2rem 1.5rem 1.5rem;text-align:center;position:relative;overflow:hidden;border-radius:2rem 2rem 0 0}
+.receipt-banner.credit{background:linear-gradient(135deg,#16a34a,#15803d)}
+.receipt-banner.debit{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.receipt-banner.withdraw{background:linear-gradient(135deg,#ea580c,#c2410c)}
+.receipt-banner.bulk{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+.receipt-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(255,255,255,0.08);border-radius:50%}
+.receipt-banner::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;background:rgba(255,255,255,0.06);border-radius:50%}
+.receipt-close{position:absolute;top:1rem;right:1rem;width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:white;font-size:.75rem;z-index:1}
+.receipt-emoji{font-size:2.5rem;margin-bottom:.5rem;position:relative;z-index:1}
+.receipt-amt-big{font-size:2.5rem;font-weight:900;color:white;letter-spacing:-1px;position:relative;z-index:1;line-height:1}
+.receipt-type-tag{display:inline-block;background:rgba(255,255,255,0.2);color:white;font-size:.65rem;font-weight:800;padding:.3rem .8rem;border-radius:2rem;margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em;position:relative;z-index:1}
+
+/* Zigzag separator */
+.receipt-zigzag{height:16px;background:white;position:relative;margin:0}
+.receipt-zigzag::before{content:'';position:absolute;top:-8px;left:0;right:0;height:16px;background:radial-gradient(circle at 50% 0%,transparent 8px,white 8px) repeat-x,white;background-size:24px 16px,100%;background-position:0 0,0 0}
+
+/* Receipt Body */
+.receipt-body{padding:1.25rem 1.5rem 1.5rem}
+.receipt-txid{background:#f0f4ff;border-radius:.75rem;padding:.65rem 1rem;text-align:center;margin-bottom:1.1rem}
+.receipt-txid-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem}
+.receipt-txid-val{font-size:.8rem;font-weight:800;color:#0057ff;font-family:monospace;word-break:break-all}
+.receipt-rows{background:#f8fafc;border-radius:1rem;overflow:hidden;margin-bottom:1rem}
+.r-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid #f1f5f9}
+.r-row:last-child{border:none}
+.r-row-label{font-size:.68rem;color:#94a3b8;font-weight:600;display:flex;align-items:center;gap:.4rem}
+.r-row-val{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:60%;word-break:break-all}
+.r-status-badge{font-size:.65rem;font-weight:800;padding:.2rem .6rem;border-radius:2rem;text-transform:uppercase}
+.r-status-badge.success{background:#dcfce7;color:#16a34a}
+.r-status-badge.pending{background:#fff7ed;color:#ea580c}
+.r-status-badge.rejected,.r-status-badge.failed{background:#fee2e2;color:#dc2626}
+.receipt-comment{background:linear-gradient(135deg,#eff6ff,#f0f4ff);border-radius:.75rem;padding:.7rem 1rem;margin-bottom:1rem;border-left:3px solid #0057ff;display:none}
+.receipt-comment.show{display:block}
+.receipt-comment-label{font-size:.6rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.25rem}
+.receipt-comment-val{font-size:.8rem;font-weight:700;color:#0057ff}
+.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;color:#94a3b8;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+.receipt-done-btn{width:100%;padding:1rem;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;color:white}
+.receipt-done-btn.credit{background:linear-gradient(135deg,#16a34a,#15803d)}
+.receipt-done-btn.debit{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.receipt-done-btn.withdraw{background:linear-gradient(135deg,#ea580c,#c2410c)}
+.receipt-done-btn.bulk{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
 @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.slide-up{animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) forwards}
+.slide-up{animation:slideUp .28s cubic-bezier(.34,1.3,.64,1) forwards}
 </style>
 </head>
 <body>
@@ -85,6 +118,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
   <h1>Transactions</h1>
+  <button class="dl-btn" onclick="downloadHistory()">
+    <i class="fa-solid fa-download"></i> Download
+  </button>
 </div>
 
 <div class="container">
@@ -123,25 +159,64 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <!-- Receipt Modal -->
 <div id="receipt-modal">
   <div id="receipt-card" class="receipt-card">
-    <div class="receipt-header">
-      <h3>Transaction Receipt</h3>
-      <button class="close-btn" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
+
+    <!-- Colorful Banner -->
+    <div class="receipt-banner" id="r-banner">
+      <button class="receipt-close" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="receipt-emoji" id="r-emoji"></div>
+      <div class="receipt-amt-big" id="r-amt"></div>
+      <div class="receipt-type-tag" id="r-type-tag"></div>
     </div>
-    <div class="receipt-icon" id="r-icon"></div>
-    <div class="receipt-amt" id="r-amt"></div>
-    <div class="receipt-label" id="r-label"></div>
-    <div class="receipt-row"><span>Transaction ID</span><strong id="r-txid"></strong></div>
-    <div class="receipt-row"><span>Type</span><strong id="r-type"></strong></div>
-    <div class="receipt-row"><span>&#127470;&#127475; India Time</span><strong id="r-ist"></strong></div>
-    <div class="receipt-row"><span>&#127482;&#127480; USA Time</span><strong id="r-usa"></strong></div>
-    <div class="receipt-row"><span>From</span><strong id="r-from"></strong></div>
-    <div class="receipt-row"><span>To</span><strong id="r-to"></strong></div>
-    <div class="receipt-row" id="r-comment-row" style="display:none"><span>Comment</span><strong id="r-comment"></strong></div>
-    <div class="receipt-row"><span>Status</span><strong id="r-status"></strong></div>
-    <div class="receipt-brand">
-      <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
+
+    <!-- Zigzag -->
+    <div class="receipt-zigzag"></div>
+
+    <!-- Body -->
+    <div class="receipt-body">
+
+      <!-- TXN ID -->
+      <div class="receipt-txid">
+        <div class="receipt-txid-label">Transaction ID</div>
+        <div class="receipt-txid-val" id="r-txid"></div>
+      </div>
+
+      <!-- Details -->
+      <div class="receipt-rows">
+        <div class="r-row">
+          <span class="r-row-label"><i class="fa-solid fa-user" style="color:#0057ff"></i> From</span>
+          <span class="r-row-val" id="r-from"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-row-label"><i class="fa-solid fa-user-check" style="color:#16a34a"></i> To</span>
+          <span class="r-row-val" id="r-to"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-row-label"><i class="fa-solid fa-clock" style="color:#f59e0b"></i> India Time</span>
+          <span class="r-row-val" id="r-ist"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-row-label"><i class="fa-solid fa-tag" style="color:#9333ea"></i> Type</span>
+          <span class="r-row-val" id="r-type"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-row-label"><i class="fa-solid fa-circle-check" style="color:#16a34a"></i> Status</span>
+          <span class="r-row-val" id="r-status"></span>
+        </div>
+      </div>
+
+      <!-- Comment -->
+      <div class="receipt-comment" id="r-comment-wrap">
+        <div class="receipt-comment-label"><i class="fa-solid fa-comment"></i> Comment</div>
+        <div class="receipt-comment-val" id="r-comment"></div>
+      </div>
+
+      <!-- Brand -->
+      <div class="receipt-brand">
+        <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
+      </div>
+
+      <button class="receipt-done-btn" id="r-done-btn" onclick="closeReceipt()">Done</button>
     </div>
-    <button class="done-btn" onclick="closeReceipt()">Done</button>
   </div>
 </div>
 
@@ -179,6 +254,10 @@ async function loadTxns() {
   }
 }
 
+function getIST(dt) {
+  return new Date(dt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+}
+
 function renderTxns() {
   const list = document.getElementById('txn-list');
   const txns = allTxns.filter(t => t.type !== 'withdraw');
@@ -188,59 +267,34 @@ function renderTxns() {
   }
   let html = '';
   txns.forEach(t => {
-    const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
+    const uid      = user.id || user._id || '';
+    const rid      = t.receiver_id?._id || t.receiver_id || '';
+    const isCredit = rid && rid.toString() === uid.toString();
     const amt      = parseFloat(t.amount).toFixed(2);
     const isApi    = t.type === 'api' || t.type === 'api_transfer';
     const isAdmin  = t.type === 'admin_add' || t.type === 'admin_deduct';
+    const isBulk   = t.type === 'bulk' || (t.remark && t.remark.toLowerCase().includes('bulk'));
     const time     = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
 
-    let typeBadge = '';
-    let iconClass = '';
-    let typeLabel = '';
-    if(isApi) {
-      typeBadge = '<span class="txn-type-badge api">API Transfer</span>';
-      iconClass = 'api';
-      typeLabel = 'API Transfer';
-    } else if(isAdmin) {
-      typeBadge = '<span class="txn-type-badge admin">Admin</span>';
-      iconClass = isCredit ? 'cr' : 'dr';
-      typeLabel = 'Admin';
-    } else {
-      typeBadge = '<span class="txn-type-badge p2p">P2P Transfer</span>';
-      iconClass = isCredit ? 'cr' : 'dr';
-      typeLabel = 'P2P Transfer';
-    }
+    let typeBadge='',iconClass='',typeLabel='';
+    if(isApi){typeBadge='<span class="txn-type-badge api">API</span>';iconClass='api';typeLabel='API Transfer';}
+    else if(isAdmin){typeBadge='<span class="txn-type-badge admin">Admin</span>';iconClass=isCredit?'cr':'dr';typeLabel='Admin';}
+    else if(isBulk){typeBadge='<span class="txn-type-badge bulk">Bulk</span>';iconClass=isCredit?'cr':'dr';typeLabel='Bulk Transfer';}
+    else{typeBadge='<span class="txn-type-badge p2p">P2P</span>';iconClass=isCredit?'cr':'dr';typeLabel='P2P Transfer';}
 
-    // Name + Number dono dikhao
-    const fromName   = t.sender_id?.name   || '';
-    const fromMobile = t.sender_id?.mobile || 'System';
-    const toName     = t.receiver_id?.name   || '';
-    const toMobile   = t.receiver_id?.mobile || 'System';
-
-    const fromFull = fromName ? fromName + ' (' + fromMobile + ')' : fromMobile;
-    const toFull   = toName   ? toName   + ' (' + toMobile   + ')' : toMobile;
-
-    const other = isCredit ? fromFull : toFull;
-
-    const comment = t.remark || '';
+    const fromFull = (t.sender_id?.name||'') ? (t.sender_id.name+' ('+t.sender_id.mobile+')') : (t.sender_id?.mobile||'System');
+    const toFull   = (t.receiver_id?.name||'') ? (t.receiver_id.name+' ('+t.receiver_id.mobile+')') : (t.receiver_id?.mobile||'System');
+    const other    = isCredit ? fromFull : toFull;
+    const comment  = t.remark || '';
 
     const txData = JSON.stringify({
-      tx_id:   t.tx_id || t._id,
-      type:    typeLabel,
-      amt:     amt,
-      credit:  isCredit,
-      from:    fromFull,
-      to:      toFull,
-      time:    t.tx_time,
-      status:  t.status,
-      comment: comment
+      tx_id:t.tx_id||t._id,type:typeLabel,amt,credit:isCredit,
+      from:fromFull,to:toFull,time:t.tx_time,status:t.status,comment
     }).replace(/'/g,"&#39;");
 
     html += `<div class="txn-item" onclick='openReceipt(${txData})'>
       <div class="txn-left">
-        <div class="txn-icon ${iconClass}">
-          <i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i>
-        </div>
+        <div class="txn-icon ${iconClass}"><i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i></div>
         <div>
           <div class="txn-name">${other}</div>
           <div>${typeBadge}</div>
@@ -265,16 +319,26 @@ function renderWithdrawals() {
   }
   let html = '';
   wds.forEach(w => {
-    const amt  = parseFloat(w.amount).toFixed(2);
-    const time = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
-    const badgeClass = w.status === 'success' ? 'success' : w.status === 'pending' ? 'pending' : 'rejected';
-    html += `<div class="wd-item">
+    const amt      = parseFloat(w.amount).toFixed(2);
+    const time     = getIST(w.tx_time);
+    const txId     = w.tx_id || w._id || '—';
+    const badgeClass = w.status==='success'?'success':w.status==='pending'?'pending':'rejected';
+    const wdData = JSON.stringify({
+      tx_id:txId,type:'Withdrawal',amt,credit:false,
+      from:(user.name||'')+(user.mobile?' ('+user.mobile+')':''),
+      to:w.remark||'UPI Withdrawal',time:w.tx_time,status:w.status,comment:w.remark||''
+    }).replace(/'/g,"&#39;");
+
+    html += `<div class="wd-item" onclick='openReceipt(${wdData})'>
       <div class="wd-top">
         <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
         <div class="wd-amt">-&#8377;${amt}</div>
       </div>
       <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
-      <span class="wd-badge ${badgeClass}">${w.status}</span>
+      <div class="wd-footer">
+        <span class="wd-txid">${txId}</span>
+        <span class="wd-badge ${badgeClass}">${w.status}</span>
+      </div>
     </div>`;
   });
   list.innerHTML = html;
@@ -288,55 +352,15 @@ function switchTab(tab, el) {
 }
 
 function openReceipt(d) {
-  const isCredit = d.credit;
-  const txDate   = new Date(d.time);
+  const isCredit  = d.credit;
+  const isWd      = d.type === 'Withdrawal';
+  const isBulk    = d.type === 'Bulk Transfer';
 
-  const icon = document.getElementById('r-icon');
-  icon.className = 'receipt-icon';
-  icon.style.background = isCredit ? '#f0fdf4' : '#fff1f2';
-  icon.innerHTML = `<i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}" style="color:${isCredit?'#16a34a':'#dc2626'};font-size:1.5rem"></i>`;
+  // Banner color
+  let bannerClass = isWd ? 'withdraw' : isBulk ? 'bulk' : isCredit ? 'credit' : 'debit';
+  let emoji       = isWd ? '🏦' : isBulk ? '⚡' : isCredit ? '💚' : '🔴';
+  let typeTag     = isWd ? 'Withdrawal' : isBulk ? 'Bulk Payment' : isCredit ? 'Money Received' : 'Money Sent';
 
-  document.getElementById('r-amt').innerHTML = (isCredit?'+':'-') + '₹' + d.amt;
-  document.getElementById('r-amt').style.color   = isCredit ? '#16a34a' : '#dc2626';
-  document.getElementById('r-label').textContent = isCredit ? 'Transfer Received' : 'Transfer Sent';
-
-  document.getElementById('r-txid').textContent   = d.tx_id || '—';
-  document.getElementById('r-type').textContent   = d.type;
-  document.getElementById('r-from').textContent   = d.from;
-  document.getElementById('r-to').textContent     = d.to;
-  document.getElementById('r-status').textContent = d.status;
-  document.getElementById('r-status').style.color = d.status==='success' ? '#16a34a' : '#f59e0b';
-
-  // Comment — API transaction mein remark dikhao
-  const commentRow = document.getElementById('r-comment-row');
-  const commentEl  = document.getElementById('r-comment');
-  if(d.comment && d.comment !== '') {
-    commentEl.textContent = d.comment;
-    commentRow.style.display = 'flex';
-  } else {
-    commentRow.style.display = 'none';
-  }
-
-  document.getElementById('r-ist').textContent = txDate.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
-  document.getElementById('r-usa').textContent = txDate.toLocaleString('en-US',{timeZone:'America/New_York',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
-
-  const modal = document.getElementById('receipt-modal');
-  const card  = document.getElementById('receipt-card');
-  modal.classList.add('open');
-  card.classList.remove('slide-up');
-  void card.offsetWidth;
-  card.classList.add('slide-up');
-}
-
-function closeReceipt() {
-  document.getElementById('receipt-modal').classList.remove('open');
-}
-
-document.getElementById('receipt-modal').addEventListener('click', function(e) {
-  if(e.target === this) closeReceipt();
-});
-
-loadTxns();
-</script>
-</body>
-</html>
+  document.getElementById('r-banner').className = 'receipt-banner ' + bannerClass;
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-amt').textContent   = (
