@@ -7,30 +7,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
-.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;flex:1}
+.dl-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.35rem;-webkit-tap-highlight-color:transparent}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
-
-/* Balance Pill */
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
 .bal-pill-left h2{font-size:1.75rem;font-weight:900;letter-spacing:-1px}
 .bal-pill-right{opacity:.3;font-size:2rem}
-
-/* Tabs */
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
+.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;-webkit-tap-highlight-color:transparent}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
-.tab-section{display:none}
-.tab-section.active{display:block}
-
-/* Txn Items */
+.tab-section{display:none}.tab-section.active{display:block}
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:all .2s}
-.txn-item:active{background:#f8fafc}
+.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s}
+.txn-item:last-child{border-bottom:none}
+.txn-item:active{background:#f0f4ff}
 .txn-left{display:flex;align-items:center;gap:.75rem}
 .txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
 .txn-icon.cr{background:#f0fdf4;color:#16a34a}
@@ -40,14 +35,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
 .txn-type-badge.p2p{background:#eff6ff;color:#0057ff}
 .txn-type-badge.api{background:#f0fdf4;color:#16a34a}
-.txn-type-badge.bulk{background:#fefce8;color:#ca8a04}
+.txn-type-badge.admin{background:#fdf4ff;color:#9333ea}
 .txn-time{font-size:.62rem;color:#94a3b8;font-weight:600;margin-top:2px}
 .txn-amt{font-size:.9rem;font-weight:800;text-align:right}
-.txn-amt.cr{color:#16a34a}
-.txn-amt.dr{color:#dc2626}
-
-/* Withdrawals Original Look[span_0](start_span)[span_0](end_span) */
-.wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer}
+.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#dc2626}
+.txn-status{font-size:.6rem;font-weight:700;margin-top:2px;text-align:right}
+/* Withdraw — unchanged */
+.wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
 .wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
 .wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
 .wd-info span{font-size:.65rem;color:#94a3b8;font-weight:600}
@@ -57,35 +51,49 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .wd-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
 .wd-badge.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
 .wd-badge.rejected{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
+.empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
+.empty p{font-size:.8rem;font-weight:600}
 
-/* New Premium Receipt Design */
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(5px)}
+/* ── RECEIPT MODAL ── */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:flex-end;justify-content:center}
 #receipt-modal.open{display:flex}
-.receipt-card{background:white;border-radius:2rem;width:100%;max-width:400px;overflow:hidden;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.receipt-card{background:white;border-radius:2rem 2rem 0 0;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
 
-.receipt-banner{padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
-.receipt-banner.success{background:linear-gradient(135deg, #16a34a, #059669)}
-.receipt-banner.pending{background:linear-gradient(135deg, #ea580c, #c2410c)}
-.receipt-banner.failed{background:linear-gradient(135deg, #dc2626, #b91c1c)}
+/* Colorful banner */
+.r-banner{padding:2rem 1.5rem 1.75rem;text-align:center;position:relative;overflow:hidden;border-radius:2rem 2rem 0 0}
+.r-banner.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.r-banner.red{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.r-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:rgba(255,255,255,0.07);border-radius:50%}
+.r-banner::after{content:'';position:absolute;bottom:-40px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,0.05);border-radius:50%}
+.r-close{position:absolute;top:.9rem;right:.9rem;width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:white;font-size:.75rem;z-index:2;-webkit-tap-highlight-color:transparent}
+.r-check-circle{width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;position:relative;z-index:1}
+.r-check-circle i{font-size:1.75rem;color:white}
+.r-amount{font-size:2.5rem;font-weight:900;color:white;letter-spacing:-1px;position:relative;z-index:1;line-height:1}
+.r-status-pill{display:inline-block;background:rgba(255,255,255,0.2);color:white;font-size:.68rem;font-weight:800;padding:.3rem .9rem;border-radius:2rem;margin-top:.6rem;text-transform:uppercase;letter-spacing:.1em;position:relative;z-index:1}
 
-.r-icon-circle{width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;border:2px solid rgba(255,255,255,0.3)}
-.r-amt-big{font-size:2.5rem;font-weight:900;letter-spacing:-1px}
-.r-status-tag{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;background:rgba(255,255,255,0.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-top:8px}
-
-.receipt-body{padding:1.5rem}
-.r-row{display:flex;justify-content:space-between;margin-bottom:1rem;border-bottom:1px dashed #f1f5f9;padding-bottom:.6rem}
+/* Body */
+.r-body{padding:1.25rem 1.5rem 1.5rem}
+.r-rows{margin-bottom:1rem}
+.r-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid #f8fafc}
 .r-row:last-child{border:none}
-.r-label{font-size:.72rem;color:#94a3b8;font-weight:700;text-transform:uppercase}
-.r-val{font-size:.75rem;color:#0f172a;font-weight:800;text-align:right;max-width:60%;word-break:break-all}
+.r-label{font-size:.68rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;padding-top:1px}
+.r-val{font-size:.78rem;color:#0f172a;font-weight:700;text-align:right;max-width:62%;word-break:break-all}
+.r-comment-box{background:#eff6ff;border-left:3px solid #0057ff;border-radius:0 .75rem .75rem 0;padding:.65rem 1rem;margin-bottom:1rem;display:none}
+.r-comment-box.show{display:block}
+.r-comment-label{font-size:.6rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.25rem}
+.r-comment-val{font-size:.8rem;font-weight:700;color:#0057ff}
+.r-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;color:#94a3b8;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+.r-done{width:100%;padding:1rem;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;color:white;-webkit-tap-highlight-color:transparent}
+.r-done.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.r-done.red{background:linear-gradient(135deg,#dc2626,#b91c1c)}
 
-.r-footer{padding:1.5rem;background:#f8fafc}
-.done-btn{width:100%;padding:1.1rem;background:#0057ff;color:white;border:none;border-radius:1.25rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
-
-/* Nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
+.nav-item i{font-size:1.2rem}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) forwards}
 </style>
 </head>
 <body>
@@ -93,164 +101,198 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
   <h1>Transactions</h1>
+  <button class="dl-btn" onclick="downloadHistory()">
+    <i class="fa-solid fa-download"></i> Download
+  </button>
 </div>
 
 <div class="container">
+
   <div class="bal-pill">
-    <div class="bal-pill-left"><p>Available Balance</p><h2>&#8377;<span id="balance">0.00</span></h2></div>
+    <div class="bal-pill-left">
+      <p>Available Balance</p>
+      <h2>&#8377;<span id="balance">0.00</span></h2>
+    </div>
     <div class="bal-pill-right"><i class="fa-solid fa-wallet"></i></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('txns',this)"><i class="fa-solid fa-receipt"></i> Transactions</button>
-    <button class="tab" onclick="switchTab('withdrawals',this)"><i class="fa-solid fa-arrow-up"></i> Withdrawals</button>
+    <button class="tab active" onclick="switchTab('txns',this)">
+      <i class="fa-solid fa-receipt"></i> Transactions
+    </button>
+    <button class="tab" onclick="switchTab('withdrawals',this)">
+      <i class="fa-solid fa-arrow-up"></i> Withdrawals
+    </button>
   </div>
 
   <div id="tab-txns" class="tab-section active">
     <div id="txn-list" class="txn-card">
-      <div class="empty" style="text-align:center;padding:3rem;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
 
   <div id="tab-withdrawals" class="tab-section">
     <div id="wd-list">
-      <div class="empty" style="text-align:center;padding:3rem;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
+
 </div>
 
-<!-- Premium Receipt Modal -->
+<!-- Receipt Modal -->
 <div id="receipt-modal">
-  <div class="receipt-card">
-    <div id="r-banner" class="receipt-banner">
-      <div class="r-icon-circle"><i id="r-main-icon" class="fa-solid"></i></div>
-      <div class="r-amt-big" id="r-amt">₹0.00</div>
-      <div class="r-status-tag" id="r-status-text">SUCCESS</div>
-    </div>
-    
-    <div class="receipt-body">
-      <div class="r-row"><span class="r-label">Transaction ID</span><strong class="r-val" id="r-txid"></strong></div>
-      <div class="r-row"><span class="r-label">Type</span><strong class="r-val" id="r-type"></strong></div>
-      <div class="r-row"><span class="r-label">From</span><strong class="r-val" id="r-from"></strong></div>
-      <div class="r-row"><span class="r-label">To</span><strong class="r-val" id="r-to"></strong></div>
-      <div class="r-row"><span class="r-label">India Time (IST)</span><strong class="r-val" id="r-ist"></strong></div>
-      <div id="r-comment-row" class="r-row" style="display:none"><span class="r-label">Comment</span><strong class="r-val" id="r-comment"></strong></div>
+  <div id="receipt-card" class="receipt-card">
+
+    <div class="r-banner" id="r-banner">
+      <button class="r-close" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="r-check-circle"><i class="fa-solid fa-check"></i></div>
+      <div class="r-amount" id="r-amt"></div>
+      <div class="r-status-pill" id="r-status-pill"></div>
     </div>
 
-    <div class="r-footer">
-      <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
+    <div class="r-body">
+      <div class="r-rows">
+        <div class="r-row">
+          <span class="r-label">Transaction ID</span>
+          <span class="r-val" id="r-txid" style="font-family:monospace;font-size:.7rem;color:#0057ff"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-label">Type</span>
+          <span class="r-val" id="r-type"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-label">India Time</span>
+          <span class="r-val" id="r-ist"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-label">From</span>
+          <span class="r-val" id="r-from"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-label">To</span>
+          <span class="r-val" id="r-to"></span>
+        </div>
+        <div class="r-row">
+          <span class="r-label">Status</span>
+          <span class="r-val" id="r-status"></span>
+        </div>
+      </div>
+
+      <div class="r-comment-box" id="r-comment-box">
+        <div class="r-comment-label">Comment</div>
+        <div class="r-comment-val" id="r-comment"></div>
+      </div>
+
+      <div class="r-brand">
+        <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
+      </div>
+
+      <button class="r-done" id="r-done" onclick="closeReceipt()">Close Receipt</button>
     </div>
   </div>
 </div>
 
+<!-- Bottom Nav -->
 <div class="bottom-nav">
   <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
   <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
   <a href="qr.html" class="nav-item"><i class="fa-solid fa-qrcode"></i>QR</a>
+  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
   <a href="transactions.html" class="nav-item active"><i class="fa-solid fa-receipt"></i>History</a>
 </div>
 
 <script>
-const API = '';
+const API   = '';
 const token = localStorage.getItem('token');
-const user = JSON.parse(localStorage.getItem('user') || '{}');
+const user  = JSON.parse(localStorage.getItem('user') || '{}');
 if(!token) window.location.href = 'index.html';
 
-fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
-  .then(r=>r.json()).then(d=>{ if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2); });
+let allTxns = [];
 
-async function loadTxns() {
-  try {
-    const r = await fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}});
-    const d = await r.json();
-    const all = d.transactions || [];
-    renderTxns(all.filter(t => t.type !== 'withdraw'));
-    renderWithdrawals(all.filter(t => t.type === 'withdraw'));
-  } catch(e) { console.log(e); }
+// Fast parallel load
+Promise.all([
+  fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()),
+  fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json())
+]).then(([bd, td]) => {
+  if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
+  if(td.status==='success') {
+    allTxns = td.transactions || [];
+    renderTxns();
+    renderWithdrawals();
+  }
+}).catch(e => {
+  document.getElementById('txn-list').innerHTML = '<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
+});
+
+function getIST(dt) {
+  return new Date(dt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
 }
 
-function renderTxns(txns) {
+function renderTxns() {
   const list = document.getElementById('txn-list');
-  if(txns.length === 0) { list.innerHTML = '<div class="empty"><p>No transactions yet</p></div>'; return; }
+  const txns = allTxns.filter(t => t.type !== 'withdraw');
+  if(!txns.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>'; return; }
   let html = '';
   txns.forEach(t => {
-    const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
-    const time = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-    
-    // Logic as per[span_1](start_span)[span_1](end_span)
-    const other = isCredit ? (t.sender_id?.name || t.sender_id?.mobile || 'System') : (t.receiver_id?.name || t.receiver_id?.mobile || 'Receiver');
+    const uid      = user.id || user._id || '';
+    const rid      = t.receiver_id?._id || t.receiver_id || '';
+    const isCredit = rid && rid.toString() === uid.toString();
+    const amt      = parseFloat(t.amount).toFixed(2);
+    const isApi    = t.type === 'api' || t.type === 'api_transfer';
+    const isAdmin  = t.type === 'admin_add' || t.type === 'admin_deduct';
+    const time     = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
 
-    html += `
-      <div class="txn-item" onclick='openReceipt(${JSON.stringify(t)})'>
-        <div class="txn-left">
-          <div class="txn-icon ${isCredit?'cr':'dr'}"><i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i></div>
-          <div>
-            <div class="txn-name">${other}</div>
-            <span class="txn-type-badge ${t.method==='bulk'?'bulk':'p2p'}">${t.method==='bulk'?'Bulk Payment':'P2P Transfer'}</span>
-            <div class="txn-time">${time}</div>
-          </div>
+    let typeBadge='', iconClass='', typeLabel='';
+    if(isApi){typeBadge='<span class="txn-type-badge api">API</span>';iconClass='api';typeLabel='API Transfer';}
+    else if(isAdmin){typeBadge='<span class="txn-type-badge admin">Admin</span>';iconClass=isCredit?'cr':'dr';typeLabel='Admin';}
+    else{typeBadge='<span class="txn-type-badge p2p">P2P</span>';iconClass=isCredit?'cr':'dr';typeLabel='P2P Transfer';}
+
+    const fromFull = t.sender_id?.name ? t.sender_id.name+' ('+t.sender_id.mobile+')' : (t.sender_id?.mobile||'System');
+    const toFull   = t.receiver_id?.name ? t.receiver_id.name+' ('+t.receiver_id.mobile+')' : (t.receiver_id?.mobile||'System');
+    const other    = isCredit ? fromFull : toFull;
+    const comment  = t.remark || '';
+
+    const txData = JSON.stringify({tx_id:t.tx_id||t._id,type:typeLabel,amt,credit:isCredit,from:fromFull,to:toFull,time:t.tx_time,status:t.status,comment}).replace(/'/g,"&#39;");
+
+    html += `<div class="txn-item" onclick='openReceipt(${txData})'>
+      <div class="txn-left">
+        <div class="txn-icon ${iconClass}"><i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i></div>
+        <div>
+          <div class="txn-name">${other}</div>
+          <div>${typeBadge}</div>
+          <div class="txn-time">${time}</div>
         </div>
-        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${parseFloat(t.amount).toFixed(2)}</div>
-      </div>`;
+      </div>
+      <div>
+        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
+        <div class="txn-status" style="color:${t.status==='success'?'#16a34a':t.status==='pending'?'#f59e0b':'#dc2626'}">${t.status}</div>
+      </div>
+    </div>`;
   });
   list.innerHTML = html;
 }
 
-function renderWithdrawals(wds) {
+function renderWithdrawals() {
   const list = document.getElementById('wd-list');
-  if(wds.length === 0) { list.innerHTML = '<div class="empty"><p>No withdrawals yet</p></div>'; return; }
+  const wds  = allTxns.filter(t => t.type === 'withdraw');
+  if(!wds.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-arrow-up"></i><p>No withdrawals yet</p></div>'; return; }
   let html = '';
   wds.forEach(w => {
+    const amt = parseFloat(w.amount).toFixed(2);
     const time = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
-    const badge = w.status === 'success' ? 'success' : w.status === 'pending' ? 'pending' : 'rejected';
-    // Kept Original Withdrawal Card Design[span_2](start_span)[span_2](end_span)
-    html += `
-      <div class="wd-item" onclick='openReceipt(${JSON.stringify(w)})'>
-        <div class="wd-top">
-          <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
-          <div class="wd-amt">-₹${parseFloat(w.amount).toFixed(2)}</div>
-        </div>
-        <div class="wd-upi"><i class="fa-solid fa-wallet"></i> UPI: ${w.remark||'—'}</div>
-        <span class="wd-badge ${badge}">${w.status.toUpperCase()}</span>
-      </div>`;
+    const badgeClass = w.status==='success'?'success':w.status==='pending'?'pending':'rejected';
+    html += `<div class="wd-item">
+      <div class="wd-top">
+        <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
+        <div class="wd-amt">-&#8377;${amt}</div>
+      </div>
+      <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
+      <span class="wd-badge ${badgeClass}">${w.status}</span>
+    </div>`;
   });
   list.innerHTML = html;
 }
 
-function openReceipt(t) {
-  const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
-  const isWithdraw = t.type === 'withdraw';
-  const status = t.status || 'success';
-
-  // Premium Banner Logic
-  const banner = document.getElementById('r-banner');
-  const icon = document.getElementById('r-main-icon');
-  banner.className = `receipt-banner ${status}`;
-  icon.className = `fa-solid ${status==='success'?'fa-check':(status==='pending'?'fa-clock':'fa-xmark')}`;
-
-  document.getElementById('r-amt').textContent = (isCredit?'+':'-') + '₹' + parseFloat(t.amount).toFixed(2);
-  document.getElementById('r-status-text').textContent = status;
-  
-  // Txn ID Logic (System generated)[span_3](start_span)[span_3](end_span)
-  document.getElementById('r-txid').textContent = t.txn_id || t._id || 'UNIO-TXN-ID';
-  
-  document.getElementById('r-type').textContent = isWithdraw ? 'Withdrawal' : (t.method==='bulk'?'Bulk Payment':'P2P Transfer');
-  document.getElementById('r-from').textContent = t.sender_id?.name || t.sender_id?.mobile || 'System';
-  document.getElementById('r-to').textContent = isWithdraw ? 'Bank Account' : (t.receiver_id?.name || t.receiver_id?.mobile || 'Receiver');
-  
-  // India Time Only[span_4](start_span)[span_4](end_span)
-  document.getElementById('r-ist').textContent = new Date(t.tx_time).toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true});
-
-  const rRow = document.getElementById('r-comment-row');
-  if(t.remark) {
-    document.getElementById('r-comment').textContent = t.remark;
-    rRow.style.display = 'flex';
-  } else { rRow.style.display = 'none'; }
-
-  document.getElementById('receipt-modal').classList.add('open');
-}
-
-function closeReceipt() { document.getElementById('receipt-modal').classList.remove('open'); }
 function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
@@ -258,7 +300,63 @@ function switchTab(tab, el) {
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
-loadTxns();
+function openReceipt(d) {
+  const isCredit = d.credit;
+  const color    = isCredit ? 'green' : 'red';
+
+  document.getElementById('r-banner').className = 'r-banner ' + color;
+  document.getElementById('r-amt').textContent  = (isCredit?'+':'-') + '₹' + d.amt;
+  document.getElementById('r-status-pill').textContent = d.status.toUpperCase();
+  document.getElementById('r-done').className   = 'r-done ' + color;
+
+  document.getElementById('r-txid').textContent = d.tx_id || '—';
+  document.getElementById('r-type').textContent = d.type  || '—';
+  document.getElementById('r-ist').textContent  = getIST(d.time);
+  document.getElementById('r-from').textContent = d.from  || '—';
+  document.getElementById('r-to').textContent   = d.to    || '—';
+  document.getElementById('r-status').textContent = d.status || '—';
+  document.getElementById('r-status').style.color  = d.status==='success'?'#16a34a':d.status==='pending'?'#f59e0b':'#dc2626';
+
+  const cBox = document.getElementById('r-comment-box');
+  if(d.comment && d.comment !== '') {
+    document.getElementById('r-comment').textContent = d.comment;
+    cBox.classList.add('show');
+  } else {
+    cBox.classList.remove('show');
+  }
+
+  const modal = document.getElementById('receipt-modal');
+  const card  = document.getElementById('receipt-card');
+  modal.classList.add('open');
+  card.classList.remove('slide-up');
+  void card.offsetWidth;
+  card.classList.add('slide-up');
+}
+
+function closeReceipt() {
+  document.getElementById('receipt-modal').classList.remove('open');
+}
+
+document.getElementById('receipt-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeReceipt();
+});
+
+function downloadHistory() {
+  if(!allTxns.length) return alert('No transactions to download!');
+  const uid = user.id || user._id || '';
+  let csv = 'TXN ID,Type,Amount,Direction,From,To,Comment,Date,Status\n';
+  allTxns.forEach(t => {
+    const rid = t.receiver_id?._id || t.receiver_id || '';
+    const isCredit = rid && rid.toString() === uid.toString();
+    const from = t.sender_id?.name ? t.sender_id.name+' ('+t.sender_id.mobile+')' : (t.sender_id?.mobile||'System');
+    const to   = t.receiver_id?.name ? t.receiver_id.name+' ('+t.receiver_id.mobile+')' : (t.receiver_id?.mobile||'System');
+    csv += [t.tx_id||t._id,t.type,parseFloat(t.amount).toFixed(2),isCredit?'Credit':'Debit','"'+from+'"','"'+to+'"','"'+(t.remark||'')+'"','"'+getIST(t.tx_time)+'"',t.status].join(',')+'\n';
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'UNIO_Transactions_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
 </script>
 </body>
 </html>
