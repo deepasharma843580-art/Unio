@@ -122,6 +122,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
+@keyframes shimmer{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
 .slide-up{animation:slideUp .3s cubic-bezier(.34,1.3,.64,1) forwards}
 @keyframes popIn{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
@@ -269,20 +270,46 @@ if(!token) window.location.href = 'index.html';
 
 let allTxns = [];
 
-// Fast parallel load
-Promise.all([
-  fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()),
-  fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json())
-]).then(([bd, td]) => {
-  if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
-  if(td.status==='success') {
-    allTxns = td.transactions || [];
-    renderTxns();
-    renderWithdrawals();
-  }
-}).catch(e => {
-  document.getElementById('txn-list').innerHTML = '<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
-});
+// Skeleton loader
+function showSkeleton() {
+  const skRow = `<div style="padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc">
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <div style="width:40px;height:40px;border-radius:1rem;background:#f1f5f9;animation:shimmer 1.2s infinite"></div>
+      <div>
+        <div style="width:120px;height:10px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-bottom:6px"></div>
+        <div style="width:60px;height:8px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite"></div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="width:60px;height:10px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-bottom:6px;margin-left:auto"></div>
+      <div style="width:40px;height:8px;border-radius:4px;background:#f1f5f9;animation:shimmer 1.2s infinite;margin-left:auto"></div>
+    </div>
+  </div>`;
+  document.getElementById('txn-list').innerHTML = skRow.repeat(5);
+}
+showSkeleton();
+
+// Balance — fetch independently, show immediately when ready
+fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+  .then(r=>r.json())
+  .then(bd=>{ if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2); })
+  .catch(()=>{});
+
+// Transactions — fetch independently
+fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}})
+  .then(r=>r.json())
+  .then(td=>{
+    if(td.status==='success'){
+      allTxns = td.transactions || [];
+      renderTxns();
+      renderWithdrawals();
+    } else {
+      document.getElementById('txn-list').innerHTML='<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>';
+    }
+  })
+  .catch(()=>{
+    document.getElementById('txn-list').innerHTML='<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
+  });
 
 function getIST(dt) {
   return new Date(dt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
@@ -346,44 +373,4 @@ function renderWithdrawals() {
         <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
         <div class="wd-amt">-&#8377;${amt}</div>
       </div>
-      <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
-      <span class="wd-badge ${badgeClass}">${w.status}</span>
-    </div>`;
-  });
-  list.innerHTML = html;
-}
-
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-}
-
-function openReceipt(d) {
-  const isCredit = d.credit;
-  const color    = isCredit ? 'green' : 'red';
-
-  // Icon ring
-  const ring = document.getElementById('r-icon-ring');
-  const icon = document.getElementById('r-icon');
-  ring.className = 'r-icon-ring ' + color;
-  icon.className = 'fa-solid fa-' + (isCredit ? 'arrow-down-left' : 'arrow-up-right');
-
-  // Amount
-  const amtEl = document.getElementById('r-amt');
-  amtEl.textContent = (isCredit?'+':'-') + '₹' + d.amt;
-  amtEl.className   = 'r-amount ' + color;
-
-  // Status pill
-  const pill = document.getElementById('r-status-pill');
-  const pillText = document.getElementById('r-status-pill-text');
-  const pillColor = d.status==='success'?'green':d.status==='pending'?'pending':'red';
-  pill.className = 'r-status-pill ' + pillColor;
-  pillText.textContent = d.status.toUpperCase();
-
-  // Done button
-  document.getElementById('r-done').className = 'r-done ' + color;
-
-  // Rows
-  document.getElementById(
+      <div class="wd-upi"><i class="fa-solid fa-wallet" style="co
