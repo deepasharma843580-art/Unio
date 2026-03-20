@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bulk Send | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.card-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.input-group{margin-bottom:1.1rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input,.input-group textarea{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit;color:#0f172a}
+.input-group textarea{height:130px;resize:none;line-height:1.7}
+.input-group input:focus,.input-group textarea:focus{border-color:#0057ff;background:white}
+.preview-box{background:#f8fafc;border-radius:1rem;padding:.75rem 1rem;margin-bottom:1rem;display:none}
+.preview-box.show{display:block}
+.preview-title{font-size:.65rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem}
+.preview-count{font-size:.8rem;font-weight:700;color:#0057ff}
+.preview-total{font-size:.75rem;font-weight:700;color:#dc2626;margin-top:.2rem}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.result-card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);display:none}
+.result-card.show{display:block}
+.result-header{text-align:center;margin-bottom:1.25rem}
+.result-icon{width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.5rem;color:#16a34a}
+.result-title{font-size:1rem;font-weight:900;color:#0f172a;margin-bottom:.25rem}
+.result-sub{font-size:.72rem;color:#94a3b8;font-weight:600}
+.result-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1rem}
+.r-stat{background:#f8fafc;border-radius:1rem;padding:.75rem;text-align:center}
+.r-stat-val{font-size:1.1rem;font-weight:900;color:#0f172a}
+.r-stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:2px}
+.result-list{max-height:200px;overflow-y:auto}
+.result-item{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #f8fafc;font-size:.75rem}
+.result-item:last-child{border:none}
+.result-item .name{font-weight:700;color:#0f172a}
+.result-item .mobile{color:#94a3b8;font-size:.68rem}
+.result-item .ok{color:#16a34a;font-weight:800}
+.result-item .fail{color:#dc2626;font-weight:800}
+.failed-section{background:#fee2e2;border-radius:1rem;padding:.75rem 1rem;margin-top:.75rem;display:none}
+.failed-section.show{display:block}
+.failed-title{font-size:.65rem;font-weight:800;color:#dc2626;text-transform:uppercase;margin-bottom:.5rem}
+.failed-item{font-size:.72rem;color:#dc2626;font-weight:600;margin-bottom:.2rem}
+.done-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;margin-top:1rem}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
+.nav-item i{font-size:1.2rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+  <h1>Bulk Send</h1>
+</div>
+
+<div class="container">
+
+  <div class="balance-pill">
+    <span>Balance</span>
+    <strong>&#8377;<span id="balance">0.00</span></strong>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <!-- Input Card -->
+  <div class="card" id="input-card">
+    <div class="card-title">
+      <i class="fa-solid fa-users" style="color:#0057ff"></i> Recipients
+    </div>
+    <div class="input-group">
+      <label>Mobile Numbers (ek per line)</label>
+      <textarea id="mobiles-input" placeholder="9876543210&#10;9123456789&#10;9012345678" oninput="updatePreview()"></textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Amount (&#8377;) — Sabko Same</label>
+      <input type="number" id="amount-input" placeholder="0.00" step="0.01" oninput="updatePreview()">
+    </div>
+
+    <div class="input-group">
+      <label>Comment (Optional)</label>
+      <input type="text" id="comment-input" placeholder="e.g. Bonus, Reward...">
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-box" id="preview-box">
+      <div class="preview-title">Summary</div>
+      <div class="preview-count" id="preview-count"></div>
+      <div class="preview-total" id="preview-total"></div>
+    </div>
+
+    <button class="btn" id="send-btn" onclick="sendBulk()">
+      <i class="fa-solid fa-paper-plane"></i> Send to All
+    </button>
+  </div>
+
+  <!-- Result Card -->
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <div class="result-icon"><i class="fa-solid fa-check"></i></div>
+      <div class="result-title">Bulk Payment Done!</div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+
+    <div class="result-stats">
+      <div class="r-stat">
+        <div class="r-stat-val" id="r-total-sent" style="color:#0057ff">₹0</div>
+        <div class="r-stat-label">Total Sent</div>
+      </div>
+      <div class="r-stat">
+        <div class="r-stat-val" id="r-success" style="color:#16a34a">0</div>
+        <div class="r-stat-label">Success</div>
+      </div>
+      <div class="r-stat">
+        <div class="r-stat-val" id="r-failed" style="color:#dc2626">0</div>
+        <div class="r-stat-label">Failed</div>
+      </div>
+    </div>
+
+    <div class="result-list" id="result-list"></div>
+
+    <div class="failed-section" id="failed-section">
+      <div class="failed-title">Failed Numbers</div>
+      <div id="failed-list"></div>
+    </div>
+
+    <button class="done-btn" onclick="reset()">
+      <i class="fa-solid fa-rotate-left"></i> Send Again
+    </button>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="qr.html" class="nav-item"><i class="fa-solid fa-qrcode"></i>QR</a>
+  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
+  <a href="transactions.html" class="nav-item"><i class="fa-solid fa-receipt"></i>History</a>
+</div>
+
+<script>
+const API   = '';
+const token = localStorage.getItem('token');
+if(!token) window.location.href = 'index.html';
+
+// Balance
+fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+  .then(r=>r.json()).then(d=>{
+    if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
+  });
+
+function getMobiles() {
+  return document.getElementById('mobiles-input').value
+    .split('\n').map(m=>m.trim()).filter(m=>m.length>=10);
+}
+
+function updatePreview() {
+  const mobiles = getMobiles();
+  const amt     = parseFloat(document.getElementById('amount-input').value) || 0;
+  const preview = document.getElementById('preview-box');
+
+  if(mobiles.length > 0 && amt > 0) {
+    const total = (mobiles.length * amt).toFixed(2);
+    document.getElementById('preview-count').textContent = mobiles.length + ' recipients';
+    document.getElementById('preview-total').textContent = 'Total: ₹' + total + ' will be deducted';
+    preview.classList.add('show');
+  } else {
+    preview.classList.remove('show');
+  }
+}
+
+function showMsg(text, type) {
+  const m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+
+async function sendBulk() {
+  const mobiles = getMobiles();
+  const amount  = document.getElementById('amount-input').value;
+  const comment = document.getElementById('comment-input').value.trim();
+
+  if(!mobiles.length) return showMsg('Mobile numbers enter karo!', 'error');
+  if(!amount || parseFloat(amount) < 1) return showMsg('Valid amount enter karo!', 'error');
+
+  const total = (mobiles.length * parseFloat(amount)).toFixed(2);
+  if(!confirm(`₹${total} total — ${mobiles.length} users ko bhejoge?`)) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+  document.getElementById('msg').className = 'msg';
+
+  try {
+    const r = await fetch(API+'/transfer/bulk-send', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:    JSON.stringify({ mobiles, amount: parseFloat(amount), comment })
+    });
+    const d = await r.json();
+
+    if(d.status === 'success') {
+      showResult(d);
+    } else {
+      showMsg(d.message || 'Failed!', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send to All';
+    }
+  } catch(e) {
+    showMsg('Server error!', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send to All';
+  }
+}
+
+function showResult(d) {
+  document.getElementById('input-card').style.display  = 'none';
+  document.getElementById('preview-box').classList.remove('show');
+  document.getElementById('msg').className = 'msg';
+
+  document.getElementById('result-sub').textContent    = d.message;
+  document.getElementById('r-total-sent').textContent  = '₹' + parseFloat(d.total_sent).toFixed(2);
+  document.getElementById('r-success').textContent     = d.success;
+  document.getElementById('r-failed').textContent      = d.failed_count;
+
+  // Success list
+  let html = '';
+  (d.results || []).forEach(r => {
+    html += `<div class="result-item">
+      <div><div class="name">${r.name||'User'}</div><div class="mobile">${r.mobile}</div></div>
+      <div class="ok"><i class="fa-solid fa-check-circle"></i> Done</div>
+    </div>`;
+  });
+  document.getElementById('result-list').innerHTML = html;
+
+  // Failed list
+  if(d.failed && d.failed.length > 0) {
+    let fHtml = '';
+    d.failed.forEach(f => {
+      fHtml += `<div class="failed-item"><i class="fa-solid fa-xmark"></i> ${f.mobile} — ${f.reason}</div>`;
+    });
+    document.getElementById('failed-list').innerHTML = fHtml;
+    document.getElementById('failed-section').classList.add('show');
+  }
+
+  document.getElementById('result-card').classList.add('show');
+
+  // Balance refresh
+  fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
+    .then(r=>r.json()).then(d=>{
+      if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
+    });
+}
+
+function reset() {
+  document.getElementById('input-card').style.display  = 'block';
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('failed-section').classList.remove('show');
+  document.getElementById('mobiles-input').value = '';
+  document.getElementById('amount-input').value  = '';
+  document.getElementById('comment-input').value = '';
+  document.getElementById('preview-box').classList.remove('show');
+  const btn = document.getElementById('send-btn');
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send to All';
+}
+</script>
+</body>
+</html>
+
