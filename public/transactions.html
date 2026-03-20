@@ -7,73 +7,85 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --blue:#0057ff; --blue-dark:#0033cc; --green:#16a34a; --red:#dc2626;
-  --orange:#ea580c; --bg:#f0f4ff; --white:#ffffff; --text:#0f172a;
-  --muted:#94a3b8; --border:#f1f5f9;
-}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:80px}
-
-/* Header */
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
-
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 
 /* Balance Pill */
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
 .bal-pill-left h2{font-size:1.75rem;font-weight:900;letter-spacing:-1px}
+.bal-pill-right{opacity:.3;font-size:2rem}
 
 /* Tabs */
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
-.tab.active{background:var(--blue);color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
+.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
+.tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
 .tab-section{display:none}
 .tab-section.active{display:block}
 
-/* Transactions Card */
+/* Txn Items */
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer}
+.txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:all .2s}
+.txn-item:active{background:#f8fafc}
 .txn-left{display:flex;align-items:center;gap:.75rem}
-.txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem}
-.txn-icon.cr{background:#f0fdf4;color:var(--green)}
-.txn-icon.dr{background:#fff1f2;color:var(--red)}
-.txn-name{font-size:.8rem;font-weight:700;color:#0f172a}
-.txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block;margin-top:2px}
+.txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.txn-icon.cr{background:#f0fdf4;color:#16a34a}
+.txn-icon.dr{background:#fff1f2;color:#dc2626}
+.txn-icon.api{background:#eff6ff;color:#0057ff}
+.txn-name{font-size:.8rem;font-weight:700;color:#0f172a;margin-bottom:2px}
+.txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
+.txn-type-badge.p2p{background:#eff6ff;color:#0057ff}
+.txn-type-badge.api{background:#f0fdf4;color:#16a34a}
 .txn-type-badge.bulk{background:#fefce8;color:#ca8a04}
-.txn-type-badge.p2p{background:#eff6ff;color:var(--blue)}
-.txn-time{font-size:.62rem;color:var(--muted);font-weight:600}
+.txn-time{font-size:.62rem;color:#94a3b8;font-weight:600;margin-top:2px}
+.txn-amt{font-size:.9rem;font-weight:800;text-align:right}
+.txn-amt.cr{color:#16a34a}
+.txn-amt.dr{color:#dc2626}
 
-/* Withdraw Items (As requested: Original Look) */
+/* Withdrawals Original Look[span_0](start_span)[span_0](end_span) */
 .wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer}
-.wd-top{display:flex;justify-content:space-between;margin-bottom:.5rem}
+.wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
 .wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
 .wd-info span{font-size:.65rem;color:#94a3b8;font-weight:600}
 .wd-amt{font-size:1rem;font-weight:900;color:#ea580c}
 .wd-upi{background:#f8fafc;border-radius:.75rem;padding:.5rem .75rem;font-size:.7rem;font-weight:700;color:#64748b;margin-bottom:.5rem}
-.wd-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:.5rem;text-transform:uppercase;border:1px solid transparent}
-.wd-badge.pending{background:#fff7ed;color:#ea580c;border-color:#fed7aa}
-.wd-badge.success{background:#f0fdf4;color:var(--green);border-color:#bbf7d0}
+.wd-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
+.wd-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
+.wd-badge.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.wd-badge.rejected{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
 
-/* Receipt Modal */
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px)}
+/* New Premium Receipt Design */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(5px)}
 #receipt-modal.open{display:flex}
-.receipt-card{background:white;border-radius:2rem;width:100%;max-width:400px;overflow:hidden;animation:pop .3s ease-out}
-@keyframes pop{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
-.receipt-top{padding:2rem 1.5rem;text-align:center;color:white}
-.receipt-top.success{background:linear-gradient(135deg, #16a34a, #059669)}
-.receipt-top.pending{background:linear-gradient(135deg, #ea580c, #c2410c)}
-.receipt-top.failed{background:linear-gradient(135deg, #dc2626, #b91c1c)}
-.r-icon-circle{width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;border:2px solid rgba(255,255,255,0.3)}
-.receipt-amt-big{font-size:2.5rem;font-weight:900}
-.receipt-details{padding:1.5rem;background:white}
-.r-row{display:flex;justify-content:space-between;margin-bottom:1rem;border-bottom:1px dashed #eee;padding-bottom:0.5rem}
-.r-label{font-size:0.7rem;color:var(--muted);font-weight:700;text-transform:uppercase}
-.r-val{font-size:0.75rem;color:var(--text);font-weight:800;text-align:right;max-width:65%;word-break:break-all}
-.done-btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-size:0.85rem;font-weight:800;cursor:pointer;margin:1.5rem;width:calc(100% - 3rem)}
+.receipt-card{background:white;border-radius:2rem;width:100%;max-width:400px;overflow:hidden;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+.receipt-banner{padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
+.receipt-banner.success{background:linear-gradient(135deg, #16a34a, #059669)}
+.receipt-banner.pending{background:linear-gradient(135deg, #ea580c, #c2410c)}
+.receipt-banner.failed{background:linear-gradient(135deg, #dc2626, #b91c1c)}
+
+.r-icon-circle{width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;border:2px solid rgba(255,255,255,0.3)}
+.r-amt-big{font-size:2.5rem;font-weight:900;letter-spacing:-1px}
+.r-status-tag{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;background:rgba(255,255,255,0.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-top:8px}
+
+.receipt-body{padding:1.5rem}
+.r-row{display:flex;justify-content:space-between;margin-bottom:1rem;border-bottom:1px dashed #f1f5f9;padding-bottom:.6rem}
+.r-row:last-child{border:none}
+.r-label{font-size:.72rem;color:#94a3b8;font-weight:700;text-transform:uppercase}
+.r-val{font-size:.75rem;color:#0f172a;font-weight:800;text-align:right;max-width:60%;word-break:break-all}
+
+.r-footer{padding:1.5rem;background:#f8fafc}
+.done-btn{width:100%;padding:1.1rem;background:#0057ff;color:white;border:none;border-radius:1.25rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
+
+/* Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
+.nav-item.active{color:#0057ff}
 </style>
 </head>
 <body>
@@ -85,56 +97,69 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 <div class="container">
   <div class="bal-pill">
-    <div class="bal-pill-left"><p>Available Balance</p><h2>₹<span id="balance">0.00</span></h2></div>
+    <div class="bal-pill-left"><p>Available Balance</p><h2>&#8377;<span id="balance">0.00</span></h2></div>
+    <div class="bal-pill-right"><i class="fa-solid fa-wallet"></i></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('txns',this)">Transactions</button>
-    <button class="tab" onclick="switchTab('withdrawals',this)">Withdrawals</button>
+    <button class="tab active" onclick="switchTab('txns',this)"><i class="fa-solid fa-receipt"></i> Transactions</button>
+    <button class="tab" onclick="switchTab('withdrawals',this)"><i class="fa-solid fa-arrow-up"></i> Withdrawals</button>
   </div>
 
   <div id="tab-txns" class="tab-section active">
     <div id="txn-list" class="txn-card">
-      <div class="empty" style="text-align:center;padding:2rem;color:grey">Loading...</div>
+      <div class="empty" style="text-align:center;padding:3rem;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
 
   <div id="tab-withdrawals" class="tab-section">
     <div id="wd-list">
-      <div class="empty" style="text-align:center;padding:2rem;color:grey">Loading...</div>
+      <div class="empty" style="text-align:center;padding:3rem;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
     </div>
   </div>
 </div>
 
-<!-- Colorful Receipt Modal -->
+<!-- Premium Receipt Modal -->
 <div id="receipt-modal">
   <div class="receipt-card">
-    <div id="r-top-bg" class="receipt-top">
+    <div id="r-banner" class="receipt-banner">
       <div class="r-icon-circle"><i id="r-main-icon" class="fa-solid"></i></div>
-      <div class="receipt-amt-big" id="r-amt">₹0.00</div>
-      <div id="r-status-label" style="text-transform:uppercase; font-size:0.7rem; font-weight:800; letter-spacing:1px; background:rgba(255,255,255,0.2); display:inline-block; padding:3px 10px; border-radius:20px; margin-top:5px">SUCCESS</div>
+      <div class="r-amt-big" id="r-amt">₹0.00</div>
+      <div class="r-status-tag" id="r-status-text">SUCCESS</div>
     </div>
-    <div class="receipt-details">
+    
+    <div class="receipt-body">
       <div class="r-row"><span class="r-label">Transaction ID</span><strong class="r-val" id="r-txid"></strong></div>
-      <div class="r-row"><span class="r-label">Method</span><strong class="r-val" id="r-method"></strong></div>
+      <div class="r-row"><span class="r-label">Type</span><strong class="r-val" id="r-type"></strong></div>
       <div class="r-row"><span class="r-label">From</span><strong class="r-val" id="r-from"></strong></div>
       <div class="r-row"><span class="r-label">To</span><strong class="r-val" id="r-to"></strong></div>
       <div class="r-row"><span class="r-label">India Time (IST)</span><strong class="r-val" id="r-ist"></strong></div>
-      <div id="r-remark-row" class="r-row" style="display:none"><span class="r-label">Remark</span><strong class="r-val" id="r-remark"></strong></div>
+      <div id="r-comment-row" class="r-row" style="display:none"><span class="r-label">Comment</span><strong class="r-val" id="r-comment"></strong></div>
     </div>
-    <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
+
+    <div class="r-footer">
+      <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
+    </div>
   </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="qr.html" class="nav-item"><i class="fa-solid fa-qrcode"></i>QR</a>
+  <a href="transactions.html" class="nav-item active"><i class="fa-solid fa-receipt"></i>History</a>
 </div>
 
 <script>
 const API = '';
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
+if(!token) window.location.href = 'index.html';
 
 fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{ if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2); });
 
-async function loadData() {
+async function loadTxns() {
   try {
     const r = await fetch(API+'/wallet/transactions',{headers:{'Authorization':'Bearer '+token}});
     const d = await r.json();
@@ -146,18 +171,24 @@ async function loadData() {
 
 function renderTxns(txns) {
   const list = document.getElementById('txn-list');
-  if(txns.length === 0) { list.innerHTML = '<div class="empty">No Data</div>'; return; }
+  if(txns.length === 0) { list.innerHTML = '<div class="empty"><p>No transactions yet</p></div>'; return; }
   let html = '';
   txns.forEach(t => {
     const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
     const time = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-    const otherName = isCredit ? (t.sender_id?.name || t.sender_id?.mobile || 'System') : (t.receiver_id?.name || t.receiver_id?.mobile || 'Receiver');
     
+    // Logic as per[span_1](start_span)[span_1](end_span)
+    const other = isCredit ? (t.sender_id?.name || t.sender_id?.mobile || 'System') : (t.receiver_id?.name || t.receiver_id?.mobile || 'Receiver');
+
     html += `
       <div class="txn-item" onclick='openReceipt(${JSON.stringify(t)})'>
         <div class="txn-left">
           <div class="txn-icon ${isCredit?'cr':'dr'}"><i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i></div>
-          <div><div class="txn-name">${otherName}</div><span class="txn-type-badge ${t.method==='bulk'?'bulk':'p2p'}">${t.method==='bulk'?'Bulk Payment':'Transfer'}</span><div class="txn-time">${time}</div></div>
+          <div>
+            <div class="txn-name">${other}</div>
+            <span class="txn-type-badge ${t.method==='bulk'?'bulk':'p2p'}">${t.method==='bulk'?'Bulk Payment':'P2P Transfer'}</span>
+            <div class="txn-time">${time}</div>
+          </div>
         </div>
         <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${parseFloat(t.amount).toFixed(2)}</div>
       </div>`;
@@ -167,10 +198,12 @@ function renderTxns(txns) {
 
 function renderWithdrawals(wds) {
   const list = document.getElementById('wd-list');
-  if(wds.length === 0) { list.innerHTML = '<div class="empty">No Withdrawals</div>'; return; }
+  if(wds.length === 0) { list.innerHTML = '<div class="empty"><p>No withdrawals yet</p></div>'; return; }
   let html = '';
   wds.forEach(w => {
-    const time = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+    const time = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
+    const badge = w.status === 'success' ? 'success' : w.status === 'pending' ? 'pending' : 'rejected';
+    // Kept Original Withdrawal Card Design[span_2](start_span)[span_2](end_span)
     html += `
       <div class="wd-item" onclick='openReceipt(${JSON.stringify(w)})'>
         <div class="wd-top">
@@ -178,7 +211,7 @@ function renderWithdrawals(wds) {
           <div class="wd-amt">-₹${parseFloat(w.amount).toFixed(2)}</div>
         </div>
         <div class="wd-upi"><i class="fa-solid fa-wallet"></i> UPI: ${w.remark||'—'}</div>
-        <span class="wd-badge ${w.status}">${w.status.toUpperCase()}</span>
+        <span class="wd-badge ${badge}">${w.status.toUpperCase()}</span>
       </div>`;
   });
   list.innerHTML = html;
@@ -187,24 +220,32 @@ function renderWithdrawals(wds) {
 function openReceipt(t) {
   const isCredit = t.receiver_id && (t.receiver_id._id === user.id || t.receiver_id === user.id);
   const isWithdraw = t.type === 'withdraw';
+  const status = t.status || 'success';
+
+  // Premium Banner Logic
+  const banner = document.getElementById('r-banner');
+  const icon = document.getElementById('r-main-icon');
+  banner.className = `receipt-banner ${status}`;
+  icon.className = `fa-solid ${status==='success'?'fa-check':(status==='pending'?'fa-clock':'fa-xmark')}`;
+
+  document.getElementById('r-amt').textContent = (isCredit?'+':'-') + '₹' + parseFloat(t.amount).toFixed(2);
+  document.getElementById('r-status-text').textContent = status;
   
-  // UI logic
-  document.getElementById('r-top-bg').className = 'receipt-top ' + (t.status || 'success');
-  document.getElementById('r-main-icon').className = 'fa-solid ' + (t.status==='success'?'fa-check':(t.status==='pending'?'fa-clock':'fa-xmark'));
-  document.getElementById('r-amt').textContent = '₹' + parseFloat(t.amount).toFixed(2);
-  document.getElementById('r-status-label').textContent = (t.status || 'SUCCESS').toUpperCase();
-  
-  // Transaction ID Fetch (Prioritizing system ID)
+  // Txn ID Logic (System generated)[span_3](start_span)[span_3](end_span)
   document.getElementById('r-txid').textContent = t.txn_id || t._id || 'UNIO-TXN-ID';
   
-  document.getElementById('r-method').textContent = isWithdraw ? 'Withdrawal' : (t.method === 'bulk' ? 'Bulk Payment' : 'P2P Transfer');
+  document.getElementById('r-type').textContent = isWithdraw ? 'Withdrawal' : (t.method==='bulk'?'Bulk Payment':'P2P Transfer');
   document.getElementById('r-from').textContent = t.sender_id?.name || t.sender_id?.mobile || 'System';
   document.getElementById('r-to').textContent = isWithdraw ? 'Bank Account' : (t.receiver_id?.name || t.receiver_id?.mobile || 'Receiver');
   
+  // India Time Only[span_4](start_span)[span_4](end_span)
   document.getElementById('r-ist').textContent = new Date(t.tx_time).toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true});
-  
-  if(t.remark) { document.getElementById('r-remark').textContent = t.remark; document.getElementById('r-remark-row').style.display = 'flex'; }
-  else { document.getElementById('r-remark-row').style.display = 'none'; }
+
+  const rRow = document.getElementById('r-comment-row');
+  if(t.remark) {
+    document.getElementById('r-comment').textContent = t.remark;
+    rRow.style.display = 'flex';
+  } else { rRow.style.display = 'none'; }
 
   document.getElementById('receipt-modal').classList.add('open');
 }
@@ -217,7 +258,7 @@ function switchTab(tab, el) {
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
-loadData();
+loadTxns();
 </script>
 </body>
 </html>
