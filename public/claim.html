@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ... (Aapka saara CSS Same hai, bas wahi rakha hai) ... */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
@@ -28,98 +27,137 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <div class="container">
+
   <!-- STEP 1: Find Lifafa -->
   <div id="step-code" class="card">
     <div style="text-align:center;margin-bottom:1.5rem">
       <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
       <div style="font-size:1rem;font-weight:900;color:#0f172a">Claim Your Reward</div>
+      <div style="font-size:.72rem;color:#94a3b8;font-weight:600;margin-top:.25rem">Enter lifafa code to continue</div>
     </div>
     <div id="code-msg" class="msg"></div>
     <div class="input-group">
       <label>Lifafa Code</label>
-      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;letter-spacing:.15em">
+      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;letter-spacing:.15em;font-size:1rem">
     </div>
     <button class="btn purple" id="find-btn" onclick="loadLifafa()">
       <i class="fa-solid fa-search"></i> Find Lifafa
     </button>
   </div>
 
-  <!-- Baki ke Steps (Mobile, TG, Claim, Success) same rahenge... -->
+  <!-- STEP 2: Enter Mobile -->
   <div id="step-mobile" style="display:none">
     <div class="banner">
-        <div class="banner-emoji">🎁</div>
-        <div class="banner-code" id="banner-code"></div>
-        <div class="banner-type" id="banner-type"></div>
-        <div class="progress-wrap">
-            <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
-            <div class="progress-text"><span id="banner-claimed-text"></span><span id="banner-pct"></span></div>
-        </div>
+      <div class="banner-emoji">🎁</div>
+      <div class="banner-code" id="banner-code"></div>
+      <div class="banner-type" id="banner-type"></div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
+        <div class="progress-text"><span id="banner-claimed-text"></span><span id="banner-pct"></span></div>
+      </div>
     </div>
     <div class="stats-row">
-        <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total"></div></div>
-        <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a"></div></div>
-        <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626"></div></div>
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total"></div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a"></div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626"></div></div>
     </div>
     <div class="card">
-        <div id="mobile-msg" class="msg"></div>
-        <div class="input-group"><label>Your Mobile Number</label><input type="number" id="mobile-input"></div>
-        <button class="btn purple" onclick="verifyMobile()">Next</button>
+      <div id="mobile-msg" class="msg"></div>
+      <div class="input-group">
+        <label>Your Mobile Number</label>
+        <input type="number" id="mobile-input" placeholder="Enter your number">
+      </div>
+      <button class="btn purple" onclick="verifyMobile()">Next <i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>
 
+  <!-- STEP 3: TG Connect -->
   <div id="step-tg" style="display:none" class="card">
-    <div class="tg-warn-card">Telegram Connect Karein</div>
+    <div class="tg-warn-card">
+      <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc;margin-bottom:.75rem;display:block"></i>
+      <div style="font-size:.9rem;font-weight:800;color:#0f172a">Telegram Not Connected!</div>
+      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin-top:10px">Open Bot</a>
+    </div>
     <div id="tg-msg" class="msg"></div>
-    <div class="input-group"><label>Telegram ID</label><input type="number" id="tg-id-input"></div>
+    <div class="input-group">
+      <label>Enter Telegram ID</label>
+      <input type="number" id="tg-id-input" placeholder="Bot se ID lekar yahan dalein">
+    </div>
     <button class="btn green" onclick="saveTgId()">Save & Continue</button>
   </div>
 
+  <!-- STEP 4: Channels & Claim -->
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
-    <div id="channels-wrap" class="card" style="display:none"><div id="channels-list"></div></div>
-    <div id="toss-wrap" class="card" style="display:none"><div class="toss-btns">
-        <button class="toss-btn heads" onclick="claimNow('HEADS')">HEADS</button>
-        <button class="toss-btn tails" onclick="claimNow('TAILS')">TAILS</button>
-    </div></div>
-    <div id="claim-btn-wrap" class="card" style="display:none">
-        <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now!</button>
+    <div id="channels-wrap" class="card" style="display:none">
+       <div id="channels-list"></div>
     </div>
+    <div id="toss-wrap" class="card" style="display:none">
+       <div class="toss-btns">
+          <button class="toss-btn heads" onclick="claimNow('HEADS')">HEADS</button>
+          <button class="toss-btn tails" onclick="claimNow('TAILS')">TAILS</button>
+       </div>
+    </div>
+    <div id="claim-btn-wrap" class="card" style="display:none">
+       <button class="btn purple" id="claim-now-btn" onclick="claimNow('')">Claim Now! 🚀</button>
+    </div>
+
+    <!-- Success & Referral -->
     <div id="step-success" class="card pop-in" style="display:none">
-        <div class="success-box">
-            <div class="success-emoji">🏆</div>
-            <div class="success-amt" id="won-amt"></div>
-            <div id="refer-card" class="refer-card" style="display:none">
-                <div class="refer-card-title">Refer & Earn</div>
-                <div class="refer-card-amt">+₹<span id="refer-amt-val">0</span></div>
-                <div class="refer-link-row"><span id="my-refer-link"></span><button onclick="copyReferLink()">Copy</button></div>
-            </div>
-            <a href="dashboard.html" class="btn green">Go to Wallet</a>
+      <div class="success-box">
+        <div class="success-emoji">🏆</div>
+        <div class="success-amt" id="won-amt">₹0.00</div>
+        <div class="success-label">Added to Wallet</div>
+        
+        <div id="refer-card" class="refer-card" style="display:none">
+          <div class="refer-card-title">Refer & Earn</div>
+          <div class="refer-card-amt">+₹<span id="refer-amt-val">0</span></div>
+          <div class="refer-link-row">
+            <span id="my-refer-link"></span>
+            <button onclick="copyReferLink()">Copy</button>
+          </div>
+          <button class="btn share-btn" onclick="shareReferLink()">Share Now</button>
         </div>
+        
+        <a href="dashboard.html" class="btn green" style="margin-top:1rem">Go to Wallet</a>
+      </div>
     </div>
   </div>
+
 </div>
 
 <script>
-const API = ''; // Apni API URL yahan dalen
+const API = ''; // Yahan apni API URL daalein
+const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 const token = localStorage.getItem('token');
+
 let currentLifafa = null;
 let currentCode = '';
+let userMobile = '';
+let userTgId = '';
+let verifiedChannels = [];
 let referredBy = '';
 
-// URL Parameters read karne ke liye logic[span_0](start_span)[span_0](end_span)
+// 1. Check URL Params for Auto-Load
 const urlParams = new URLSearchParams(window.location.search);
 const urlCode = urlParams.get('code');
 referredBy = urlParams.get('ref') || '';
 
-// Auto-Load if URL has code[span_1](start_span)[span_1](end_span)
-if (urlCode) {
+if(urlCode) {
     document.getElementById('code-input').value = urlCode.toUpperCase();
-    setTimeout(loadLifafa, 500); // 0.5s wait taaki UI load ho jaye
+    window.onload = () => loadLifafa();
 }
 
+function showMsg(id, text, type) {
+    const m = document.getElementById(id);
+    m.textContent = text;
+    m.className = 'msg ' + type;
+}
+
+// 2. Load Lifafa Details
 async function loadLifafa() {
     const code = document.getElementById('code-input').value.trim().toUpperCase();
-    if (!code) return showMsg('code-msg', 'Please enter code!', 'error');
+    if(!code) return showMsg('code-msg', 'Code enter karein!', 'error');
 
     const btn = document.getElementById('find-btn');
     btn.disabled = true;
@@ -128,8 +166,8 @@ async function loadLifafa() {
     try {
         const r = await fetch(`${API}/lifafa/${code}`);
         const d = await r.json();
-        if (d.status !== 'success') {
-            showMsg('code-msg', d.message || 'Invalid code!', 'error');
+        if(d.status !== 'success') {
+            showMsg('code-msg', d.message || 'Invalid Code!', 'error');
             btn.disabled = false;
             btn.innerHTML = 'Find Lifafa';
             return;
@@ -138,34 +176,108 @@ async function loadLifafa() {
         currentLifafa = d.lifafa;
         currentCode = code;
 
-        // UI Update[span_2](start_span)[span_2](end_span)
+        // UI Update
         document.getElementById('banner-code').textContent = currentLifafa.code;
         document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
         document.getElementById('stat-total').textContent = currentLifafa.max_users;
         document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
         document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
 
+        const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+        document.getElementById('banner-progress').style.width = pct + '%';
+        document.getElementById('banner-pct').textContent = pct + '% Full';
+
         document.getElementById('step-code').style.display = 'none';
         document.getElementById('step-mobile').style.display = 'block';
-    } catch (e) {
+    } catch(e) {
         showMsg('code-msg', 'Server error!', 'error');
         btn.disabled = false;
-        btn.innerHTML = 'Find Lifafa';
     }
 }
 
-// Baki ke logic functions (verifyMobile, claimNow, etc.) yahan aayenge...
-// Refer Link Generator[span_3](start_span)[span_3](end_span)
-function genRefCode(mobile) {
-    return mobile.toString().slice(-5).toUpperCase();
+// 3. Verify Mobile
+async function verifyMobile() {
+    const mobile = document.getElementById('mobile-input').value.trim();
+    if(mobile.length < 10) return showMsg('mobile-msg', 'Invalid Number!', 'error');
+
+    userMobile = mobile;
+    // Check if TG Linked (Backend check or LocalStorage)
+    // Normally fetch from API
+    goToClaimStep(); 
 }
 
-function showMsg(id, text, type) {
-    const m = document.getElementById(id);
-    m.textContent = text; m.className = 'msg ' + type;
+// 4. Handle Steps
+function goToClaimStep() {
+    document.getElementById('step-mobile').style.display = 'none';
+    document.getElementById('step-claim').style.display = 'block';
+
+    if(currentLifafa.channels && currentLifafa.channels.length > 0) {
+        document.getElementById('channels-wrap').style.display = 'block';
+        renderChannels();
+    } else {
+        showActionArea();
+    }
 }
 
-// ... (Copy refer logic, verify logic same as your project)
+function showActionArea() {
+    if(currentLifafa.type === 'toss') {
+        document.getElementById('toss-wrap').style.display = 'block';
+    } else {
+        document.getElementById('claim-btn-wrap').style.display = 'block';
+    }
+}
+
+// 5. Final Claim
+async function claimNow(tossChoice = '') {
+    const btn = tossChoice ? null : document.getElementById('claim-now-btn');
+    if(btn) { btn.disabled = true; btn.innerHTML = 'Claiming...'; }
+
+    try {
+        const r = await fetch(`${API}/lifafa/claim`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json', 'Authorization': `Bearer ${token}`},
+            body: JSON.stringify({
+                code: currentCode,
+                mobile: userMobile,
+                toss: tossChoice,
+                ref: referredBy
+            })
+        });
+        const d = await r.json();
+
+        if(d.status === 'success') {
+            document.getElementById('won-amt').textContent = `₹${d.amount.toFixed(2)}`;
+            document.getElementById('toss-wrap').style.display = 'none';
+            document.getElementById('claim-btn-wrap').style.display = 'none';
+            document.getElementById('channels-wrap').style.display = 'none';
+            document.getElementById('step-success').style.display = 'block';
+
+            // Show Refer Card if Refer Bonus exists
+            if(currentLifafa.refer_bonus > 0) {
+                document.getElementById('refer-card').style.display = 'block';
+                document.getElementById('refer-amt-val').textContent = currentLifafa.refer_bonus;
+                const refCode = userMobile.toString().slice(-5).toUpperCase();
+                const link = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${refCode}`;
+                document.getElementById('my-refer-link').textContent = link;
+            }
+        } else {
+            showMsg('claim-msg', d.message, 'error');
+        }
+    } catch(e) {
+        showMsg('claim-msg', 'Claim failed!', 'error');
+    }
+}
+
+function copyReferLink() {
+    const link = document.getElementById('my-refer-link').textContent;
+    navigator.clipboard.writeText(link);
+    alert('Link Copied! ✅');
+}
+
+function shareReferLink() {
+    const link = document.getElementById('my-refer-link').textContent;
+    window.open(`whatsapp://send?text=Loot Lo! 🎁 Is Lifafa ko claim karo aur paise kamao: ${link}`);
+}
 </script>
 </body>
 </html>
