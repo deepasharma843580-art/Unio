@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifafa | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
+.section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input,.input-group select{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus,.input-group select:focus{border-color:#0057ff;background:white}
+.range-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+/* Toggle Switch Style */
+.refer-toggle-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-bottom: 1.25rem;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider { background-color: #0057ff; }
+input:checked + .slider:before { transform: translateX(20px); }
+
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn-outline{width:100%;padding:.75rem;background:white;color:#0057ff;border:2px solid #0057ff;border-radius:1rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:.75rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.channel-item{background:#f8fafc;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.channel-item input{flex:1;background:transparent;border:none;font-size:.85rem;font-weight:600;outline:none;font-family:inherit}
+.channel-item button{background:none;border:none;color:#dc2626;cursor:pointer;font-size:.9rem;padding:.25rem}
+.add-ch-btn{background:#f0f4ff;border:2px dashed #bfdbfe;border-radius:1rem;padding:.75rem;width:100%;font-size:.75rem;font-weight:700;color:#0057ff;cursor:pointer;font-family:inherit;margin-bottom:1.25rem}
+.deduction-box{background:#fff7ed;border:2px solid #fed7aa;border-radius:1rem;padding:1rem;margin-bottom:1.25rem;display:none}
+.deduction-box.show{display:block}
+.deduction-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:.25rem}
+.deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
+.nav-item.active{color:#0057ff}
+.nav-item i{font-size:1.2rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+  <h1>Create Lifafa</h1>
+</div>
+
+<div class="container">
+
+  <div class="balance-pill">
+    <span>Available Balance</span>
+    <strong>₹<span id="balance">0.00</span></strong>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-envelope-open-text"></i> Lifafa Details</div>
+    <div id="create-msg" class="msg"></div>
+
+    <div class="input-group">
+      <label>Unique Code</label>
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025"
+        oninput="this.value=this.value.toUpperCase()">
+    </div>
+
+    <div class="input-group">
+      <label>Type</label>
+      <select id="c-type" onchange="changeType()">
+        <option value="standard">Standard (Fixed Amount)</option>
+        <option value="scratch">Scratch Card (Range)</option>
+        <option value="toss">Toss (Guess)</option>
+      </select>
+    </div>
+
+    <div id="f-amt" class="input-group">
+      <label>Amount Per User (₹)</label>
+      <input type="number" id="c-amt" placeholder="0.00" step="0.01" oninput="calcDeduction()">
+    </div>
+
+    <div id="f-range" style="display:none">
+      <div class="input-group">
+        <label>Amount Range (₹)</label>
+        <div class="range-row">
+          <input type="number" id="c-min" placeholder="Min ₹">
+          <input type="number" id="c-max" placeholder="Max ₹" oninput="calcDeduction()">
+        </div>
+      </div>
+    </div>
+
+    <div id="f-toss" class="input-group" style="display:none">
+      <label>Correct Answer</label>
+      <select id="c-toss">
+        <option value="HEADS">HEADS</option>
+        <option value="TAILS">TAILS</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Total Users</label>
+      <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
+    </div>
+
+    <!-- Refer & Earn Section -->
+    <div class="refer-toggle-box">
+      <span style="font-size:.75rem; font-weight:800; color:#475569; text-transform:uppercase;">Refer & Earn Theme</span>
+      <label class="switch">
+        <input type="checkbox" id="refer-status" onchange="toggleReferInput()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div id="refer-amount-group" class="input-group" style="display:none">
+      <label>Refer Amount (Per Friend)</label>
+      <input type="number" id="refer-amt" placeholder="₹ Enter Amount" step="0.01">
+    </div>
+
+    <!-- Deduction Preview -->
+    <div class="deduction-box" id="deduction-box">
+      <div class="deduction-row">
+        <span>Calculation</span>
+        <span id="d-calc"></span>
+      </div>
+      <div class="deduction-row total">
+        <span>Total Deduction</span>
+        <span id="d-total"></span>
+      </div>
+    </div>
+
+    <!-- Channels -->
+    <div class="section-title">
+      <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
+    </div>
+    <div id="channels-container">
+      <div class="channel-item">
+        <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
+        <input type="url" placeholder="https://t.me/channel" class="ch-input">
+        <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+    <button class="add-ch-btn" onclick="addChannel()">
+      <i class="fa-solid fa-plus"></i> Add Channel
+    </button>
+
+    <button class="btn" id="create-btn" onclick="createLifafa()">
+      <i class="fa-solid fa-rocket"></i> Generate Lifafa
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div id="create-result" style="display:none" class="card">
+    <div style="text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
+      <div style="font-size:.75rem;font-weight:800;color:#16a34a;text-transform:uppercase;margin-bottom:.75rem">Lifafa Created!</div>
+      <div style="font-size:.72rem;font-weight:700;color:#0f172a;background:#f8fafc;padding:.75rem 1rem;border-radius:.75rem;word-break:break-all;margin-bottom:.75rem;line-height:1.6" id="claim-link"></div>
+      <button class="btn" onclick="copyLink()">
+        <i class="fa-solid fa-copy"></i> Copy Claim Link
+      </button>
+      <button class="btn-outline" onclick="createAnother()">
+        <i class="fa-solid fa-plus"></i> Create Another
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
+  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
+  <a href="withdraw.html" class="nav-item"><i class="fa-solid fa-arrow-up"></i>Withdraw</a>
+  <a href="lifafa.html" class="nav-item active"><i class="fa-solid fa-envelope-open-text"></i>Lifafa</a>
+</div>
+
+<script>
+const API   = '';
+const token = localStorage.getItem('token');
+if(!token) window.location.href = 'index.html';
+
+let userBalance = 0;
+let claimLink   = '';
+
+// Load balance
+fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
+  .then(r=>r.json()).then(d=>{
+    if(d.status==='success') {
+      userBalance = parseFloat(d.balance);
+      document.getElementById('balance').textContent = userBalance.toFixed(2);
+    }
+  });
+
+function changeType() {
+  const t = document.getElementById('c-type').value;
+  document.getElementById('f-amt').style.display   = t==='scratch' ? 'none'  : 'block';
+  document.getElementById('f-range').style.display = t==='scratch' ? 'block' : 'none';
+  document.getElementById('f-toss').style.display  = t==='toss'    ? 'block' : 'none';
+  calcDeduction();
+}
+
+function toggleReferInput() {
+  const isChecked = document.getElementById('refer-status').checked;
+  document.getElementById('refer-amount-group').style.display = isChecked ? 'block' : 'none';
+}
+
+function calcDeduction() {
+  const t     = document.getElementById('c-type').value;
+  const users = parseInt(document.getElementById('c-users').value) || 0;
+  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
+  const max   = parseFloat(document.getElementById('c-max').value) || 0;
+  const total = t==='scratch' ? (max*users) : (amt*users);
+  const box   = document.getElementById('deduction-box');
+  if(total > 0 && users > 0) {
+    const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
+    document.getElementById('d-calc').textContent = calc;
+    document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
+    box.classList.add('show');
+  } else {
+    box.classList.remove('show');
+  }
+}
+
+function addChannel() {
+  const container = document.getElementById('channels-container');
+  if(container.children.length >= 10) return alert('Max 10 channels!');
+  const div = document.createElement('div');
+  div.className = 'channel-item';
+  div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
+    <input type="url" placeholder="https://t.me/channel" class="ch-input">
+    <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
+  container.appendChild(div);
+}
+
+function removeCh(btn) { btn.closest('.channel-item').remove(); }
+
+function showMsg(text, type) {
+  const m = document.getElementById('create-msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+  m.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+async function createLifafa() {
+  const code  = document.getElementById('c-code').value.trim().toUpperCase();
+  const type  = document.getElementById('c-type').value;
+  const users = parseInt(document.getElementById('c-users').value) || 0;
+  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
+  const min   = parseFloat(document.getElementById('c-min').value) || 0;
+  const max   = parseFloat(document.getElementById('c-max').value) || 0;
+  const toss  = document.getElementById('c-toss').value;
+  
+  // Refer & Earn values
+  const referStatus = document.getElementById('refer-status').checked;
+  const referAmt    = parseFloat(document.getElementById('refer-amt').value) || 0;
+
+  // Validations
+  if(!code)         return showMsg('❌ Unique code required!', 'error');
+  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
+  if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
+  if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
+  if(referStatus && referAmt <= 0) return showMsg('❌ Enter refer amount!', 'error');
+
+  // Total deduction
+  const total = type === 'scratch' ? (max * users) : (amt * users);
+
+  // Balance check
+  if(userBalance < total) {
+    return showMsg(
+      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
+      'error'
+    );
+  }
+
+  const channels = [...document.querySelectorAll('.ch-input')]
+    .map(i => i.value.trim()).filter(v => v);
+
+  const btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
+
+  try {
+    const r = await fetch(API+'/lifafa/create', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ 
+        code, type, amt, min_range:min, max_range:max, 
+        toss_answer:toss, users, channels,
+        refer_status: referStatus, // Sending refer info
+        refer_amount: referAmt
+      })
+    });
+    const d = await r.json();
+    if(d.status === 'success') {
+      claimLink = window.location.origin + '/claim.html?code=' + d.code;
+      document.getElementById('claim-link').textContent = claimLink;
+      document.getElementById('create-result').style.display = 'block';
+      document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
+      // Update balance
+      userBalance -= total;
+      document.getElementById('balance').textContent = userBalance.toFixed(2);
+      showMsg('', '');
+    } else {
+      showMsg('❌ ' + (d.message || 'Failed!'), 'error');
+    }
+  } catch(e) {
+    showMsg('❌ Server error! Try again.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(claimLink);
+  alert('Claim link copied! ✅');
+}
+
+function createAnother() {
+  document.getElementById('create-result').style.display = 'none';
+  document.getElementById('c-code').value  = '';
+  document.getElementById('c-amt').value   = '';
+  document.getElementById('c-users').value = '';
+  document.getElementById('refer-status').checked = false;
+  document.getElementById('refer-amt').value = '';
+  toggleReferInput();
+  document.getElementById('deduction-box').classList.remove('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+  </html>
+
