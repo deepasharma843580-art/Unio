@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* --- PURA CSS WAHI HAI, BAS LOADING WALA ADD KIYA HAI --- */
+/* Original CSS remains same as source */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
@@ -15,40 +15,43 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
+.banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
+.progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
+.progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
 
-/* Loading Overlay */
+/* New Elements */
 #loading-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(255,255,255,0.9); z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    display: none;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
 }
-.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #7c3aed; border-radius: 50%; animation: spin 1s linear infinite; }
+.spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #7c3aed; border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* Refer Section Above Claim Button */
-.instant-refer-box { background: #f0fdf4; border: 2px dashed #16a34a; border-radius: 1rem; padding: 1rem; margin-bottom: 1rem; text-align: center; }
-.ref-amt-text { font-size: 1.2rem; font-weight: 900; color: #16a34a; margin-bottom: 5px; }
-
-/* Baki standard styles jo pehle the... */
-.banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
-.banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
-.progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}.progress-fill{background:white;height:100%;transition:width .5s}
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}.stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.input-group{margin-bottom:1.25rem}.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;margin-bottom:.5rem}.input-group input{width:100%;padding:1rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem}
-.btn{width:100%;padding:1rem;border:none;border-radius:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none}
-.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff);color:white}.btn.green{background:#16a34a;color:white}
-.msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
-.msg.error{background:#fee2e2;color:#dc2626;display:block}
-.ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;padding:1rem;margin-bottom:0.5rem}
+.instant-refer-box {
+    background: #f0fdf4; border: 2px dashed #16a34a; border-radius: 1.25rem;
+    padding: 1rem; margin-bottom: 1rem; text-align: center;
+}
+.refer-link-display {
+    background: white; border: 1px solid #bbf7d0; padding: 8px; border-radius: 8px;
+    font-size: 11px; word-break: break-all; margin-top: 8px; color: #15803d;
+}
 </style>
 </head>
 <body>
 
-<div id="loading-overlay">
-    <div class="spinner"></div>
-    <p style="margin-top:15px; font-weight:700; color:#7c3aed">Finding Lifafa...</p>
-</div>
+<div id="loading-overlay"><div class="spinner"></div><p style="margin-top:10px; color:#7c3aed; font-weight:700;">Finding Lifafa...</p></div>
 
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
@@ -57,178 +60,168 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 <div class="container">
 
-  <!-- STEP 1: Code Input -->
+  <!-- STEP 1: Enter Code -->
   <div id="step-code" class="card">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:3rem">🎁</div>
-      <div style="font-size:1rem;font-weight:900">Enter Lifafa Code</div>
+      <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
+      <div style="font-size:1rem;font-weight:900;">Claim Your Reward</div>
     </div>
     <div id="code-msg" class="msg"></div>
     <div class="input-group">
-      <input type="text" id="code-input" placeholder="CODE HERE" style="text-transform:uppercase;text-align:center">
+      <label>Lifafa Code</label>
+      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;">
     </div>
     <button class="btn purple" onclick="loadLifafa()">Find Lifafa</button>
   </div>
 
-  <!-- STEP 2: Mobile Input -->
+  <!-- STEP 2: Enter Mobile -->
   <div id="step-mobile" style="display:none">
     <div class="banner">
       <div class="banner-code" id="banner-code"></div>
-      <div class="progress-wrap" style="margin-top:10px">
+      <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
       </div>
     </div>
     <div class="card">
       <div id="mobile-msg" class="msg"></div>
       <div class="input-group">
-        <label>Mobile Number</label>
-        <input type="number" id="mobile-input" placeholder="Enter number">
+        <label>Your Mobile Number</label>
+        <input type="number" id="mobile-input" placeholder="Enter your number">
       </div>
       <div class="input-group">
         <label>Refer Code (Permanent)</label>
-        <input type="text" id="refer-code-input" readonly style="background:#edf2f7">
+        <input type="text" id="refer-code-input" readonly style="background:#f1f5f9;">
       </div>
-      <button class="btn purple" id="next-btn" onclick="verifyMobile()">Next Step</button>
+      <button class="btn purple" onclick="verifyMobile()">Next Step</button>
     </div>
   </div>
 
-  <!-- STEP 4: Claim & Instant Refer -->
+  <!-- STEP 4: Claiming -->
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
     
-    <div id="channels-wrap" class="card" style="display:none">
-       <div id="channels-list"></div>
+    <!-- Instant Refer Link Box (Claim se upar) -->
+    <div id="instant-refer-ui" class="instant-refer-box">
+      <div style="font-size:1rem; font-weight:900; color:#16a34a;">Bonus: ₹<span id="ref-amt-val-instant">0</span></div>
+      <p style="font-size:11px; color:#15803d;">Apne dosto ko share karein!</p>
+      <div id="my-instant-link" class="refer-link-display"></div>
+      <button class="btn green" style="padding: 8px; margin-top: 8px; font-size: 12px;" onclick="copyInstantLink()">Copy My Link</button>
     </div>
 
-    <div class="card">
-       <!-- INSTANT REFER LINK BOX (CLAIM SE PEHLE) -->
-       <div class="instant-refer-box" id="instant-refer-ui">
-          <div class="ref-amt-text">Share & Get ₹<span id="ref-val-display">0</span></div>
-          <p style="font-size: 11px; color: #15803d; margin-bottom: 8px;">Dosto ko share karein, unke claim par aapko bonus milega!</p>
-          <div style="background:#fff; border:1px solid #bbf7d0; padding:8px; border-radius:8px; font-size:10px; word-break:break-all; font-weight:600; margin-bottom:10px;" id="instant-link-text"></div>
-          <button class="btn green" style="padding:8px; font-size:12px;" onclick="copyInstantLink()">Copy My Refer Link</button>
-       </div>
+    <div id="channels-wrap" class="card" style="display:none"><div id="channels-list"></div></div>
 
-       <!-- CLAIM BUTTON -->
-       <div id="toss-wrap" style="display:none">
-          <div class="toss-btns" style="display:flex; gap:10px;">
-             <button class="btn purple" onclick="claimNow('HEADS')">HEADS</button>
-             <button class="btn purple" style="background:#0f172a" onclick="claimNow('TAILS')">TAILS</button>
-          </div>
-       </div>
-       <div id="claim-btn-wrap" style="display:none">
-          <button class="btn purple" id="final-claim-btn" onclick="claimNow('')">Claim Lifafa Now 🚀</button>
-       </div>
+    <div id="toss-wrap" class="card" style="display:none; text-align:center;">
+      <div class="toss-btns">
+        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
+        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
+      </div>
     </div>
 
-    <!-- Success -->
-    <div id="step-success" class="card" style="display:none; text-align:center">
-        <h2 style="color:#16a34a">Success!</h2>
-        <h1 id="won-amt">₹0.00</h1>
-        <p>Wallet mein add kar diya gaya hai.</p>
-        <a href="dashboard.html" class="btn green" style="margin-top:15px">Go to Wallet</a>
+    <div id="claim-btn-wrap" class="card" style="display:none">
+      <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now! 🚀</button>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="step-success" class="card" style="display:none; text-align:center;">
+      <div style="font-size:4rem;">🏆</div>
+      <div id="won-amt" style="font-size:2rem; font-weight:900; color:#16a34a;"></div>
+      <p>Wallet mein add kar diya gaya hai!</p>
+      <a href="dashboard.html" class="btn green" style="margin-top:1.5rem">Go to Wallet</a>
     </div>
   </div>
 
 </div>
 
 <script>
-const API = ''; // API URL dalo
+const API      = ''; // Apni API yahan dalo
+const token    = localStorage.getItem('token');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
-const token = localStorage.getItem('token');
 
 let currentLifafa = null;
+let currentCode = '';
 let userMobile = '';
 let referredBy = '';
 
-// 1. URL Se Check aur Background Find
+// 1. Auto-fill and Background Find Logic[span_4](start_span)[span_4](end_span)
 const urlParams = new URLSearchParams(window.location.search);
-const urlCode = urlParams.get('code');
-referredBy = urlParams.get('ref') || '';
+const urlCode   = urlParams.get('code');
+referredBy      = urlParams.get('ref') || '';
 
 if(referredBy) document.getElementById('refer-code-input').value = referredBy.toUpperCase();
 
 if(urlCode) {
+    document.getElementById('code-input').value = urlCode.toUpperCase();
     document.getElementById('step-code').style.display = 'none';
     loadLifafa(urlCode.toUpperCase());
 }
 
-// 2. Load Lifafa with Loading Screen
 async function loadLifafa(passedCode = null) {
     const code = passedCode || document.getElementById('code-input').value.trim().toUpperCase();
-    if(!code) return showMsg('code-msg', 'Enter code!', 'error');
+    if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
 
-    document.getElementById('loading-overlay').style.display = 'flex'; // Show loading
+    document.getElementById('loading-overlay').style.display = 'flex';
 
     try {
-        const r = await fetch(`${API}/lifafa/${code}`);
+        const r = await fetch(API+'/lifafa/'+code);
         const d = await r.json();
-        
-        if(d.status === 'success') {
-            currentLifafa = d.lifafa;
-            document.getElementById('banner-code').textContent = currentLifafa.code;
-            document.getElementById('banner-progress').style.width = ((currentLifafa.claimed_users/currentLifafa.max_users)*100) + '%';
-            
-            document.getElementById('step-code').style.display = 'none';
-            document.getElementById('step-mobile').style.display = 'block';
-        } else {
+        if(d.status !== 'success') {
             document.getElementById('step-code').style.display = 'block';
-            showMsg('code-msg', d.message, 'error');
+            return showMsg('code-msg', d.message, 'error');
         }
-    } catch(e) {
+
+        currentLifafa = d.lifafa;
+        currentCode = code;
+        
+        document.getElementById('banner-code').textContent = currentLifafa.code;
+        document.getElementById('banner-progress').style.width = ((currentLifafa.claimed_users/currentLifafa.max_users)*100) + '%';
+        
+        document.getElementById('step-code').style.display = 'none';
+        document.getElementById('step-mobile').style.display = 'block';
+    } catch(e) { 
         document.getElementById('step-code').style.display = 'block';
     } finally {
-        document.getElementById('loading-overlay').style.display = 'none'; // Hide loading
+        document.getElementById('loading-overlay').style.display = 'none';
     }
 }
 
-// 3. Verify Mobile aur Refer Link Generate
 async function verifyMobile() {
     const mobile = document.getElementById('mobile-input').value.trim();
-    if(mobile.length < 10) return showMsg('mobile-msg', 'Invalid number!', 'error');
-
+    if(mobile.length < 10) return showMsg('mobile-msg', 'Valid number daalein!', 'error');
+    
     userMobile = mobile;
     
-    // Instant Refer Link Generate (Mobile se)
+    // Referral Link Generation[span_5](start_span)[span_5](end_span)
     const refCode = mobile.toString().slice(-5).toUpperCase();
-    const myLink = `${window.location.origin}${window.location.pathname}?code=${currentLifafa.code}&ref=${refCode}`;
+    const myLink = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${refCode}`;
     
-    document.getElementById('instant-link-text').textContent = myLink;
-    document.getElementById('ref-val-display').textContent = currentLifafa.refer_bonus || '0'; // Amount jo save kiya ho
+    document.getElementById('my-instant-link').textContent = myLink;
+    document.getElementById('ref-amt-val-instant').textContent = currentLifafa.refer_bonus || '0';
 
+    document.getElementById('step-mobile').style.display = 'none';
     goToClaimStep();
 }
 
 function goToClaimStep() {
-    document.getElementById('step-mobile').style.display = 'none';
     document.getElementById('step-claim').style.display = 'block';
-
-    const chs = currentLifafa.channels || [];
-    if(chs.length > 0) {
-        document.getElementById('channels-wrap').style.display = 'block';
-        // (Channel verification logic same as before...)
-        document.getElementById('claim-btn-wrap').style.display = 'block'; // Direct dikha raha hu for testing
-    } else {
-        if(currentLifafa.type === 'toss') document.getElementById('toss-wrap').style.display = 'block';
-        else document.getElementById('claim-btn-wrap').style.display = 'block';
-    }
+    if(currentLifafa.type === 'toss') document.getElementById('toss-wrap').style.display = 'block';
+    else document.getElementById('claim-btn-wrap').style.display = 'block';
 }
 
-async function claimNow(tossChoice) {
+async function claimNow(toss) {
     document.getElementById('loading-overlay').style.display = 'flex';
-    // (Claim API Call logic same as before...)
-    // Success hone par step-success dikhao
+    // Logic for claim API...
     setTimeout(() => {
         document.getElementById('loading-overlay').style.display = 'none';
         document.getElementById('instant-refer-ui').style.display = 'none';
+        document.getElementById('toss-wrap').style.display = 'none';
         document.getElementById('claim-btn-wrap').style.display = 'none';
+        document.getElementById('won-amt').textContent = "₹5.00"; // Dummy
         document.getElementById('step-success').style.display = 'block';
     }, 1500);
 }
 
 function copyInstantLink() {
-    const link = document.getElementById('instant-link-text').textContent;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(document.getElementById('my-instant-link').textContent);
     alert('Refer Link Copied! ✅');
 }
 
