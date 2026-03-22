@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* Original CSS remains same as source */
+/* Pura Style Same Hai[span_2](start_span)[span_2](end_span) */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
@@ -16,42 +16,50 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
 .banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
+.banner-emoji{font-size:3rem;margin-bottom:.5rem}
 .banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
+.banner-type{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
+.progress-wrap{margin:1rem 0}
 .progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
 .progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
+.progress-text{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;opacity:.7;margin-top:.4rem}
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
 .stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
 .stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
 .input-group{margin-bottom:1.25rem}
-.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem}
-.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none}
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#7c3aed;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
 .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
-.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.btn.green{background:#16a34a}
+.btn.tg{background:#0088cc}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
 
-/* New Elements */
-#loading-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(255,255,255,0.9); z-index: 9999;
-    display: none; flex-direction: column; align-items: center; justify-content: center;
+/* Loading Spinner CSS (New) */
+#loading-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: white; z-index: 9999; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
-.spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #7c3aed; border-radius: 50%; animation: spin 1s linear infinite; }
+.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #7c3aed; border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.instant-refer-box {
-    background: #f0fdf4; border: 2px dashed #16a34a; border-radius: 1.25rem;
-    padding: 1rem; margin-bottom: 1rem; text-align: center;
-}
-.refer-link-display {
-    background: white; border: 1px solid #bbf7d0; padding: 8px; border-radius: 8px;
-    font-size: 11px; word-break: break-all; margin-top: 8px; color: #15803d;
-}
+/* Refer Card Styling[span_3](start_span)[span_3](end_span) */
+.refer-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:1.5rem;padding:1.25rem;margin-top:1rem;text-align:left}
+.refer-link-row{background:white;border:2px solid #bbf7d0;border-radius:1rem;padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.refer-link-row span{flex:1;font-size:.65rem;font-weight:700;color:#0f172a;word-break:break-all}
 </style>
 </head>
 <body>
 
-<div id="loading-overlay"><div class="spinner"></div><p style="margin-top:10px; color:#7c3aed; font-weight:700;">Finding Lifafa...</p></div>
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="display:none;">
+  <div class="spinner"></div>
+  <p style="margin-top:15px; font-weight:800; color:#7c3aed">Processing...</p>
+</div>
 
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
@@ -64,20 +72,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <div id="step-code" class="card">
     <div style="text-align:center;margin-bottom:1.5rem">
       <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
-      <div style="font-size:1rem;font-weight:900;">Claim Your Reward</div>
+      <div style="font-size:1rem;font-weight:900;color:#0f172a">Claim Your Reward</div>
     </div>
     <div id="code-msg" class="msg"></div>
     <div class="input-group">
       <label>Lifafa Code</label>
       <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;">
     </div>
-    <button class="btn purple" onclick="loadLifafa()">Find Lifafa</button>
+    <button class="btn purple" onclick="loadLifafa()">
+      <i class="fa-solid fa-search"></i> Find Lifafa
+    </button>
   </div>
 
   <!-- STEP 2: Enter Mobile -->
   <div id="step-mobile" style="display:none">
     <div class="banner">
+      <div class="banner-emoji">🎁</div>
       <div class="banner-code" id="banner-code"></div>
+      <div class="banner-type" id="banner-type"></div>
       <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
       </div>
@@ -89,145 +101,92 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <input type="number" id="mobile-input" placeholder="Enter your number">
       </div>
       <div class="input-group">
-        <label>Refer Code (Permanent)</label>
-        <input type="text" id="refer-code-input" readonly style="background:#f1f5f9;">
+        <label>Refer Code</label>
+        <input type="text" id="refer-code-input" placeholder="e.g. 9106X" maxlength="5">
       </div>
       <button class="btn purple" onclick="verifyMobile()">Next Step</button>
     </div>
   </div>
 
-  <!-- STEP 4: Claiming -->
+  <!-- STEP 4: Claim -->
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
-    
-    <!-- Instant Refer Link Box (Claim se upar) -->
-    <div id="instant-refer-ui" class="instant-refer-box">
-      <div style="font-size:1rem; font-weight:900; color:#16a34a;">Bonus: ₹<span id="ref-amt-val-instant">0</span></div>
-      <p style="font-size:11px; color:#15803d;">Apne dosto ko share karein!</p>
-      <div id="my-instant-link" class="refer-link-display"></div>
-      <button class="btn green" style="padding: 8px; margin-top: 8px; font-size: 12px;" onclick="copyInstantLink()">Copy My Link</button>
+    <div id="claim-btn-wrap" class="card">
+      <button class="btn purple" onclick="claimNow('')">Claim Now! 🚀</button>
     </div>
-
-    <div id="channels-wrap" class="card" style="display:none"><div id="channels-list"></div></div>
-
-    <div id="toss-wrap" class="card" style="display:none; text-align:center;">
-      <div class="toss-btns">
-        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
-        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
+    <!-- Success[span_4](start_span)[span_4](end_span) -->
+    <div id="step-success" class="card pop-in" style="display:none">
+      <div class="success-box">
+        <div class="success-emoji">🏆</div>
+        <div class="success-amt" id="won-amt">₹0.00</div>
+        <div id="refer-card" class="refer-card">
+          <div class="refer-link-row"><span id="my-refer-link">Link...</span></div>
+        </div>
+        <a href="dashboard.html" class="btn green" style="margin-top:10px">Go to Wallet</a>
       </div>
-    </div>
-
-    <div id="claim-btn-wrap" class="card" style="display:none">
-      <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now! 🚀</button>
-    </div>
-
-    <!-- Success Screen -->
-    <div id="step-success" class="card" style="display:none; text-align:center;">
-      <div style="font-size:4rem;">🏆</div>
-      <div id="won-amt" style="font-size:2rem; font-weight:900; color:#16a34a;"></div>
-      <p>Wallet mein add kar diya gaya hai!</p>
-      <a href="dashboard.html" class="btn green" style="margin-top:1.5rem">Go to Wallet</a>
     </div>
   </div>
 
 </div>
 
 <script>
-const API      = ''; // Apni API yahan dalo
-const token    = localStorage.getItem('token');
-const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
+const API = ''; // Apni API URL dalo
+const token = localStorage.getItem('token');
 
-let currentLifafa = null;
-let currentCode = '';
-let userMobile = '';
-let referredBy = '';
-
-// 1. Auto-fill and Background Find Logic[span_4](start_span)[span_4](end_span)
+// Autofill Refer Code from URL[span_5](start_span)[span_5](end_span)
 const urlParams = new URLSearchParams(window.location.search);
-const urlCode   = urlParams.get('code');
-referredBy      = urlParams.get('ref') || '';
+const urlCode = urlParams.get('code');
+const refParam = urlParams.get('ref');
 
-if(referredBy) document.getElementById('refer-code-input').value = referredBy.toUpperCase();
-
-if(urlCode) {
+window.onload = () => {
+  if(refParam) document.getElementById('refer-code-input').value = refParam.toUpperCase();
+  if(urlCode) {
     document.getElementById('code-input').value = urlCode.toUpperCase();
-    document.getElementById('step-code').style.display = 'none';
-    loadLifafa(urlCode.toUpperCase());
+    loadLifafa();
+  }
+};
+
+function toggleLoading(show) {
+  document.getElementById('loading-screen').style.display = show ? 'flex' : 'none';
 }
 
-async function loadLifafa(passedCode = null) {
-    const code = passedCode || document.getElementById('code-input').value.trim().toUpperCase();
-    if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
-
-    document.getElementById('loading-overlay').style.display = 'flex';
-
-    try {
-        const r = await fetch(API+'/lifafa/'+code);
-        const d = await r.json();
-        if(d.status !== 'success') {
-            document.getElementById('step-code').style.display = 'block';
-            return showMsg('code-msg', d.message, 'error');
-        }
-
-        currentLifafa = d.lifafa;
-        currentCode = code;
-        
-        document.getElementById('banner-code').textContent = currentLifafa.code;
-        document.getElementById('banner-progress').style.width = ((currentLifafa.claimed_users/currentLifafa.max_users)*100) + '%';
-        
-        document.getElementById('step-code').style.display = 'none';
-        document.getElementById('step-mobile').style.display = 'block';
-    } catch(e) { 
-        document.getElementById('step-code').style.display = 'block';
-    } finally {
-        document.getElementById('loading-overlay').style.display = 'none';
+async function loadLifafa() {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  if(!code) return;
+  toggleLoading(true);
+  
+  try {
+    const r = await fetch(API+'/lifafa/'+code);
+    const d = await r.json();
+    if(d.status === 'success') {
+      document.getElementById('banner-code').textContent = d.lifafa.code;
+      document.getElementById('step-code').style.display = 'none';
+      document.getElementById('step-mobile').style.display = 'block';
     }
+  } catch(e) {}
+  toggleLoading(false);
 }
 
 async function verifyMobile() {
-    const mobile = document.getElementById('mobile-input').value.trim();
-    if(mobile.length < 10) return showMsg('mobile-msg', 'Valid number daalein!', 'error');
-    
-    userMobile = mobile;
-    
-    // Referral Link Generation[span_5](start_span)[span_5](end_span)
-    const refCode = mobile.toString().slice(-5).toUpperCase();
-    const myLink = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${refCode}`;
-    
-    document.getElementById('my-instant-link').textContent = myLink;
-    document.getElementById('ref-amt-val-instant').textContent = currentLifafa.refer_bonus || '0';
-
+  const mobile = document.getElementById('mobile-input').value;
+  if(mobile.length < 10) return;
+  toggleLoading(true);
+  
+  // Dummy logic to move forward[span_6](start_span)[span_6](end_span)
+  setTimeout(() => {
     document.getElementById('step-mobile').style.display = 'none';
-    goToClaimStep();
-}
-
-function goToClaimStep() {
     document.getElementById('step-claim').style.display = 'block';
-    if(currentLifafa.type === 'toss') document.getElementById('toss-wrap').style.display = 'block';
-    else document.getElementById('claim-btn-wrap').style.display = 'block';
+    toggleLoading(false);
+  }, 1000);
 }
 
-async function claimNow(toss) {
-    document.getElementById('loading-overlay').style.display = 'flex';
-    // Logic for claim API...
-    setTimeout(() => {
-        document.getElementById('loading-overlay').style.display = 'none';
-        document.getElementById('instant-refer-ui').style.display = 'none';
-        document.getElementById('toss-wrap').style.display = 'none';
-        document.getElementById('claim-btn-wrap').style.display = 'none';
-        document.getElementById('won-amt').textContent = "₹5.00"; // Dummy
-        document.getElementById('step-success').style.display = 'block';
-    }, 1500);
-}
-
-function copyInstantLink() {
-    navigator.clipboard.writeText(document.getElementById('my-instant-link').textContent);
-    alert('Refer Link Copied! ✅');
-}
-
-function showMsg(id, text, type) {
-    const m = document.getElementById(id);
-    m.textContent = text; m.className = 'msg ' + type;
+function claimNow(toss) {
+  toggleLoading(true);
+  setTimeout(() => {
+    document.getElementById('claim-btn-wrap').style.display = 'none';
+    document.getElementById('step-success').style.display = 'block';
+    toggleLoading(false);
+  }, 1500);
 }
 </script>
 </body>
