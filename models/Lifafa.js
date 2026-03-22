@@ -13,7 +13,11 @@ const LifafaSchema = new mongoose.Schema({
   claimed_users:   { type: Number, default: 0 },
   channels:        { type: [String], default: [] },
   status:          { type: String, enum: ['active','expired'], default: 'active' },
-  created_at:      { type: Date, default: Date.now }
+  created_at:      { type: Date, default: Date.now },
+
+  // ── Refer & Earn ──
+  refer_enabled:   { type: Boolean, default: false },
+  refer_amt:       { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Lifafa', LifafaSchema);
