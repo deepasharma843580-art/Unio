@@ -38,6 +38,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .deduction-box.show{display:block}
 .deduction-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:.25rem}
 .deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
+
+/* Refer & Earn */
+.refer-section{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.refer-header{display:flex;align-items:center;justify-content:space-between}
+.refer-header-left{display:flex;align-items:center;gap:.6rem}
+.refer-header-left i{color:#16a34a;font-size:1rem}
+.refer-header-left span{font-size:.75rem;font-weight:800;color:#15803d;text-transform:uppercase;letter-spacing:.04em}
+.toggle-wrap{position:relative;width:46px;height:26px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:#d1d5db;border-radius:999px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.toggle-wrap input:checked+.toggle-slider{background:#16a34a}
+.toggle-wrap input:checked+.toggle-slider::before{transform:translateX(20px)}
+.refer-amt-box{margin-top:1rem;display:none}
+.refer-amt-box.show{display:block}
+.refer-amt-box label{display:block;font-size:.68rem;font-weight:800;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.refer-amt-box input{width:100%;padding:.85rem 1.1rem;background:white;border:2px solid #86efac;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;transition:border .2s}
+.refer-amt-box input:focus{border-color:#16a34a}
+.refer-save-btn{margin-top:.75rem;width:100%;padding:.75rem;background:#16a34a;color:white;border:none;border-radius:1rem;font-size:.78rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s}
+.refer-save-btn:active{transform:scale(.98)}
+.refer-saved-badge{display:none;margin-top:.6rem;background:#dcfce7;color:#15803d;border-radius:.75rem;padding:.5rem .85rem;font-size:.72rem;font-weight:700;text-align:center}
+.refer-saved-badge.show{display:block}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
@@ -64,8 +87,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
     <div class="input-group">
       <label>Unique Code</label>
-      <input type="text" id="c-code" placeholder="e.g. DIWALI2025"
-        oninput="this.value=this.value.toUpperCase()">
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase()">
     </div>
 
     <div class="input-group">
@@ -105,15 +127,32 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <!-- Deduction Preview -->
     <div class="deduction-box" id="deduction-box">
-      <div class="deduction-row">
-        <span>Calculation</span>
-        <span id="d-calc"></span>
+      <div class="deduction-row"><span>Calculation</span><span id="d-calc"></span></div>
+      <div class="deduction-row total"><span>Total Deduction</span><span id="d-total"></span></div>
+    </div>
+
+    <!-- Refer & Earn — same section sab themes me -->
+    <div class="refer-section">
+      <div class="refer-header">
+        <div class="refer-header-left">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>Refer &amp; Earn</span>
+        </div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="refer-toggle" onchange="onReferToggle()">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
-      <div class="deduction-row total">
-        <span>Total Deduction</span>
-        <span id="d-total"></span>
+      <div class="refer-amt-box" id="refer-amt-box">
+        <label>Refer Amount per referral (₹)</label>
+        <input type="number" id="refer-amt" placeholder="e.g. 5" step="0.01" min="0">
+        <button class="refer-save-btn" onclick="saveReferAmount()">
+          <i class="fa-solid fa-floppy-disk"></i> Save Refer Amount
+        </button>
+        <div class="refer-saved-badge" id="refer-saved-badge">
+          ✅ Saved! Users will earn ₹<span id="saved-amt-text">0</span> per referral on Claim page.
+        </div>
       </div>
     </div>
 
@@ -167,17 +206,40 @@ const API   = '';
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
-let userBalance = 0;
-let claimLink   = '';
+let userBalance   = 0;
+let claimLink     = '';
+let referEnabled  = false;
+let savedReferAmt = 0;
 
-// Load balance
 fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
-    if(d.status==='success') {
+    if(d.status==='success'){
       userBalance = parseFloat(d.balance);
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     }
   });
+
+function onReferToggle() {
+  referEnabled = document.getElementById('refer-toggle').checked;
+  const box   = document.getElementById('refer-amt-box');
+  const badge = document.getElementById('refer-saved-badge');
+  if(referEnabled) {
+    box.classList.add('show');
+  } else {
+    box.classList.remove('show');
+    badge.classList.remove('show');
+    savedReferAmt = 0;
+    document.getElementById('refer-amt').value = '';
+  }
+}
+
+function saveReferAmount() {
+  const val = parseFloat(document.getElementById('refer-amt').value);
+  if(!val || val <= 0) { alert('❌ Valid refer amount enter karo!'); return; }
+  savedReferAmt = val;
+  document.getElementById('saved-amt-text').textContent = val.toFixed(2);
+  document.getElementById('refer-saved-badge').classList.add('show');
+}
 
 function changeType() {
   const t = document.getElementById('c-type').value;
@@ -194,25 +256,22 @@ function calcDeduction() {
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
   const total = t==='scratch' ? (max*users) : (amt*users);
   const box   = document.getElementById('deduction-box');
-  if(total > 0 && users > 0) {
-    const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
-    document.getElementById('d-calc').textContent = calc;
-    document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
+  if(total>0 && users>0){
+    document.getElementById('d-calc').textContent = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
+    document.getElementById('d-total').textContent = '₹'+total.toFixed(2);
     box.classList.add('show');
-  } else {
-    box.classList.remove('show');
-  }
+  } else { box.classList.remove('show'); }
 }
 
 function addChannel() {
-  const container = document.getElementById('channels-container');
-  if(container.children.length >= 10) return alert('Max 10 channels!');
+  const c = document.getElementById('channels-container');
+  if(c.children.length >= 10) return alert('Max 10 channels!');
   const div = document.createElement('div');
   div.className = 'channel-item';
   div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
     <input type="url" placeholder="https://t.me/channel" class="ch-input">
     <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
-  container.appendChild(div);
+  c.appendChild(div);
 }
 
 function removeCh(btn) { btn.closest('.channel-item').remove(); }
@@ -220,8 +279,8 @@ function removeCh(btn) { btn.closest('.channel-item').remove(); }
 function showMsg(text, type) {
   const m = document.getElementById('create-msg');
   m.textContent = text;
-  m.className = 'msg ' + type;
-  m.scrollIntoView({behavior:'smooth', block:'center'});
+  m.className = 'msg '+ type;
+  if(text) m.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 async function createLifafa() {
@@ -233,25 +292,17 @@ async function createLifafa() {
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
   const toss  = document.getElementById('c-toss').value;
 
-  // Validations
-  if(!code)         return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
-  if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
-  if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
+  if(!code)      return showMsg('❌ Unique code required!','error');
+  if(users <= 0) return showMsg('❌ Total users required!','error');
+  if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!','error');
+  if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!','error');
+  if(referEnabled && savedReferAmt <= 0) return showMsg('❌ Refer amount save karo pehle!','error');
 
-  // Total deduction
-  const total = type === 'scratch' ? (max * users) : (amt * users);
+  const total = type==='scratch' ? (max*users) : (amt*users);
+  if(userBalance < total)
+    return showMsg(`❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,'error');
 
-  // Balance check
-  if(userBalance < total) {
-    return showMsg(
-      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
-      'error'
-    );
-  }
-
-  const channels = [...document.querySelectorAll('.ch-input')]
-    .map(i => i.value.trim()).filter(v => v);
+  const channels = [...document.querySelectorAll('.ch-input')].map(i=>i.value.trim()).filter(v=>v);
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
@@ -261,7 +312,11 @@ async function createLifafa() {
     const r = await fetch(API+'/lifafa/create', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels })
+      body: JSON.stringify({
+        code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels,
+        refer_enabled: referEnabled,
+        refer_amt:     referEnabled ? savedReferAmt : 0
+      })
     });
     const d = await r.json();
     if(d.status === 'success') {
@@ -269,16 +324,13 @@ async function createLifafa() {
       document.getElementById('claim-link').textContent = claimLink;
       document.getElementById('create-result').style.display = 'block';
       document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
-      // Update balance
       userBalance -= total;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
-      showMsg('', '');
+      showMsg('','');
     } else {
-      showMsg('❌ ' + (d.message || 'Failed!'), 'error');
+      showMsg('❌ '+(d.message||'Failed!'),'error');
     }
-  } catch(e) {
-    showMsg('❌ Server error! Try again.', 'error');
-  }
+  } catch(e) { showMsg('❌ Server error! Try again.','error'); }
 
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
@@ -295,8 +347,15 @@ function createAnother() {
   document.getElementById('c-amt').value   = '';
   document.getElementById('c-users').value = '';
   document.getElementById('deduction-box').classList.remove('show');
-  window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('refer-toggle').checked = false;
+  document.getElementById('refer-amt-box').classList.remove('show');
+  document.getElementById('refer-saved-badge').classList.remove('show');
+  document.getElementById('refer-amt').value = '';
+  referEnabled  = false;
+  savedReferAmt = 0;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body>
 </html>
+
