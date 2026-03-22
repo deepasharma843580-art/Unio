@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migrate | UNIO Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.card{background:white;border-radius:1.75rem;padding:2rem;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-align:center}
+.icon{font-size:3rem;margin-bottom:1rem}
+h1{font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:.4rem}
+p{font-size:.78rem;color:#64748b;font-weight:600;margin-bottom:1.5rem;line-height:1.6}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.result{margin-top:1.25rem;padding:1rem;border-radius:1rem;font-size:.8rem;font-weight:700;display:none;line-height:1.7;text-align:left}
+.result.success{background:#dcfce7;color:#15803d;display:block}
+.result.error{background:#fee2e2;color:#dc2626;display:block}
+.spinner{display:none;margin:1rem auto 0;width:36px;height:36px;border:4px solid #e2e8f0;border-top-color:#0057ff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">⚙️</div>
+  <h1>Ref Code Migration</h1>
+  <p>Sabhi purane users ke liye 5-digit refer code generate karega jo abhi tak missing hain.<br>Yeh ek baar hi karo.</p>
+  <button class="btn" id="run-btn" onclick="runMigration()">▶ Generate Karo</button>
+  <div class="spinner" id="spinner"></div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+async function runMigration() {
+  const btn     = document.getElementById('run-btn');
+  const spinner = document.getElementById('spinner');
+  const result  = document.getElementById('result');
+
+  btn.disabled       = true;
+  btn.textContent    = 'Running...';
+  spinner.style.display = 'block';
+  result.style.display  = 'none';
+
+  try {
+    const r = await fetch('/migrate/run');
+    const d = await r.json();
+
+    spinner.style.display = 'none';
+
+    if(d.status === 'success') {
+      result.className   = 'result success';
+      result.innerHTML   = `✅ Done!<br><br><b>${d.updated}</b> users ka refer code generate hua.<br><br>Ab yeh page band karo.`;
+      btn.textContent    = '✅ Completed';
+    } else {
+      result.className   = 'result error';
+      result.textContent = '❌ Error: ' + (d.message || 'Something went wrong');
+      btn.disabled       = false;
+      btn.textContent    = '▶ Generate Karo';
+    }
+  } catch(e) {
+    spinner.style.display = 'none';
+    result.className      = 'result error';
+    result.textContent    = '❌ Server error! Try again.';
+    btn.disabled          = false;
+    btn.textContent       = '▶ Generate Karo';
+  }
+}
+</script>
+</body>
+</html>
+
