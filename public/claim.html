@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ... (Aapka purana CSS same rahega) ... */
+/* CSS Same as your source */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
@@ -26,6 +26,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.9rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:block;text-align:center;text-decoration:none;box-sizing:border-box;line-height:1.4;margin-top:.25rem}
 .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
 .btn.green{background:#16a34a}
+.btn.tg{background:#0088cc}
+.btn.share-btn{background:linear-gradient(135deg,#16a34a,#0057ff)}
 .btn:disabled{background:#94a3b8;cursor:not-allowed;opacity:.7}
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
@@ -43,10 +45,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
 .ch-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
 .ch-badge.verified{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.ch-badge.failed{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
 .ch-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.ch-btn{padding:.65rem;border-radius:.75rem;font-size:.72rem;font-weight:800;text-align:center;text-decoration:none;display:block}
+.ch-btn{padding:.65rem;border:none;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.35rem;transition:all .2s;text-decoration:none}
 .ch-btn.join{background:#0057ff;color:white}
-.ch-btn.verify{background:#f1f5f9;color:#64748b;border:none;cursor:pointer}
+.ch-btn.verify{background:#f1f5f9;color:#64748b}
+.ch-btn.done{background:#f0fdf4;color:#16a34a}
 .toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
 .toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;color:white}
 .toss-btn.heads{background:#0057ff}
@@ -54,6 +58,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .success-box{text-align:center;padding:1.5rem 1rem}
 .success-emoji{font-size:4rem;margin-bottom:.75rem}
 .success-amt{font-size:2.5rem;font-weight:900;color:#16a34a}
+.refer-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:1.5rem;padding:1.25rem;margin-top:1rem;text-align:left}
+.refer-card-title{font-size:.68rem;font-weight:800;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.refer-card-amt{font-size:1.5rem;font-weight:900;color:#16a34a;margin-bottom:.2rem}
+.refer-card-sub{font-size:.7rem;font-weight:600;color:#15803d;margin-bottom:.75rem}
+.refer-link-row{background:white;border:2px solid #bbf7d0;border-radius:1rem;padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.refer-link-row span{flex:1;font-size:.65rem;font-weight:700;color:#0f172a;word-break:break-all;line-height:1.5}
+.refer-link-row button{background:#16a34a;border:none;color:white;padding:.4rem .65rem;border-radius:.6rem;cursor:pointer;font-size:.72rem;font-weight:800;flex-shrink:0;font-family:inherit}
 @keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 .pop-in{animation:popIn .3s ease forwards}
 </style>
@@ -107,10 +118,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
   <!-- STEP 3: TG Not Linked -->
   <div id="step-tg" style="display:none" class="card">
-    <div style="text-align:center;padding:1rem">
+    <div class="tg-warn-card" style="text-align:center;padding:1rem">
+        <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc"></i>
         <h3>Telegram Not Connected</h3>
-        <p>Connect your Telegram ID to proceed</p>
-        <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn" style="background:#0088cc;margin:10px 0">Open Bot</a>
+        <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin:10px 0">Open Bot</a>
     </div>
     <div id="tg-msg" class="msg"></div>
     <div class="input-group">
@@ -120,7 +131,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <button class="btn green" id="tg-save-btn" onclick="saveTgId()">Save & Continue</button>
   </div>
 
-  <!-- STEP 4: Claiming (Channel + Buttons) -->
+  <!-- STEP 4: Claiming -->
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
     <div id="channels-wrap" class="card" style="display:none">
@@ -135,15 +146,28 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div id="claim-btn-wrap" class="card" style="display:none">
       <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now! 🚀</button>
     </div>
-  </div>
 
-  <!-- SUCCESS STEP: Important (Outside claim step to fix blank screen) -->
-  <div id="step-success" class="card pop-in" style="display:none">
-    <div class="success-box">
-      <div class="success-emoji">🏆</div>
-      <div class="success-amt" id="won-amt"></div>
-      <div class="success-label">Added to Your Wallet!</div>
-      <a href="dashboard.html" class="btn green">Go to Wallet</a>
+    <!-- Success Content (Hidden by default) -->
+    <div id="step-success" class="card pop-in" style="display:none">
+      <div class="success-box">
+        <div class="success-emoji">🏆</div>
+        <div class="success-amt" id="won-amt"></div>
+        <div class="success-label">Added to Your Wallet!</div>
+        
+        <!-- Refer & Earn Card inside success -->
+        <div id="refer-card" class="refer-card" style="display:none">
+          <div class="refer-card-title">Refer & Earn</div>
+          <div class="refer-card-amt">+₹<span id="refer-amt-val">0</span></div>
+          <div class="refer-card-sub">per friend who claims using your link!</div>
+          <div class="refer-link-row">
+            <span id="my-refer-link"></span>
+            <button onclick="copyReferLink()">Copy</button>
+          </div>
+          <button class="btn share-btn" onclick="shareReferLink()">Share Refer Link</button>
+        </div>
+
+        <a href="dashboard.html" class="btn green" style="margin-top:1rem">Go to Wallet</a>
+      </div>
     </div>
   </div>
 </div>
@@ -151,6 +175,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <script>
 const API = ''; 
 const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user') || '{}');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
 let currentLifafa = null;
@@ -158,20 +183,33 @@ let userMobile = '';
 let userTgId = '';
 let verifiedChannels = [];
 let currentCode = '';
+let referredBy = '';
 
-// --- 1. AUTO FILL URL CODE LOGIC ---
+// Your genRefCode (Not Touched)
+function genRefCode(mobile) {
+  const m = mobile.toString();
+  const d0 = m[0] || '0';
+  const d8 = m[m.length-2] || '0';
+  const d9 = m[m.length-1] || '0';
+  const d3 = m[3] || '0';
+  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const letter = letters[Number(m) % letters.length] || 'X';
+  return (d0 + d8 + d9 + d3 + letter).toUpperCase();
+}
+
+// 1. URL AUTO-FILL LOGIC
 window.onload = function() {
   const urlParams = new URLSearchParams(window.location.search);
   const codeFromUrl = urlParams.get('code');
+  referredBy = urlParams.get('ref') || ''; // Saving referral from URL
   if (codeFromUrl) {
     document.getElementById('code-input').value = codeFromUrl.toUpperCase();
-    loadLifafa(); // Automatically trigger loading
+    loadLifafa();
   }
 };
 
 function showMsg(id, text, type) {
   const m = document.getElementById(id);
-  if(!m) return;
   m.textContent = text;
   m.className = 'msg ' + type;
 }
@@ -192,7 +230,6 @@ async function loadLifafa() {
     const d = await r.json();
     setBtnLoading('find-btn', false, 'Find Lifafa');
     if(d.status !== 'success') return showMsg('code-msg', d.message || 'Invalid code!', 'error');
-    
     currentLifafa = d.lifafa;
     currentCode = code;
     
@@ -200,18 +237,16 @@ async function loadLifafa() {
     document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
     const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
     document.getElementById('banner-progress').style.width = pct + '%';
-    document.getElementById('banner-pct').textContent = pct + '%';
-    document.getElementById('banner-claimed-text').textContent = currentLifafa.claimed_users + '/' + currentLifafa.max_users;
+    document.getElementById('banner-pct').textContent = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent = currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
+    
     document.getElementById('stat-total').textContent = currentLifafa.max_users;
     document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
     document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
     
     document.getElementById('step-code').style.display = 'none';
     document.getElementById('step-mobile').style.display = 'block';
-  } catch(e) {
-    setBtnLoading('find-btn', false, 'Find Lifafa');
-    showMsg('code-msg', 'Error connecting to server', 'error');
-  }
+  } catch(e) { setBtnLoading('find-btn', false, 'Find Lifafa'); }
 }
 
 async function verifyMobile() {
@@ -233,7 +268,7 @@ async function verifyMobile() {
       document.getElementById('step-mobile').style.display = 'none';
       document.getElementById('step-tg').style.display = 'block';
     } else { goToClaimStep(); }
-  } catch(e) { setBtnLoading('mobile-btn', false, 'Next'); showMsg('mobile-msg', 'Error', 'error'); }
+  } catch(e) { setBtnLoading('mobile-btn', false, 'Next'); }
 }
 
 async function saveTgId() {
@@ -247,20 +282,21 @@ async function saveTgId() {
       body: JSON.stringify({ mobile: userMobile, tg_id })
     });
     userTgId = tg_id;
+    document.getElementById('step-tg').style.display = 'none';
     goToClaimStep();
   } catch(e) { setBtnLoading('tg-save-btn', false, 'Save'); }
 }
 
 function goToClaimStep() {
   document.getElementById('step-mobile').style.display = 'none';
-  document.getElementById('step-tg').style.display = 'none';
   document.getElementById('step-claim').style.display = 'block';
   const channels = currentLifafa.channels || [];
   if(channels.length > 0) {
     let html = '';
     channels.forEach((link, i) => {
-        html += `<div class="ch-item">
-            <div class="ch-top"><span>Channel ${i+1}</span><div class="ch-badge pending" id="badge-${i}">Pending</div></div>
+        const name = link.match(/t\.me\/([a-zA-Z0-9_]+)/)?.[1] || 'Channel ' + (i + 1);
+        html += `<div class="ch-item" id="ch-${i}">
+            <div class="ch-top"><div class="ch-name">@${name}</div><div class="ch-badge pending" id="badge-${i}">Pending</div></div>
             <div class="ch-btns">
                 <a href="${link}" target="_blank" class="ch-btn join">Join</a>
                 <button class="ch-btn verify" onclick="verifyChannel(${i}, '${link}')" id="vbtn-${i}">Verify</button>
@@ -274,7 +310,7 @@ function goToClaimStep() {
 
 async function verifyChannel(i, link) {
     const btn = document.getElementById('vbtn-'+i);
-    btn.disabled = true; btn.textContent = '...';
+    btn.textContent = '...';
     try {
         const res = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=${link}`);
         const data = await res.json();
@@ -284,8 +320,8 @@ async function verifyChannel(i, link) {
             btn.style.display = 'none';
             verifiedChannels[i] = true;
             if(verifiedChannels.filter(x=>x).length === (currentLifafa.channels || []).length) showClaimButton();
-        } else { btn.disabled = false; btn.textContent = 'Retry'; }
-    } catch(e) { btn.disabled = false; }
+        } else { btn.textContent = 'Retry'; }
+    } catch(e) { btn.textContent = 'Retry'; }
 }
 
 function showClaimButton() {
@@ -293,21 +329,36 @@ function showClaimButton() {
     else document.getElementById('claim-btn-wrap').style.display = 'block';
 }
 
-// --- 2. BLANK SCREEN FIX LOGIC ---
+// 2. BLANK SCREEN FIX & REFER SHOWING LOGIC
 async function claimNow(guess) {
+  const btn = document.getElementById('claim-btn');
   setBtnLoading('claim-btn', true, 'Claiming...');
   try {
     const r = await fetch(API + '/lifafa/claim', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess: guess || '' })
+      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess: guess || '', ref: referredBy })
     });
     const d = await r.json();
     if(d.status === 'success') {
-      // Step-claim ko hide karke Success step dikha rahe hain
-      document.getElementById('step-claim').style.display = 'none';
+      // Hiding all other claim elements
+      document.getElementById('channels-wrap').style.display = 'none';
+      document.getElementById('toss-wrap').style.display = 'none';
+      document.getElementById('claim-btn-wrap').style.display = 'none';
+      document.getElementById('claim-msg').style.display = 'none';
+
+      // Showing Success
       document.getElementById('won-amt').textContent = '₹' + d.amount;
       document.getElementById('step-success').style.display = 'block';
+
+      // HANDLING REFER SECTION
+      if(currentLifafa.refer_bonus > 0) {
+          const myRef = genRefCode(userMobile);
+          const pageUrl = window.location.href.split('?')[0];
+          document.getElementById('refer-amt-val').textContent = currentLifafa.refer_bonus;
+          document.getElementById('my-refer-link').textContent = `${pageUrl}?code=${currentCode}&ref=${myRef}`;
+          document.getElementById('refer-card').style.display = 'block';
+      }
     } else {
       showMsg('claim-msg', d.message || 'Failed', 'error');
       setBtnLoading('claim-btn', false, 'Claim Now! 🚀');
@@ -316,6 +367,19 @@ async function claimNow(guess) {
       showMsg('claim-msg', 'Server error', 'error');
       setBtnLoading('claim-btn', false, 'Claim Now! 🚀');
   }
+}
+
+// REFER HELPERS
+function copyReferLink() {
+  const link = document.getElementById('my-refer-link').textContent;
+  navigator.clipboard.writeText(link);
+  alert('Refer link copied!');
+}
+
+function shareReferLink() {
+  const link = document.getElementById('my-refer-link').textContent;
+  const text = `Hey! Join this Lifafa and earn rewards: ${link}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 </script>
 </body>
