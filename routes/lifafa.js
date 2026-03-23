@@ -8,12 +8,13 @@ const axios       = require('axios');
 const BOT_TOKEN   = process.env.BOT_TOKEN   || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
 const ADMIN_TG_ID = process.env.ADMIN_TG_ID || '8509393869';
 
+// Faster TG function using direct execution
 async function sendTG(tg_id, text) {
   if(!tg_id) return;
   try {
-    await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       chat_id: tg_id, text, parse_mode: 'Markdown'
-    }, { timeout: 8000 });
+    }).catch(e => console.log("TG Error")); 
   } catch(e) {}
 }
 
@@ -63,11 +64,7 @@ router.post('/create', auth, async (req, res) => {
     // TG to creator
     if(sender.tg_id) {
       sendTG(sender.tg_id,
-`🎁 *Lifafa Created!*
-
-━━━━━━━━━━━━━━
-🎁   UNIO LIFAFA ✅
-━━━━━━━━━━━━━━
+`🎁 *Lifafa Created Successfully!*
 
 🔑 Code : \`${lifafa.code}\`
 📋 Type : ${type.toUpperCase()}
@@ -76,22 +73,9 @@ router.post('/create', auth, async (req, res) => {
 💸 Total Deducted : ₹${total}
 📅 Date : ${new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}
 
-━━━━━━━━━━━━━━
-Claim Link: /claim.html?code=${lifafa.code}
-Share karo! 🚀`
+Claim Link: \`unio-hazel.vercel.app/claim.html?code=${lifafa.code}\``
       );
     }
-
-    // TG to Admin
-    sendTG(ADMIN_TG_ID,
-`🎁 *New Lifafa Created*
-
-👤 By : ${sender.name} (${sender.mobile})
-🔑 Code : \`${lifafa.code}\`
-📋 Type : ${type} | 👥 ${users} users
-💸 Total : ₹${total}
-🎯 Refer : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus : 'Off'}`
-    );
 
     res.json({
       status:         'success',
@@ -100,18 +84,6 @@ Share karo! 🚀`
       total_deducted: total,
     });
 
-  } catch(e) {
-    res.status(500).json({ status:'error', message: e.message });
-  }
-});
-
-// ── Get Lifafa Info ───────────────────────────────────────────────────────────
-router.get('/:code', async (req, res) => {
-  try {
-    const l = await Lifafa.findOne({ code: req.params.code.toUpperCase(), status: 'active' })
-      .populate('creator_id', 'name');
-    if(!l) return res.status(404).json({ status:'error', message:'Invalid or expired code' });
-    res.json({ status:'success', lifafa: l });
   } catch(e) {
     res.status(500).json({ status:'error', message: e.message });
   }
@@ -135,7 +107,7 @@ router.post('/claim', async (req, res) => {
     if(lifafa.claimed_users >= lifafa.max_users)
       return res.status(400).json({ status:'error', message:'Lifafa is full!' });
 
-    // Amount
+    // Amount Calculation
     let amt = lifafa.per_user_amount;
     if(lifafa.type === 'scratch') {
       amt = Math.floor(Math.random() * (lifafa.max_range * 100 - lifafa.min_range * 100 + 1) + lifafa.min_range * 100) / 100;
@@ -143,133 +115,69 @@ router.post('/claim', async (req, res) => {
 
     // Toss check
     if(lifafa.type === 'toss' && (!guess || guess.toUpperCase() !== lifafa.toss_answer.toUpperCase())) {
-      await Transaction.create({
-        receiver_id: user._id, amount: 0, remark: rem,
-        type: 'transfer', status: 'failed', tx_time: new Date()
-      });
-      return res.status(400).json({ status:'error', message:'Wrong guess! Locked.' });
+      return res.status(400).json({ status:'error', message:'Wrong guess! Try again.' });
     }
 
     const now = new Date();
     const dt  = now.toLocaleString('en-IN', { timeZone:'Asia/Kolkata', hour12:true });
 
-    // Add balance to claimer
+    // Database Updates
     await User.findByIdAndUpdate(user._id, { $inc: { balance: +amt } });
-
-    // Update claimed count
-    const newClaimed = lifafa.claimed_users + 1;
     await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_users: 1 } });
-
-    // Transaction for claimer
     await Transaction.create({
       receiver_id: user._id, amount: amt, remark: rem,
       type: 'transfer', status: 'success', tx_time: now
     });
 
-    // TG to claimer
+    // ── TG TO CLAIMER ──
     if(user.tg_id) {
       sendTG(user.tg_id,
-`🎉 *Lifafa Claimed!*
+`Gift code claimed successfully 🎉
 
-━━━━━━━━━━━━━━
-🎁   UNIO LIFAFA ✅
-━━━━━━━━━━━━━━
+*Code:* \`${code}\`
+*Amount:* ₹${amt}
+*Time:* ${dt}
+*Type:* ${lifafa.type.toUpperCase()}
 
-🔑 Code : \`${code}\`
-💰 Amount : ₹${amt}
-👥 ${newClaimed}/${lifafa.max_users} Claimed
-📅 Time : ${dt}
-
-✅ Balance mein add ho gaya!`
+Thankyou ❤️`
       );
     }
 
-    // TG to creator
+    // ── TG TO CREATOR ──
     const creator = await User.findById(lifafa.creator_id).select('tg_id name');
     if(creator?.tg_id) {
       sendTG(creator.tg_id,
-`👋 *Someone Claimed Your Lifafa!*
+`Claim notification 🔔
+*someone claimed your lifafa* ✅
 
-🔑 Code : \`${code}\`
-👤 By : ${user.name} (${mobile})
-💰 Amount : ₹${amt}
-👥 ${newClaimed}/${lifafa.max_users} Claimed
-📅 Time : ${dt}
-
-${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.max_users - newClaimed} slots bache hain`}`
+*Code:* \`${code}\`
+*Amount:* ₹${amt}
+*Comment:* Lifafa Looted
+*Number:* ${mobile.substring(0,6)}XXXX`
       );
     }
 
-    // ── Refer Bonus ───────────────────────────────────────────────────────────
-    let referBonus = 0;
+    // ── Refer Bonus logic (Alert Removed as requested) ──
     if(ref_code && lifafa.refer_bonus > 0) {
       const referrer = await User.findOne({ ref_code });
       if(referrer && referrer.mobile !== mobile) {
-        referBonus = lifafa.refer_bonus;
-        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
+        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: lifafa.refer_bonus } });
         await Transaction.create({
-          receiver_id: referrer._id,
-          amount:      referBonus,
-          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
-          type:        'transfer',
-          status:      'success',
-          tx_time:     now
+          receiver_id: referrer._id, amount: lifafa.refer_bonus,
+          remark: `Refer Bonus: ${mobile}`, type: 'transfer', status: 'success', tx_time: now
         });
-        // TG to referrer
-        if(referrer.tg_id) {
-          sendTG(referrer.tg_id,
-`💰 *Refer Bonus Mila!*
-
-━━━━━━━━━━━━━━
-🎁   UNIO REFER BONUS ✅
-━━━━━━━━━━━━━━
-
-👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
-🔑 Lifafa : \`${code}\`
-💰 Bonus : ₹${referBonus}
-📅 Time : ${dt}
-
-✅ Balance mein add ho gaya!`
-          );
-        }
       }
     }
 
-    // ── Auto Delete if Full ───────────────────────────────────────────────────
-    if(newClaimed >= lifafa.max_users) {
+    // ── Auto Delete if Full ──
+    if((lifafa.claimed_users + 1) >= lifafa.max_users) {
       await Lifafa.findByIdAndDelete(lifafa._id);
-
-      // TG to admin — lifafa full & deleted
-      sendTG(ADMIN_TG_ID,
-`🔴 *Lifafa Full & Deleted!*
-
-🔑 Code : \`${code}\`
-👤 Creator : ${creator?.name || '—'} 
-👥 Total Claimed : ${newClaimed}
-📅 Time : ${dt}
-
-🗑️ Database se auto delete ho gaya!`
-      );
-
-      // TG to creator — lifafa completed
-      if(creator?.tg_id) {
-        sendTG(creator.tg_id,
-`🎊 *Lifafa Complete Ho Gaya!*
-
-🔑 Code : \`${code}\`
-👥 Sabne Claim Kar Liya : ${newClaimed}/${lifafa.max_users}
-📅 Time : ${dt}
-
-✅ Lifafa successfully completed!`
-        );
-      }
     }
 
     res.json({
-      status:      'success',
-      amount:      amt,
-      refer_bonus: referBonus,
-      message:     `₹${amt} added to wallet!`
+      status: 'success',
+      amount: amt,
+      message: `₹${amt} added to wallet!`
     });
 
   } catch(e) {
@@ -278,4 +186,3 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
 });
 
 module.exports = router;
-
