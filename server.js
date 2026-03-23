@@ -89,8 +89,7 @@ app.use('/lifafa',    require('./routes/lifafa'));
 app.use('/admin',     require('./routes/admin'));
 app.use('/payment',   payLimiter, require('./routes/payment'));
 app.use('/api',       payLimiter, require('./routes/payment'));
-const { router: giftcodeRouter } = require('./routes/giftcode');
-app.use('/giftcode',  giftcodeRouter);
+app.use('/giftcode',  require('./routes/giftcode'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -121,3 +120,4 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+  
