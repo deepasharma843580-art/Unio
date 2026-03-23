@@ -7,53 +7,48 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-    /* Base Styles */
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:40px;overflow-x:hidden}
-    .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
-    .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
-    .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
-    
-    /* Tabs */
-    .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:3px}
-    .tab{flex:1;padding:.65rem .5rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
-    .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
-    .tab-section{display:none}.tab-section.active{display:block}
-    
-    .container{max-width:480px;margin:0 auto;padding:0 1.25rem}
-    
-    /* Balance Card */
-    .bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative}
-    .bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
-    .bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
-    
-    /* Form Cards */
-    .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
-    .inp-group{margin-bottom:1rem}
-    .inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
-    .inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
-    
-    .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
-    
-    /* Messages */
-    .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
-    .msg.error{background:#fee2e2;color:#dc2626;display:block}
-    .msg.success{background:#dcfce7;color:#16a34a;display:block}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:40px;overflow-x:hidden}
 
-    /* Receipt Style */
-    .receipt-card {
-        background: #fff;
-        border: 2px dashed #e2e8f0;
-        border-radius: 1.25rem;
-        padding: 1.5rem;
-        margin-top: 1rem;
-        display: none;
-    }
-    .receipt-header { text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 10px; }
-    .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
-    .receipt-label { color: #64748b; font-weight: 600; }
-    .receipt-val { color: #0f172a; font-weight: 800; }
-    .success-icon { color: #16a34a; font-size: 2rem; margin-bottom: 10px; display: block; text-align: center;}
+/* Header */
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+
+/* Tabs */
+.tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:3px}
+.tab{flex:1;padding:.65rem .5rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
+.tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
+.tab-section{display:none}.tab-section.active{display:block}
+
+.container{max-width:480px;margin:0 auto;padding:0 1.25rem}
+
+/* Balance Card */
+.bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative}
+.bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
+.bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
+
+/* Cards */
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
+.inp-group{margin-bottom:1rem}
+.inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
+.inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
+
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:disabled{opacity:0.6}
+
+/* Receipt Style */
+.receipt-card {background: white; border: 2px dashed #cbd5e1; border-radius: 1.5rem; padding: 1.5rem; margin-top: 1rem; display: none;}
+.receipt-header { text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px; }
+.receipt-icon { color: #16a34a; font-size: 2.5rem; margin-bottom: 5px; }
+.receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+.r-label { color: #64748b; font-weight: 600; }
+.r-val { color: #0f172a; font-weight: 800; }
+
+/* Messages */
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
 </style>
 </head>
 <body>
@@ -71,8 +66,8 @@
 <div class="container">
   <div id="tab-create" class="tab-section active">
     <div class="bal-card">
-        <div class="bal-label">Your Balance</div>
-        <div class="bal-amount">₹<span id="balance">0.00</span></div>
+      <div class="bal-label">Your Balance</div>
+      <div class="bal-amount">₹<span id="balance">0.00</span></div>
     </div>
     <div class="card">
       <div id="create-msg" class="msg"></div>
@@ -84,14 +79,14 @@
         <label>Amount Per User (₹)</label>
         <input type="number" id="per-amount" placeholder="e.g. 5.00">
       </div>
-      <div class="inp-group"><label>Comment (Optional)</label><input type="text" id="comment"></div>
+      <div class="inp-group"><label>Comment</label><input type="text" id="comment" placeholder="Optional"></div>
       <button class="btn" id="create-btn" onclick="createCode()">Generate Code</button>
     </div>
-    
-    <div id="code-result-box" style="display:none;" class="card">
-        <p style="text-align:center; font-size:0.7rem; font-weight:bold; color:#94a3b8; margin-bottom:10px;">YOUR GIFT CODE</p>
-        <h2 id="result-code" style="text-align:center; font-size:2.5rem; color:#0057ff; letter-spacing:5px; margin-bottom:15px;">-----</h2>
-        <button class="btn" style="background:#f0f4ff; color:#0057ff;" onclick="copyCode()">Copy Code</button>
+
+    <div id="code-result-box" class="card" style="display:none; text-align:center; border:2px solid #0057ff; background:#f0f4ff;">
+        <p style="font-size:0.65rem; font-weight:800; color:#0057ff; margin-bottom:10px;">GIFT CODE CREATED</p>
+        <h2 id="result-code" style="font-size:2.5rem; letter-spacing:5px; color:#0f172a; margin-bottom:15px;">-----</h2>
+        <button class="btn" onclick="copyCode()">Copy Code</button>
     </div>
   </div>
 
@@ -100,62 +95,57 @@
       <div id="claim-msg" class="msg"></div>
       <div class="inp-group">
         <label>Enter 5-Digit Code</label>
-        <input type="text" id="claim-code-input" maxlength="5" style="text-align:center;font-size:1.5rem;letter-spacing:5px">
+        <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size:2rem; letter-spacing:8px; font-weight:900;">
       </div>
       <button class="btn" id="claim-btn" onclick="claimCode()" style="background:#16a34a;">Claim Now</button>
     </div>
 
     <div id="receipt" class="receipt-card">
         <div class="receipt-header">
-            <i class="fa-solid fa-circle-check success-icon"></i>
-            <h3 style="color:#16a34a; font-size:1rem;">Claim Successful!</h3>
+            <i class="fa-solid fa-circle-check receipt-icon"></i>
+            <h3 style="font-size:1.1rem; color:#0f172a;">Claim Successful</h3>
         </div>
-        <div class="receipt-row"><span class="receipt-label">Code:</span><span class="receipt-val" id="r-code">--</span></div>
-        <div class="receipt-row"><span class="receipt-label">Amount:</span><span class="receipt-val" id="r-amt" style="color:#16a34a;">₹0.00</span></div>
-        <div class="receipt-row"><span class="receipt-label">Comment:</span><span class="receipt-val" id="r-comment">--</span></div>
-        <div class="receipt-row"><span class="receipt-label">Time:</span><span class="receipt-val" id="r-time">--</span></div>
+        <div class="receipt-row"><span class="r-label">Code:</span><span class="r-val" id="r-code">--</span></div>
+        <div class="receipt-row"><span class="r-label">Amount:</span><span class="r-val" id="r-amt" style="color:#16a34a;">₹0.00</span></div>
+        <div class="receipt-row"><span class="r-label">Comment:</span><span class="r-val" id="r-comment">--</span></div>
+        <div class="receipt-row"><span class="r-label">Time:</span><span class="r-val" id="r-time">--</span></div>
+        <button class="btn" onclick="closeReceipt()" style="margin-top:15px; background:#f8fafc; color:#64748b; font-size:0.75rem; border:1px solid #e2e8f0;">Close Receipt</button>
     </div>
   </div>
 </div>
 
 <script>
-const API = ''; 
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
-// Fetch Balance
 async function fetchBalance() {
   try {
-    const r = await fetch(API + '/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
+    const r = await fetch('/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
     const d = await r.json();
     if(d.status === 'success') document.getElementById('balance').innerText = parseFloat(d.balance).toFixed(2);
-  } catch(e) { console.error("Balance error"); }
+  } catch(e) { console.error("Balance fetch error"); }
 }
 fetchBalance();
 
-// Tab Switch
 function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  // Reset UI when switching
   document.getElementById('receipt').style.display = 'none';
-  document.getElementById('code-result-box').style.display = 'none';
 }
 
-// Create Code
 async function createCode() {
   const u = document.getElementById('total-users').value;
   const p = document.getElementById('per-amount').value;
   const c = document.getElementById('comment').value;
 
-  if(!u || !p) return showMsg('create-msg', 'Fill all fields', 'error');
+  if(!u || !p) return showMsg('create-msg', 'All fields required', 'error');
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
   try {
-    const r = await fetch(API + '/giftcode/create', {
+    const r = await fetch('/giftcode/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ total_users: u, per_user_amount: p, comment: c })
@@ -165,7 +155,7 @@ async function createCode() {
       document.getElementById('result-code').innerText = d.code;
       document.getElementById('code-result-box').style.display = 'block';
       fetchBalance();
-      showMsg('create-msg', 'Code generated!', 'success');
+      showMsg('create-msg', 'Code created!', 'success');
     } else {
       showMsg('create-msg', d.message, 'error');
     }
@@ -173,35 +163,30 @@ async function createCode() {
   btn.disabled = false;
 }
 
-// Claim Code & Receipt
 async function claimCode() {
-  const codeInput = document.getElementById('claim-code-input').value;
-  if(codeInput.length !== 5) return showMsg('claim-msg', 'Enter 5-digit code', 'error');
+  const code = document.getElementById('claim-code-input').value;
+  if(code.length !== 5) return showMsg('claim-msg', 'Enter 5-digit code', 'error');
 
   const btn = document.getElementById('claim-btn');
   btn.disabled = true;
   try {
-    const r = await fetch(API + '/giftcode/claim', {
+    const r = await fetch('/giftcode/claim', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ code: codeInput })
+      body: JSON.stringify({ code })
     });
     const d = await r.json();
     if(d.status === 'success') {
-      // Set Receipt Data
-      document.getElementById('r-code').innerText = codeInput;
+      document.getElementById('r-code').innerText = d.code;
       document.getElementById('r-amt').innerText = '₹' + d.amount;
-      document.getElementById('r-comment').innerText = d.comment || 'N/A';
-      document.getElementById('r-time').innerText = new Date().toLocaleString();
+      document.getElementById('r-comment').innerText = d.comment || '—';
+      document.getElementById('r-time').innerText = new Date().toLocaleString('en-IN');
       
-      // Show Receipt
       document.getElementById('receipt').style.display = 'block';
       fetchBalance();
-      showMsg('claim-msg', 'Claimed Successfully!', 'success');
-    } else { 
-      showMsg('claim-msg', d.message, 'error'); 
-    }
-  } catch(e) { showMsg('claim-msg', 'Error claiming', 'error'); }
+      showMsg('claim-msg', 'Claim Successful!', 'success');
+    } else { showMsg('claim-msg', d.message, 'error'); }
+  } catch(e) { showMsg('claim-msg', 'Claiming error', 'error'); }
   btn.disabled = false;
 }
 
@@ -212,9 +197,13 @@ function showMsg(id, txt, type) {
 }
 
 function copyCode() {
-  const c = document.getElementById('result-code').innerText;
-  navigator.clipboard.writeText(c);
-  alert("Code Copied: " + c);
+  navigator.clipboard.writeText(document.getElementById('result-code').innerText);
+  alert("Code Copied!");
+}
+
+function closeReceipt() {
+    document.getElementById('receipt').style.display = 'none';
+    document.getElementById('claim-code-input').value = '';
 }
 </script>
 </body>
