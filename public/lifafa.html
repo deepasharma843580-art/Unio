@@ -141,11 +141,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <div class="input-group">
-      <label><i class="fa-solid fa-comment-dots"></i> Comment / Note (Optional)</label>
-      <textarea id="c-comment" placeholder="e.g. Diwali special gift 🎉" style="width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit;resize:vertical;min-height:80px;line-height:1.5"></textarea>
-    </div>
-
     <div class="deduction-box" id="deduction-box">
       <div class="deduction-row">
         <span>Calculation</span>
@@ -299,7 +294,7 @@ async function createLifafa() {
     const r = await fetch(API+'/lifafa/create', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, comment: document.getElementById('c-comment').value.trim() })
+      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels })
     });
     const d = await r.json();
     if(d.status === 'success') {
@@ -329,10 +324,9 @@ function copyLink() {
 
 function createAnother() {
   document.getElementById('create-result').style.display = 'none';
-  document.getElementById('c-code').value    = '';
-  document.getElementById('c-amt').value     = '';
-  document.getElementById('c-users').value   = '';
-  document.getElementById('c-comment').value = '';
+  document.getElementById('c-code').value  = '';
+  document.getElementById('c-amt').value   = '';
+  document.getElementById('c-users').value = '';
   document.getElementById('deduction-box').classList.remove('show');
   window.scrollTo({top:0, behavior:'smooth'});
 }
