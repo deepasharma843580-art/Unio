@@ -140,6 +140,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <button class="tab" onclick="switchTab('track',this)">
     <i class="fa-solid fa-chart-bar"></i> Tracking
   </button>
+  <button class="tab" onclick="switchTab('history',this)">
+    <i class="fa-solid fa-clock-rotate-left"></i> History
+  </button>
 </div>
 
 <div class="container">
@@ -248,6 +251,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </div>
   </div>
 
+  <!-- ── HISTORY TAB ── -->
+  <div id="tab-history" class="tab-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <span style="font-size:.65rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em">My Claim History</span>
+      <button style="background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit" onclick="loadClaimHistory()">
+        <i class="fa-solid fa-rotate-right"></i> Refresh
+      </button>
+    </div>
+    <div id="history-list">
+      <div class="no-codes"><i class="fa-solid fa-clock-rotate-left"></i><p>Loading...</p></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Claim Success Animation -->
@@ -290,6 +306,7 @@ function switchTab(tab, el) {
   el.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
   if(tab==='track') loadMyCodes();
+  if(tab==='history') loadClaimHistory();
 }
 
 // Summary update
@@ -377,32 +394,4 @@ async function claimCode() {
   const code = document.getElementById('claim-code-input').value.trim();
   if(!code || code.length !== 5) return showMsg('claim-msg','5 digit code enter karo!','error');
 
-  const btn = document.getElementById('claim-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Claiming...';
-
-  try {
-    const r = await fetch(API+'/giftcode/claim', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code })
-    });
-    const d = await r.json();
-
-    if(d.status === 'success') {
-      document.getElementById('claim-code-input').value = '';
-      showMsg('claim-msg','','');
-      document.getElementById('claim-msg').style.display = 'none';
-      showClaimAnim(d.amount, d.comment || '🎁 Gift Claimed!');
-    } else {
-      showMsg('claim-msg', d.message || 'Failed!', 'error');
-    }
-  } catch(e) {
-    showMsg('claim-msg', 'Server error!', 'error');
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<i class="fa-solid fa-gift"></i> Claim Now!';
-}
-
-// Claim Animation
+ 
