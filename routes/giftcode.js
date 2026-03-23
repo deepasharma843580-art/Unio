@@ -1,5 +1,4 @@
 const router      = require('express').Router();
-const mongoose    = require('mongoose');
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
 const GiftCode    = require('../models/GiftCode');
@@ -20,8 +19,6 @@ async function sendTG(tg_id, text) {
 
 // ── Create Gift Code ──────────────────────────────────────────────────────────
 router.post('/create', auth, async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
     const { total_users, per_user_amount, comment } = req.body;
 
@@ -55,11 +52,11 @@ router.post('/create', auth, async (req, res) => {
 
     const now = new Date();
 
-    // Deduct balance
-    await User.findByIdAndUpdate(sender._id, { $inc: { balance: -totalDeduct } }, { session });
+    // Deduct balance — no session
+    await User.findByIdAndUpdate(sender._id, { $inc: { balance: -totalDeduct } });
 
     // Transaction record — dashboard + history mein dikhega
-    await Transaction.create([{
+    await Transaction.create({
       tx_id:     'GC' + Date.now() + Math.floor(Math.random()*9999),
       sender_id: sender._id,
       amount:    totalDeduct,
@@ -67,24 +64,24 @@ router.post('/create', auth, async (req, res) => {
       status:    'success',
       remark:    `Gift Code Created: ${code}${comment ? ' | ' + comment : ''}`,
       tx_time:   now
-    }], { session });
+    });
 
     // Save to MongoDB
-    await GiftCode.create([{
+    await GiftCode.create({
       code,
-      creator_id:     sender._id,
-      creator_name:   sender.name,
-      creator_mobile: sender.mobile,
-      total_users:    users,
+      creator_id:      sender._id,
+      creator_name:    sender.name,
+      creator_mobile:  sender.mobile,
+      total_users:     users,
       per_user_amount: amount,
-      total_amount:   totalDeduct,
-      comment:        comment || '',
-      claimed_by:     [],
-      created_at:     now,
-      active:         true
-    }], { session });
+      total_amount:    totalDeduct,
+      comment:         comment || '',
+      claimed_by:      [],
+      created_at:      now,
+      active:          true
+    });
 
-    await session.commitTransaction();
+    const dt = now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true});
 
     // TG to creator
     if(sender.tg_id) {
@@ -100,7 +97,7 @@ router.post('/create', auth, async (req, res) => {
 💰 Per User : ₹${amount}
 💸 Total Deducted : ₹${totalDeduct}
 💬 Comment : ${comment||'—'}
-📅 Date : ${now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}
+📅 Date : ${dt}
 
 ━━━━━━━━━━━━━━
 Share karo apne doston ke saath! 🚀`
@@ -128,25 +125,23 @@ Share karo apne doston ke saath! 🚀`
     });
 
   } catch(e) {
-    await session.abortTransaction();
+    console.error('GiftCode create error:', e.message);
     res.status(500).json({ status:'error', message: e.message });
-  } finally { session.endSession(); }
+  }
 });
 
 // ── Claim Gift Code ───────────────────────────────────────────────────────────
 router.post('/claim', auth, async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
     const { code } = req.body;
     if(!code) return res.json({ status:'error', message:'Code required' });
 
     const gift = await GiftCode.findOne({ code });
-    if(!gift)         return res.json({ status:'error', message:'Invalid code!' });
-    if(!gift.active)  return res.json({ status:'error', message:'Code expired!' });
+    if(!gift)        return res.json({ status:'error', message:'Invalid code!' });
+    if(!gift.active) return res.json({ status:'error', message:'Code expired!' });
 
-    const userId   = req.user._id.toString();
-    const claimer  = await User.findById(req.user._id);
+    const userId  = req.user._id.toString();
+    const claimer = await User.findById(req.user._id);
     if(!claimer) return res.json({ status:'error', message:'User not found' });
 
     // Self claim
@@ -164,10 +159,10 @@ router.post('/claim', auth, async (req, res) => {
     const now = new Date();
 
     // Add balance
-    await User.findByIdAndUpdate(req.user._id, { $inc: { balance: gift.per_user_amount } }, { session });
+    await User.findByIdAndUpdate(req.user._id, { $inc: { balance: gift.per_user_amount } });
 
-    // Transaction record — history mein dikhega
-    await Transaction.create([{
+    // Transaction record
+    await Transaction.create({
       tx_id:       'GC' + Date.now() + Math.floor(Math.random()*9999),
       receiver_id: claimer._id,
       amount:      gift.per_user_amount,
@@ -175,7 +170,7 @@ router.post('/claim', auth, async (req, res) => {
       status:      'success',
       remark:      `Gift Code Claimed: ${code}${gift.comment ? ' | ' + gift.comment : ''}`,
       tx_time:     now
-    }], { session });
+    });
 
     // Update gift code
     gift.claimed_by.push({
@@ -186,9 +181,9 @@ router.post('/claim', auth, async (req, res) => {
       claimed_at: now
     });
     if(gift.claimed_by.length >= gift.total_users) gift.active = false;
-    await gift.save({ session });
+    await gift.save();
 
-    await session.commitTransaction();
+    const dt = now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true});
 
     // TG to claimer
     if(claimer.tg_id) {
@@ -202,7 +197,7 @@ router.post('/claim', auth, async (req, res) => {
 🔑 Code : \`${code}\`
 💰 Amount : ₹${gift.per_user_amount}
 💬 Comment : ${gift.comment||'—'}
-📅 Time : ${now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}
+📅 Time : ${dt}
 
 ✅ Balance mein add ho gaya!`
       );
@@ -218,7 +213,7 @@ router.post('/claim', auth, async (req, res) => {
 👤 By : ${claimer.name} (${claimer.mobile})
 💰 Amount : ₹${gift.per_user_amount}
 👥 ${gift.claimed_by.length}/${gift.total_users} Claimed
-📅 Time : ${now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}`
+📅 Time : ${dt}`
       );
     }
 
@@ -231,9 +226,9 @@ router.post('/claim', auth, async (req, res) => {
     });
 
   } catch(e) {
-    await session.abortTransaction();
+    console.error('GiftCode claim error:', e.message);
     res.status(500).json({ status:'error', message: e.message });
-  } finally { session.endSession(); }
+  }
 });
 
 // ── My Codes (Tracking) ───────────────────────────────────────────────────────
