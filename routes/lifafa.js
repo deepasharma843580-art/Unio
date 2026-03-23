@@ -74,7 +74,6 @@ router.post('/create', auth, async (req, res) => {
 👥 Users : ${users}
 💰 Amount : ₹${amt || max_range}
 💸 Total Deducted : ₹${total}
-🎯 Refer Bonus : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus + ' per refer' : 'Off'}
 📅 Date : ${new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}
 
 ━━━━━━━━━━━━━━
@@ -97,9 +96,8 @@ Share karo! 🚀`
     res.json({
       status:         'success',
       code:           lifafa.code,
-      claim_url:      `/claim.html?code=${lifafa.code}`,
+      claim_url:      `unio-hazel.vercel.app/claim.html?code=${lifafa.code}`,
       total_deducted: total,
-      refer_bonus:    lifafa.refer_bonus
     });
 
   } catch(e) {
