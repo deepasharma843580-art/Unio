@@ -85,7 +85,6 @@ router.post('/reject-withdraw/:txn_id', async (req, res) => {
   res.json({ status:'success' });
 });
 
-// ── Approve Deposit ───────────────────────────────────────────────────────────
 router.post('/approve-deposit/:id', async (req, res) => {
   try {
     const txn = await Transaction.findById(req.params.id)
@@ -93,24 +92,18 @@ router.post('/approve-deposit/:id', async (req, res) => {
     if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
     if(txn.status !== 'pending')
       return res.json({ status:'error', message:'Already processed' });
-
-    // Add balance to user
     await User.findByIdAndUpdate(txn.receiver_id._id, { $inc:{ balance: txn.amount } });
-    // Update transaction status
     await Transaction.findByIdAndUpdate(req.params.id, { status:'success' });
-
     res.json({ status:'success', message:'Deposit approved' });
   } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
 });
 
-// ── Reject Deposit ────────────────────────────────────────────────────────────
 router.post('/reject-deposit/:id', async (req, res) => {
   try {
     const txn = await Transaction.findById(req.params.id);
     if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
     if(txn.status !== 'pending')
       return res.json({ status:'error', message:'Already processed' });
-
     await Transaction.findByIdAndUpdate(req.params.id, { status:'rejected' });
     res.json({ status:'success', message:'Deposit rejected' });
   } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
@@ -138,5 +131,19 @@ router.post('/notify-txn/:id', async (req, res) => {
   res.json({ status:'success' });
 });
 
+// ── Reset Password ────────────────────────────────────────────────────────────
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { mobile, new_password } = req.body;
+    if(!mobile || !new_password)
+      return res.status(400).json({ status:'error', message:'Mobile and new_password required' });
+    const user = await User.findOne({ mobile });
+    if(!user) return res.status(404).json({ status:'error', message:'User not found' });
+    user.password = new_password; // pre('save') hash kar dega
+    await user.save();
+    res.json({ status:'success', message:'Password reset successfully' });
+  } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
+});
+
 module.exports = router;
-              
+  
