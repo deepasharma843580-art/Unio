@@ -1,217 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gift Code | UNIO</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Code | UNIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+        
+        .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
+        .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
+        .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
 
-/* Header */
-.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
-.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
-.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+        .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:5px}
+        .tab{flex:1;padding:.75rem;text-align:center;font-weight:700;font-size:.8rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
+        .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
+        .tab-section{display:none}.tab-section.active{display:block}
 
-/* Tabs */
-.tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:5px}
-.tab{flex:1;padding:.75rem;text-align:center;font-weight:700;font-size:.8rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
-.tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
-.tab-section{display:none}.tab-section.active{display:block}
+        .container{max-width:480px;margin:0 auto;padding:0 1.25rem}
 
-.container{max-width:480px;margin:0 auto;padding:0 1.25rem}
+        .bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem}
+        .bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
+        .bal-amount{font-size:2.25rem;font-weight:900}
 
-/* Balance Card */
-.bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative}
-.bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
-.bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
+        .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
+        .inp-group{margin-bottom:1rem}
+        .inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
+        .inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;color:#0f172a}
 
-/* Main UI */
-.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
-.inp-group{margin-bottom:1rem}
-.inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
-.inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
+        .summary{background:#f0f4ff;border-radius:1rem;padding:1rem;margin-bottom:1rem;display:none}
+        .summary-row{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700}
 
-.summary{background:#f0f4ff;border-radius:1rem;padding:1rem;margin-bottom:1rem;display:none}
-.summary-row{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700}
-.summary-total{color:#dc2626;font-weight:900}
+        .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+        .btn:disabled{opacity:0.6}
 
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
-.btn:disabled{opacity:0.6}
+        .code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;text-align:center;display:none;margin-top:1rem}
+        .code-big{font-size:2.8rem;font-weight:900;letter-spacing:.2em;margin:10px 0}
 
-/* Result Box */
-.code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;text-align:center;display:none;margin-top:1rem}
-.code-big{font-size:2.8rem;font-weight:900;letter-spacing:.2em;margin:10px 0}
+        .claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px);color:white;text-align:center}
+        .claim-overlay.show{display:flex}
+        .claim-amt{font-size:3.5rem;font-weight:900;color:#22c55e;margin:10px 0}
 
-/* Claim Animation */
-.claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px);color:white;text-align:center}
-.claim-overlay.show{display:flex}
-.claim-amt{font-size:3.5rem;font-weight:900;color:#22c55e;margin:10px 0}
-
-.msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
-.msg.error{background:#fee2e2;color:#dc2626;display:block}
-.msg.success{background:#dcfce7;color:#16a34a;display:block}
-</style>
+        .msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+        .msg.error{background:#fee2e2;color:#dc2626;display:block}
+        .msg.success{background:#dcfce7;color:#16a34a;display:block}
+    </style>
 </head>
 <body>
 
 <div class="header">
-  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
-  <h1>🎁 Gift Code</h1>
+    <a href="/dashboard" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+    <h1>🎁 Gift Code</h1>
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('create',this)">Create</button>
-  <button class="tab" onclick="switchTab('claim',this)">Claim</button>
+    <button class="tab active" onclick="switchTab('create',this)">Create</button>
+    <button class="tab" onclick="switchTab('claim',this)">Claim</button>
 </div>
 
 <div class="container">
-  <div id="tab-create" class="tab-section active">
-    <div class="bal-card">
-        <div class="bal-label">Your Balance</div>
-        <div class="bal-amount">₹<span id="balance">0.00</span></div>
-    </div>
-    <div class="card">
-      <div id="create-msg" class="msg"></div>
-      <div class="inp-group">
-        <label>Total Users</label>
-        <input type="number" id="total-users" placeholder="e.g. 10" oninput="updateSummary()">
-      </div>
-      <div class="inp-group">
-        <label>Amount Per User (₹)</label>
-        <input type="number" id="per-amount" placeholder="e.g. 5.00" oninput="updateSummary()">
-      </div>
-      <div class="inp-group"><label>Comment (Optional)</label><input type="text" id="comment" placeholder="For Friends"></div>
-      
-      <div class="summary" id="summary">
-        <div class="summary-row"><span>Total Deduction:</span><span id="s-total" class="summary-total">₹0.00</span></div>
-      </div>
-      <button class="btn" id="create-btn" onclick="createCode()"><i class="fa-solid fa-plus"></i> Generate Code</button>
+    <div id="tab-create" class="tab-section active">
+        <div class="bal-card">
+            <div class="bal-label">Available Balance</div>
+            <div class="bal-amount">₹<span id="balance">0.00</span></div>
+        </div>
+        <div class="card">
+            <div id="create-msg" class="msg"></div>
+            <div class="inp-group">
+                <label>Number of Users</label>
+                <input type="number" id="total-users" placeholder="e.g. 5" oninput="updateSummary()">
+            </div>
+            <div class="inp-group">
+                <label>Amount Per User (₹)</label>
+                <input type="number" id="per-amount" placeholder="e.g. 10" oninput="updateSummary()">
+            </div>
+            <div class="inp-group"><label>Comment</label><input type="text" id="comment" placeholder="Optional"></div>
+            
+            <div class="summary" id="summary">
+                <div class="summary-row"><span>Total Deduct:</span><span id="s-total" style="color:#dc2626">₹0.00</span></div>
+            </div>
+            <button class="btn" id="create-btn" onclick="createCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Code</button>
+        </div>
+
+        <div class="code-result" id="code-result">
+            <p style="font-size:.7rem; font-weight:800; opacity:.8;">YOUR GIFT CODE</p>
+            <div class="code-big" id="result-code">00000</div>
+            <button onclick="copyCode()" style="background:rgba(255,255,255,.2); border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:800; cursor:pointer;">COPY CODE</button>
+        </div>
     </div>
 
-    <div class="code-result" id="code-result">
-      <p style="font-size:.7rem; font-weight:800; opacity:.8;">SHARE THIS CODE</p>
-      <div class="code-big" id="result-code">-----</div>
-      <button onclick="copyCode()" style="background:rgba(255,255,255,.2); border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:800; cursor:pointer;">COPY CODE</button>
+    <div id="tab-claim" class="tab-section">
+        <div class="card">
+            <div id="claim-msg" class="msg"></div>
+            <div class="inp-group">
+                <label>Enter 5-Digit Code</label>
+                <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size:2.2rem; letter-spacing:10px; font-weight:900;">
+            </div>
+            <button class="btn" id="claim-btn" onclick="claimCode()" style="background:#16a34a;"><i class="fa-solid fa-gift"></i> Claim Now</button>
+        </div>
     </div>
-  </div>
-
-  <div id="tab-claim" class="tab-section">
-    <div class="card">
-      <div id="claim-msg" class="msg"></div>
-      <div class="inp-group">
-        <label>Enter 5-Digit Code</label>
-        <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size:2rem; letter-spacing:8px; font-weight:900;">
-      </div>
-      <button class="btn" id="claim-btn" onclick="claimCode()" style="background:#16a34a;"><i class="fa-solid fa-gift"></i> Claim Now</button>
-    </div>
-  </div>
 </div>
 
 <div class="claim-overlay" id="claim-overlay">
     <div style="font-size:5rem; margin-bottom:10px;">🎉</div>
-    <h2 style="font-weight:800;">Claim Successful!</h2>
+    <h2 style="font-weight:800;">Congratulations!</h2>
     <div class="claim-amt" id="anim-amt">₹0.00</div>
     <p id="anim-comment" style="opacity:.8; margin-bottom:20px;"></p>
-    <p style="font-size:.7rem; opacity:.5; margin-bottom:30px;" id="anim-time"></p>
-    <button onclick="closeAnim()" style="padding:15px 50px; border-radius:15px; border:none; font-weight:900; background:white; color:#0057ff; cursor:pointer;">DONE</button>
+    <button onclick="closeAnim()" style="padding:15px 60px; border-radius:15px; border:none; font-weight:900; background:white; color:#0057ff; cursor:pointer;">COLLECT</button>
 </div>
 
 <script>
-const token = localStorage.getItem('token');
-if(!token) window.location.href = 'index.html';
+    const token = localStorage.getItem('token');
+    if(!token) window.location.href = '/';
 
-async function fetchBalance() {
-  try {
-    const r = await fetch('/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
-    const d = await r.json();
-    if(d.status === 'success') document.getElementById('balance').innerText = parseFloat(d.balance).toFixed(2);
-  } catch(e) {}
-}
-fetchBalance();
+    // 1. Fetch Balance
+    async function fetchBalance() {
+        try {
+            const r = await fetch('/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
+            const d = await r.json();
+            if(d.status === 'success') document.getElementById('balance').innerText = parseFloat(d.balance).toFixed(2);
+        } catch(e) { console.log("Balance Error"); }
+    }
+    fetchBalance();
 
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
+    // 2. Tab Switch
+    function switchTab(tab, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+    }
 
-function updateSummary() {
-  const u = parseInt(document.getElementById('total-users').value) || 0;
-  const p = parseFloat(document.getElementById('per-amount').value) || 0;
-  if(u > 0 && p > 0) {
-    document.getElementById('s-total').innerText = '₹' + (u * p).toFixed(2);
-    document.getElementById('summary').style.display = 'block';
-  } else { document.getElementById('summary').style.display = 'none'; }
-}
+    // 3. Summary calculation
+    function updateSummary() {
+        const u = parseInt(document.getElementById('total-users').value) || 0;
+        const p = parseFloat(document.getElementById('per-amount').value) || 0;
+        if(u > 0 && p > 0) {
+            document.getElementById('s-total').innerText = '₹' + (u * p).toFixed(2);
+            document.getElementById('summary').style.display = 'block';
+        } else { document.getElementById('summary').style.display = 'none'; }
+    }
 
-async function createCode() {
-  const u = document.getElementById('total-users').value;
-  const p = document.getElementById('per-amount').value;
-  const c = document.getElementById('comment').value;
-  if(!u || !p) return showMsg('create-msg', 'All fields required', 'error');
+    // 4. Create Logic
+    async function createCode() {
+        const u = document.getElementById('total-users').value;
+        const p = document.getElementById('per-amount').value;
+        const c = document.getElementById('comment').value;
+        if(!u || !p) return showMsg('create-msg', 'Please fill all fields', 'error');
 
-  const btn = document.getElementById('create-btn');
-  btn.disabled = true;
-  try {
-    const r = await fetch('/giftcode/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ total_users: u, per_user_amount: p, comment: c })
-    });
-    const d = await r.json();
-    if(d.status === 'success') {
-      document.getElementById('result-code').innerText = d.code;
-      document.getElementById('code-result').style.display = 'block';
-      fetchBalance();
-      showMsg('create-msg', 'Gift Code Created!', 'success');
-    } else { showMsg('create-msg', d.message, 'error'); }
-  } catch(e) { showMsg('create-msg', 'Server Error', 'error'); }
-  btn.disabled = false;
-}
+        const btn = document.getElementById('create-btn');
+        btn.disabled = true;
+        try {
+            const r = await fetch('/giftcode/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ total_users: u, per_user_amount: p, comment: c })
+            });
+            const d = await r.json();
+            if(d.status === 'success') {
+                document.getElementById('result-code').innerText = d.code;
+                document.getElementById('code-result').style.display = 'block';
+                fetchBalance();
+                showMsg('create-msg', 'Code generated successfully!', 'success');
+            } else { showMsg('create-msg', d.message, 'error'); }
+        } catch(e) { showMsg('create-msg', 'Server connection error', 'error'); }
+        btn.disabled = false;
+    }
 
-async function claimCode() {
-  const code = document.getElementById('claim-code-input').value;
-  if(code.length !== 5) return showMsg('claim-msg', 'Enter 5-digit code', 'error');
+    // 5. Claim Logic
+    async function claimCode() {
+        const code = document.getElementById('claim-code-input').value;
+        if(code.length !== 5) return showMsg('claim-msg', 'Enter valid 5-digit code', 'error');
 
-  const btn = document.getElementById('claim-btn');
-  btn.disabled = true;
-  try {
-    const r = await fetch('/giftcode/claim', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ code })
-    });
-    const d = await r.json();
-    if(d.status === 'success') {
-      document.getElementById('anim-amt').innerText = '₹' + d.amount;
-      document.getElementById('anim-comment').innerText = d.comment || 'Gift Received';
-      document.getElementById('anim-time').innerText = new Date().toLocaleString('en-IN');
-      document.getElementById('claim-overlay').classList.add('show');
-      fetchBalance();
-    } else { showMsg('claim-msg', d.message, 'error'); }
-  } catch(e) { showMsg('claim-msg', 'Error claiming code', 'error'); }
-  btn.disabled = false;
-}
+        const btn = document.getElementById('claim-btn');
+        btn.disabled = true;
+        try {
+            const r = await fetch('/giftcode/claim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ code })
+            });
+            const d = await r.json();
+            if(d.status === 'success') {
+                document.getElementById('anim-amt').innerText = '₹' + d.amount;
+                document.getElementById('anim-comment').innerText = d.comment || 'You received a gift!';
+                document.getElementById('claim-overlay').classList.add('show');
+                fetchBalance();
+            } else { showMsg('claim-msg', d.message, 'error'); }
+        } catch(e) { showMsg('claim-msg', 'Error connecting to server', 'error'); }
+        btn.disabled = false;
+    }
 
-function showMsg(id, txt, type) {
-  const m = document.getElementById(id);
-  m.innerText = txt; m.className = 'msg ' + type; m.style.display = 'block';
-  setTimeout(() => m.style.display = 'none', 3000);
-}
+    function showMsg(id, txt, type) {
+        const m = document.getElementById(id);
+        m.innerText = txt; m.className = 'msg ' + type; m.style.display = 'block';
+        setTimeout(() => m.style.display = 'none', 3000);
+    }
 
-function copyCode() {
-  navigator.clipboard.writeText(document.getElementById('result-code').innerText);
-  alert("Code Copied!");
-}
+    function copyCode() {
+        navigator.clipboard.writeText(document.getElementById('result-code').innerText);
+        alert("Code Copied!");
+    }
 
-function closeAnim() {
-    document.getElementById('claim-overlay').classList.remove('show');
-    document.getElementById('claim-code-input').value = '';
-}
+    function closeAnim() {
+        document.getElementById('claim-overlay').classList.remove('show');
+        document.getElementById('claim-code-input').value = '';
+    }
 </script>
 </body>
 </html>
