@@ -20,7 +20,7 @@ async function sendTG(tg_id, text) {
 // ── Create Lifafa ─────────────────────────────────────────────────────────────
 router.post('/create', auth, async (req, res) => {
   try {
-    const { code, type, amt, min_range, max_range, toss_answer, users, channels } = req.body;
+    const { code, type, amt, min_range, max_range, toss_answer, users, channels, refer_bonus } = req.body;
 
     const total = (type === 'scratch')
       ? (parseFloat(max_range) * parseInt(users))
@@ -56,7 +56,8 @@ router.post('/create', auth, async (req, res) => {
       max_range:       parseFloat(max_range) || 0,
       toss_answer:     toss_answer || '',
       max_users:       parseInt(users),
-      channels:        channels || []
+      channels:        channels || [],
+      refer_bonus:     parseFloat(refer_bonus) || 0
     });
 
     // TG to creator
@@ -73,6 +74,7 @@ router.post('/create', auth, async (req, res) => {
 👥 Users : ${users}
 💰 Amount : ₹${amt || max_range}
 💸 Total Deducted : ₹${total}
+🎯 Refer Bonus : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus + ' per refer' : 'Off'}
 📅 Date : ${new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true})}
 
 ━━━━━━━━━━━━━━
@@ -88,14 +90,16 @@ Share karo! 🚀`
 👤 By : ${sender.name} (${sender.mobile})
 🔑 Code : \`${lifafa.code}\`
 📋 Type : ${type} | 👥 ${users} users
-💸 Total : ₹${total}`
+💸 Total : ₹${total}
+🎯 Refer : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus : 'Off'}`
     );
 
     res.json({
       status:         'success',
       code:           lifafa.code,
       claim_url:      `/claim.html?code=${lifafa.code}`,
-      total_deducted: total
+      total_deducted: total,
+      refer_bonus:    lifafa.refer_bonus
     });
 
   } catch(e) {
@@ -118,7 +122,7 @@ router.get('/:code', async (req, res) => {
 // ── Claim Lifafa ──────────────────────────────────────────────────────────────
 router.post('/claim', async (req, res) => {
   try {
-    const { code, mobile, guess } = req.body;
+    const { code, mobile, guess, ref_code } = req.body;
 
     const user = await User.findOne({ mobile });
     if(!user) return res.status(404).json({ status:'error', message:'Mobile not found' });
@@ -198,6 +202,41 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
       );
     }
 
+    // ── Refer Bonus ───────────────────────────────────────────────────────────
+    let referBonus = 0;
+    if(ref_code && lifafa.refer_bonus > 0) {
+      const referrer = await User.findOne({ ref_code });
+      if(referrer && referrer.mobile !== mobile) {
+        referBonus = lifafa.refer_bonus;
+        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
+        await Transaction.create({
+          receiver_id: referrer._id,
+          amount:      referBonus,
+          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
+          type:        'transfer',
+          status:      'success',
+          tx_time:     now
+        });
+        // TG to referrer
+        if(referrer.tg_id) {
+          sendTG(referrer.tg_id,
+`💰 *Refer Bonus Mila!*
+
+━━━━━━━━━━━━━━
+🎁   UNIO REFER BONUS ✅
+━━━━━━━━━━━━━━
+
+👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
+🔑 Lifafa : \`${code}\`
+💰 Bonus : ₹${referBonus}
+📅 Time : ${dt}
+
+✅ Balance mein add ho gaya!`
+          );
+        }
+      }
+    }
+
     // ── Auto Delete if Full ───────────────────────────────────────────────────
     if(newClaimed >= lifafa.max_users) {
       await Lifafa.findByIdAndDelete(lifafa._id);
@@ -229,9 +268,10 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
     }
 
     res.json({
-      status:  'success',
-      amount:  amt,
-      message: `₹${amt} added to wallet!`
+      status:      'success',
+      amount:      amt,
+      refer_bonus: referBonus,
+      message:     `₹${amt} added to wallet!`
     });
 
   } catch(e) {
