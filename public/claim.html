@@ -181,6 +181,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <div class="success-emoji">🏆</div>
         <div class="success-amt" id="won-amt"></div>
         <div class="success-label">Added to Your Wallet!</div>
+
+        <!-- Refer Link Box -->
+        <div id="refer-box" style="display:none;width:100%;margin-bottom:1rem;text-align:left">
+          <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:1.25rem;padding:1rem">
+            <div style="font-size:.72rem;font-weight:800;color:#16a34a;margin-bottom:.3rem">
+              <i class="fa-solid fa-user-plus"></i> Share &amp; Earn &#8377;<span id="refer-earn-amt">0</span> per Refer!
+            </div>
+            <div style="font-size:.67rem;font-weight:600;color:#64748b;margin-bottom:.6rem">Apna link share karo — jab koi claim kare tumhe bonus milega!</div>
+            <div id="refer-link-display" style="background:white;border-radius:.6rem;padding:.5rem .75rem;font-size:.62rem;font-weight:700;color:#0057ff;word-break:break-all;margin-bottom:.6rem;border:1px solid #bbf7d0"></div>
+            <button onclick="copyReferLink()" style="width:100%;padding:.7rem;background:#16a34a;color:white;border:none;border-radius:.75rem;font-size:.75rem;font-weight:800;cursor:pointer;font-family:inherit">
+              <i class="fa-regular fa-copy"></i> Copy Refer Link
+            </button>
+          </div>
+        </div>
+
         <a href="dashboard.html" class="btn green" style="background:#16a34a;text-decoration:none">
           <i class="fa-solid fa-wallet"></i> Go to Wallet
         </a>
@@ -355,6 +370,7 @@ function showDirectClaim() {
 async function claimNow(guess) {
   const code   = currentLifafa.code;
   const mobile = user.mobile;
+  const refCode = new URLSearchParams(window.location.search).get('ref') || '';
 
   if(!mobile) return showMsg('step2-msg', 'Login required!', 'error');
 
@@ -362,7 +378,7 @@ async function claimNow(guess) {
     const r = await fetch(API + '/lifafa/claim', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ code, mobile, guess: guess || '' })
+      body:    JSON.stringify({ code, mobile, guess: guess || '', ref_code: refCode })
     });
     const d = await r.json();
 
@@ -372,18 +388,19 @@ async function claimNow(guess) {
       document.getElementById('success-section').style.display  = 'block';
       document.getElementById('won-amt').textContent = '+₹' + d.amount;
       document.getElementById('success-section').scrollIntoView({behavior:'smooth'});
+
+      // Refer link — hamesha dikhao agar refer_bonus on hai
+      if(currentLifafa.refer_bonus && currentLifafa.refer_bonus > 0) {
+        const myRef = user.ref_code || user.mobile || mobile || '';
+        if(myRef) {
+          const rLink = window.location.origin + '/claim.html?code=' + code + '&ref=' + myRef;
+          document.getElementById('refer-earn-amt').textContent    = currentLifafa.refer_bonus;
+          document.getElementById('refer-link-display').textContent = rLink;
+          document.getElementById('refer-box').style.display        = 'block';
+          window.__referLink = rLink;
+        }
+      }
     } else {
       showMsg('step2-msg', '❌ ' + (d.message || 'Claim failed!'), 'error');
     }
-  } catch(e) { showMsg('step2-msg', '❌ Server error!', 'error'); }
-}
-
-// ── Auto load from URL ────────────────────────────────────────────────────────
-const urlCode = new URLSearchParams(window.location.search).get('code');
-if(urlCode) {
-  document.getElementById('claim-code').value = urlCode;
-  findLifafa();
-}
-</script>
-</body>
-</html>
+  } catch(e) { showMsg
