@@ -89,6 +89,7 @@ app.use('/lifafa',   require('./routes/lifafa'));
 app.use('/admin',    require('./routes/admin'));
 app.use('/payment',  payLimiter, require('./routes/payment'));
 app.use('/api',      payLimiter, require('./routes/payment'));
+app.use('/giftcode', require('./routes/giftCode'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
