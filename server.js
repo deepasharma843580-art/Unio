@@ -87,6 +87,8 @@ app.use('/wallet',   require('./routes/wallet'));
 app.use('/transfer', require('./routes/transfer'));
 app.use('/lifafa',   require('./routes/lifafa'));
 app.use('/admin',    require('./routes/admin'));
+// 👇 Gift Code Route Added Here
+app.use('/giftcode', require('./routes/giftcode')); 
 app.use('/payment',  payLimiter, require('./routes/payment'));
 app.use('/api',      payLimiter, require('./routes/payment'));
 
