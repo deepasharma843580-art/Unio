@@ -53,8 +53,17 @@ router.post('/create', auth, async (req, res) => {
 
     const now = new Date();
 
-    // Deduct balance
+    // Deduct balance + Transaction record
     await User.findByIdAndUpdate(sender._id, { $inc: { balance: -totalDeduct } });
+    await Transaction.create({
+      tx_id:     'GC' + Date.now() + Math.floor(Math.random()*9999),
+      sender_id: sender._id,
+      amount:    totalDeduct,
+      type:      'transfer',
+      status:    'success',
+      remark:    `Gift Code Created: ${code}${comment ? ' | ' + comment : ''}`,
+      tx_time:   now
+    });
 
     // Save code
     giftCodes[code] = {
@@ -146,8 +155,17 @@ router.post('/claim', auth, async (req, res) => {
     const claimer = await User.findById(req.user._id);
     if(!claimer) return res.json({ status:'error', message:'User not found' });
 
-    // Add balance
+    // Add balance + Transaction record
     await User.findByIdAndUpdate(req.user._id, { $inc: { balance: gift.per_user_amount } });
+    await Transaction.create({
+      tx_id:       'GC' + Date.now() + Math.floor(Math.random()*9999),
+      receiver_id: claimer._id,
+      amount:      gift.per_user_amount,
+      type:        'transfer',
+      status:      'success',
+      remark:      `Gift Code Claimed: ${code}${gift.comment ? ' | ' + gift.comment : ''}`,
+      tx_time:     now
+    });
 
     // Record claim
     gift.claimed_by.push({
@@ -268,4 +286,3 @@ router.get('/info/:code', auth, async (req, res) => {
 });
 
 module.exports = { router, giftCodes };
-      
