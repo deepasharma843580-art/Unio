@@ -14,7 +14,9 @@ async function sendTG(tg_id, text) {
     await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       chat_id: tg_id, text, parse_mode: 'Markdown'
     }, { timeout: 8000 });
-  } catch(e) {}
+  } catch(e) {
+    console.error('sendTG error | tg_id:', tg_id, '| msg:', e.response?.data || e.message);
+  }
 }
 
 // ── Create Lifafa ─────────────────────────────────────────────────────────────
@@ -26,8 +28,9 @@ router.post('/create', auth, async (req, res) => {
       ? (parseFloat(max_range) * parseInt(users))
       : (parseFloat(amt) * parseInt(users));
 
-    const sender = await User.findById(req.user._id);
+    const sender = await User.findById(req.user._id).select('+tg_id +name +mobile +balance');
     if(!sender) return res.status(404).json({ status:'error', message:'User not found' });
+    console.log('CREATE LIFAFA | sender:', sender.mobile, '| tg_id:', sender.tg_id || 'NOT FOUND');
 
     if(sender.balance < total)
       return res.status(400).json({ status:'error', message:`Insufficient balance. Need ₹${total}` });
