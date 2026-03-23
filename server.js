@@ -82,14 +82,13 @@ const payLimiter = rateLimit({
 });
 
 // ── Routes ────────────────────────────────────────────────────────────────────
-app.use('/auth',      require('./routes/auth'));
-app.use('/wallet',    require('./routes/wallet'));
-app.use('/transfer',  require('./routes/transfer'));
-app.use('/lifafa',    require('./routes/lifafa'));
-app.use('/admin',     require('./routes/admin'));
-app.use('/payment',   payLimiter, require('./routes/payment'));
-app.use('/api',       payLimiter, require('./routes/payment'));
-app.use('/giftcode',  require('./routes/giftcode'));
+app.use('/auth',     require('./routes/auth'));
+app.use('/wallet',   require('./routes/wallet'));
+app.use('/transfer', require('./routes/transfer'));
+app.use('/lifafa',   require('./routes/lifafa'));
+app.use('/admin',    require('./routes/admin'));
+app.use('/payment',  payLimiter, require('./routes/payment'));
+app.use('/api',      payLimiter, require('./routes/payment'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -105,8 +104,6 @@ app.get('/sahab',         (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/transactions',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'transactions.html')));
 app.get('/settings',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'settings.html')));
 app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
-app.get('/code',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'code.html')));
-app.get('/bulk',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'bulk.html')));
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
