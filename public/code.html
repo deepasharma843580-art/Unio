@@ -22,7 +22,7 @@
         .container{max-width:480px;margin:0 auto;padding:0 1.25rem}
 
         .bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem}
-        .bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
+        .bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;margin-bottom:.35rem}
         .bal-amount{font-size:2.25rem;font-weight:900}
 
         .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
@@ -39,9 +39,10 @@
         .code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;text-align:center;display:none;margin-top:1rem}
         .code-big{font-size:2.8rem;font-weight:900;letter-spacing:.2em;margin:10px 0}
 
-        .claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px);color:white;text-align:center}
+        .claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px);color:white;text-align:center;padding:20px}
         .claim-overlay.show{display:flex}
         .claim-amt{font-size:3.5rem;font-weight:900;color:#22c55e;margin:10px 0}
+        .claim-details{background:rgba(255,255,255,0.1);padding:15px;border-radius:1rem;width:100%;max-width:300px;margin-bottom:25px}
 
         .msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
         .msg.error{background:#fee2e2;color:#dc2626;display:block}
@@ -105,10 +106,21 @@
 
 <div class="claim-overlay" id="claim-overlay">
     <div style="font-size:5rem; margin-bottom:10px;">🎉</div>
-    <h2 style="font-weight:800;">Congratulations!</h2>
+    <h2 style="font-weight:800;">Claim Successful!</h2>
     <div class="claim-amt" id="anim-amt">₹0.00</div>
-    <p id="anim-comment" style="opacity:.8; margin-bottom:20px;"></p>
-    <button onclick="closeAnim()" style="padding:15px 60px; border-radius:15px; border:none; font-weight:900; background:white; color:#0057ff; cursor:pointer;">COLLECT</button>
+    
+    <div class="claim-details">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.8rem;">
+            <span style="opacity:0.6;">Comment:</span>
+            <span id="anim-comment" style="font-weight:700;">-</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+            <span style="opacity:0.6;">Time:</span>
+            <span id="anim-time" style="font-weight:700;">-</span>
+        </div>
+    </div>
+
+    <button onclick="closeAnim()" style="padding:15px 60px; border-radius:15px; border:none; font-weight:900; background:white; color:#0057ff; cursor:pointer; width:80%;">COLLECT CASH</button>
 </div>
 
 <script>
@@ -148,7 +160,7 @@
         const u = document.getElementById('total-users').value;
         const p = document.getElementById('per-amount').value;
         const c = document.getElementById('comment').value;
-        if(!u || !p) return showMsg('create-msg', 'Please fill all fields', 'error');
+        if(!u || !p) return showMsg('create-msg', 'Fields missing!', 'error');
 
         const btn = document.getElementById('create-btn');
         btn.disabled = true;
@@ -163,16 +175,16 @@
                 document.getElementById('result-code').innerText = d.code;
                 document.getElementById('code-result').style.display = 'block';
                 fetchBalance();
-                showMsg('create-msg', 'Code generated successfully!', 'success');
+                showMsg('create-msg', 'Code generated!', 'success');
             } else { showMsg('create-msg', d.message, 'error'); }
-        } catch(e) { showMsg('create-msg', 'Server connection error', 'error'); }
+        } catch(e) { showMsg('create-msg', 'Server Error', 'error'); }
         btn.disabled = false;
     }
 
     // 5. Claim Logic
     async function claimCode() {
         const code = document.getElementById('claim-code-input').value;
-        if(code.length !== 5) return showMsg('claim-msg', 'Enter valid 5-digit code', 'error');
+        if(code.length !== 5) return showMsg('claim-msg', 'Invalid code!', 'error');
 
         const btn = document.getElementById('claim-btn');
         btn.disabled = true;
@@ -184,12 +196,14 @@
             });
             const d = await r.json();
             if(d.status === 'success') {
+                // Backend returns: amount, comment, code
                 document.getElementById('anim-amt').innerText = '₹' + d.amount;
-                document.getElementById('anim-comment').innerText = d.comment || 'You received a gift!';
+                document.getElementById('anim-comment').innerText = d.comment || 'No Comment';
+                document.getElementById('anim-time').innerText = new Date().toLocaleTimeString();
                 document.getElementById('claim-overlay').classList.add('show');
                 fetchBalance();
             } else { showMsg('claim-msg', d.message, 'error'); }
-        } catch(e) { showMsg('claim-msg', 'Error connecting to server', 'error'); }
+        } catch(e) { showMsg('claim-msg', 'Connection Failed', 'error'); }
         btn.disabled = false;
     }
 
