@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password | UNIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #f0f4ff; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .card { background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
+        h2 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; text-align: center; }
+        p { font-size: 0.85rem; color: #64748b; text-align: center; margin-bottom: 1.5rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.5rem; }
+        input { width: 100%; padding: 0.85rem 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 0.75rem; outline: none; transition: 0.2s; }
+        input:focus { border-color: #7c3aed; background: white; }
+        .btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #7c3aed, #0057ff); color: white; border: none; border-radius: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.98); }
+        .msg { padding: 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 1rem; display: none; }
+        .error { background: #fee2e2; color: #dc2626; display: block; }
+        .success { background: #dcfce7; color: #16a34a; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Reset Password</h2>
+    <p>Apna registered number aur naya password dalein</p>
+    
+    <div id="status-msg" class="msg"></div>
+
+    <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="number" id="mobile" placeholder="Enter Mobile Number">
+    </div>
+
+    <div class="input-group">
+        <label>New Password</label>
+        <input type="password" id="new-pass" placeholder="Enter New Password">
+    </div>
+
+    <button class="btn" onclick="resetPassword()">
+        <i class="fa-solid fa-key"></i> RESET PASSWORD
+    </button>
+</div>
+
+<script>
+    // Aapke backend API ka URL yahan aayega
+    const API = 'https://your-api-link.com'; 
+
+    async function resetPassword() {
+        const mobile = document.getElementById('mobile').value;
+        const newPass = document.getElementById('new-pass').value;
+        const msgDiv = document.getElementById('status-msg');
+
+        if (!mobile || !newPass) {
+            msgDiv.textContent = "Sare fields bharna zaroori hai!";
+            msgDiv.className = "msg error";
+            return;
+        }
+
+        msgDiv.textContent = "Updating... please wait.";
+        msgDiv.className = "msg success"; // Temporary showing process
+
+        try {
+            const response = await fetch(API + '/user/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    mobile: mobile, 
+                    password: newPass 
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                msgDiv.textContent = "Password successfully change ho gaya!";
+                msgDiv.className = "msg success";
+                setTimeout(() => window.location.href = 'index.html', 2000);
+            } else {
+                msgDiv.textContent = result.message || "Failed to reset password.";
+                msgDiv.className = "msg error";
+            }
+        } catch (error) {
+            msgDiv.textContent = "Server error! Link connect nahi ho pa raha.";
+            msgDiv.className = "msg error";
+        }
+    }
+</script>
+
+</body>
+</html>
+
