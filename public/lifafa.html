@@ -17,6 +17,35 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
 .balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
+
+/* Admin Alert Box Style */
+.admin-alert {
+  background: #ecfdf5;
+  border: 1.5px solid #10b981;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.admin-alert i {
+  color: #059669;
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+.admin-alert-content {
+  font-size: 0.8rem;
+  color: #065f46;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.admin-alert-content a {
+  color: #059669;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
 .section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
 .input-group{margin-bottom:1.25rem}
 .input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
@@ -56,6 +85,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <div class="balance-pill">
     <span>Available Balance</span>
     <strong>₹<span id="balance">0.00</span></strong>
+  </div>
+
+  <div class="admin-alert">
+    <i class="fa-solid fa-circle-info"></i>
+    <div class="admin-alert-content">
+      Please make <a href="https://t.me/OTP_UNIO_BOT" target="_blank">@OTP_UNIO_BOT</a> an admin in your channel. If you do not make it an admin, the Lifafa may show as invalid.
+    </div>
   </div>
 
   <div class="card">
@@ -105,7 +141,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <!-- Deduction Preview -->
     <div class="deduction-box" id="deduction-box">
       <div class="deduction-row">
         <span>Calculation</span>
@@ -117,7 +152,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
     </div>
 
-    <!-- Channels -->
     <div class="section-title">
       <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
     </div>
@@ -137,7 +171,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </button>
   </div>
 
-  <!-- Result -->
   <div id="create-result" style="display:none" class="card">
     <div style="text-align:center">
       <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
