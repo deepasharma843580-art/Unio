@@ -7,12 +7,11 @@ const path      = require('path');
 
 const app = express();
 
-// Basic Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── MongoDB Connection ────────────────────────────────────────────────────────
+// ── MongoDB ───────────────────────────────────────────────────────────────────
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.set('bufferCommands', true);
 mongoose.set('bufferTimeoutMS', 60000);
@@ -47,7 +46,7 @@ async function connectDB() {
   }
 }
 
-// ── DB Connection Middleware ──────────────────────────────────────────────────
+// ── DB Middleware ─────────────────────────────────────────────────────────────
 app.use(async (req, res, next) => {
   if(req.path.endsWith('.html') || req.path.endsWith('.css') ||
      req.path.endsWith('.js')   || req.path === '/favicon.ico') {
@@ -61,7 +60,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-// ── Static Files (Public Folder) ─────────────────────────────────────────────
+// ── Static files — no cache ───────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public'), {
   etag: false,
   lastModified: false,
@@ -75,34 +74,29 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-// ── Rate Limiters ─────────────────────────────────────────────────────────────
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+// ── Rate Limit ────────────────────────────────────────────────────────────────
+const payLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
   max: 200,
-  message: { status:'error', message:'Too many requests, please try again later.' }
+  message: { status:'error', message:'Too many requests' }
 });
 
-// ── Routes Registration ──────────────────────────────────────────────────────
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/auth',     require('./routes/auth'));
 app.use('/wallet',   require('./routes/wallet'));
 app.use('/transfer', require('./routes/transfer'));
 app.use('/lifafa',   require('./routes/lifafa'));
 app.use('/admin',    require('./routes/admin'));
+app.use('/payment',  payLimiter, require('./routes/payment'));
+app.use('/api',      payLimiter, require('./routes/payment'));
 
-// Gift Code Route (Mounted based on giftcode.js)
-app.use('/giftcode', apiLimiter, require('./routes/giftcode')); 
-
-app.use('/payment',  apiLimiter, require('./routes/payment'));
-app.use('/api',      apiLimiter, require('./routes/payment'));
-
-// ── HTML Page Routes ──────────────────────────────────────────────────────────
+// ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 app.get('/transfer',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
 app.get('/deposit',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
 app.get('/withdraw',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'withdraw.html')));
 app.get('/lifafa-create', (req, res) => res.sendFile(path.join(__dirname, 'public', 'lifafa.html')));
-app.get('/gift-code',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'giftcode.html'))); // Gift Code Page
 app.get('/claim',         (req, res) => res.sendFile(path.join(__dirname, 'public', 'claim.html')));
 app.get('/tg',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'tg.html')));
 app.get('/admin-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'admindash.html')));
@@ -111,13 +105,15 @@ app.get('/transactions',  (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/settings',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'settings.html')));
 app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
 
-// ── Fallback Route ────────────────────────────────────────────────────────────
+// ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ── Server Start ──────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 UNIO Server running on port ${PORT}`));
+// ── Local Server ──────────────────────────────────────────────────────────────
+if(process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`🚀 UNIO on port ${PORT}`));
+}
 
 module.exports = app;
