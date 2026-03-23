@@ -1,12 +1,14 @@
 const router      = require('express').Router();
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
-const GiftCode    = require('../models/GiftCode');
 const { auth }    = require('../middleware/auth');
 const axios       = require('axios');
 
 const BOT_TOKEN   = process.env.BOT_TOKEN   || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
 const ADMIN_TG_ID = process.env.ADMIN_TG_ID || '8509393869';
+
+// In-memory store — no external model needed
+const codes = {};
 
 async function sendTG(tg_id, text) {
   if(!tg_id) return;
@@ -29,7 +31,7 @@ router.post('/create', auth, async (req, res) => {
     const amount = Math.round(parseFloat(per_user_amount) * 100) / 100;
 
     if(isNaN(users) || users < 1 || users > 1000)
-      return res.json({ status:'error', message:'Users 1 se 1000 ke beech hone chahiye' });
+      return res.json({ status:'error', message:'Users 1-1000 ke beech hone chahiye' });
 
     if(isNaN(amount) || amount < 1)
       return res.json({ status:'error', message:'Minimum ₹1 per user' });
@@ -44,12 +46,9 @@ router.post('/create', auth, async (req, res) => {
 
     // 5 digit unique code
     let code;
-    let attempts = 0;
-    do {
-      code = Math.floor(10000 + Math.random() * 90000).toString();
-      attempts++;
-      if(attempts > 20) return res.json({ status:'error', message:'Code generate nahi hua, retry karo' });
-    } while(await GiftCode.findOne({ code }));
+    let tries = 0;
+    do { code = Math.floor(10000 + Math.random() * 90000).toString(); tries++; }
+    while(codes[code] && tries < 20);
 
     const now = new Date();
     const dt  = now.toLocaleString('en-IN', { timeZone:'Asia/Kolkata', hour12:true });
@@ -57,7 +56,7 @@ router.post('/create', auth, async (req, res) => {
     // Deduct balance
     await User.findByIdAndUpdate(sender._id, { $inc: { balance: -totalDeduct } });
 
-    // Transaction record
+    // Transaction record — history mein dikhega
     await Transaction.create({
       tx_id:     'GC' + Date.now() + Math.floor(Math.random()*9999),
       sender_id: sender._id,
@@ -68,19 +67,20 @@ router.post('/create', auth, async (req, res) => {
       tx_time:   now
     });
 
-    // Save to MongoDB
-    await GiftCode.create({
+    // Save in memory
+    codes[code] = {
       code,
-      creator_id:      sender._id,
+      creator_id:      sender._id.toString(),
       creator_name:    sender.name,
       creator_mobile:  sender.mobile,
       total_users:     users,
       per_user_amount: amount,
       total_amount:    totalDeduct,
       comment:         comment || '',
+      claimed_by:      [],
       created_at:      now,
       active:          true
-    });
+    };
 
     // TG to creator
     if(sender.tg_id) {
@@ -135,7 +135,7 @@ router.post('/claim', auth, async (req, res) => {
     const { code } = req.body;
     if(!code) return res.json({ status:'error', message:'Code required' });
 
-    const gift = await GiftCode.findOne({ code });
+    const gift = codes[code];
     if(!gift)        return res.json({ status:'error', message:'Invalid code!' });
     if(!gift.active) return res.json({ status:'error', message:'Code expired!' });
 
@@ -143,12 +143,12 @@ router.post('/claim', auth, async (req, res) => {
     const claimer = await User.findById(req.user._id);
     if(!claimer) return res.json({ status:'error', message:'User not found' });
 
-    // Self claim check
-    if(gift.creator_id.toString() === userId)
+    // Self claim
+    if(gift.creator_id === userId)
       return res.json({ status:'error', message:'Apna khud ka code claim nahi kar sakte!' });
 
-    // Already claimed check
-    if(gift.claimed_by.find(c => c.user_id.toString() === userId))
+    // Already claimed
+    if(gift.claimed_by.find(c => c.user_id === userId))
       return res.json({ status:'error', message:'Aapne yeh code pehle se claim kar liya hai!' });
 
     // Full check
@@ -161,7 +161,7 @@ router.post('/claim', auth, async (req, res) => {
     // Add balance
     await User.findByIdAndUpdate(req.user._id, { $inc: { balance: gift.per_user_amount } });
 
-    // Transaction record
+    // Transaction record — history mein dikhega
     await Transaction.create({
       tx_id:       'GC' + Date.now() + Math.floor(Math.random()*9999),
       receiver_id: claimer._id,
@@ -172,16 +172,15 @@ router.post('/claim', auth, async (req, res) => {
       tx_time:     now
     });
 
-    // Update gift code
+    // Update in memory
     gift.claimed_by.push({
-      user_id:    claimer._id,
+      user_id:    userId,
       name:       claimer.name,
       mobile:     claimer.mobile,
       amount:     gift.per_user_amount,
       claimed_at: now
     });
     if(gift.claimed_by.length >= gift.total_users) gift.active = false;
-    await gift.save();
 
     // TG to claimer
     if(claimer.tg_id) {
