@@ -14,23 +14,20 @@ async function sendTG(tg_id, text) {
     await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       chat_id: tg_id, text, parse_mode: 'Markdown'
     }, { timeout: 8000 });
-  } catch(e) {
-    console.error('sendTG error | tg_id:', tg_id, '| msg:', e.response?.data || e.message);
-  }
+  } catch(e) {}
 }
 
 // ── Create Lifafa ─────────────────────────────────────────────────────────────
 router.post('/create', auth, async (req, res) => {
   try {
-    const { code, type, amt, min_range, max_range, toss_answer, users, channels, refer_bonus } = req.body;
+    const { code, type, amt, min_range, max_range, toss_answer, users, channels } = req.body;
 
     const total = (type === 'scratch')
       ? (parseFloat(max_range) * parseInt(users))
       : (parseFloat(amt) * parseInt(users));
 
-    const sender = await User.findById(req.user._id).select('+tg_id +name +mobile +balance');
+    const sender = await User.findById(req.user._id);
     if(!sender) return res.status(404).json({ status:'error', message:'User not found' });
-    console.log('CREATE LIFAFA | sender:', sender.mobile, '| tg_id:', sender.tg_id || 'NOT FOUND');
 
     if(sender.balance < total)
       return res.status(400).json({ status:'error', message:`Insufficient balance. Need ₹${total}` });
@@ -59,8 +56,7 @@ router.post('/create', auth, async (req, res) => {
       max_range:       parseFloat(max_range) || 0,
       toss_answer:     toss_answer || '',
       max_users:       parseInt(users),
-      channels:        channels || [],
-      refer_bonus:     parseFloat(refer_bonus) || 0
+      channels:        channels || []
     });
 
     // TG to creator
@@ -99,8 +95,7 @@ Share karo! 🚀`
       status:         'success',
       code:           lifafa.code,
       claim_url:      `/claim.html?code=${lifafa.code}`,
-      total_deducted: total,
-      refer_bonus:    lifafa.refer_bonus
+      total_deducted: total
     });
 
   } catch(e) {
@@ -123,7 +118,7 @@ router.get('/:code', async (req, res) => {
 // ── Claim Lifafa ──────────────────────────────────────────────────────────────
 router.post('/claim', async (req, res) => {
   try {
-    const { code, mobile, guess, ref_code } = req.body;
+    const { code, mobile, guess } = req.body;
 
     const user = await User.findOne({ mobile });
     if(!user) return res.status(404).json({ status:'error', message:'Mobile not found' });
@@ -203,41 +198,6 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
       );
     }
 
-    // ── Refer Bonus ───────────────────────────────────────────────────────────
-    let referBonus = 0;
-    if(ref_code && lifafa.refer_bonus > 0) {
-      const referrer = await User.findOne({ ref_code });
-      if(referrer && referrer.mobile !== mobile) {
-        referBonus = lifafa.refer_bonus;
-        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
-        await Transaction.create({
-          receiver_id: referrer._id,
-          amount:      referBonus,
-          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
-          type:        'transfer',
-          status:      'success',
-          tx_time:     now
-        });
-        // TG to referrer
-        if(referrer.tg_id) {
-          sendTG(referrer.tg_id,
-`💰 *Refer Bonus Mila!*
-
-━━━━━━━━━━━━━━
-🎁   UNIO REFER BONUS ✅
-━━━━━━━━━━━━━━
-
-👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
-🔑 Lifafa : \`${code}\`
-💰 Bonus : ₹${referBonus}
-📅 Time : ${dt}
-
-✅ Balance mein add ho gaya!`
-          );
-        }
-      }
-    }
-
     // ── Auto Delete if Full ───────────────────────────────────────────────────
     if(newClaimed >= lifafa.max_users) {
       await Lifafa.findByIdAndDelete(lifafa._id);
@@ -269,10 +229,9 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
     }
 
     res.json({
-      status:      'success',
-      amount:      amt,
-      refer_bonus: referBonus,
-      message:     `₹${amt} added to wallet!`
+      status:  'success',
+      amount:  amt,
+      message: `₹${amt} added to wallet!`
     });
 
   } catch(e) {
