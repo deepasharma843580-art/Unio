@@ -7,48 +7,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+/* ... (Aapka purana CSS yahan rahega, maine functionality par focus kiya hai) ... */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:40px;overflow-x:hidden}
-
-/* Header */
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
-
-/* Tabs */
-.tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:3px}
-.tab{flex:1;padding:.65rem .5rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
+.tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);gap:3px;overflow-x:auto;scrollbar-width:none}
+.tab{flex:1;padding:.65rem .5rem;text-align:center;font-weight:700;font-size:.65rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s;white-space:nowrap}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
 .tab-section{display:none}.tab-section.active{display:block}
-
 .container{max-width:480px;margin:0 auto;padding:0 1.25rem}
-
-/* Balance Card */
 .bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative}
-.bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
-.bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
-
-/* Cards */
+.bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;margin-bottom:.35rem}
+.bal-amount{font-size:2.25rem;font-weight:900}
 .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
 .inp-group{margin-bottom:1rem}
-.inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
-.inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
-
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
-.btn:disabled{opacity:0.6}
-
-/* Receipt Style */
-.receipt-card {background: white; border: 2px dashed #cbd5e1; border-radius: 1.5rem; padding: 1.5rem; margin-top: 1rem; display: none;}
-.receipt-header { text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px; }
-.receipt-icon { color: #16a34a; font-size: 2.5rem; margin-bottom: 5px; }
-.receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
-.r-label { color: #64748b; font-weight: 600; }
-.r-val { color: #0f172a; font-weight: 800; }
-
-/* Messages */
-.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;margin-bottom:.5rem}
+.inp-group input{width:100%;padding:1rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-weight:600;outline:none}
+.summary{background:#f0f4ff;border-radius:1rem;padding:1rem;margin-bottom:1rem;display:none}
+.summary.show{display:block}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:.2rem}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.msg{padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
 .msg.success{background:#dcfce7;color:#16a34a;display:block}
+.code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;text-align:center;display:none}
+.code-big{font-size:3rem;font-weight:900;letter-spacing:.2em;margin:.5rem 0}
+.track-item, .hist-item{background:white;border-radius:1.25rem;padding:1.1rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(8px);color:white}
+.claim-amt-big{font-size:3.5rem;font-weight:900;margin-bottom:1rem}
 </style>
 </head>
 <body>
@@ -59,34 +47,40 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('create',this)">Create</button>
-  <button class="tab" onclick="switchTab('claim',this)">Claim</button>
+  <button class="tab active" onclick="switchTab('create',this)"><i class="fa-solid fa-plus"></i> Create</button>
+  <button class="tab" onclick="switchTab('claim',this)"><i class="fa-solid fa-gift"></i> Claim</button>
+  <button class="tab" onclick="switchTab('track',this)"><i class="fa-solid fa-chart-bar"></i> Track</button>
+  <button class="tab" onclick="switchTab('history',this)"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
 </div>
 
 <div class="container">
   <div id="tab-create" class="tab-section active">
     <div class="bal-card">
-      <div class="bal-label">Your Balance</div>
-      <div class="bal-amount">₹<span id="balance">0.00</span></div>
+        <div class="bal-label">Your Balance</div>
+        <div class="bal-amount">&#8377;<span id="balance">0.00</span></div>
     </div>
     <div class="card">
       <div id="create-msg" class="msg"></div>
       <div class="inp-group">
         <label>Total Users</label>
-        <input type="number" id="total-users" placeholder="e.g. 10">
+        <input type="number" id="total-users" placeholder="e.g. 10" oninput="updateSummary()">
       </div>
       <div class="inp-group">
-        <label>Amount Per User (₹)</label>
-        <input type="number" id="per-amount" placeholder="e.g. 5.00">
+        <label>Amount Per User (&#8377;)</label>
+        <input type="number" id="per-amount" placeholder="e.g. 5.00" oninput="updateSummary()">
       </div>
-      <div class="inp-group"><label>Comment</label><input type="text" id="comment" placeholder="Optional"></div>
-      <button class="btn" id="create-btn" onclick="createCode()">Generate Code</button>
+      <div class="inp-group">
+        <label>Comment (Optional)</label>
+        <input type="text" id="comment" placeholder="e.g. For Friends">
+      </div>
+      <div class="summary" id="summary">
+        <div class="summary-row"><span>Total Deduction:</span><span id="s-total" style="font-weight:900; color:#dc2626;">₹0.00</span></div>
+      </div>
+      <button class="btn" id="create-btn" onclick="createCode()">Create Gift Code</button>
     </div>
-
-    <div id="code-result-box" class="card" style="display:none; text-align:center; border:2px solid #0057ff; background:#f0f4ff;">
-        <p style="font-size:0.65rem; font-weight:800; color:#0057ff; margin-bottom:10px;">GIFT CODE CREATED</p>
-        <h2 id="result-code" style="font-size:2.5rem; letter-spacing:5px; color:#0f172a; margin-bottom:15px;">-----</h2>
-        <button class="btn" onclick="copyCode()">Copy Code</button>
+    <div class="code-result" id="code-result">
+      <div class="code-big" id="result-code">00000</div>
+      <button onclick="copyCode()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 20px; border-radius:10px; cursor:pointer;">Copy Code</button>
     </div>
   </div>
 
@@ -94,56 +88,67 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="card">
       <div id="claim-msg" class="msg"></div>
       <div class="inp-group">
-        <label>Enter 5-Digit Code</label>
-        <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size:2rem; letter-spacing:8px; font-weight:900;">
+        <label>5-Digit Code</label>
+        <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size:2rem; letter-spacing:10px;">
       </div>
       <button class="btn" id="claim-btn" onclick="claimCode()" style="background:#16a34a;">Claim Now</button>
     </div>
-
-    <div id="receipt" class="receipt-card">
-        <div class="receipt-header">
-            <i class="fa-solid fa-circle-check receipt-icon"></i>
-            <h3 style="font-size:1.1rem; color:#0f172a;">Claim Successful</h3>
-        </div>
-        <div class="receipt-row"><span class="r-label">Code:</span><span class="r-val" id="r-code">--</span></div>
-        <div class="receipt-row"><span class="r-label">Amount:</span><span class="r-val" id="r-amt" style="color:#16a34a;">₹0.00</span></div>
-        <div class="receipt-row"><span class="r-label">Comment:</span><span class="r-val" id="r-comment">--</span></div>
-        <div class="receipt-row"><span class="r-label">Time:</span><span class="r-val" id="r-time">--</span></div>
-        <button class="btn" onclick="closeReceipt()" style="margin-top:15px; background:#f8fafc; color:#64748b; font-size:0.75rem; border:1px solid #e2e8f0;">Close Receipt</button>
-    </div>
   </div>
+
+  <div id="tab-track" class="tab-section">
+    <div id="track-list"></div>
+  </div>
+
+  <div id="tab-history" class="tab-section">
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<div class="claim-overlay" id="claim-overlay">
+    <div style="font-size:5rem;">🎉</div>
+    <div class="claim-amt-big" id="anim-amt">₹0.00</div>
+    <div id="anim-comment" style="margin-bottom:20px; opacity:0.8;"></div>
+    <button onclick="closeAnim()" style="padding:15px 40px; border-radius:15px; border:none; font-weight:800; color:#0057ff;">AWESOME!</button>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
-async function fetchBalance() {
-  try {
-    const r = await fetch('/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
-    const d = await r.json();
-    if(d.status === 'success') document.getElementById('balance').innerText = parseFloat(d.balance).toFixed(2);
-  } catch(e) { console.error("Balance fetch error"); }
-}
-fetchBalance();
-
+// ── Tab Logic ──────────────────────────────────────────
 function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('receipt').style.display = 'none';
+  if(tab === 'track') loadMyCodes();
+  if(tab === 'history') loadClaimHistory();
 }
 
+function updateSummary() {
+  const u = parseInt(document.getElementById('total-users').value) || 0;
+  const p = parseFloat(document.getElementById('per-amount').value) || 0;
+  if(u > 0 && p > 0) {
+    document.getElementById('s-total').innerText = '₹' + (u * p).toFixed(2);
+    document.getElementById('summary').classList.add('show');
+  } else { document.getElementById('summary').classList.remove('show'); }
+}
+
+async function fetchBalance() {
+  const r = await fetch('/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } });
+  const d = await r.json();
+  if(d.status === 'success') document.getElementById('balance').innerText = parseFloat(d.balance).toFixed(2);
+}
+fetchBalance();
+
+// ── Create ────────────────────────────────────────────
 async function createCode() {
   const u = document.getElementById('total-users').value;
   const p = document.getElementById('per-amount').value;
   const c = document.getElementById('comment').value;
-
-  if(!u || !p) return showMsg('create-msg', 'All fields required', 'error');
-
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
+
   try {
     const r = await fetch('/giftcode/create', {
       method: 'POST',
@@ -153,22 +158,20 @@ async function createCode() {
     const d = await r.json();
     if(d.status === 'success') {
       document.getElementById('result-code').innerText = d.code;
-      document.getElementById('code-result-box').style.display = 'block';
+      document.getElementById('code-result').style.display = 'block';
       fetchBalance();
-      showMsg('create-msg', 'Code created!', 'success');
-    } else {
-      showMsg('create-msg', d.message, 'error');
-    }
-  } catch(e) { showMsg('create-msg', 'Server error', 'error'); }
+      showMsg('create-msg', 'Gift Code Created!', 'success');
+    } else { showMsg('create-msg', d.message, 'error'); }
+  } catch(e) { showMsg('create-msg', 'Error', 'error'); }
   btn.disabled = false;
 }
 
+// ── Claim ─────────────────────────────────────────────
 async function claimCode() {
   const code = document.getElementById('claim-code-input').value;
-  if(code.length !== 5) return showMsg('claim-msg', 'Enter 5-digit code', 'error');
-
   const btn = document.getElementById('claim-btn');
   btn.disabled = true;
+
   try {
     const r = await fetch('/giftcode/claim', {
       method: 'POST',
@@ -177,17 +180,57 @@ async function claimCode() {
     });
     const d = await r.json();
     if(d.status === 'success') {
-      document.getElementById('r-code').innerText = d.code;
-      document.getElementById('r-amt').innerText = '₹' + d.amount;
-      document.getElementById('r-comment').innerText = d.comment || '—';
-      document.getElementById('r-time').innerText = new Date().toLocaleString('en-IN');
-      
-      document.getElementById('receipt').style.display = 'block';
+      document.getElementById('anim-amt').innerText = '₹' + d.amount;
+      document.getElementById('anim-comment').innerText = d.comment || 'Gift from UNIO';
+      document.getElementById('claim-overlay').classList.add('show');
       fetchBalance();
-      showMsg('claim-msg', 'Claim Successful!', 'success');
     } else { showMsg('claim-msg', d.message, 'error'); }
-  } catch(e) { showMsg('claim-msg', 'Claiming error', 'error'); }
+  } catch(e) { showMsg('claim-msg', 'Error', 'error'); }
   btn.disabled = false;
+}
+
+// ── Track (Codes Created) ──────────────────────────────
+async function loadMyCodes() {
+  const list = document.getElementById('track-list');
+  list.innerHTML = '<p style="text-align:center; padding:20px;">Loading...</p>';
+  try {
+    const r = await fetch('/giftcode/my-codes', { headers: { 'Authorization': 'Bearer ' + token } });
+    const d = await r.json();
+    if(d.status === 'success' && d.codes.length > 0) {
+      list.innerHTML = d.codes.map(c => `
+        <div class="track-item">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:1.2rem; color:#0057ff; letter-spacing:2px;">${c.code}</b>
+            <span style="font-size:0.7rem; font-weight:800; color:${c.active ? '#16a34a' : '#dc2626'}">${c.active ? 'ACTIVE' : 'EXPIRED'}</span>
+          </div>
+          <div style="font-size:0.8rem; margin-top:10px; color:#64748b;">
+            Claimed: ${c.claimed_by.length} / ${c.total_users} users
+          </div>
+        </div>
+      `).join('');
+    } else { list.innerHTML = '<div class="no-data"><i class="fa-solid fa-ghost"></i><p>No codes created yet</p></div>'; }
+  } catch(e) { list.innerHTML = '<p>Failed to load</p>'; }
+}
+
+// ── History (Codes Claimed) ────────────────────────────
+async function loadClaimHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = '<p style="text-align:center; padding:20px;">Loading...</p>';
+  try {
+    const r = await fetch('/giftcode/my-claims', { headers: { 'Authorization': 'Bearer ' + token } });
+    const d = await r.json();
+    if(d.status === 'success' && d.claims.length > 0) {
+      list.innerHTML = d.claims.map(c => `
+        <div class="hist-item">
+          <div style="display:flex; justify-content:space-between;">
+            <b style="color:#0057ff;">${c.code}</b>
+            <b style="color:#16a34a;">+ ₹${c.amount}</b>
+          </div>
+          <div style="font-size:0.6rem; color:#94a3b8; margin-top:5px;">By: ${c.creator_name} | ${new Date(c.claimed_at).toLocaleString()}</div>
+        </div>
+      `).join('');
+    } else { list.innerHTML = '<div class="no-data"><i class="fa-solid fa-clock"></i><p>No claims yet</p></div>'; }
+  } catch(e) { list.innerHTML = '<p>Failed to load</p>'; }
 }
 
 function showMsg(id, txt, type) {
@@ -201,8 +244,8 @@ function copyCode() {
   alert("Code Copied!");
 }
 
-function closeReceipt() {
-    document.getElementById('receipt').style.display = 'none';
+function closeAnim() {
+    document.getElementById('claim-overlay').classList.remove('show');
     document.getElementById('claim-code-input').value = '';
 }
 </script>
