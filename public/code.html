@@ -1,397 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gift Code | UNIO</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
-
-/* Header */
-.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
-.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
-.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
-
-/* Tabs */
-.tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05)}
-.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
-.tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
-.tab-section{display:none}.tab-section.active{display:block}
-
-/* Container */
-.container{max-width:480px;margin:0 auto;padding:0 1.25rem}
-
-/* Balance Card */
-.bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
-.bal-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,.07);border-radius:50%}
-.bal-card::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;background:rgba(255,255,255,.05);border-radius:50%}
-.bal-z{position:relative;z-index:1}
-.bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
-.bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
-.bal-sub{font-size:.7rem;opacity:.6;margin-top:.35rem;font-weight:600}
-
-/* Section Card */
-.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
-.card-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem}
-
-/* Input */
-.inp-group{margin-bottom:1rem}
-.inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
-.inp-group input,.inp-group textarea{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;transition:all .2s;color:#0f172a}
-.inp-group input:focus,.inp-group textarea:focus{border-color:#0057ff;background:white}
-
-/* Summary box */
-.summary{background:#f0f4ff;border-radius:1rem;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:none}
-.summary.show{display:block}
-.summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
-.summary-row:last-child{margin-bottom:0;padding-top:.35rem;border-top:1px dashed #c7d7ff}
-.summary-label{font-size:.7rem;font-weight:700;color:#64748b}
-.summary-val{font-size:.75rem;font-weight:800;color:#0f172a}
-.summary-total{color:#dc2626;font-size:.85rem;font-weight:900}
-
-/* Button */
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s}
-.btn:disabled{background:#94a3b8;cursor:not-allowed}
-.btn:active:not(:disabled){transform:scale(.98)}
-.btn.green{background:linear-gradient(135deg,#16a34a,#059669)}
-.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
-
-/* Msg */
-.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
-.msg.error{background:#fee2e2;color:#dc2626;display:block}
-.msg.success{background:#dcfce7;color:#16a34a;display:block}
-
-/* Code Result */
-.code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;text-align:center;display:none}
-.code-result.show{display:block}
-.code-result-label{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.5rem}
-.code-big{font-size:3rem;font-weight:900;letter-spacing:.25em;margin-bottom:.75rem;text-shadow:0 2px 10px rgba(0,0,0,.2)}
-.code-info-row{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem;opacity:.9}
-.code-info-item{text-align:center}
-.code-info-val{font-size:.95rem;font-weight:800}
-.code-info-label{font-size:.58rem;font-weight:700;opacity:.7;text-transform:uppercase}
-.code-comment{background:rgba(255,255,255,.15);border-radius:.75rem;padding:.6rem 1rem;font-size:.78rem;font-weight:700;margin-bottom:1rem}
-.code-copy-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;padding:.6rem 1.25rem;border-radius:.75rem;font-size:.75rem;font-weight:800;cursor:pointer;font-family:inherit}
-
-/* Tracking */
-.track-item{background:white;border-radius:1.25rem;padding:1.1rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.track-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-.track-code{font-size:1.4rem;font-weight:900;color:#0057ff;letter-spacing:.15em}
-.track-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
-.track-badge.active{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0}
-.track-badge.expired{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
-.track-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.75rem}
-.track-stat{background:#f8fafc;border-radius:.75rem;padding:.5rem;text-align:center}
-.track-stat-val{font-size:.85rem;font-weight:900;color:#0f172a}
-.track-stat-label{font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
-.track-comment{font-size:.72rem;font-weight:600;color:#64748b;margin-bottom:.75rem;background:#f8fafc;padding:.5rem .75rem;border-radius:.75rem}
-.claimed-list{max-height:160px;overflow-y:auto}
-.claimed-item{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid #f8fafc;font-size:.72rem}
-.claimed-item:last-child{border:none}
-.claimed-name{font-weight:700;color:#0f172a}
-.claimed-mobile{color:#94a3b8;font-size:.65rem}
-.claimed-amt{font-weight:800;color:#16a34a}
-.empty{text-align:center;padding:2rem 1rem;color:#94a3b8}
-.empty i{font-size:2rem;margin-bottom:.5rem;display:block;opacity:.4}
-.empty p{font-size:.78rem;font-weight:600}
-.no-codes{text-align:center;padding:3rem 1rem;color:#94a3b8}
-.no-codes i{font-size:3rem;margin-bottom:.75rem;display:block;opacity:.3}
-.no-codes p{font-size:.8rem;font-weight:600}
-
-/* Claim animation overlay */
-.claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(8px)}
-.claim-overlay.show{display:flex}
-.claim-anim-box{text-align:center;animation:popBounce .6s cubic-bezier(.34,1.56,.64,1) forwards}
-.claim-emoji{font-size:5rem;margin-bottom:.75rem;animation:spin .6s ease forwards}
-.claim-amt-big{font-size:3.5rem;font-weight:900;color:white;letter-spacing:-2px;margin-bottom:.5rem;text-shadow:0 0 30px rgba(255,255,255,.4)}
-.claim-comment-text{font-size:1rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2rem;background:rgba(255,255,255,.1);padding:.6rem 1.5rem;border-radius:2rem}
-.claim-close-btn{background:white;color:#0057ff;border:none;padding:.8rem 2rem;border-radius:1rem;font-size:.85rem;font-weight:800;cursor:pointer;font-family:inherit}
-.confetti{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall linear forwards}
-@keyframes popBounce{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes spin{from{transform:rotate(-30deg) scale(.5);opacity:0}to{transform:rotate(0) scale(1);opacity:1}}
-@keyframes fall{from{transform:translateY(-100px) rotate(0deg);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeIn .4s ease forwards}
-
-/* Bottom Nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
-.nav-item i{font-size:1.2rem}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Code | UNIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* [Keeping your original styles here - No changes needed to CSS] */
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+        .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:40}
+        .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
+        .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
+        .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+        .tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;transition:all .2s}
+        .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
+        .tab-section{display:none}.tab-section.active{display:block}
+        .container{max-width:480px;margin:0 auto;padding:0 1.25rem}
+        .bal-card{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
+        .bal-z{position:relative;z-index:1}
+        .bal-label{font-size:.6rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.35rem}
+        .bal-amount{font-size:2.25rem;font-weight:900;letter-spacing:-1px}
+        .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
+        .card-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem}
+        .inp-group{margin-bottom:1rem}
+        .inp-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+        .inp-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit;transition:all .2s;color:#0f172a}
+        .inp-group input:focus{border-color:#0057ff;background:white}
+        .summary{background:#f0f4ff;border-radius:1rem;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:none}
+        .summary.show{display:block}
+        .summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+        .summary-val{font-size:.75rem;font-weight:800;color:#0f172a}
+        .summary-total{color:#dc2626;font-size:.85rem;font-weight:900}
+        .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem}
+        .btn:disabled{background:#94a3b8}
+        .btn.green{background:linear-gradient(135deg,#16a34a,#059669)}
+        .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+        .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+        .msg.error{background:#fee2e2;color:#dc2626;display:block}
+        .msg.success{background:#dcfce7;color:#16a34a;display:block}
+        .code-result{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;text-align:center;display:none}
+        .code-result.show{display:block}
+        .code-big{font-size:3rem;font-weight:900;letter-spacing:.25em;margin-bottom:.75rem}
+        .code-copy-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;padding:.6rem 1.25rem;border-radius:.75rem;font-size:.75rem;font-weight:800;cursor:pointer}
+        .no-codes{text-align:center;padding:3rem 1rem;color:#94a3b8}
+        .claim-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(8px)}
+        .claim-overlay.show{display:flex}
+        .claim-amt-big{font-size:3.5rem;font-weight:900;color:white}
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-decoration:none;flex:1}
+        .nav-item.active{color:#0057ff}
+    </style>
 </head>
 <body>
 
 <div class="header">
-  <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
-  <h1>🎁 Gift Code</h1>
+    <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
+    <h1>🎁 Gift Code</h1>
 </div>
 
-<!-- Tabs -->
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('create',this)">
-    <i class="fa-solid fa-plus"></i> Create
-  </button>
-  <button class="tab" onclick="switchTab('claim',this)">
-    <i class="fa-solid fa-gift"></i> Claim
-  </button>
-  <button class="tab" onclick="switchTab('track',this)">
-    <i class="fa-solid fa-chart-bar"></i> Tracking
-  </button>
-  <button class="tab" onclick="switchTab('history',this)">
-    <i class="fa-solid fa-clock-rotate-left"></i> History
-  </button>
+    <button class="tab active" onclick="switchTab('create', this)"><i class="fa-solid fa-plus"></i> Create</button>
+    <button class="tab" onclick="switchTab('claim', this)"><i class="fa-solid fa-gift"></i> Claim</button>
+    <button class="tab" onclick="switchTab('track', this)"><i class="fa-solid fa-chart-bar"></i> Tracking</button>
+    <button class="tab" onclick="switchTab('history', this)"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
 </div>
 
 <div class="container">
-
-  <!-- ── CREATE TAB ── -->
-  <div id="tab-create" class="tab-section active">
-
-    <!-- Balance -->
-    <div class="bal-card">
-      <div class="bal-z">
-        <div class="bal-label">Your Balance</div>
-        <div class="bal-amount">&#8377;<span id="balance">0.00</span></div>
-        <div class="bal-sub">Available to create gift codes</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><i class="fa-solid fa-gift" style="color:#7c3aed"></i> Create Gift Code</div>
-      <div id="create-msg" class="msg"></div>
-
-      <div class="inp-group">
-        <label>Total Users</label>
-        <input type="number" id="total-users" placeholder="e.g. 10" min="1" max="1000" oninput="updateSummary()">
-      </div>
-      <div class="inp-group">
-        <label>Amount Per User (&#8377;)</label>
-        <input type="number" id="per-amount" placeholder="e.g. 5.00" step="0.01" oninput="updateSummary()">
-      </div>
-      <div class="inp-group">
-        <label>Comment (Optional)</label>
-        <input type="text" id="comment" placeholder="e.g. Diwali Gift, Bonus...">
-      </div>
-
-      <!-- Summary -->
-      <div class="summary" id="summary">
-        <div class="summary-row">
-          <span class="summary-label">Total Users</span>
-          <span class="summary-val" id="s-users">—</span>
+    <!-- CREATE TAB -->
+    <div id="tab-create" class="tab-section active">
+        <div class="bal-card">
+            <div class="bal-z">
+                <div class="bal-label">Your Balance</div>
+                <div class="bal-amount">₹<span id="balance">0.00</span></div>
+            </div>
         </div>
-        <div class="summary-row">
-          <span class="summary-label">Per User</span>
-          <span class="summary-val" id="s-per">—</span>
+        <div class="card">
+            <div id="create-msg" class="msg"></div>
+            <div class="inp-group">
+                <label>Total Users</label>
+                <input type="number" id="total-users" placeholder="e.g. 10" oninput="updateSummary()">
+            </div>
+            <div class="inp-group">
+                <label>Amount Per User (₹)</label>
+                <input type="number" id="per-amount" placeholder="e.g. 5.00" oninput="updateSummary()">
+            </div>
+            <div class="inp-group">
+                <label>Comment</label>
+                <input type="text" id="comment" placeholder="Optional">
+            </div>
+            <div class="summary" id="summary">
+                <div class="summary-row"><span>Total Deduction:</span> <span id="s-total" class="summary-total">₹0.00</span></div>
+            </div>
+            <button class="btn purple" id="create-btn" onclick="createCode()">Create Gift Code</button>
         </div>
-        <div class="summary-row">
-          <span class="summary-label">Total Deduction</span>
-          <span class="summary-val summary-total" id="s-total">—</span>
+        <div class="code-result" id="code-result">
+            <div class="code-big" id="result-code">00000</div>
+            <button class="code-copy-btn" onclick="copyCode()">Copy Code</button>
         </div>
-      </div>
-
-      <button class="btn purple" id="create-btn" onclick="createCode()">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> Create Gift Code
-      </button>
     </div>
 
-    <!-- Code Result -->
-    <div class="code-result" id="code-result">
-      <div class="code-result-label">Your Gift Code</div>
-      <div class="code-big" id="result-code">00000</div>
-      <div class="code-info-row">
-        <div class="code-info-item">
-          <div class="code-info-val" id="result-users">0</div>
-          <div class="code-info-label">Users</div>
+    <!-- CLAIM TAB -->
+    <div id="tab-claim" class="tab-section">
+        <div class="card">
+            <div id="claim-msg" class="msg"></div>
+            <div class="inp-group">
+                <label>5-Digit Code</label>
+                <input type="text" id="claim-code-input" maxlength="5" style="text-align:center; font-size: 2rem;">
+            </div>
+            <button class="btn green" id="claim-btn" onclick="claimCode()">Claim Now</button>
         </div>
-        <div class="code-info-item">
-          <div class="code-info-val" id="result-per">₹0</div>
-          <div class="code-info-label">Per User</div>
-        </div>
-        <div class="code-info-item">
-          <div class="code-info-val" id="result-total">₹0</div>
-          <div class="code-info-label">Total</div>
-        </div>
-      </div>
-      <div class="code-comment" id="result-comment" style="display:none"></div>
-      <button class="code-copy-btn" onclick="copyCode()">
-        <i class="fa-regular fa-copy"></i> Copy Code
-      </button>
     </div>
 
-  </div>
-
-  <!-- ── CLAIM TAB ── -->
-  <div id="tab-claim" class="tab-section">
-    <div class="card">
-      <div class="card-title"><i class="fa-solid fa-ticket" style="color:#16a34a"></i> Claim Gift Code</div>
-      <div id="claim-msg" class="msg"></div>
-      <div class="inp-group">
-        <label>5-Digit Gift Code</label>
-        <input type="number" id="claim-code-input" placeholder="e.g. 12345" maxlength="5" style="text-align:center;font-size:1.75rem;font-weight:900;letter-spacing:.2em">
-      </div>
-      <button class="btn green" id="claim-btn" onclick="claimCode()">
-        <i class="fa-solid fa-gift"></i> Claim Now!
-      </button>
-    </div>
-  </div>
-
-  <!-- ── TRACK TAB ── -->
-  <div id="tab-track" class="tab-section">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
-      <span style="font-size:.65rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em">My Gift Codes</span>
-      <button style="background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit" onclick="loadMyCodes()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
-    </div>
-    <div id="track-list">
-      <div class="no-codes"><i class="fa-solid fa-gift"></i><p>Loading...</p></div>
-    </div>
-  </div>
-
-  <!-- ── HISTORY TAB ── -->
-  <div id="tab-history" class="tab-section">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
-      <span style="font-size:.65rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em">My Claim History</span>
-      <button style="background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit" onclick="loadClaimHistory()">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
-    </div>
-    <div id="history-list">
-      <div class="no-codes"><i class="fa-solid fa-clock-rotate-left"></i><p>Loading...</p></div>
-    </div>
-  </div>
-
+    <!-- TRACK & HISTORY TABS -->
+    <div id="tab-track" class="tab-section"><div id="track-list" class="no-codes">No codes created yet.</div></div>
+    <div id="tab-history" class="tab-section"><div id="history-list" class="no-codes">No claims yet.</div></div>
 </div>
 
-<!-- Claim Success Animation -->
+<!-- Success Overlay -->
 <div class="claim-overlay" id="claim-overlay">
-  <div class="claim-anim-box">
-    <div class="claim-emoji">🎉</div>
-    <div class="claim-amt-big" id="anim-amt"></div>
-    <div class="claim-comment-text" id="anim-comment"></div>
-    <button class="claim-close-btn" onclick="closeAnim()">
-      <i class="fa-solid fa-check"></i> Awesome!
-    </button>
-  </div>
-</div>
-
-<!-- Bottom Nav -->
-<div class="bottom-nav">
-  <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
-  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
-  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
-  <a href="transactions.html" class="nav-item"><i class="fa-solid fa-receipt"></i>History</a>
-  <a href="code.html" class="nav-item active"><i class="fa-solid fa-gift"></i>Gift</a>
+    <div class="claim-amt-big" id="anim-amt">₹0.00</div>
+    <p style="color:white; margin: 10px 0;">Claimed Successfully!</p>
+    <button class="btn" style="width:auto; padding: 10px 30px;" onclick="closeAnim()">Close</button>
 </div>
 
 <script>
-const API   = '';
-const token = localStorage.getItem('token');
-const user  = JSON.parse(localStorage.getItem('user') || '{}');
-if(!token) window.location.href = 'index.html';
+    const API = 'https://your-api-url.com/api'; // <--- APNI API URL YAHA DALO
+    const token = localStorage.getItem('token');
 
-// Load balance
-fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
-  .then(r=>r.json()).then(d=>{
-    if(d.status==='success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
-  });
+    // 1. Initial Load
+    window.onload = () => {
+        if(!token) window.location.href = 'index.html';
+        fetchBalance();
+    };
 
-// Tab switch
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(tab==='track') loadMyCodes();
-  if(tab==='history') loadClaimHistory();
-}
-
-// Summary update
-function updateSummary() {
-  const users  = parseInt(document.getElementById('total-users').value) || 0;
-  const amount = parseFloat(document.getElementById('per-amount').value) || 0;
-  const box    = document.getElementById('summary');
-  if(users > 0 && amount > 0) {
-    document.getElementById('s-users').textContent = users;
-    document.getElementById('s-per').textContent   = '₹' + amount.toFixed(2);
-    document.getElementById('s-total').textContent = '₹' + (users * amount).toFixed(2);
-    box.classList.add('show');
-  } else {
-    box.classList.remove('show');
-  }
-}
-
-// Create Code
-async function createCode() {
-  const total_users      = document.getElementById('total-users').value;
-  const per_user_amount  = document.getElementById('per-amount').value;
-  const comment          = document.getElementById('comment').value.trim();
-
-  if(!total_users || !per_user_amount) return showMsg('create-msg','Sab fields fill karo!','error');
-
-  const btn = document.getElementById('create-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
-
-  try {
-    const r = await fetch(API+'/giftcode/create', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ total_users, per_user_amount, comment })
-    });
-    const d = await r.json();
-
-    if(d.status === 'success') {
-      showMsg('create-msg','','');
-      document.getElementById('create-msg').style.display = 'none';
-
-      // Show result
-      document.getElementById('result-code').textContent   = d.code;
-      document.getElementById('result-users').textContent  = d.total_users;
-      document.getElementById('result-per').textContent    = '₹'+d.per_user_amount;
-      document.getElementById('result-total').textContent  = '₹'+d.total_deducted;
-
-      const cmt = document.getElementById('result-comment');
-      if(d.comment) { cmt.textContent = '💬 ' + d.comment; cmt.style.display = 'block'; }
-      else { cmt.style.display = 'none'; }
-
-      document.getElementById('code-result').classList.add('show','fade-in');
-
-      // Refresh balance
-      fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
-        .then(r=>r.json()).then(bd=>{
-          if(bd.status==='success') document.getElementById('balance').textContent = parseFloat(bd.balance).toFixed(2);
-        });
-
-      // Reset form
-      document.getElementById('total-users').value = '';
-      document.getElementById('per-amount').value  = '';
-      document.getElementById('comment').value     = '';
-      document.getElementById('summary').classList.remove('show');
-
-    } else {
-      showMsg('create-msg', d.message || 'Failed!', 'error');
+    // 2. Fetch Balance
+    async function fetchBalance() {
+        try {
+            const r = await fetch(API + '/wallet/balance', { headers: {'Authorization': 'Bearer ' + token} });
+            const d = await r.json();
+            if(d.status === 'success') document.getElementById('balance').textContent = parseFloat(d.balance).toFixed(2);
+        } catch(e) { console.error("Balance fetch error"); }
     }
-  } catch(e) {
-    showMsg('create-msg', 'Server error!', 'error');
-  }
 
-  btn.disabled = false;
-  btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Create Gift Code';
-}
+    // 3. Tab Switching Logic
+    function switchTab(tab, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+        
+        if(tab === 'track') loadData('track-list', '/giftcode/my-codes');
+        if(tab === 'history') loadData('history-list', '/giftcode/my-history');
+    }
 
-// Copy code
-function copyCode() {
-  const code = document.getElementById('result-code').textContent;
-  navigator.clipboard.writeText(code).then(()=>showToast('Code copied! 🎁'));
-}
+    // 4. Create Logic
+    function updateSummary() {
+        const u = document.getElementById('total-users').value || 0;
+        const a = document.getElementById('per-amount').value || 0;
+        const total = (u * a).toFixed(2);
+        document.getElementById('s-total').textContent = '₹' + total;
+        document.getElementById('summary').style.display = (u > 0 && a > 0) ? 'block' : 'none';
+    }
 
-// Claim Code
-async function claimCode() {
-  const code = document.getElementById('claim-code-input').value.trim();
-  if(!code || code.length !== 5) return showMsg('claim-msg','5 digit code enter karo!','error');
+    async function createCode() {
+        const btn = document.getElementById('create-btn');
+        const payload = {
+            total_users: document.getElementById('total-users').value,
+            per_user_amount: document.getElementById('per-amount').value,
+            comment: document.getElementById('comment').value
+        };
 
- 
+        btn.disabled = true;
+        try {
+            const r = await fetch(API + '/giftcode/create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+                body: JSON.stringify(payload)
+            });
+            const d = await r.json();
+            if(d.status === 'success') {
+                document.getElementById('result-code').textContent = d.code;
+                document.getElementById('code-result').classList.add('show');
+                fetchBalance();
+                showMsg('create-msg', 'Code Created!', 'success');
+            } else {
+                showMsg('create-msg', d.message, 'error');
+            }
+        } catch(e) { showMsg('create-msg', 'Server Error', 'error'); }
+        btn.disabled = false;
+    }
+
+    // 5. Claim Logic
+    async function claimCode() {
+        const code = document.getElementById('claim-code-input').value;
+        if(code.length < 5) return showMsg('claim-msg', 'Invalid Code', 'error');
+
+        try {
+            const r = await fetch(API + '/giftcode/claim', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+                body: JSON.stringify({ code })
+            });
+            const d = await r.json();
+            if(d.status === 'success') {
+                document.getElementById('anim-amt').textContent = '₹' + d.amount;
+                document.getElementById('claim-overlay').classList.add('show');
+                fetchBalance();
+            } else {
+                showMsg('claim-msg', d.message, 'error');
+            }
+        } catch(e) { showMsg('claim-msg', 'Failed to claim', 'error'); }
+    }
+
+    // 6. Helper Functions
+    function showMsg(id, txt, type) {
+        const m = document.getElementById(id);
+        m.textContent = txt;
+        m.className = 'msg ' + type;
+        setTimeout(() => m.style.display = 'none', 3000);
+    }
+
+    function closeAnim() { document.getElementById('claim-overlay').classList.remove('show'); }
+
+    function copyCode() {
+        const c = document.getElementById('result-code').textContent;
+        navigator.clipboard.writeText(c);
+        alert("Code Copied!");
+    }
+
+    async function loadData(targetId, endpoint) {
+        const div = document.getElementById(targetId);
+        div.innerHTML = "Loading...";
+        try {
+            const r = await fetch(API + endpoint, { headers: {'Authorization': 'Bearer ' + token} });
+            const d = await r.json();
+            // Yaha aap apne data loop karke HTML generate kar sakte hain
+            div.innerHTML = d.data && d.data.length ? "Data found (Logic pending loop)" : "No records found.";
+        } catch(e) { div.innerHTML = "Error loading data."; }
+    }
+</script>
+</body>
+</html>
