@@ -12,12 +12,9 @@ const LifafaSchema = new mongoose.Schema({
   max_users:       { type: Number, required: true },
   claimed_users:   { type: Number, default: 0 },
   channels:        { type: [String], default: [] },
+  refer_bonus:     { type: Number, default: 0 },
   status:          { type: String, enum: ['active','expired'], default: 'active' },
-  created_at:      { type: Date, default: Date.now },
-
-  // ── Refer & Earn ──
-  refer_enabled:   { type: Boolean, default: false },
-  refer_amt:       { type: Number, default: 0 }
+  created_at:      { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Lifafa', LifafaSchema);
+module.exports = mongoose.models.Lifafa || mongoose.model('Lifafa', LifafaSchema);
