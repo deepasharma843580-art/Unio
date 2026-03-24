@@ -48,6 +48,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;background:#f0f
 .send-otp-btn:active:not(:disabled){transform:scale(.98)}
 
 /* OTP Banner */
+.start-bot-box{display:flex;align-items:center;gap:.75rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:1rem;padding:.85rem 1.1rem;margin-bottom:1rem;text-decoration:none;transition:all .2s}
+.start-bot-box:active{transform:scale(.98)}
+.start-bot-box .fa-telegram{font-size:1.5rem;flex-shrink:0}
 .otp-banner{background:#f0fdf4;border:2px solid #86efac;border-radius:1rem;padding:.65rem 1rem;font-size:.72rem;font-weight:700;color:#15803d;margin-bottom:1rem;display:none;align-items:center;gap:.5rem;animation:slideDown .3s ease}
 .otp-banner.show{display:flex}
 @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
@@ -126,6 +129,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;background:#f0f
         Send OTP
       </button>
     </div>
+
+    <!-- Start Bot Box -->
+    <a href="https://t.me/OTP_UNIO_BOT?start=start" target="_blank" class="start-bot-box">
+      <i class="fa-brands fa-telegram"></i>
+      <div>
+        <div style="font-size:.72rem;font-weight:800">Start this bot for OTP</div>
+        <div style="font-size:.78rem;font-weight:900">@OTP_UNIO_BOT</div>
+      </div>
+      <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left:auto;font-size:.8rem;opacity:.8"></i>
+    </a>
 
     <div class="terms-check" onclick="toggleTerms()">
       <input type="checkbox" id="terms-cb" onclick="event.stopPropagation()">
@@ -286,5 +299,4 @@ async function register() {
 if(localStorage.getItem('token')) window.location.href = 'dashboard.html';
 </script>
 </body>
-  </html>
-
+</html>
