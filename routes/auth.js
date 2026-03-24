@@ -4,6 +4,53 @@ const jwt      = require('jsonwebtoken');
 const User     = require('../models/User');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'unio_secret_2026';
+const BOT_TOKEN  = process.env.BOT_TOKEN  || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_TG   = '8509393869';
+
+// OTP store (in-memory, resets on server restart)
+const otpStore = {};
+
+// ── Send Telegram Message ─────────────────────────────────────────────────────
+async function sendTG(chat_id, text) {
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ chat_id, text, parse_mode: 'HTML' })
+    });
+  } catch(e) { console.error('TG send error:', e.message); }
+}
+
+// ── Send OTP ──────────────────────────────────────────────────────────────────
+router.post('/send-otp', async (req, res) => {
+  try {
+    const { tg_id, name } = req.body;
+    if(!tg_id) return res.status(400).json({ status:'error', message:'Telegram ID required' });
+
+    // Check if tg_id already linked
+    const existing = await User.findOne({ tg_id });
+    if(existing) return res.status(400).json({ status:'error', message:'Ye Telegram ID pehle se registered hai!' });
+
+    // Generate 4-digit OTP
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // Store OTP with 5 min expiry
+    otpStore[tg_id] = { otp, expires: Date.now() + 5 * 60 * 1000 };
+
+    // Send OTP to user
+    const userName = name || 'User';
+    await sendTG(tg_id,
+      `👋 <b>Welcome to UNIO Hazel!</b>\n\n` +
+      `🔐 <b>OTP = ${otp}</b>\n\n` +
+      `This is your OTP code.\n\n` +
+      `Thanks for joining UNIO Hazel ❤️`
+    );
+
+    res.json({ status:'success', message:'OTP sent!' });
+  } catch(e) {
+    res.status(500).json({ status:'error', message: e.message });
+  }
+});
 
 // ── Register ──────────────────────────────────────────────────────────────────
 router.post('/register', async (req, res) => {
@@ -11,18 +58,51 @@ router.post('/register', async (req, res) => {
     console.log('DB State:', mongoose.connection.readyState);
     console.log('Register attempt:', req.body?.mobile);
 
-    const { name, mobile, password, pin } = req.body;
-    if(!name || !mobile || !password || !pin)
+    const { name, mobile, password, pin, tg_id, otp } = req.body;
+    if(!name || !mobile || !password || !pin || !tg_id || !otp)
       return res.status(400).json({ status:'error', message:'All fields required' });
+
+    // Verify OTP
+    const stored = otpStore[tg_id];
+    if(!stored)
+      return res.status(400).json({ status:'error', message:'OTP nahi bheja gaya! Pehle OTP send karo.' });
+    if(Date.now() > stored.expires)
+      return res.status(400).json({ status:'error', message:'OTP expire ho gaya! Dobara send karo.' });
+    if(stored.otp !== otp.toString())
+      return res.status(400).json({ status:'error', message:'Wrong OTP! Try again.' });
+
+    // Clear OTP
+    delete otpStore[tg_id];
 
     const exists = await User.findOne({ mobile });
     if(exists) return res.status(400).json({ status:'error', message:'Mobile already registered' });
 
+    const tgExists = await User.findOne({ tg_id });
+    if(tgExists) return res.status(400).json({ status:'error', message:'Ye Telegram ID pehle se registered hai!' });
+
     const wallet_id = 'UW' + Date.now().toString().slice(-6);
     const api_key   = 'UW-' + Math.random().toString(36).substr(2,12).toUpperCase();
 
-    const user = await User.create({ name, mobile, password, pin, wallet_id, api_key, balance: 0 });
+    const user = await User.create({ name, mobile, password, pin, tg_id, wallet_id, api_key, balance: 0 });
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
+
+    // Alert to user
+    await sendTG(tg_id,
+      `✅ <b>Account Created!</b>\n\n` +
+      `👤 Name: <b>${name}</b>\n` +
+      `📱 Mobile: <b>${mobile}</b>\n` +
+      `💼 Wallet ID: <b>${wallet_id}</b>\n\n` +
+      `Welcome to UNIO Wallet! ❤️`
+    );
+
+    // Alert to admin
+    await sendTG(ADMIN_TG,
+      `🆕 <b>New User Joined!</b>\n\n` +
+      `👤 Name: <b>${name}</b>\n` +
+      `📱 Mobile: <b>${mobile}</b>\n` +
+      `🤖 TG ID: <b>${tg_id}</b>\n` +
+      `💼 Wallet ID: <b>${wallet_id}</b>`
+    );
 
     res.json({
       status: 'success',
@@ -61,6 +141,16 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
 
+    // Login alert to user
+    if(user.tg_id) {
+      await sendTG(user.tg_id,
+        `🔐 <b>Login Alert!</b>\n\n` +
+        `📱 Mobile: <b>${mobile}</b>\n` +
+        `⏰ Time: <b>${new Date().toLocaleString('en-IN')}</b>\n\n` +
+        `If this wasn't you, change your password immediately!`
+      );
+    }
+
     res.json({
       status: 'success',
       token,
@@ -89,7 +179,6 @@ router.post('/update-tg', async (req, res) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     const { tg_id } = req.body;
 
-    // Duplicate check
     if(tg_id) {
       const existing = await User.findOne({ tg_id, _id: { $ne: decoded.id } });
       if(existing) return res.json({
@@ -111,7 +200,6 @@ router.post('/update-tg-by-mobile', async (req, res) => {
     const { mobile, tg_id } = req.body;
     if(!mobile || !tg_id) return res.status(400).json({ status:'error', message:'mobile and tg_id required' });
 
-    // Duplicate check
     if(tg_id) {
       const existing = await User.findOne({ tg_id, mobile: { $ne: mobile } });
       if(existing) return res.json({
@@ -174,4 +262,3 @@ router.get('/test', async (req, res) => {
 });
 
 module.exports = router;
-    
