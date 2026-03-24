@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNIO Wallet</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;background:#f0f4ff;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:white;border-radius:2.5rem;padding:2.5rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,57,255,0.1)}
+.logo{text-align:center;margin-bottom:2rem}
+.logo h1{font-size:2.5rem;font-weight:900;color:#0057ff;letter-spacing:-2px;font-style:italic}
+.logo p{font-size:.7rem;font-weight:700;color:#94a3b8;letter-spacing:.4em;text-transform:uppercase;margin-top:4px}
+.tabs{display:flex;background:#f8fafc;border-radius:1rem;padding:4px;margin-bottom:2rem}
+.tab{flex:1;padding:.75rem;text-align:center;font-weight:700;font-size:.8rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+.tab.active{background:white;color:#0057ff;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+.form{display:none}
+.form.active{display:block}
+.input-group{margin-bottom:1rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.5rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#0057ff;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;font-family:inherit;margin-top:.5rem}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.terms-check{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.75rem 1rem;background:#f8fafc;border-radius:1rem;border:2px solid #f1f5f9;cursor:pointer;transition:all .2s}
+.terms-check:hover{border-color:#bfdbfe;background:#eff6ff}
+.terms-check input[type="checkbox"]{width:18px;height:18px;accent-color:#0057ff;cursor:pointer;flex-shrink:0;margin-top:2px}
+.terms-check label{font-size:.75rem;font-weight:600;color:#64748b;cursor:pointer;line-height:1.5}
+.terms-check label a{color:#0057ff;font-weight:700;text-decoration:none}
+
+/* TG OTP row */
+.tg-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:1rem}
+.tg-row .input-group{margin-bottom:0}
+.get-id-btn{padding:.9rem 1rem;background:#16a34a;color:white;border:none;border-radius:1rem;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s;text-decoration:none;display:flex;align-items:center;height:52px}
+.get-id-btn:active{transform:scale(.98)}
+
+/* OTP row */
+.otp-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:1rem}
+.otp-row .input-group{margin-bottom:0}
+.send-otp-btn{padding:.9rem 1rem;background:#16a34a;color:white;border:none;border-radius:1rem;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s;height:52px;display:flex;align-items:center}
+.send-otp-btn:disabled{background:#94a3b8;cursor:not-allowed}
+.send-otp-btn:active:not(:disabled){transform:scale(.98)}
+
+/* OTP Banner */
+.otp-banner{background:#f0fdf4;border:2px solid #86efac;border-radius:1rem;padding:.65rem 1rem;font-size:.72rem;font-weight:700;color:#15803d;margin-bottom:1rem;display:none;align-items:center;gap:.5rem;animation:slideDown .3s ease}
+.otp-banner.show{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>UNIO</h1>
+    <p>Digital Wallet</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('login')">Login</div>
+    <div class="tab" onclick="switchTab('register')">Register</div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <!-- Login Form -->
+  <div id="login-form" class="form active">
+    <div class="input-group">
+      <label>Mobile Number</label>
+      <input type="number" id="l-mobile" placeholder="Enter mobile number">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="Enter password">
+    </div>
+    <button class="btn" onclick="login()">
+      <i class="fa-solid fa-right-to-bracket"></i> Login
+    </button>
+  </div>
+
+  <!-- Register Form -->
+  <div id="register-form" class="form">
+    <div class="input-group">
+      <label>Full Name</label>
+      <input type="text" id="r-name" placeholder="Enter your name">
+    </div>
+    <div class="input-group">
+      <label>Mobile Number</label>
+      <input type="number" id="r-mobile" placeholder="Enter mobile number">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="r-pass" placeholder="Create password">
+    </div>
+    <div class="input-group">
+      <label>4-Digit PIN</label>
+      <input type="password" id="r-pin" placeholder="Create PIN" maxlength="4">
+    </div>
+
+    <!-- Telegram ID row -->
+    <div class="tg-row">
+      <div class="input-group">
+        <label>Telegram ID</label>
+        <input type="number" id="r-tgid" placeholder="Enter your Telegram ID">
+      </div>
+      <a href="https://t.me/OTP_UNIO_BOT?start=getid" target="_blank" class="get-id-btn">
+        Get ID
+      </a>
+    </div>
+
+    <!-- OTP row -->
+    <div class="otp-banner" id="otp-banner">
+      <i class="fa-solid fa-circle-check"></i>
+      OTP sent! Check @OTP_UNIO_BOT
+    </div>
+    <div class="otp-row">
+      <div class="input-group">
+        <label>Enter OTP</label>
+        <input type="number" id="r-otp" placeholder="4-digit OTP" maxlength="4">
+      </div>
+      <button class="send-otp-btn" id="send-otp-btn" onclick="sendOTP()">
+        Send OTP
+      </button>
+    </div>
+
+    <div class="terms-check" onclick="toggleTerms()">
+      <input type="checkbox" id="terms-cb" onclick="event.stopPropagation()">
+      <label for="terms-cb">I have read and agree to the <a href="terms.html" target="_blank" onclick="event.stopPropagation()">Terms &amp; Conditions</a> of UNIO Wallet</label>
+    </div>
+    <button class="btn" id="register-btn" onclick="register()">
+      <i class="fa-solid fa-user-plus"></i> Create Account
+    </button>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`${tab}-form`).classList.add('active');
+  hideMsg();
+}
+
+function showMsg(text, type) {
+  const m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+function hideMsg() { document.getElementById('msg').className = 'msg'; }
+
+// ── Send OTP ──────────────────────────────────────────────────────────────────
+async function sendOTP() {
+  const tg_id = document.getElementById('r-tgid').value.trim();
+  const name  = document.getElementById('r-name').value.trim();
+  const btn   = document.getElementById('send-otp-btn');
+
+  if(!tg_id) return showMsg('Pehle Telegram ID enter karo!', 'error');
+
+  btn.disabled     = true;
+  btn.textContent  = 'Sending...';
+
+  try {
+    const res  = await fetch(API + '/auth/send-otp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ tg_id, name: name || 'User' })
+    });
+    const data = await res.json();
+
+    if(data.status === 'success') {
+      document.getElementById('otp-banner').classList.add('show');
+      hideMsg();
+      // Countdown 30s before resend
+      let sec = 30;
+      const timer = setInterval(() => {
+        btn.textContent = `Resend (${sec}s)`;
+        sec--;
+        if(sec < 0) {
+          clearInterval(timer);
+          btn.disabled    = false;
+          btn.textContent = 'Send OTP';
+        }
+      }, 1000);
+    } else {
+      showMsg(data.message || 'OTP send nahi hua!', 'error');
+      btn.disabled    = false;
+      btn.textContent = 'Send OTP';
+    }
+  } catch(e) {
+    showMsg('Server error! Try again.', 'error');
+    btn.disabled    = false;
+    btn.textContent = 'Send OTP';
+  }
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+async function login() {
+  const mobile   = document.getElementById('l-mobile').value;
+  const password = document.getElementById('l-pass').value;
+  if(!mobile || !password) return showMsg('Please fill all fields!', 'error');
+  try {
+    const res  = await fetch(API + '/auth/login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ mobile, password })
+    });
+    const data = await res.json();
+    if(data.status === 'success') {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showMsg('Login successful! Redirecting...', 'success');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+      showMsg(data.message || 'Login failed!', 'error');
+    }
+  } catch(e) {
+    showMsg('Server error! Try again.', 'error');
+  }
+}
+
+function toggleTerms() {
+  const cb  = document.getElementById('terms-cb');
+  cb.checked = !cb.checked;
+  const box = cb.closest('.terms-check');
+  box.style.borderColor = cb.checked ? '#0057ff' : '#f1f5f9';
+  box.style.background  = cb.checked ? '#eff6ff' : '#f8fafc';
+}
+
+// ── Register ──────────────────────────────────────────────────────────────────
+async function register() {
+  const name     = document.getElementById('r-name').value.trim();
+  const mobile   = document.getElementById('r-mobile').value.trim();
+  const password = document.getElementById('r-pass').value.trim();
+  const pin      = document.getElementById('r-pin').value.trim();
+  const tg_id    = document.getElementById('r-tgid').value.trim();
+  const otp      = document.getElementById('r-otp').value.trim();
+  const terms    = document.getElementById('terms-cb').checked;
+
+  if(!name || !mobile || !password || !pin || !tg_id || !otp)
+    return showMsg('Please fill all fields!', 'error');
+  if(pin.length !== 4)
+    return showMsg('PIN must be 4 digits!', 'error');
+  if(!terms) {
+    const box = document.getElementById('terms-cb').closest('.terms-check');
+    box.style.borderColor = '#dc2626';
+    box.style.background  = '#fee2e2';
+    return showMsg('Please read and accept Terms & Conditions!', 'error');
+  }
+
+  const btn = document.getElementById('register-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Creating...';
+
+  try {
+    const res  = await fetch(API + '/auth/register', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name, mobile, password, pin, tg_id, otp })
+    });
+    const data = await res.json();
+    if(data.status === 'success') {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showMsg('Account created! Redirecting...', 'success');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    } else {
+      showMsg(data.message || 'Registration failed!', 'error');
+      btn.disabled    = false;
+      btn.innerHTML   = '<i class="fa-solid fa-user-plus"></i> Create Account';
+    }
+  } catch(e) {
+    showMsg('Server error! Try again.', 'error');
+    btn.disabled    = false;
+    btn.innerHTML   = '<i class="fa-solid fa-user-plus"></i> Create Account';
+  }
+}
+
+// Already logged in
+if(localStorage.getItem('token')) window.location.href = 'dashboard.html';
+</script>
+</body>
+  </html>
+
