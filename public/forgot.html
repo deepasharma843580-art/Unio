@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - UNIO Hazel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step { display: none; }
+        .step.active { display: block; }
+        .bg-unio { background-color: #2563eb; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md border border-blue-50">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-extrabold text-blue-600">UNIO Hazel</h2>
+            <p class="text-slate-400 text-sm mt-1">Reset your account password</p>
+        </div>
+
+        <div id="step1" class="step active">
+            <label class="block text-sm font-semibold text-slate-600 mb-2">Registered Mobile</label>
+            <input type="number" id="mobile" placeholder="Enter mobile number" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            <button onclick="handleNext()" class="w-full bg-unio text-white font-bold py-4 rounded-2xl mt-6 hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Next</button>
+        </div>
+
+        <div id="step-link" class="step">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <p class="text-blue-700 font-bold text-sm mb-2">⚠️ Telegram ID Not Linked!</p>
+                <ul class="text-xs text-blue-600 space-y-2">
+                    <li>1. Click <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="underline font-black text-blue-800">@OTP_UNIO_BOT</a></li>
+                    <li>2. START BOT & Copy your ID</li>
+                    <li>3. Paste ID below to connect</li>
+                </ul>
+            </div>
+            <label class="block text-sm font-semibold text-slate-600 mb-2">Enter Telegram ID</label>
+            <input type="text" id="tg_id" placeholder="Ex: TGID" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <button onclick="connectAndSend()" class="w-full bg-unio text-white font-bold py-4 rounded-2xl mt-6 hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Connect & Send OTP</button>
+        </div>
+
+        <div id="step2" class="step text-center">
+            <div class="mb-6">
+                <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-xs font-bold uppercase">OTP Sent</span>
+            </div>
+            <input type="text" id="otp" placeholder="Enter 4 Digit OTP" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-center text-2xl font-black tracking-widest">
+            <button onclick="verifyOTP()" class="w-full bg-unio text-white font-bold py-4 rounded-2xl mt-6 hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Verify OTP</button>
+        </div>
+
+        <div id="step3" class="step">
+            <label class="block text-sm font-semibold text-slate-600 mb-2">New Password</label>
+            <input type="password" id="new_pass" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
+            <label class="block text-sm font-semibold text-slate-600 mb-2">Confirm Password</label>
+            <input type="password" id="confirm_pass" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <button onclick="resetPass()" class="w-full bg-green-500 text-white font-bold py-4 rounded-2xl mt-6 hover:bg-green-600 shadow-lg shadow-green-100 transition-all">Change Password</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = {};
+
+        async function handleNext() {
+            const mobile = document.getElementById('mobile').value;
+            if(!mobile) return alert("Number daalo pehle!");
+
+            const res = await fetch('/api/auth/check-mobile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile })
+            });
+            const data = await res.json();
+
+            if(data.status === 'success') {
+                currentUser.mobile = mobile;
+                if(!data.tg_id) {
+                    showStep('step-link');
+                } else {
+                    currentUser.tg_id = data.tg_id;
+                    sendForgotOTP(data.tg_id);
+                }
+            } else {
+                alert("Mobile number registered nahi hai!");
+            }
+        }
+
+        async function connectAndSend() {
+            const tg_id = document.getElementById('tg_id').value;
+            if(!tg_id) return alert("Telegram ID paste karo!");
+
+            const res = await fetch('/api/auth/update-tg-by-mobile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile: currentUser.mobile, tg_id })
+            });
+            const data = await res.json();
+            
+            if(data.status === 'success') {
+                currentUser.tg_id = tg_id;
+                sendForgotOTP(tg_id);
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function sendForgotOTP(tg_id) {
+            const res = await fetch('/api/auth/send-forgot-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tg_id })
+            });
+            const data = await res.json();
+            if(data.status === 'success') showStep('step2');
+        }
+
+        async function verifyOTP() {
+            const otp = document.getElementById('otp').value;
+            const res = await fetch('/api/auth/verify-forgot-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tg_id: currentUser.tg_id, otp })
+            });
+            const data = await res.json();
+            if(data.status === 'success') showStep('step3');
+            else alert("Galat OTP!");
+        }
+
+        async function resetPass() {
+            const p1 = document.getElementById('new_pass').value;
+            const p2 = document.getElementById('confirm_pass').value;
+            if(p1 !== p2) return alert("Password match nahi hue!");
+
+            const res = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile: currentUser.mobile, password: p1 })
+            });
+            const data = await res.json();
+            if(data.status === 'success') {
+                alert("Mubarak ho! Password badal gaya.");
+                window.location.href = '/login.html';
+            }
+        }
+
+        function showStep(id) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+  </html>
+  
