@@ -83,6 +83,7 @@ const payLimiter = rateLimit({
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/auth',     require('./routes/auth'));
+app.use('/auth',     require('./routes/forgot'));   // ← forgot routes
 app.use('/wallet',   require('./routes/wallet'));
 app.use('/transfer', require('./routes/transfer'));
 app.use('/lifafa',   require('./routes/lifafa'));
@@ -94,6 +95,7 @@ app.use('/migrate',  require('./routes/migrate'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/forgot',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'forgot.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 app.get('/transfer',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
 app.get('/deposit',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
@@ -121,4 +123,3 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
-                                                               
