@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forgot Password — UNIO Wallet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Forgot Password — UNIO</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0b0f1a;
-      --card:      #111827;
-      --border:    #1e2d45;
-      --gold:      #f5c542;
-      --gold2:     #e0a800;
-      --text:      #e8eaf0;
-      --muted:     #6b7a99;
-      --danger:    #ff4f4f;
-      --success:   #22c55e;
-      --input-bg:  #0d1525;
+      --bg:       #f0f4ff;
+      --card:     #ffffff;
+      --blue:     #2563eb;
+      --blue2:    #1d4ed8;
+      --blue-lt:  #eff6ff;
+      --border:   #dbeafe;
+      --text:     #1e293b;
+      --muted:    #64748b;
+      --danger:   #ef4444;
+      --success:  #16a34a;
+      --input-bg: #f8faff;
     }
 
     body {
-      font-family: 'Syne', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -30,79 +30,68 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      overflow: hidden;
     }
 
-    /* Background grid */
     body::before {
       content: '';
       position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(245,197,66,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245,197,66,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
-    /* Glow orb */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -120px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(245,197,66,.12) 0%, transparent 70%);
+      background:
+        radial-gradient(ellipse 600px 400px at 50% -100px, rgba(37,99,235,.08), transparent);
       pointer-events: none;
     }
 
     .wrap {
-      width: 100%; max-width: 440px;
+      width: 100%; max-width: 420px;
       position: relative; z-index: 1;
     }
 
     /* Logo */
     .logo {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
-    .logo-badge {
+    .logo-inner {
       display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, #1a2440, #111827);
-      border: 1px solid var(--border);
+      background: #fff;
+      border: 1.5px solid var(--border);
       border-radius: 14px;
       padding: 10px 20px;
+      box-shadow: 0 2px 8px rgba(37,99,235,.08);
     }
     .logo-icon {
       width: 36px; height: 36px;
-      background: var(--gold);
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px;
+      color: #fff;
     }
-    .logo-text {
+    .logo-name {
       font-size: 20px; font-weight: 800;
       letter-spacing: 2px;
-      color: var(--gold);
+      color: var(--blue);
     }
     .logo-sub {
       font-size: 11px; color: var(--muted);
-      letter-spacing: 1px; margin-top: 6px;
-      font-family: 'DM Mono', monospace;
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: .5px;
     }
 
     /* Card */
     .card {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 20px;
-      padding: 36px 32px;
-      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      padding: 32px 28px;
+      box-shadow: 0 8px 40px rgba(37,99,235,.08);
     }
 
-    /* Steps indicator */
+    /* Steps */
     .steps {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0; margin-bottom: 32px;
+      display: flex; align-items: center;
+      justify-content: center;
+      gap: 0; margin-bottom: 28px;
     }
     .step-dot {
       width: 32px; height: 32px;
@@ -111,133 +100,135 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 700;
       color: var(--muted);
-      transition: all .4s;
+      background: #fff;
+      transition: all .35s;
       position: relative; z-index: 1;
-      background: var(--card);
     }
     .step-dot.active {
-      border-color: var(--gold);
-      color: var(--gold);
-      box-shadow: 0 0 16px rgba(245,197,66,.3);
+      border-color: var(--blue);
+      color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
     .step-dot.done {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #000;
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
     }
     .step-line {
       flex: 1; height: 2px;
       background: var(--border);
       max-width: 60px;
-      transition: background .4s;
+      transition: background .35s;
     }
-    .step-line.done { background: var(--gold); }
+    .step-line.done { background: var(--blue); }
 
-    /* Step panels */
+    /* Panels */
     .step-panel { display: none; }
     .step-panel.active {
       display: block;
-      animation: fadeUp .35s ease;
+      animation: fadeUp .3s ease;
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .step-title {
-      font-size: 22px; font-weight: 800;
+      font-size: 20px; font-weight: 700;
       color: var(--text);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .step-desc {
       font-size: 13px; color: var(--muted);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       line-height: 1.6;
     }
 
-    /* Input */
+    /* Form */
     label {
       display: block;
       font-size: 12px; font-weight: 600;
-      letter-spacing: 1px;
       color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
+      letter-spacing: .5px;
     }
-    input[type="text"],
+    input[type="tel"],
     input[type="number"],
     input[type="password"],
-    input[type="tel"] {
+    input[type="text"] {
       width: 100%;
       background: var(--input-bg);
       border: 1.5px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       color: var(--text);
-      font-family: 'DM Mono', monospace;
       font-size: 15px;
-      padding: 13px 16px;
+      padding: 12px 14px;
       outline: none;
-      transition: border-color .25s, box-shadow .25s;
-      margin-bottom: 18px;
+      transition: border-color .2s, box-shadow .2s;
+      margin-bottom: 16px;
+      font-family: inherit;
     }
     input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(245,197,66,.1);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
     }
-    input::placeholder { color: var(--muted); }
+    input::placeholder { color: #b0bbcc; }
 
-    /* OTP input big */
-    .otp-input {
-      font-size: 28px !important;
-      letter-spacing: 10px;
+    .otp-big {
+      font-size: 26px !important;
+      letter-spacing: 12px;
       text-align: center;
-      padding: 16px !important;
+      font-weight: 700 !important;
     }
 
     /* Buttons */
     .btn {
       width: 100%;
-      padding: 14px;
-      border: none; border-radius: 12px;
-      font-family: 'Syne', sans-serif;
+      padding: 13px;
+      border: none; border-radius: 10px;
+      font-family: inherit;
       font-size: 14px; font-weight: 700;
-      letter-spacing: 1px;
       cursor: pointer;
-      transition: all .25s;
-      text-transform: uppercase;
+      transition: all .2s;
+      letter-spacing: .3px;
     }
     .btn-primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color: #000;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,197,66,.3); }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37,99,235,.3);
+    }
+    .btn-primary:active { transform: none; }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
 
-    .btn-outline {
-      background: transparent;
+    .btn-ghost {
+      background: var(--blue-lt);
+      color: var(--blue);
       border: 1.5px solid var(--border);
-      color: var(--muted);
       margin-top: 10px;
+      font-size: 13px;
     }
-    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-ghost:hover { background: #dbeafe; }
 
-    /* TG not linked box */
+    /* TG Guide box */
     .tg-guide {
       display: none;
-      background: #0d1525;
-      border: 1px solid var(--border);
+      background: var(--blue-lt);
+      border: 1.5px solid var(--border);
       border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
     }
     .tg-guide.show { display: block; animation: fadeUp .3s ease; }
 
     .tg-guide-title {
-      font-size: 13px; font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 1px;
-      margin-bottom: 14px;
+      font-size: 12px; font-weight: 700;
+      color: var(--blue);
+      letter-spacing: .5px;
+      margin-bottom: 12px;
       text-transform: uppercase;
     }
 
@@ -245,115 +236,117 @@
     .tg-steps li {
       counter-increment: tg;
       display: flex; align-items: flex-start; gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       font-size: 13px; color: var(--muted);
       line-height: 1.5;
     }
     .tg-steps li::before {
       content: counter(tg);
       min-width: 22px; height: 22px;
-      background: rgba(245,197,66,.12);
-      border: 1px solid rgba(245,197,66,.3);
+      background: rgba(37,99,235,.1);
       border-radius: 6px;
-      color: var(--gold);
+      color: var(--blue);
       font-size: 11px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
     .tg-link {
-      color: var(--gold); font-weight: 700;
+      color: var(--blue); font-weight: 700;
       text-decoration: none;
     }
     .tg-link:hover { text-decoration: underline; }
 
-    .tg-connect-row {
-      display: flex; gap: 8px; margin-top: 14px;
+    .tg-row {
+      display: flex; gap: 8px; margin-top: 14px; align-items: flex-start;
     }
-    .tg-connect-row input { margin-bottom: 0; flex: 1; }
+    .tg-row input { margin-bottom: 0; flex: 1; }
     .btn-connect {
-      padding: 13px 18px;
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color: #000;
-      border: none; border-radius: 12px;
-      font-family: 'Syne', sans-serif;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
+      border: none; border-radius: 10px;
+      font-family: inherit;
       font-size: 13px; font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
-      transition: all .25s;
+      transition: all .2s;
+      flex-shrink: 0;
     }
-    .btn-connect:hover { box-shadow: 0 4px 16px rgba(245,197,66,.3); }
+    .btn-connect:hover { box-shadow: 0 4px 14px rgba(37,99,235,.3); }
     .btn-connect:disabled { opacity: .5; cursor: not-allowed; }
 
     /* Alert */
     .alert {
       display: none;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 16px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-size: 13px; font-weight: 600;
+      margin-bottom: 14px;
     }
-    .alert.show { display: block; animation: fadeUp .25s; }
-    .alert.error  { background: rgba(255,79,79,.12); border: 1px solid rgba(255,79,79,.3); color: var(--danger); }
-    .alert.success{ background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: var(--success); }
+    .alert.show { display: block; animation: fadeUp .2s; }
+    .alert.error   { background: #fef2f2; border: 1px solid #fecaca; color: var(--danger); }
+    .alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
 
-    /* Loading spinner inline */
+    /* Spinner */
     .spinner {
       display: inline-block;
       width: 14px; height: 14px;
-      border: 2px solid rgba(0,0,0,.3);
-      border-top-color: #000;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
       border-radius: 50%;
       animation: spin .7s linear infinite;
       vertical-align: middle; margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Success screen */
+    /* Success */
     .success-screen {
       text-align: center;
-      padding: 20px 0;
+      padding: 16px 0;
     }
     .success-icon {
-      font-size: 56px;
-      margin-bottom: 16px;
+      font-size: 52px;
+      margin-bottom: 14px;
       animation: pop .5s cubic-bezier(.34,1.56,.64,1);
     }
     @keyframes pop {
       from { transform: scale(0); opacity: 0; }
       to   { transform: scale(1); opacity: 1; }
     }
-    .success-screen h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
-    .success-screen p  { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-
-    .back-link {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 13px;
-      color: var(--muted);
+    .success-screen h2 {
+      font-size: 20px; font-weight: 800;
+      color: var(--text); margin-bottom: 8px;
     }
-    .back-link a { color: var(--gold); text-decoration: none; font-weight: 600; }
-    .back-link a:hover { text-decoration: underline; }
+    .success-screen p {
+      font-size: 14px; color: var(--muted);
+      margin-bottom: 22px; line-height: 1.6;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 13px; color: var(--muted);
+    }
+    .back a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
 <div class="wrap">
+
   <!-- Logo -->
   <div class="logo">
-    <div class="logo-badge">
+    <div class="logo-inner">
       <div class="logo-icon">💼</div>
-      <div>
-        <div class="logo-text">UNIO</div>
-      </div>
+      <div class="logo-name">UNIO</div>
     </div>
     <div class="logo-sub">FORGOT PASSWORD RECOVERY</div>
   </div>
 
-  <!-- Card -->
   <div class="card">
 
-    <!-- Steps -->
+    <!-- Step indicators -->
     <div class="steps">
       <div class="step-dot active" id="dot1">1</div>
       <div class="step-line" id="line1"></div>
@@ -362,27 +355,27 @@
       <div class="step-dot" id="dot3">3</div>
     </div>
 
-    <!-- STEP 1: Mobile + TG Check -->
+    <!-- ── STEP 1: Mobile ── -->
     <div class="step-panel active" id="step1">
       <div class="step-title">Verify Mobile</div>
-      <div class="step-desc">Apna registered mobile number enter karo. Hum aapke Telegram pe OTP bhejenge.</div>
+      <div class="step-desc">Apna registered mobile number enter karo. OTP Telegram pe aayega.</div>
 
-      <div id="alert1" class="alert"></div>
+      <div class="alert" id="alert1"></div>
 
       <label>Mobile Number</label>
       <input type="tel" id="mobile" placeholder="10-digit number" maxlength="10"/>
 
       <!-- TG not linked guide -->
       <div class="tg-guide" id="tgGuide">
-        <div class="tg-guide-title">⚠️ Telegram ID Not Linked</div>
+        <div class="tg-guide-title">⚠️ Telegram ID Not Linked — Pehle Connect Karo</div>
         <ul class="tg-steps">
-          <li>Click <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="tg-link">@OTP_UNIO_BOT</a></li>
-          <li>Open bot aur <strong style="color:var(--text)">START</strong> dabao</li>
+          <li>Click karo → <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="tg-link">@OTP_UNIO_BOT</a></li>
+          <li>Bot open karo aur <strong>START</strong> dabao</li>
           <li>Bot aapka Telegram ID bhejega — use copy karo</li>
-          <li>Neeche paste karo aur Connect karo</li>
+          <li>Neeche paste karo aur <strong>Connect</strong> karo</li>
         </ul>
-        <div class="tg-connect-row">
-          <input type="number" id="tgIdInput" placeholder="Paste Telegram ID"/>
+        <div class="tg-row">
+          <input type="number" id="tgIdInput" placeholder="Paste Telegram ID yahan"/>
           <button class="btn-connect" id="btnConnect" onclick="connectTgId()">Connect</button>
         </div>
       </div>
@@ -390,26 +383,26 @@
       <button class="btn btn-primary" id="btnNext1" onclick="checkMobile()">Next →</button>
     </div>
 
-    <!-- STEP 2: OTP Verify -->
+    <!-- ── STEP 2: OTP ── -->
     <div class="step-panel" id="step2">
       <div class="step-title">Enter OTP 🔑</div>
-      <div class="step-desc">4-digit OTP aapke Telegram pe bheja gaya hai. Check karo aur enter karo.</div>
+      <div class="step-desc">4-digit OTP aapke Telegram pe bheja gaya hai.</div>
 
-      <div id="alert2" class="alert"></div>
+      <div class="alert" id="alert2"></div>
 
       <label>OTP Code</label>
-      <input type="number" id="otp" class="otp-input" placeholder="• • • •" maxlength="4"/>
+      <input type="number" id="otp" class="otp-big" placeholder="• • • •" maxlength="4"/>
 
       <button class="btn btn-primary" id="btnVerify" onclick="verifyOtp()">Verify OTP ✓</button>
-      <button class="btn btn-outline" onclick="resendOtp()">Resend OTP</button>
+      <button class="btn btn-ghost" onclick="resendOtp()">Resend OTP</button>
     </div>
 
-    <!-- STEP 3: New Password -->
+    <!-- ── STEP 3: New Password ── -->
     <div class="step-panel" id="step3">
-      <div class="step-title">New Password</div>
-      <div class="step-desc">Apna naya password set karo. Strong password use karo.</div>
+      <div class="step-title">New Password 🔐</div>
+      <div class="step-desc">Apna naya password set karo.</div>
 
-      <div id="alert3" class="alert"></div>
+      <div class="alert" id="alert3"></div>
 
       <label>New Password</label>
       <input type="password" id="newPass" placeholder="Min 6 characters"/>
@@ -417,103 +410,99 @@
       <label>Confirm Password</label>
       <input type="password" id="confirmPass" placeholder="Re-enter password"/>
 
-      <button class="btn btn-primary" id="btnChange" onclick="changePassword()">Change Password 🔐</button>
+      <button class="btn btn-primary" id="btnChange" onclick="changePassword()">Change Password</button>
     </div>
 
-    <!-- STEP 4: Success -->
+    <!-- ── STEP 4: Done ── -->
     <div class="step-panel" id="step4">
       <div class="success-screen">
         <div class="success-icon">✅</div>
         <h2>Password Changed!</h2>
-        <p>Aapka password successfully update ho gaya hai.<br/>Ab login karo.</p>
-        <button class="btn btn-primary" onclick="location.href='index.html'">Go to Login</button>
+        <p>Aapka password successfully update ho gaya.<br/>Ab login karo.</p>
+        <button class="btn btn-primary" onclick="location.href='/'">Go to Login</button>
       </div>
     </div>
 
   </div><!-- /card -->
 
-  <div class="back-link">
-    <a href="index.html">← Back to Login</a>
-  </div>
+  <div class="back"><a href="/">← Back to Login</a></div>
 </div>
 
 <script>
+  // Server uses /auth/* routes (as per server.js)
   const API = '';
+
   let userMobile = '';
   let userTgId   = '';
-  let otpVerifiedToken = ''; // simple flag after otp verify
+  let resetToken = '';
 
-  // ── Show alert ─────────────────────────────────────────────────────────────
+  // ── Alert ──────────────────────────────────────────────────────────────────
   function showAlert(id, msg, type) {
     const el = document.getElementById(id);
     el.textContent = msg;
     el.className = `alert ${type} show`;
-    setTimeout(() => el.classList.remove('show'), 5000);
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 5000);
   }
 
-  function setLoading(btnId, loading, text) {
-    const btn = document.getElementById(btnId);
-    btn.disabled = loading;
-    btn.innerHTML = loading ? `<span class="spinner"></span>${text}` : text;
+  function setLoad(id, on, label) {
+    const b = document.getElementById(id);
+    b.disabled = on;
+    b.innerHTML = on ? `<span class="spinner"></span>${label}` : label;
   }
 
-  // ── Go to step ──────────────────────────────────────────────────────────────
+  // ── Step navigation ────────────────────────────────────────────────────────
   function goStep(n) {
     document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('step' + n).classList.add('active');
-
     for (let i = 1; i <= 3; i++) {
       const dot  = document.getElementById('dot' + i);
       const line = document.getElementById('line' + i);
-      if (i < n)       { dot.classList.add('done'); dot.classList.remove('active'); dot.textContent = '✓'; }
-      else if (i === n){ dot.classList.add('active'); dot.classList.remove('done'); dot.textContent = i; }
-      else             { dot.classList.remove('active','done'); dot.textContent = i; }
-      if (line && i < n) line.classList.add('done');
-      else if (line)     line.classList.remove('done');
+      dot.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+      dot.textContent = i < n ? '✓' : i;
+      if (line) line.className = 'step-line' + (i < n ? ' done' : '');
     }
   }
 
-  // ── STEP 1: Check mobile ────────────────────────────────────────────────────
+  // ── STEP 1: Check mobile ───────────────────────────────────────────────────
   async function checkMobile() {
     const mobile = document.getElementById('mobile').value.trim();
-    if (!/^\d{10}$/.test(mobile)) return showAlert('alert1', 'Valid 10-digit mobile enter karo', 'error');
+    if (!/^\d{10}$/.test(mobile))
+      return showAlert('alert1', '10-digit mobile number enter karo', 'error');
 
-    setLoading('btnNext1', true, 'Checking...');
-
+    setLoad('btnNext1', true, 'Checking...');
     try {
-      const res  = await fetch(`${API}/api/auth/check-mobile`, {
+      const r = await fetch(`${API}/auth/check-mobile`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile })
       });
-      const data = await res.json();
+      const d = await r.json();
 
-      if (data.status !== 'success') {
-        showAlert('alert1', data.message || 'User not found', 'error');
-        setLoading('btnNext1', false, 'Next →');
+      if (d.status !== 'success') {
+        showAlert('alert1', d.message || 'User not found', 'error');
+        setLoad('btnNext1', false, 'Next →');
         return;
       }
 
       userMobile = mobile;
-      userTgId   = data.tg_id || '';
+      userTgId   = d.tg_id || '';
 
       if (!userTgId) {
-        // Show TG link guide
         document.getElementById('tgGuide').classList.add('show');
-        showAlert('alert1', 'Pehle Telegram ID link karo, fir Next dabao', 'error');
-        setLoading('btnNext1', false, 'Next →');
+        showAlert('alert1', 'Pehle Telegram ID link karo', 'error');
+        setLoad('btnNext1', false, 'Next →');
         return;
       }
 
-      // TG linked — send OTP
-      await sendForgotOtp();
+      await sendOtp();
     } catch (e) {
       showAlert('alert1', 'Network error: ' + e.message, 'error');
-      setLoading('btnNext1', false, 'Next →');
+      setLoad('btnNext1', false, 'Next →');
     }
   }
 
-  // ── Connect TG ID (when not linked) ────────────────────────────────────────
+  // ── Connect TG ID ──────────────────────────────────────────────────────────
   async function connectTgId() {
     const tg_id = document.getElementById('tgIdInput').value.trim();
     if (!tg_id) return showAlert('alert1', 'Telegram ID enter karo', 'error');
@@ -522,15 +511,15 @@
     btn.disabled = true; btn.textContent = '...';
 
     try {
-      const res  = await fetch(`${API}/api/auth/update-tg-by-mobile`, {
+      const r = await fetch(`${API}/auth/update-tg-by-mobile`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile: userMobile, tg_id })
       });
-      const data = await res.json();
+      const d = await r.json();
 
-      if (data.status !== 'success') {
-        showAlert('alert1', data.message || 'Connect failed', 'error');
+      if (d.status !== 'success') {
+        showAlert('alert1', d.message || 'Connect failed', 'error');
         btn.disabled = false; btn.textContent = 'Connect';
         return;
       }
@@ -539,89 +528,114 @@
       document.getElementById('tgGuide').classList.remove('show');
       showAlert('alert1', 'Telegram connected! OTP bhej rahe hain...', 'success');
       btn.disabled = false; btn.textContent = 'Connect';
-
-      await sendForgotOtp();
+      await sendOtp();
     } catch (e) {
       showAlert('alert1', 'Error: ' + e.message, 'error');
       btn.disabled = false; btn.textContent = 'Connect';
     }
   }
 
-  // ── Send forgot OTP ─────────────────────────────────────────────────────────
-  async function sendForgotOtp() {
-    setLoading('btnNext1', true, 'Sending OTP...');
+  // ── Send OTP ───────────────────────────────────────────────────────────────
+  async function sendOtp() {
+    setLoad('btnNext1', true, 'Sending OTP...');
     try {
-      const res  = await fetch(`${API}/api/auth/forgot-send-otp`, {
+      const r = await fetch(`${API}/auth/forgot-send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile: userMobile, tg_id: userTgId })
       });
-      const data = await res.json();
+      const d = await r.json();
 
-      if (data.status !== 'success') {
-        showAlert('alert1', data.message || 'OTP send failed', 'error');
-        setLoading('btnNext1', false, 'Next →');
+      if (d.status !== 'success') {
+        showAlert('alert1', d.message || 'OTP send failed', 'error');
+        setLoad('btnNext1', false, 'Next →');
         return;
       }
 
-      setLoading('btnNext1', false, 'Next →');
+      setLoad('btnNext1', false, 'Next →');
       goStep(2);
     } catch (e) {
       showAlert('alert1', 'OTP send error: ' + e.message, 'error');
-      setLoading('btnNext1', false, 'Next →');
+      setLoad('btnNext1', false, 'Next →');
     }
   }
 
-  // ── STEP 2: Verify OTP ──────────────────────────────────────────────────────
+  // ── STEP 2: Verify OTP ─────────────────────────────────────────────────────
   async function verifyOtp() {
     const otp = document.getElementById('otp').value.trim();
-    if (!/^\d{4}$/.test(otp)) return showAlert('alert2', '4-digit OTP enter karo', 'error');
+    if (!/^\d{4}$/.test(otp))
+      return showAlert('alert2', '4-digit OTP enter karo', 'error');
 
-    setLoading('btnVerify', true, 'Verifying...');
-
+    setLoad('btnVerify', true, 'Verifying...');
     try {
-      const res  = await fetch(`${API}/api/auth/forgot-verify-otp`, {
+      const r = await fetch(`${API}/auth/forgot-verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile: userMobile, tg_id: userTgId, otp })
       });
-      const data = await res.json();
+      const d = await r.json();
 
-      if (data.status !== 'success') {
-        showAlert('alert2', data.message || 'Wrong OTP', 'error');
-        setLoading('btnVerify', false, 'Verify OTP ✓');
+      if (d.status !== 'success') {
+        showAlert('alert2', d.message || 'Wrong OTP', 'error');
+        setLoad('btnVerify', false, 'Verify OTP ✓');
         return;
       }
 
-      otpVerifiedToken = data.reset_token;
-      setLoading('btnVerify', false, 'Verify OTP ✓');
+      resetToken = d.reset_token;
+      setLoad('btnVerify', false, 'Verify OTP ✓');
       goStep(3);
     } catch (e) {
       showAlert('alert2', 'Error: ' + e.message, 'error');
-      setLoading('btnVerify', false, 'Verify OTP ✓');
+      setLoad('btnVerify', false, 'Verify OTP ✓');
     }
   }
 
   async function resendOtp() {
-    showAlert('alert2', 'OTP re-send ho raha hai...', 'success');
-    await sendForgotOtp();
-    if (document.getElementById('step2').classList.contains('active')) {
-      showAlert('alert2', 'OTP re-sent! Check Telegram.', 'success');
-    }
+    showAlert('alert2', 'OTP dobara bhej rahe hain...', 'success');
+    const r = await fetch(`${API}/auth/forgot-send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: userMobile, tg_id: userTgId })
+    });
+    const d = await r.json();
+    if (d.status === 'success') showAlert('alert2', 'OTP re-sent! Check Telegram.', 'success');
+    else showAlert('alert2', d.message || 'Resend failed', 'error');
   }
 
-  // ── STEP 3: Change password ─────────────────────────────────────────────────
+  // ── STEP 3: Change Password ────────────────────────────────────────────────
   async function changePassword() {
     const newPass     = document.getElementById('newPass').value;
     const confirmPass = document.getElementById('confirmPass').value;
 
-    if (newPass.length < 6)       return showAlert('alert3', 'Password min 6 characters ka hona chahiye', 'error');
-    if (newPass !== confirmPass)  return showAlert('alert3', 'Passwords match nahi kar rahe!', 'error');
-    if (!otpVerifiedToken)        return showAlert('alert3', 'Session expired. Dobara try karo.', 'error');
+    if (newPass.length < 6)
+      return showAlert('alert3', 'Password min 6 characters ka hona chahiye', 'error');
+    if (newPass !== confirmPass)
+      return showAlert('alert3', 'Passwords match nahi kar rahe!', 'error');
+    if (!resetToken)
+      return showAlert('alert3', 'Session expired. Dobara try karo.', 'error');
 
-    setLoading('btnChange', true, 'Updating...');
-
+    setLoad('btnChange', true, 'Updating...');
     try {
-      const res  = await fetch(`${API}/api/auth/forgot-reset-password`, {
+      const r = await fetch(`${API}/auth/forgot-reset-password`, {
         method: 'POST',
- 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: userMobile, reset_token: resetToken, new_password: newPass })
+      });
+      const d = await r.json();
+
+      if (d.status !== 'success') {
+        showAlert('alert3', d.message || 'Update failed', 'error');
+        setLoad('btnChange', false, 'Change Password');
+        return;
+      }
+
+      setLoad('btnChange', false, 'Change Password');
+      goStep(4);
+    } catch (e) {
+      showAlert('alert3', 'Error: ' + e.message, 'error');
+      setLoad('btnChange', false, 'Change Password');
+    }
+  }
+</script>
+</body>
+</html>
