@@ -31,10 +31,8 @@ router.get('/lookup/:mobile', auth, async (req, res) => {
 
 // P2P Transfer
 router.post('/send', auth, async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
-    const { receiver_mobile, amount } = req.body;
+    const { receiver_mobile, amount, comment } = req.body;
 
     if(!receiver_mobile || !amount)
       return res.status(400).json({ status:'error', message:'receiver_mobile and amount required' });
@@ -55,37 +53,36 @@ router.post('/send', auth, async (req, res) => {
     if(receiver._id.equals(sender._id))
       return res.status(400).json({ status:'error', message:'Cannot send to yourself' });
 
-    const txId = 'TX' + Date.now() + Math.floor(Math.random()*99999);
-    const now  = new Date();
-    const dt   = now.toLocaleString('en-IN', {
+    const txId   = 'TX' + Date.now() + Math.floor(Math.random()*99999);
+    const now    = new Date();
+    const remark = comment || ('Transfer to ' + receiver_mobile);
+    const dt     = now.toLocaleString('en-IN', {
       timeZone:'Asia/Kolkata', day:'2-digit', month:'short',
       year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true
     });
 
-    await User.findByIdAndUpdate(sender._id,   { $inc:{ balance: -amt } }, { session });
-    await User.findByIdAndUpdate(receiver._id, { $inc:{ balance: +amt } }, { session });
+    await User.findByIdAndUpdate(sender._id,   { $inc:{ balance: -amt } });
+    await User.findByIdAndUpdate(receiver._id, { $inc:{ balance: +amt } });
 
-    await Transaction.create([{
+    await Transaction.create({
       tx_id:       txId,
       sender_id:   sender._id,
       receiver_id: receiver._id,
       amount:      amt,
       type:        'transfer',
       status:      'success',
-      remark:      'Transfer to ' + receiver_mobile,
+      remark:      remark,
       tx_time:     now
-    }], { session });
-
-    await session.commitTransaction();
+    });
 
     const sNew = await User.findById(sender._id).select('balance tg_id');
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
     if(sNew.tg_id) sendTG(sNew.tg_id,
-`🔴 *DEBIT ALERT*\n\n━━━━━━━━━━━━━━\n🔴   UNIO WALLET ✅ 🔴\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 Sent To : \`${receiver_mobile}\`\n👤 Name : ${receiver.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${sNew.balance}\n━━━━━━━━━━━━━━\n\n❌ Amount Debited through UNIO Wallet 🔴`);
+`🔴 *DEBIT ALERT*\n\n━━━━━━━━━━━━━━\n🔴   UNIO WALLET ✅ 🔴\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 Sent To : \`${receiver_mobile}\`\n👤 Name : ${receiver.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${sNew.balance}\n━━━━━━━━━━━━━━\n\n❌ Amount Debited through UNIO Wallet 🔴`);
 
     if(rNew.tg_id) sendTG(rNew.tg_id,
-`🟢 *CREDIT ALERT*\n\n━━━━━━━━━━━━━━\n🟢   UNIO WALLET ✅ 🟢\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 From : \`${sender.mobile}\`\n👤 Name : ${sender.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${rNew.balance}\n━━━━━━━━━━━━━━\n\n✅ Amount Credited through UNIO Wallet 🟢`);
+`🟢 *CREDIT ALERT*\n\n━━━━━━━━━━━━━━\n🟢   UNIO WALLET ✅ 🟢\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 From : \`${sender.mobile}\`\n👤 Name : ${sender.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${rNew.balance}\n━━━━━━━━━━━━━━\n\n✅ Amount Credited through UNIO Wallet 🟢`);
 
     res.json({
       status:   'success',
@@ -95,10 +92,7 @@ router.post('/send', auth, async (req, res) => {
     });
 
   } catch(e) {
-    await session.abortTransaction();
     res.status(500).json({ status:'error', message: e.message });
-  } finally {
-    session.endSession();
   }
 });
 
