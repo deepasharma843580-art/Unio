@@ -2,9 +2,9 @@ const router = require('express').Router();
 
 // ── Rotating API Keys ─────────────────────────────────────────────────────────
 const SAMBA_KEYS = [
-  'b5d612ae-6729-46bb-bfff-8be8125ec361',
-  'bbfcf834-9cdf-47c9-ae63-7b39171b645c',
-  '0f47482e-c576-4b14-bada-e2fbe2f26745'
+  '5f222533-ea2b-449c-aa2f-304ca5f289c0',
+  '9bd02fdf-5ca7-4462-80a8-4808346a1fa1',
+  '28659b10-27e7-4bd2-9b78-45e70f06575a'
 ];
 
 let keyIndex = 0;
