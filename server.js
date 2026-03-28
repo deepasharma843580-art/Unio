@@ -74,16 +74,22 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-// ── Rate Limit ────────────────────────────────────────────────────────────────
+// ── Rate Limiters ─────────────────────────────────────────────────────────────
 const payLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
   message: { status:'error', message:'Too many requests' }
 });
 
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: { status:'error', message:'Thoda slow karo! 1 minute baad try karo.' }
+});
+
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/auth',     require('./routes/auth'));
-app.use('/auth',     require('./routes/forgot'));   // ← forgot routes
+app.use('/auth',     require('./routes/forgot'));
 app.use('/wallet',   require('./routes/wallet'));
 app.use('/transfer', require('./routes/transfer'));
 app.use('/lifafa',   require('./routes/lifafa'));
@@ -92,10 +98,12 @@ app.use('/payment',  payLimiter, require('./routes/payment'));
 app.use('/api',      payLimiter, require('./routes/payment'));
 app.use('/giftcode', require('./routes/giftCode'));
 app.use('/migrate',  require('./routes/migrate'));
+app.use('/ai',       aiLimiter,  require('./routes/ai'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/forgot',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'forgot.html')));
+app.get('/ai',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'ai.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 app.get('/transfer',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
 app.get('/deposit',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
