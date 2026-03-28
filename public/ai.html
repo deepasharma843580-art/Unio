@@ -410,7 +410,7 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="badge-model">Llama 3.3 · 70B</div>
+      <div class="badge-model" id="modelBadge">Llama 3.3 · 70B</div>
       <a href="/dashboard" class="btn-back">← Dashboard</a>
     </div>
   </header>
@@ -476,10 +476,22 @@
 </div>
 
 <script>
-  const API = '';
+  // ✅ FIX 1: API URL set kiya
+  const API = 'https://unio-hazel.vercel.app';
+
   let chatHistory = [];
   let isLoading   = false;
   let welcomeHidden = false;
+
+  // Model name display map
+  const MODEL_LABELS = {
+    'Meta-Llama-3.3-70B-Instruct':      'Llama 3.3 · 70B',
+    'Meta-Llama-3.1-8B-Instruct':       'Llama 3.1 · 8B',
+    'Qwen2.5-72B-Instruct':             'Qwen 2.5 · 72B',
+    'Qwen2.5-Coder-32B-Instruct':       'Qwen Coder · 32B',
+    'DeepSeek-R1-Distill-Llama-70B':    'DeepSeek R1 · 70B',
+    'DeepSeek-V3-0324':                 'DeepSeek V3'
+  };
 
   // ── Auto resize textarea ──────────────────────────────────────────────────
   function autoResize(el) {
@@ -507,7 +519,6 @@
 
   // ── Append message ────────────────────────────────────────────────────────
   function appendMsg(role, text) {
-    // Hide welcome on first message
     if (!welcomeHidden) {
       document.getElementById('welcome').style.display = 'none';
       welcomeHidden = true;
@@ -522,7 +533,6 @@
     const avatar = role === 'ai' ? '🤖' : '👤';
     const timeStr = getTime();
 
-    // Format text — newlines to <br>
     const formatted = text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 
     div.innerHTML = `
@@ -533,7 +543,6 @@
       </div>
     `;
 
-    // Insert before typing indicator
     chatArea.insertBefore(div, typingEl);
     scrollBottom();
   }
@@ -562,28 +571,38 @@
     document.getElementById('sendBtn').disabled = true;
 
     appendMsg('user', msg);
-    chatHistory.push({ role: 'user', content: msg });
     showTyping(true);
 
     try {
-      const res  = await fetch(`${API}/ai/chat`, {
+      // ✅ FIX 2: History mein current message nahi — backend khud add karta hai
+      const res = await fetch(`${API}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: msg, history: chatHistory.slice(-10) })
       });
-      const data = await res.json();
 
+      const data = await res.json();
       showTyping(false);
 
       if (data.status === 'success') {
         appendMsg('ai', data.reply);
+
+        // ✅ FIX 3: Response aane ke baad dono push karo
+        chatHistory.push({ role: 'user', content: msg });
         chatHistory.push({ role: 'assistant', content: data.reply });
+
+        // Update model badge if returned
+        if (data.model && MODEL_LABELS[data.model]) {
+          document.getElementById('modelBadge').textContent = MODEL_LABELS[data.model];
+        }
       } else {
         appendMsg('ai', '❌ ' + (data.message || 'Kuch error aayi. Dobara try karo.'));
+        chatHistory.push({ role: 'user', content: msg });
       }
     } catch (e) {
       showTyping(false);
       appendMsg('ai', '❌ Network error. Internet check karo aur dobara try karo.');
+      chatHistory.push({ role: 'user', content: msg });
     }
 
     isLoading = false;
