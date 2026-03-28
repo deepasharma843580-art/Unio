@@ -14,6 +14,16 @@ function getNextKey() {
   return key;
 }
 
+// ── Models to try (in order) ──────────────────────────────────────────────────
+const MODELS = [
+  'Meta-Llama-3.3-70B-Instruct',
+  'Meta-Llama-3.1-8B-Instruct',
+  'Qwen2.5-72B-Instruct',
+  'Qwen2.5-Coder-32B-Instruct',
+  'DeepSeek-R1-Distill-Llama-70B',
+  'DeepSeek-V3-0324'
+];
+
 // ── UNIO System Prompt ────────────────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are UNIO AI — the intelligent assistant built into UNIO Hazel Wallet, a premium digital wallet platform.
 
@@ -65,6 +75,29 @@ Rules you MUST follow:
 - You can help with: wallet features, how to use UNIO, withdrawal fees, tax policy, Vercel compliance, transaction questions, account help, general knowledge
 - For account-specific issues like balance problems or missing withdrawals, tell the user to wait 48 hours then contact support via Telegram`;
 
+// ── Helper: call SambaNova with a specific model & key ────────────────────────
+async function callSambaNova(messages, model, apiKey) {
+  const response = await fetch('https://api.sambanova.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...messages
+      ],
+      temperature: 0.7,
+      max_tokens: 512,
+      stream: false
+    })
+  });
+
+  return response;
+}
+
 // ── POST /ai/chat ─────────────────────────────────────────────────────────────
 router.post('/chat', async (req, res) => {
   try {
@@ -72,12 +105,10 @@ router.post('/chat', async (req, res) => {
     if (!message || !message.trim())
       return res.status(400).json({ status: 'error', message: 'Message required' });
 
-    const apiKey = getNextKey();
-
-    // Build messages array with history
+    // Build messages array (history without current message to avoid duplication)
     const messages = [];
     if (history && Array.isArray(history)) {
-      for (const h of history.slice(-10)) { // last 10 messages only
+      for (const h of history.slice(-10)) {
         if (h.role && h.content) {
           messages.push({ role: h.role, content: h.content });
         }
@@ -85,34 +116,42 @@ router.post('/chat', async (req, res) => {
     }
     messages.push({ role: 'user', content: message.trim() });
 
-    const response = await fetch('https://api.sambanova.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'Meta-Llama-3.3-70B-Instruct',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...messages
-        ],
-        temperature: 0.7,
-        max_tokens: 512,
-        stream: false
-      })
-    });
+    // Try each model in order until one works
+    let lastError = '';
+    for (const model of MODELS) {
+      const apiKey = getNextKey();
+      try {
+        console.log(`Trying model: ${model}`);
+        const response = await callSambaNova(messages, model, apiKey);
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('SambaNova error:', err);
-      return res.status(500).json({ status: 'error', message: 'AI service error. Try again.' });
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data?.choices?.[0]?.message?.content || 'Sorry, kuch problem hui. Dobara try karo.';
+          console.log(`Success with model: ${model}`);
+          return res.json({ status: 'success', reply, model });
+        } else {
+          const errText = await response.text();
+          lastError = `${model} → HTTP ${response.status}: ${errText}`;
+          console.error(`Failed model ${model}:`, lastError);
+
+          // If 401 (auth error) or 400 (bad request), no point retrying same key
+          // Continue to next model
+          continue;
+        }
+      } catch (fetchErr) {
+        lastError = `${model} → ${fetchErr.message}`;
+        console.error(`Fetch error for model ${model}:`, fetchErr.message);
+        continue;
+      }
     }
 
-    const data = await response.json();
-    const reply = data?.choices?.[0]?.message?.content || 'Sorry, kuch problem hui. Dobara try karo.';
+    // All models failed
+    console.error('All models failed. Last error:', lastError);
+    return res.status(500).json({
+      status: 'error',
+      message: 'AI service temporarily unavailable. Thodi der baad try karo. 🙏'
+    });
 
-    res.json({ status: 'success', reply });
   } catch (e) {
     console.error('AI chat error:', e.message);
     res.status(500).json({ status: 'error', message: 'Server error: ' + e.message });
