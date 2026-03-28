@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extra Features | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue: #0057ff;
+  --bg: #f0f4ff;
+  --white: #ffffff;
+  --text: #0f172a;
+  --muted: #94a3b8;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--white);
+  max-width: 400px;
+  width: 100%;
+  padding: 3rem 2rem;
+  border-radius: 2.5rem;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 87, 255, 0.1);
+  position: relative;
+}
+
+.icon-box {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #0057ff, #0033cc);
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  font-size: 2.5rem;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 87, 255, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.badge {
+  display: inline-block;
+  background: #eff6ff;
+  color: var(--blue);
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.back-btn:active {
+  transform: scale(0.95);
+}
+
+/* Background shapes */
+.shape {
+  position: absolute;
+  z-index: -1;
+  filter: blur(50px);
+  border-radius: 50%;
+}
+.shape-1 { top: -10%; left: -10%; width: 200px; height: 200px; background: rgba(0, 87, 255, 0.1); }
+.shape-2 { bottom: -10%; right: -10%; width: 150px; height: 150px; background: rgba(147, 51, 234, 0.1); }
+
+</style>
+</head>
+<body>
+
+<div class="shape shape-1"></div>
+<div class="shape shape-2"></div>
+
+<div class="card">
+  <div class="badge">Notice</div>
+  <div class="icon-box">
+    <i class="fa-solid fa-rocket"></i>
+  </div>
+  <h1>Coming Soon 🔜</h1>
+  <p>Hum is section par kaam kar rahe hain. Jald hi aapko yahan exciting naye features dekhne ko milenge!</p>
+  
+  <a href="dashboard.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
+
+</body>
+</html>
+
