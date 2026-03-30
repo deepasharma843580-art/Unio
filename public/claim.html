@@ -7,125 +7,107 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* CSS same as original but added success-refer box */
+/* ... (Same styles as above or original) ... */
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
-.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
-.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
-.banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
-.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none}
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none}
-.btn.green{background:#16a34a}
-.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
-.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
-.msg.error{background:#fee2e2;color:#dc2626;display:block}
-.refer-box {background: #f0fdf4; border: 1.5px dashed #16a34a; padding: 1.25rem; border-radius: 1.25rem; margin-bottom: 1.5rem; text-align: center;}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-top:2rem}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-weight:800;cursor:pointer;margin-top:1rem}
+.msg{padding:1rem;border-radius:1rem;text-align:center;margin-bottom:1rem;display:none}
+.error{background:#fee2e2;color:#dc2626;display:block}
+.refer-section{background:#f0fdf4; border:1.5px dashed #16a34a; padding:1.25rem; border-radius:1.25rem; margin:1.5rem 0; text-align:center}
 </style>
 </head>
 <body>
 
-<div class="header"><h1>Claim Lifafa</h1></div>
-
 <div class="container">
-  <div id="step-code" class="card">
-    <div id="code-msg" class="msg"></div>
-    <div class="input-group">
-      <label>GIVEAWAY Code</label>
-      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center">
-    </div>
-    <button class="btn purple" onclick="loadLifafa()">Search Code</button>
+  <div id="step-search" class="card">
+    <h2 style="font-size:1rem; margin-bottom:1rem">Enter Lifafa Code</h2>
+    <input type="text" id="code-input" placeholder="LUCKY100" style="width:100%; padding:1rem; border-radius:1rem; border:2px solid #f1f5f9; text-transform:uppercase">
+    <button class="btn" onclick="searchLifafa()">Find Lifafa</button>
   </div>
 
-  <div id="step-mobile" style="display:none">
-    <div class="card">
-      <div id="mobile-msg" class="msg"></div>
-      <div class="input-group"><label>Your Mobile Number</label><input type="number" id="mobile-input"></div>
-      <button class="btn purple" onclick="verifyMobile()" id="mobile-btn">Next</button>
-    </div>
+  <div id="step-mobile" class="card" style="display:none">
+    <h2 style="font-size:1rem; margin-bottom:1rem">Enter Mobile Number</h2>
+    <input type="number" id="mobile-input" placeholder="9876543210" style="width:100%; padding:1rem; border-radius:1rem; border:2px solid #f1f5f9">
+    <button class="btn" onclick="showClaim()">Next</button>
   </div>
 
-  <div id="step-claim" style="display:none">
-    <div id="claim-msg" class="msg"></div>
-    <div id="channels-wrap" class="card" style="display:none">
-        <div id="channels-list"></div>
-    </div>
-    <div id="claim-btn-wrap" class="card" style="display:none">
-        <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now! 🚀</button>
-    </div>
+  <div id="step-success" class="card" style="display:none">
+    <div style="text-align:center">
+      <div style="font-size:3rem">💰</div>
+      <h2 id="won-amt" style="font-size:2rem; color:#16a34a">₹0.00</h2>
+      <p style="color:#64748b">Wallet mein add ho gaya!</p>
 
-    <div id="step-success" class="card" style="display:none">
-      <div style="text-align:center">
-        <div style="font-size:4rem">🏆</div>
-        <div style="font-size:2.5rem;font-weight:900;color:#16a34a" id="won-amt"></div>
-        <div style="font-size:.7rem;color:#94a3b8;margin-bottom:1.5rem">Added to Your Wallet!</div>
-        
-        <div class="refer-box">
-          <div style="font-size: 0.75rem; font-weight: 800; color: #16a34a; margin-bottom: 0.5rem;">📣 REFER & EARN</div>
-          <div style="font-size: 0.7rem; color: #374151; margin-bottom: 1rem;">Is link ko share karein, har claim par aapko bonus milega!</div>
-          <button class="btn green" onclick="copyReferLink()" style="padding:.6rem; font-size:.75rem">
-            <i class="fa-solid fa-copy"></i> Copy Refer Link
-          </button>
-        </div>
-
-        <a href="dashboard.html" class="btn purple">Go to Wallet</a>
+      <div class="refer-section">
+        <p style="font-size:0.75rem; font-weight:800; color:#16a34a">🎁 SHARE & EARN</p>
+        <p style="font-size:0.65rem; color:#15803d; margin-bottom:0.75rem">Dosto ko refer karein aur har claim par bonus payein!</p>
+        <button onclick="copyReferLink()" style="background:#16a34a; color:white; border:none; padding:0.6rem 1rem; border-radius:0.75rem; font-size:0.7rem; font-weight:700">
+          <i class="fa-solid fa-copy"></i> Copy Refer Link
+        </button>
       </div>
+
+      <a href="dashboard.html" class="btn" style="display:block; text-decoration:none">Go to Wallet</a>
     </div>
   </div>
 </div>
 
 <script>
 const API = '';
-const token = localStorage.getItem('token');
-const user = JSON.parse(localStorage.getItem('user') || '{}');
 let currentCode = '';
 let userMobile = '';
 
 const urlParams = new URLSearchParams(window.location.search);
-const codeFromUrl = urlParams.get('code');
-if(codeFromUrl) { document.getElementById('code-input').value = codeFromUrl.toUpperCase(); loadLifafa(); }
+if(urlParams.get('code')) {
+  document.getElementById('code-input').value = urlParams.get('code').toUpperCase();
+}
 
-async function loadLifafa() {
+async function searchLifafa() {
   currentCode = document.getElementById('code-input').value.trim().toUpperCase();
-  try {
-    const r = await fetch(API+'/lifafa/'+currentCode);
-    const d = await r.json();
-    if(d.status === 'success') {
-      document.getElementById('step-code').style.display = 'none';
-      document.getElementById('step-mobile').style.display = 'block';
-    } else { alert(d.message); }
-  } catch(e) { alert('Server Error'); }
+  if(!currentCode) return;
+  document.getElementById('step-search').style.display = 'none';
+  document.getElementById('step-mobile').style.display = 'block';
 }
 
-async function verifyMobile() {
+function showClaim() {
   userMobile = document.getElementById('mobile-input').value.trim();
-  document.getElementById('step-mobile').style.display = 'none';
-  document.getElementById('step-claim').style.display = 'block';
-  document.getElementById('claim-btn-wrap').style.display = 'block';
+  if(userMobile.length < 10) return alert('Enter valid mobile');
+  claimNow();
 }
 
-async function claimNow(guess) {
-  const ref_code = urlParams.get('ref') || ''; // Read ref from URL
+async function claimNow() {
+  const ref_code = urlParams.get('ref') || ''; // Link se refer code lena
   try {
     const r = await fetch(API+'/lifafa/claim', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess, ref_code }) // Send ref_code to backend
+      body: JSON.stringify({ code: currentCode, mobile: userMobile, ref_code })
     });
     const d = await r.json();
     if(d.status === 'success') {
-      document.getElementById('claim-btn-wrap').style.display = 'none';
+      document.getElementById('step-mobile').style.display = 'none';
       document.getElementById('won-amt').textContent = '₹' + d.amount;
       document.getElementById('step-success').style.display = 'block';
     } else { alert(d.message); }
-  } catch(e) { alert('Error claiming'); }
+  } catch(e) { alert('Error!'); }
 }
 
 function copyReferLink() {
-  const myRefCode = user.ref_code || 'GUEST';
-  const refLink = window.location.origin + window.location.pathname + '?code=' + currentCode + '&ref=' + myRefCode;
-  navigator.clipboard.writeText(refLink);
-  alert('Refer Link Copied! 🚀');
+  // LocalStorage se logged-in user ka data lo
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  // Link ke liye identifier (Pehle ref_code, nahi toh mobile)
+  const myID = userData.ref_code || userData.mobile || userMobile;
+
+  if(!myID) {
+    alert("Mobile number not found!");
+    return;
+  }
+
+  const finalLink = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${myID}`;
+  
+  navigator.clipboard.writeText(finalLink);
+  alert("Refer Link Copied! \n" + finalLink);
 }
 </script>
 </body>
