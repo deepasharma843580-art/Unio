@@ -155,7 +155,7 @@
 </div>
 
 <script>
-const API      = 'https://your-api-url.com'; // REPLACE WITH YOUR API URL
+const API      = '';
 const token    = localStorage.getItem('token');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
@@ -165,6 +165,7 @@ let userTgId         = '';
 let verifiedChannels = [];
 let currentCode      = '';
 let userRefCode      = '';
+let incomingRef      = new URLSearchParams(window.location.search).get('ref') || '';
 
 function showMsg(id, text, type) {
     const m = document.getElementById(id);
@@ -259,8 +260,7 @@ async function saveTgId() {
     try {
         const r = await fetch(`${API}/auth/update-tg-by-mobile`, {
             method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ mobile: userMobile, tg_id })
+            headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
         });
         const d = await r.json();
         if(d.status === 'success') {
@@ -364,9 +364,10 @@ async function claimNow(tossSelection = '') {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                code: currentCode,
-                mobile: userMobile,
-                toss: tossSelection
+                code:     currentCode,
+                mobile:   userMobile,
+                guess:    tossSelection,
+                ref_code: incomingRef
             })
         });
         const d = await r.json();
@@ -405,3 +406,4 @@ window.onload = () => {
 </script>
 </body>
 </html>
+
