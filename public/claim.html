@@ -7,57 +7,67 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-    /* Styling remains consistent with your design */
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
-    .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-    .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b}
-    .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase}
-    .container{max-width:480px;margin:0 auto;padding:1.25rem}
-    .card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
-    .banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
-    .banner-emoji{font-size:3rem;margin-bottom:.5rem}
-    .banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
-    .banner-type{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
-    .progress-wrap{margin:1rem 0}
-    .progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
-    .progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
-    .progress-text{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;opacity:.7;margin-top:.4rem}
-    .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
-    .stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-    .stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
-    .stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
-    .input-group{margin-bottom:1.25rem}
-    .input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
-    .input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
-    .input-group input:focus{border-color:#7c3aed;background:white}
-    .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
-    .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
-    .btn.green{background:#16a34a}
-    .btn.tg{background:#0088cc}
-    .btn:disabled{background:#94a3b8;cursor:not-allowed;opacity:0.7}
-    .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
-    .msg.error{background:#fee2e2;color:#dc2626;display:block}
-    .msg.success{background:#dcfce7;color:#16a34a;display:block}
-    /* Channel & Toss UI */
-    .ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem}
-    .ch-item.verified{border-color:#bbf7d0;background:#f0fdf4}
-    .ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-    .ch-name{font-size:.8rem;font-weight:700;color:#0f172a}
-    .ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
-    .ch-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
-    .ch-badge.verified{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
-    .ch-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-    .ch-btn{padding:.65rem;border:none;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;text-decoration:none;display:flex;justify-content:center;align-items:center;gap:4px}
-    .ch-btn.join{background:#0057ff;color:white}
-    .ch-btn.verify{background:#f1f5f9;color:#64748b}
-    .toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-    .toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;color:white}
-    .toss-btn.heads{background:#0057ff}
-    .toss-btn.tails{background:#0f172a}
-    .success-box{text-align:center;padding:1rem}
-    .success-amt{font-size:2.5rem;font-weight:900;color:#16a34a}
-    .refer-card{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.25rem;padding:1.25rem;margin-top:1rem;color:white}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b}
+.header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase}
+.container{max-width:480px;margin:0 auto;padding:1.25rem}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
+.banner{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:2rem;text-align:center;color:white;margin-bottom:1.25rem}
+.banner-emoji{font-size:3rem;margin-bottom:.5rem}
+.banner-code{font-size:1.2rem;font-weight:900;letter-spacing:.1em}
+.banner-type{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
+.progress-wrap{margin:1rem 0}
+.progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
+.progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
+.progress-text{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;opacity:.7;margin-top:.4rem}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#7c3aed;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
+.btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
+.btn.green{background:#16a34a}
+.btn.tg{background:#0088cc}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+.msg.info{background:#eff6ff;color:#0057ff;display:block}
+.msg.warn{background:#fff7ed;color:#ea580c;display:block}
+.ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem;transition:all .2s}
+.ch-item.verified{border-color:#bbf7d0;background:#f0fdf4}
+.ch-item.failed{border-color:#fecaca;background:#fee2e2}
+.ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.ch-name{font-size:.8rem;font-weight:700;color:#0f172a}
+.ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
+.ch-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
+.ch-badge.verified{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.ch-badge.failed{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.ch-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ch-btn{padding:.65rem;border:none;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.35rem;transition:all .2s;text-decoration:none}
+.ch-btn.join{background:#0057ff;color:white}
+.ch-btn.verify{background:#f1f5f9;color:#64748b}
+.ch-btn.done{background:#f0fdf4;color:#16a34a}
+.toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s}
+.toss-btn.heads{background:#0057ff;color:white}
+.toss-btn.tails{background:#0f172a;color:white}
+.success-box{text-align:center;padding:1.5rem 1rem}
+.success-emoji{font-size:4rem;margin-bottom:.75rem}
+.success-amt{font-size:2.5rem;font-weight:900;color:#16a34a;margin-bottom:.25rem}
+.success-label{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.5rem}
+.tg-warn-card{background:#eff6ff;border:2px solid #bfdbfe;border-radius:1.25rem;padding:1.25rem;margin-bottom:1rem;text-align:center}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .3s cubic-bezier(.34,1.3,.64,1) forwards}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn .3s cubic-bezier(.34,1.56,.64,1) forwards}
 </style>
 </head>
 <body>
@@ -68,348 +78,360 @@
 </div>
 
 <div class="container">
+
   <div id="step-code" class="card">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:3rem">🎁</div>
-      <div style="font-size:1rem;font-weight:900">Claim Your Reward</div>
+      <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
+      <div style="font-size:1rem;font-weight:900;color:#0f172a">Claim Your Reward</div>
+      <div style="font-size:.72rem;color:#94a3b8;font-weight:600;margin-top:.25rem">Enter lifafa code to continue</div>
     </div>
     <div id="code-msg" class="msg"></div>
     <div class="input-group">
-      <label>GIVEAWAY Code</label>
-      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center">
+      <label>Lifafa Code</label>
+      <input type="text" id="code-input" placeholder="e.g. DIWALI2025"
+        style="text-transform:uppercase;text-align:center;letter-spacing:.15em;font-size:1rem">
     </div>
-    <button class="btn purple" id="load-btn" onclick="loadLifafa()">
-      <i class="fa-solid fa-search"></i> Check Code
+    <button class="btn purple" onclick="loadLifafa()">
+      <i class="fa-solid fa-search"></i> Find Lifafa
     </button>
   </div>
 
   <div id="step-mobile" style="display:none">
-    <div class="banner">
+    <div class="banner" id="lifafa-banner">
       <div class="banner-emoji">🎁</div>
       <div class="banner-code" id="banner-code"></div>
       <div class="banner-type" id="banner-type"></div>
       <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="banner-progress"></div></div>
-        <div class="progress-text"><span id="banner-claimed-text"></span><span id="banner-pct"></span></div>
+        <div class="progress-text">
+          <span id="banner-claimed-text"></span>
+          <span id="banner-pct"></span>
+        </div>
       </div>
     </div>
+
     <div class="stats-row">
       <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total"></div></div>
-      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed"></div></div>
-      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left"></div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a"></div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626"></div></div>
     </div>
+
     <div class="card">
       <div id="mobile-msg" class="msg"></div>
       <div class="input-group">
         <label>Your Mobile Number</label>
-        <input type="number" id="mobile-input" placeholder="Enter registered number">
+        <input type="number" id="mobile-input" placeholder="Enter your number">
       </div>
-      <button class="btn purple" onclick="verifyMobile()" id="mobile-btn">Next Step <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="btn purple" onclick="verifyMobile()" id="mobile-btn">
+        <i class="fa-solid fa-arrow-right"></i> Next
+      </button>
     </div>
   </div>
 
   <div id="step-tg" style="display:none" class="card">
-    <div style="text-align:center;margin-bottom:1rem">
-        <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc"></i>
-        <h3 style="margin-top:10px">Link Telegram</h3>
+    <div class="tg-warn-card">
+      <i class="fa-brands fa-telegram" style="font-size:2.5rem;color:#0088cc;margin-bottom:.75rem;display:block"></i>
+      <div style="font-size:.9rem;font-weight:800;color:#0f172a;margin-bottom:.5rem">Telegram Not Connected!</div>
+      <div style="font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:1rem">Channel verify karne ke liye Telegram ID connect karo</div>
+      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="btn tg" style="margin-bottom:.75rem">
+        <i class="fa-brands fa-telegram"></i> Open @OTP_UNIO_BOT
+      </a>
     </div>
     <div id="tg-msg" class="msg"></div>
     <div class="input-group">
-      <label>Enter Telegram ID</label>
-      <input type="number" id="tg-id-input" placeholder="Get from @OTP_UNIO_BOT">
+      <label>Enter Your Telegram ID</label>
+      <input type="number" id="tg-id-input" placeholder="e.g. Botcode">
     </div>
-    <button class="btn green" id="tg-save-btn" onclick="saveTgId()">Link & Continue</button>
+    <button class="btn green" id="tg-save-btn" onclick="saveTgId()">
+      <i class="fa-solid fa-floppy-disk"></i> Save & Continue
+    </button>
   </div>
 
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
+
     <div id="channels-wrap" class="card" style="display:none">
-      <div style="font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:1rem">Verify Channels</div>
+      <div style="font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:1rem">
+        <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Join & Verify Channels
+      </div>
       <div id="channels-list"></div>
     </div>
+
     <div id="toss-wrap" class="card" style="display:none">
-      <div style="text-align:center;margin-bottom:1rem">🪙 Pick Heads or Tails</div>
+      <div style="font-size:.75rem;font-weight:800;color:#94a3b8;text-transform:uppercase;text-align:center;margin-bottom:.75rem">
+        🪙 Make Your Guess!
+      </div>
       <div class="toss-btns">
-        <button class="toss-btn heads" onclick="claimNow('HEADS')">HEADS</button>
-        <button class="toss-btn tails" onclick="claimNow('TAILS')">TAILS</button>
+        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
+        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
       </div>
     </div>
+
     <div id="claim-btn-wrap" class="card" style="display:none">
-      <button class="btn purple" id="claim-btn" onclick="claimNow('')">Claim Now! 🚀</button>
+      <button class="btn purple" id="claim-btn" onclick="claimNow('')">
+        <i class="fa-solid fa-rocket"></i> Claim Now! 🚀
+      </button>
+    </div>
+
+    <div id="step-success" class="card pop-in" style="display:none">
+      <div class="success-box">
+        <div class="success-emoji">🏆</div>
+        <div class="success-amt" id="won-amt"></div>
+        <div class="success-label">Added to Your Wallet!</div>
+        <a href="dashboard.html" class="btn green" style="text-decoration:none">
+          <i class="fa-solid fa-wallet"></i> Go to Wallet
+        </a>
+      </div>
     </div>
   </div>
 
-  <div id="step-success" class="card" style="display:none">
-    <div class="success-box">
-      <div style="font-size:3rem">🏆</div>
-      <div class="success-amt" id="won-amt">₹0.00</div>
-      <div style="color:#94a3b8;margin-bottom:1rem">Credited to Wallet</div>
-      <a href="dashboard.html" class="btn green">Go to Wallet</a>
-      <div id="refer-section" class="refer-card">
-        <div style="font-size:12px">Invite & Earn Bonus</div>
-        <div id="refer-link-display" style="font-size:10px;background:rgba(0,0,0,0.2);padding:10px;margin:10px 0;border-radius:8px;word-break:break-all"></div>
-        <button class="btn" style="background:white;color:#0057ff;font-size:12px" onclick="copyReferLink()">Copy Link</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
 const API      = '';
 const token    = localStorage.getItem('token');
+const user     = JSON.parse(localStorage.getItem('user') || '{}');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
+
+if(!token) window.location.href = 'index.html';
 
 let currentLifafa    = null;
 let userMobile       = '';
 let userTgId         = '';
 let verifiedChannels = [];
 let currentCode      = '';
-let userRefCode      = '';
-let userWalletId     = '';
-let incomingRef      = new URLSearchParams(window.location.search).get('ref') || '';
 
 function showMsg(id, text, type) {
-    const m = document.getElementById(id);
-    m.textContent = text;
-    m.className = 'msg ' + type;
-    setTimeout(() => { m.style.display = 'block'; }, 10);
+  const m = document.getElementById(id);
+  m.textContent = text;
+  m.className = 'msg ' + type;
 }
 
-// 1. LOAD LIFAFA
+const urlCode = new URLSearchParams(window.location.search).get('code');
+if(urlCode) {
+  document.getElementById('code-input').value = urlCode.toUpperCase();
+  loadLifafa();
+}
+
 async function loadLifafa() {
-    const code = document.getElementById('code-input').value.trim().toUpperCase();
-    if(!code) return showMsg('code-msg', 'Please enter a code', 'error');
-    
-    const btn = document.getElementById('load-btn');
-    btn.disabled = true;
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
 
-    try {
-        const r = await fetch(`${API}/lifafa/${code}`);
-        const d = await r.json();
-        if(d.status !== 'success') {
-            btn.disabled = false;
-            return showMsg('code-msg', d.message || 'Invalid Lifafa!', 'error');
-        }
+  try {
+    const r = await fetch(API+'/lifafa/'+code);
+    const d = await r.json();
+    if(d.status !== 'success') return showMsg('code-msg', d.message||'Invalid code!', 'error');
 
-        currentLifafa = d.lifafa;
-        currentCode   = code;
+    currentLifafa = d.lifafa;
+    currentCode   = code;
 
-        // UI Update
-        document.getElementById('banner-code').textContent = currentLifafa.code;
-        document.getElementById('banner-type').textContent = currentLifafa.type;
-        const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
-        document.getElementById('banner-progress').style.width = pct + '%';
-        document.getElementById('banner-pct').textContent = pct + '% Full';
-        document.getElementById('banner-claimed-text').textContent = `${currentLifafa.claimed_users}/${currentLifafa.max_users}`;
-        document.getElementById('stat-total').textContent = currentLifafa.max_users;
-        document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
-        document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
+    document.getElementById('banner-code').textContent = currentLifafa.code;
+    document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
 
-        document.getElementById('step-code').style.display = 'none';
-        document.getElementById('step-mobile').style.display = 'block';
-    } catch(e) {
-        btn.disabled = false;
-        showMsg('code-msg', 'Server error!', 'error');
+    const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+    document.getElementById('banner-progress').style.width = pct + '%';
+    document.getElementById('banner-pct').textContent      = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent = currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
+
+    document.getElementById('stat-total').textContent   = currentLifafa.max_users;
+    document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
+    document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
+
+    if(currentLifafa.claimed_users >= currentLifafa.max_users) {
+      return showMsg('code-msg', '❌ Lifafa Full! Koi slot nahi bacha.', 'error');
     }
+
+    document.getElementById('step-code').style.display   = 'none';
+    document.getElementById('step-mobile').style.display = 'block';
+
+  } catch(e) { showMsg('code-msg', 'Server error!', 'error'); }
 }
 
-// 2. VERIFY MOBILE
+// STEP 2: Verify Mobile (with auth.js duplicate check)
 async function verifyMobile() {
-    const mobile = document.getElementById('mobile-input').value.trim();
-    if(mobile.length < 10) return showMsg('mobile-msg', 'Enter valid mobile', 'error');
+  const mobile = document.getElementById('mobile-input').value.trim();
+  const btn = document.getElementById('mobile-btn');
+  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
 
-    const btn = document.getElementById('mobile-btn');
-    btn.disabled = true;
+  btn.disabled = true;
+  try {
+    const r = await fetch(API+'/auth/check-mobile', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body:    JSON.stringify({ mobile })
+    });
+    const d = await r.json();
 
-    try {
-        const r = await fetch(`${API}/auth/check-mobile`, {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ mobile })
-        });
-        const d = await r.json();
-
-        if(d.status !== 'success') {
-            btn.disabled = false;
-            return showMsg('mobile-msg', d.message, 'error');
-        }
-
-        userMobile   = mobile;
-        userTgId     = d.tg_id;
-        userRefCode  = d.wallet_id;
-        userWalletId = d.wallet_id;
-
-        if(!userTgId) {
-            document.getElementById('step-mobile').style.display = 'none';
-            document.getElementById('step-tg').style.display = 'block';
-        } else {
-            goToClaimStep();
-        }
-    } catch(e) {
-        btn.disabled = false;
-        showMsg('mobile-msg', 'Connection error', 'error');
+    if(d.status !== 'success') {
+      btn.disabled = false;
+      return showMsg('mobile-msg', d.message || '❌ Number not found!', 'error');
     }
-}
 
-// 3. SAVE TG ID
-async function saveTgId() {
-    const tg_id = document.getElementById('tg-id-input').value.trim();
-    if(!tg_id) return showMsg('tg-msg', 'Enter Telegram ID', 'error');
+    userMobile = mobile;
+    userTgId   = d.tg_id || '';
 
-    const btn = document.getElementById('tg-save-btn');
-    btn.disabled = true;
-
-    try {
-        const r = await fetch(`${API}/auth/update-tg-by-mobile`, {
-            method: 'POST',
-            headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
-        });
-        const d = await r.json();
-        if(d.status === 'success') {
-            userTgId = tg_id;
-            document.getElementById('step-tg').style.display = 'none';
-            goToClaimStep();
-        } else {
-            btn.disabled = false;
-            showMsg('tg-msg', d.message, 'error');
-        }
-    } catch(e) {
-        btn.disabled = false;
-        showMsg('tg-msg', 'Error linking ID', 'error');
-    }
-}
-
-// 4. CHANNELS & UI LOGIC
-function goToClaimStep() {
-    document.getElementById('step-mobile').style.display = 'none';
-    document.getElementById('step-claim').style.display = 'block';
-    
-    const channels = currentLifafa.channels || [];
-    if(channels.length > 0) {
-        buildChannels(channels);
-        document.getElementById('channels-wrap').style.display = 'block';
+    if(!userTgId) {
+      document.getElementById('step-mobile').style.display = 'none';
+      document.getElementById('step-tg').style.display     = 'block';
     } else {
-        showFinalOption();
+      goToClaimStep();
     }
+  } catch(e) {
+    btn.disabled = false;
+    showMsg('mobile-msg', 'Server error!', 'error');
+  }
+}
+
+// STEP 3: Save TG ID (Handled error for already linked ID)
+async function saveTgId() {
+  const tg_id = document.getElementById('tg-id-input').value.trim();
+  const btn = document.getElementById('tg-save-btn');
+  if(!tg_id || tg_id.length < 5) return showMsg('tg-msg', 'Valid Telegram ID enter karo!', 'error');
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+
+  try {
+    const r = await fetch(API+'/auth/update-tg-by-mobile', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body:    JSON.stringify({ mobile: userMobile, tg_id })
+    });
+    const d = await r.json();
+
+    if(d.status === 'success') {
+      userTgId = tg_id;
+      document.getElementById('step-tg').style.display = 'none';
+      goToClaimStep();
+    } else {
+      // Yahan auth.js se aane wala error message dikhega (e.g. "Telegram ID already linked to another account")
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Continue';
+      showMsg('tg-msg', d.message || '❌ Could not link Telegram ID', 'error');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Continue';
+    showMsg('tg-msg', 'Server error!', 'error');
+  }
+}
+
+function goToClaimStep() {
+  document.getElementById('step-claim').style.display = 'block';
+  document.getElementById('step-mobile').style.display = 'none'; // Ensure mobile step is hidden
+
+  const channels = currentLifafa.channels || [];
+  verifiedChannels = new Array(channels.length).fill(false);
+
+  if(channels.length > 0) {
+    buildChannels(channels);
+    document.getElementById('channels-wrap').style.display = 'block';
+  } else {
+    showClaimButton();
+  }
 }
 
 function buildChannels(channels) {
-    let html = '';
-    verifiedChannels = new Array(channels.length).fill(false);
-    channels.forEach((link, i) => {
-        const name = link.split('/').pop();
-        html += `
-        <div class="ch-item" id="ch-${i}">
-          <div class="ch-top">
-            <div class="ch-name">@${name}</div>
-            <div class="ch-badge pending" id="badge-${i}">Pending</div>
-          </div>
-          <div class="ch-btns">
-            <a href="${link}" target="_blank" class="ch-btn join">Join</a>
-            <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i}, '${name}')">Verify</button>
-          </div>
-        </div>`;
-    });
-    document.getElementById('channels-list').innerHTML = html;
+  let html = '';
+  channels.forEach((link, i) => {
+    const name = link.match(/t\.me\/([a-zA-Z0-9_]+)/)?.[1] || 'Channel '+(i+1);
+    html += `<div class="ch-item" id="ch-${i}">
+      <div class="ch-top">
+        <div class="ch-name"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> @${name}</div>
+        <div class="ch-badge pending" id="badge-${i}">⏳ Pending</div>
+      </div>
+      <div class="ch-btns">
+        <a href="${link}" target="_blank" class="ch-btn join"><i class="fa-solid fa-arrow-up-right-from-square"></i> Join</a>
+        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}')">
+          <i class="fa-solid fa-circle-check"></i> Verify
+        </button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('channels-list').innerHTML = html;
 }
 
-async function verifyChannel(i, channelName) {
-    const btn = document.getElementById('vbtn-' + i);
-    btn.disabled = true;
-    btn.textContent = '...';
+async function verifyChannel(i, link) {
+  const btn   = document.getElementById('vbtn-'+i);
+  const badge = document.getElementById('badge-'+i);
+  const item  = document.getElementById('ch-'+i);
 
-    try {
-        const res = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=@${channelName}`);
-        const data = await res.json();
+  btn.disabled  = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
 
-        if(data.joined) {
-            verifiedChannels[i] = true;
-            document.getElementById('ch-' + i).classList.add('verified');
-            document.getElementById('badge-' + i).className = 'ch-badge verified';
-            document.getElementById('badge-' + i).textContent = 'Verified';
-            btn.textContent = 'Done';
-            checkAllVerified();
-        } else {
-            btn.disabled = false;
-            btn.textContent = 'Retry';
-            showMsg('claim-msg', 'Please join the channel first!', 'error');
-        }
-    } catch(e) {
-        btn.disabled = false;
-        btn.textContent = 'Retry';
+  const match   = link.match(/t\.me\/([a-zA-Z0-9_]+)/);
+  const channel = match ? '@'+match[1] : link;
+
+  try {
+    const res  = await fetch(`${G_SCRIPT}?tg_id=${encodeURIComponent(userTgId)}&channel=${encodeURIComponent(channel)}`);
+    const data = await res.json();
+
+    if(data.ok && data.joined) {
+      verifiedChannels[i]   = true;
+      badge.className       = 'ch-badge verified';
+      badge.textContent     = '✅ Verified';
+      btn.className         = 'ch-btn done';
+      btn.innerHTML         = '<i class="fa-solid fa-check"></i> Done';
+      item.className        = 'ch-item verified';
+      checkAllVerified();
+    } else {
+      badge.className   = 'ch-badge failed';
+      badge.textContent = '❌ Not Joined';
+      btn.disabled      = false;
+      btn.innerHTML     = '<i class="fa-solid fa-rotate-right"></i> Retry';
+      item.className    = 'ch-item failed';
     }
+  } catch(e) {
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Retry';
+  }
 }
 
 function checkAllVerified() {
-    if(verifiedChannels.every(v => v === true)) {
-        showFinalOption();
-    }
+  if(!verifiedChannels.every(v => v)) return;
+  showClaimButton();
 }
 
-function showFinalOption() {
-    document.getElementById('channels-wrap').style.display = 'none';
-    if(currentLifafa.type === 'toss') {
-        document.getElementById('toss-wrap').style.display = 'block';
+function showClaimButton() {
+  if(currentLifafa.type === 'toss') {
+    document.getElementById('toss-wrap').style.display = 'block';
+  } else {
+    document.getElementById('claim-btn-wrap').style.display = 'block';
+  }
+}
+
+async function claimNow(guess) {
+  const btn = document.getElementById('claim-btn');
+  if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Claiming...'; }
+
+  try {
+    const r = await fetch(API+'/lifafa/claim', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify({
+        code:   currentCode,
+        mobile: userMobile,
+        guess:  guess || ''
+      })
+    });
+    const d = await r.json();
+
+    if(d.status === 'success') {
+      document.getElementById('channels-wrap').style.display   = 'none';
+      document.getElementById('toss-wrap').style.display       = 'none';
+      document.getElementById('claim-btn-wrap').style.display  = 'none';
+      document.getElementById('claim-msg').className           = 'msg';
+      document.getElementById('won-amt').textContent           = '+₹' + d.amount;
+      document.getElementById('step-success').style.display    = 'block';
     } else {
-        document.getElementById('claim-btn-wrap').style.display = 'block';
+      showMsg('claim-msg', '❌ '+(d.message||'Claim failed!'), 'error');
+      if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
     }
+  } catch(e) {
+    showMsg('claim-msg', '❌ Server error!', 'error');
+    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Claim Now! 🚀'; }
+  }
 }
-
-// 5. FINAL CLAIM
-async function claimNow(tossSelection = '') {
-    const msgId = currentLifafa.type === 'toss' ? 'claim-msg' : 'claim-msg';
-    try {
-        const r = await fetch(`${API}/lifafa/claim`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                code:     currentCode,
-                mobile:   userMobile,
-                guess:    tossSelection,
-                ref_code: incomingRef
-            })
-        });
-        const d = await r.json();
-
-        if(d.status === 'success') {
-            document.getElementById('step-claim').style.display = 'none';
-            document.getElementById('step-success').style.display = 'block';
-            document.getElementById('won-amt').textContent = `₹${d.amount}`;
-            
-            // Setup Refer Link
-            if(userRefCode) {
-                const link = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${userRefCode}`;
-                document.getElementById('refer-link-display').textContent = link;
-                document.getElementById('refer-section').style.display = 'block';
-            } else {
-                document.getElementById('refer-section').style.display = 'none';
-            }
-        } else {
-            showMsg('claim-msg', d.message, 'error');
-        }
-    } catch(e) {
-        showMsg('claim-msg', 'Claim failed. Try again.', 'error');
-    }
-}
-
-function copyReferLink() {
-    const link = document.getElementById('refer-link-display').textContent;
-    navigator.clipboard.writeText(link);
-    alert('Referral link copied!');
-}
-
-// Check for URL code on load
-window.onload = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if(code) {
-        document.getElementById('code-input').value = code.toUpperCase();
-        loadLifafa();
-    }
-};
 </script>
 </body>
 </html>
