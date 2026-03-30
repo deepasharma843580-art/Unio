@@ -165,6 +165,7 @@ let userTgId         = '';
 let verifiedChannels = [];
 let currentCode      = '';
 let userRefCode      = '';
+let userWalletId     = '';
 let incomingRef      = new URLSearchParams(window.location.search).get('ref') || '';
 
 function showMsg(id, text, type) {
@@ -233,9 +234,10 @@ async function verifyMobile() {
             return showMsg('mobile-msg', d.message, 'error');
         }
 
-        userMobile = mobile;
-        userTgId   = d.tg_id;
-        userRefCode = d.ref_code;
+        userMobile   = mobile;
+        userTgId     = d.tg_id;
+        userRefCode  = d.wallet_id;
+        userWalletId = d.wallet_id;
 
         if(!userTgId) {
             document.getElementById('step-mobile').style.display = 'none';
@@ -378,8 +380,13 @@ async function claimNow(tossSelection = '') {
             document.getElementById('won-amt').textContent = `₹${d.amount}`;
             
             // Setup Refer Link
-            const link = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${userRefCode}`;
-            document.getElementById('refer-link-display').textContent = link;
+            if(userRefCode) {
+                const link = `${window.location.origin}${window.location.pathname}?code=${currentCode}&ref=${userRefCode}`;
+                document.getElementById('refer-link-display').textContent = link;
+                document.getElementById('refer-section').style.display = 'block';
+            } else {
+                document.getElementById('refer-section').style.display = 'none';
+            }
         } else {
             showMsg('claim-msg', d.message, 'error');
         }
@@ -406,4 +413,3 @@ window.onload = () => {
 </script>
 </body>
 </html>
-
