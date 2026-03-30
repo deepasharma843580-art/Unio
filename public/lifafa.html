@@ -17,35 +17,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
 .balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
-
-/* Admin Alert Box Style */
-.admin-alert {
-  background: #ecfdf5;
-  border: 1.5px solid #10b981;
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-.admin-alert i {
-  color: #059669;
-  font-size: 1.2rem;
-  margin-top: 2px;
-}
-.admin-alert-content {
-  font-size: 0.8rem;
-  color: #065f46;
-  font-weight: 600;
-  line-height: 1.5;
-}
-.admin-alert-content a {
-  color: #059669;
-  font-weight: 800;
-  text-decoration: underline;
-}
-
+.admin-alert {background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 1rem; padding: 1rem; margin-bottom: 1.25rem; display: flex; align-items: flex-start; gap: 0.75rem;}
+.admin-alert i {color: #059669; font-size: 1.2rem; margin-top: 2px;}
+.admin-alert-content {font-size: 0.8rem; color: #065f46; font-weight: 600; line-height: 1.5;}
 .section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
 .input-group{margin-bottom:1.25rem}
 .input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
@@ -54,7 +28,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
 .btn:disabled{background:#94a3b8;cursor:not-allowed}
-.btn:active:not(:disabled){transform:scale(.98)}
 .btn-outline{width:100%;padding:.75rem;background:white;color:#0057ff;border:2px solid #0057ff;border-radius:1rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:.75rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
@@ -81,7 +54,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <div class="container">
-
   <div class="balance-pill">
     <span>Available Balance</span>
     <strong>₹<span id="balance">0.00</span></strong>
@@ -90,7 +62,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <div class="admin-alert">
     <i class="fa-solid fa-circle-info"></i>
     <div class="admin-alert-content">
-      Please make <a href="https://t.me/OTP_UNIO_BOT" target="_blank">@OTP_UNIO_BOT</a> an admin in your channel. If you do not make it an admin, the Lifafa may show as invalid.
+      Please make <a href="https://t.me/OTP_UNIO_BOT" target="_blank">@OTP_UNIO_BOT</a> an admin in your channel.
     </div>
   </div>
 
@@ -100,8 +72,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
     <div class="input-group">
       <label>Unique Code</label>
-      <input type="text" id="c-code" placeholder="e.g. DIWALI2025"
-        oninput="this.value=this.value.toUpperCase()">
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase()">
     </div>
 
     <div class="input-group">
@@ -141,6 +112,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
+    <div class="input-group">
+      <label>Refer Bonus (₹ Per Friend)</label>
+      <input type="number" id="c-refer" placeholder="0.00 (Optional)" step="0.01">
+      <p style="font-size: 0.6rem; color: #94a3b8; margin-top: 0.25rem;">Creator ko har valid refer par ye bonus milega.</p>
+    </div>
+
     <div class="deduction-box" id="deduction-box">
       <div class="deduction-row">
         <span>Calculation</span>
@@ -152,9 +129,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
     </div>
 
-    <div class="section-title">
-      <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
-    </div>
+    <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels</div>
     <div id="channels-container">
       <div class="channel-item">
         <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
@@ -184,26 +159,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </button>
     </div>
   </div>
-
 </div>
 
 <div class="bottom-nav">
   <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
-  <a href="transfer.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i>Send</a>
-  <a href="deposit.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Add</a>
-  <a href="withdraw.html" class="nav-item"><i class="fa-solid fa-arrow-up"></i>Withdraw</a>
   <a href="lifafa.html" class="nav-item active"><i class="fa-solid fa-envelope-open-text"></i>Lifafa</a>
 </div>
 
 <script>
 const API   = '';
 const token = localStorage.getItem('token');
-if(!token) window.location.href = 'index.html';
-
 let userBalance = 0;
 let claimLink   = '';
 
-// Load balance
 fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') {
@@ -228,18 +196,14 @@ function calcDeduction() {
   const total = t==='scratch' ? (max*users) : (amt*users);
   const box   = document.getElementById('deduction-box');
   if(total > 0 && users > 0) {
-    const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
-    document.getElementById('d-calc').textContent = calc;
+    document.getElementById('d-calc').textContent = t==='scratch' ? `Max ₹${max} × ${users}` : `₹${amt} × ${users}`;
     document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
     box.classList.add('show');
-  } else {
-    box.classList.remove('show');
-  }
+  } else { box.classList.remove('show'); }
 }
 
 function addChannel() {
   const container = document.getElementById('channels-container');
-  if(container.children.length >= 10) return alert('Max 10 channels!');
   const div = document.createElement('div');
   div.className = 'channel-item';
   div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
@@ -250,85 +214,42 @@ function addChannel() {
 
 function removeCh(btn) { btn.closest('.channel-item').remove(); }
 
-function showMsg(text, type) {
-  const m = document.getElementById('create-msg');
-  m.textContent = text;
-  m.className = 'msg ' + type;
-  m.scrollIntoView({behavior:'smooth', block:'center'});
-}
-
 async function createLifafa() {
-  const code  = document.getElementById('c-code').value.trim().toUpperCase();
+  const code  = document.getElementById('c-code').value.trim();
   const type  = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value) || 0;
+  const users = parseInt(document.getElementById('c-users').value);
   const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
-  const min   = parseFloat(document.getElementById('c-min').value) || 0;
-  const max   = parseFloat(document.getElementById('c-max').value) || 0;
-  const toss  = document.getElementById('c-toss').value;
-
-  // Validations
-  if(!code)         return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
-  if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
-  if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
-
-  // Total deduction
-  const total = type === 'scratch' ? (max * users) : (amt * users);
-
-  // Balance check
-  if(userBalance < total) {
-    return showMsg(
-      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
-      'error'
-    );
-  }
-
-  const channels = [...document.querySelectorAll('.ch-input')]
-    .map(i => i.value.trim()).filter(v => v);
+  const refer_bonus = parseFloat(document.getElementById('c-refer').value) || 0; // BONUS FIELD
+  const channels = [...document.querySelectorAll('.ch-input')].map(i => i.value.trim()).filter(v => v);
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
 
   try {
     const r = await fetch(API+'/lifafa/create', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels })
+      body: JSON.stringify({ 
+        code, type, amt, users, channels, refer_bonus, 
+        min_range: parseFloat(document.getElementById('c-min').value)||0,
+        max_range: parseFloat(document.getElementById('c-max').value)||0,
+        toss_answer: document.getElementById('c-toss').value
+      })
     });
     const d = await r.json();
     if(d.status === 'success') {
       claimLink = window.location.origin + '/claim.html?code=' + d.code;
       document.getElementById('claim-link').textContent = claimLink;
       document.getElementById('create-result').style.display = 'block';
-      document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
-      // Update balance
-      userBalance -= total;
-      document.getElementById('balance').textContent = userBalance.toFixed(2);
-      showMsg('', '');
-    } else {
-      showMsg('❌ ' + (d.message || 'Failed!'), 'error');
-    }
-  } catch(e) {
-    showMsg('❌ Server error! Try again.', 'error');
-  }
-
+      document.getElementById('create-result').scrollIntoView();
+    } else { alert(d.message); }
+  } catch(e) { alert('Error creating lifafa'); }
   btn.disabled = false;
-  btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
 }
 
 function copyLink() {
   navigator.clipboard.writeText(claimLink);
-  alert('Claim link copied! ✅');
-}
-
-function createAnother() {
-  document.getElementById('create-result').style.display = 'none';
-  document.getElementById('c-code').value  = '';
-  document.getElementById('c-amt').value   = '';
-  document.getElementById('c-users').value = '';
-  document.getElementById('deduction-box').classList.remove('show');
-  window.scrollTo({top:0, behavior:'smooth'});
+  alert('Link Copied!');
 }
 </script>
 </body>
