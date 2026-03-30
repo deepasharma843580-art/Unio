@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIO – Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #060a12;
+    --card:     #0d1420;
+    --border:   #1a2540;
+    --accent:   #00d4ff;
+    --gold:     #ffd700;
+    --silver:   #c0c8d8;
+    --bronze:   #cd7f32;
+    --green:    #00ff88;
+    --text:     #e0eaff;
+    --muted:    #4a5a7a;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG grid */
+  body::before {
+    content:'';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px 16px 60px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .header .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    opacity: .7;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(26px, 7vw, 42px);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, #0077ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* Updated at */
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .5px;
+  }
+  .meta .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:.5; transform:scale(1.3); }
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  /* TOP 3 podium */
+  .podium {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .pod {
+    flex: 1;
+    max-width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 12px 18px;
+    position: relative;
+    border: 1px solid transparent;
+    transition: transform .3s;
+    animation: riseUp .6s ease both;
+  }
+  .pod:hover { transform: translateY(-4px); }
+
+  .pod.p1 {
+    background: linear-gradient(160deg, #1a1200 0%, #2a1e00 100%);
+    border-color: rgba(255,215,0,.25);
+    box-shadow: 0 0 30px rgba(255,215,0,.12), inset 0 1px 0 rgba(255,215,0,.2);
+    min-height: 200px;
+    animation-delay: .1s;
+  }
+  .pod.p2 {
+    background: linear-gradient(160deg, #0e1520 0%, #1a2030 100%);
+    border-color: rgba(192,200,216,.2);
+    box-shadow: 0 0 20px rgba(192,200,216,.08);
+    min-height: 160px;
+    animation-delay: .2s;
+  }
+  .pod.p3 {
+    background: linear-gradient(160deg, #120d07 0%, #1e1510 100%);
+    border-color: rgba(205,127,50,.2);
+    box-shadow: 0 0 20px rgba(205,127,50,.08);
+    min-height: 140px;
+    animation-delay: .3s;
+  }
+
+  @keyframes riseUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .crown {
+    font-size: 26px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  .pod.p1 .crown { color: var(--gold); filter: drop-shadow(0 0 10px var(--gold)); }
+  .pod.p2 .crown { color: var(--silver); }
+  .pod.p3 .crown { color: var(--bronze); }
+
+  .pod-rank {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: .6;
+  }
+  .pod.p1 .pod-rank { color: var(--gold); }
+  .pod.p2 .pod-rank { color: var(--silver); }
+  .pod.p3 .pod-rank { color: var(--bronze); }
+
+  .pod-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Orbitron', monospace;
+  }
+  .pod.p1 .pod-avatar { background: rgba(255,215,0,.15); color: var(--gold); border: 2px solid rgba(255,215,0,.4); }
+  .pod.p2 .pod-avatar { background: rgba(192,200,216,.1); color: var(--silver); border: 2px solid rgba(192,200,216,.3); }
+  .pod.p3 .pod-avatar { background: rgba(205,127,50,.1);  color: var(--bronze); border: 2px solid rgba(205,127,50,.3); }
+
+  .pod-name {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4px;
+    color: #fff;
+    word-break: break-word;
+  }
+  .pod-mobile {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .pod-txns {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 900;
+  }
+  .pod.p1 .pod-txns { color: var(--gold); }
+  .pod.p2 .pod-txns { color: var(--silver); }
+  .pod.p3 .pod-txns { color: var(--bronze); }
+
+  .pod-txns-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .pod-amount {
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  /* List rows 4-10 */
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    transition: border-color .2s, transform .2s;
+    animation: fadeIn .5s ease both;
+    cursor: default;
+  }
+  .row:hover {
+    border-color: rgba(0,212,255,.25);
+    transform: translateX(4px);
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .row-rank {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .row-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(0,212,255,.08);
+    border: 1px solid rgba(0,212,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .row-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .row-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row-mobile {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .row-stats {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .row-txns {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .row-amount {
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 2px;
+  }
+
+  /* Error / loading */
+  .state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .state .icon { font-size: 40px; margin-bottom: 12px; }
+  .state p { font-size: 15px; }
+
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(0,212,255,.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 10px 22px;
+    border: 1px solid rgba(0,212,255,.3);
+    border-radius: 8px;
+    background: rgba(0,212,255,.05);
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+  }
+  .refresh-btn:hover {
+    background: rgba(0,212,255,.12);
+    border-color: rgba(0,212,255,.6);
+  }
+  .refresh-btn svg {
+    width: 15px; height: 15px;
+    transition: transform .4s;
+  }
+  .refresh-btn:hover svg { transform: rotate(180deg); }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo">⚡ UNIO WALLET</div>
+    <h1>Leaderboard</h1>
+    <div class="subtitle">Top API Transaction Users</div>
+  </div>
+
+  <div class="meta">
+    <span id="updated">Fetching data...</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="dot"></div>
+      <span>LIVE</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="state">
+      <div class="spinner"></div>
+      <p>Loading leaderboard...</p>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;">
+    <button class="refresh-btn" onclick="load()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      REFRESH
+    </button>
+  </div>
+
+  <div class="footer">
+    Powered by <span>UNIO</span> · API Transactions Only
+  </div>
+
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const API_URL = '/leaderboard/users';   // change if your domain differs
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function initial(name) {
+  return (name || '?')[0].toUpperCase();
+}
+function formatAmount(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderPodCard(u, cls) {
+  const icons = { p1: '👑', p2: '🥈', p3: '🥉' };
+  return `
+  <div class="pod ${cls}" style="animation-delay:${cls==='p1'?.1:cls==='p2'?.2:.3}s">
+    <div class="crown">${icons[cls]}</div>
+    <div class="pod-rank">#${u.rank}</div>
+    <div class="pod-avatar">${initial(u.name)}</div>
+    <div class="pod-name">${u.name}</div>
+    <div class="pod-mobile">${u.mobile}</div>
+    <div class="pod-txns">${u.total_txns}</div>
+    <div class="pod-txns-label">Transactions</div>
+    <div class="pod-amount">${formatAmount(u.total_amount)}</div>
+  </div>`;
+}
+
+function renderRow(u, delay) {
+  return `
+  <div class="row" style="animation-delay:${delay}s">
+    <div class="row-rank">${u.rank}</div>
+    <div class="row-avatar">${initial(u.name)}</div>
+    <div class="row-info">
+      <div class="row-name">${u.name}</div>
+      <div class="row-mobile">${u.mobile}</div>
+    </div>
+    <div class="row-stats">
+      <div class="row-txns">${u.total_txns}</div>
+      <div class="row-amount">${formatAmount(u.total_amount)}</div>
+    </div>
+  </div>`;
+}
+
+function render(data) {
+  const list = data.leaderboard || [];
+  if (!list.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="state">
+        <div class="icon">📭</div>
+        <p>Koi API transaction nahi mili abhi tak.</p>
+      </div>`;
+    return;
+  }
+
+  const top3 = list.slice(0, 3);
+  const rest  = list.slice(3);
+
+  // Podium order: 2nd | 1st | 3rd  (classic podium style)
+  let podiumHTML = '<div class="podium">';
+  if (top3[1]) podiumHTML += renderPodCard(top3[1], 'p2');
+  if (top3[0]) podiumHTML += renderPodCard(top3[0], 'p1');
+  if (top3[2]) podiumHTML += renderPodCard(top3[2], 'p3');
+  podiumHTML += '</div>';
+
+  let restHTML = '';
+  if (rest.length) {
+    restHTML += '<div class="divider">Rest of the Board</div>';
+    restHTML += '<div class="list">';
+    rest.forEach((u, i) => {
+      restHTML += renderRow(u, i * 0.05);
+    });
+    restHTML += '</div>';
+  }
+
+  document.getElementById('content').innerHTML = podiumHTML + restHTML;
+}
+
+// ── Fetch ─────────────────────────────────────────────────────────────────────
+async function load() {
+  document.getElementById('updated').textContent = 'Refreshing...';
+  document.getElementById('content').innerHTML = `
+    <div class="state">
+      <div class="spinner"></div>
+      <p>Loading leaderboard...</p>
+    </div>`;
+
+  try {
+    const res  = await fetch(API_URL);
+    const data = await res.json();
+
+    if (data.status !== 'success') throw new Error(data.message || 'Server error');
+
+    document.getElementById('updated').textContent = 'Updated: ' + data.updated_at;
+    render(data);
+  } catch(e) {
+    document.getElementById('updated').textContent = 'Failed to load';
+    document.getElementById('content').innerHTML = `
+      <div class="state">
+        <div class="icon">⚠️</div>
+        <p>${e.message}</p>
+      </div>`;
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+load();
+// Auto-refresh every 60 seconds
+setInterval(load, 60000);
+</script>
+</body>
+      </html>
+
