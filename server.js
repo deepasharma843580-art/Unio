@@ -74,36 +74,25 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-// ── Rate Limiters ─────────────────────────────────────────────────────────────
+// ── Rate Limit ────────────────────────────────────────────────────────────────
 const payLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
   message: { status:'error', message:'Too many requests' }
 });
 
-const aiLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  message: { status:'error', message:'Thoda slow karo! 1 minute baad try karo.' }
-});
-
 // ── Routes ────────────────────────────────────────────────────────────────────
-app.use('/auth',     require('./routes/auth'));
-app.use('/auth',     require('./routes/forgot'));
-app.use('/wallet',   require('./routes/wallet'));
-app.use('/transfer', require('./routes/transfer'));
-app.use('/lifafa',   require('./routes/lifafa'));
-app.use('/admin',    require('./routes/admin'));
-app.use('/payment',  payLimiter, require('./routes/payment'));
-app.use('/api',      payLimiter, require('./routes/payment'));
-app.use('/giftcode', require('./routes/giftCode'));
-app.use('/migrate',  require('./routes/migrate'));
-app.use('/ai',       aiLimiter,  require('./routes/ai'));
+app.use('/auth',        require('./routes/auth'));
+app.use('/wallet',      require('./routes/wallet'));
+app.use('/transfer',    require('./routes/transfer'));
+app.use('/lifafa',      require('./routes/lifafa'));
+app.use('/admin',       require('./routes/admin'));
+app.use('/payment',     payLimiter, require('./routes/payment'));
+app.use('/api',         payLimiter, require('./routes/payment'));
+app.use('/leaderboard', require('./routes/leaderboard'));  // ✅ Leaderboard API
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/forgot',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'forgot.html')));
-app.get('/ai',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'ai.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 app.get('/transfer',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'transfer.html')));
 app.get('/deposit',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'deposit.html')));
@@ -116,8 +105,7 @@ app.get('/sahab',         (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/transactions',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'transactions.html')));
 app.get('/settings',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'settings.html')));
 app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
-app.get('/migrate-tool',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'migrate.html')));
-app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'parese.html')));
+app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));  // ✅ Leaderboard Page
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -131,3 +119,4 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+    
