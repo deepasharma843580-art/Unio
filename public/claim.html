@@ -64,14 +64,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .success-amt{font-size:2.5rem;font-weight:900;color:#16a34a;margin-bottom:.25rem}
 .success-label{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.5rem}
 .tg-warn-card{background:#eff6ff;border:2px solid #bfdbfe;border-radius:1.25rem;padding:1.25rem;margin-bottom:1rem;text-align:center}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .3s cubic-bezier(.34,1.3,.64,1) forwards}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn .3s cubic-bezier(.34,1.56,.64,1) forwards}
 @keyframes spinBtn{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .btn-verify-all{width:100%;padding:1.1rem;margin-top:1rem;background:linear-gradient(135deg,#0088cc,#0057ff);color:white;border:none;border-radius:1.25rem;font-size:.95rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:all .2s;box-shadow:0 4px 20px rgba(0,87,255,0.35)}
 .btn-verify-all:disabled{background:linear-gradient(135deg,#94a3b8,#64748b);cursor:not-allowed;box-shadow:none}
 .btn-verify-all:active:not(:disabled){transform:scale(.98)}
 .spin-icon{display:inline-block}
 .spin-icon.spinning{animation:spinBtn .7s linear infinite}
-.pop-in{animation:popIn .3s cubic-bezier(.34,1.56,.64,1) forwards}
-@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -95,7 +97,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="text" id="code-input" placeholder="e.g. DIWALI2025"
         style="text-transform:uppercase;text-align:center;letter-spacing:.15em;font-size:1rem">
     </div>
-    <button class="btn purple" id="find-btn" onclick="loadLifafa()">
+    <button class="btn purple" onclick="loadLifafa()" id="find-btn">
       <i class="fa-solid fa-search"></i> Find Lifafa
     </button>
   </div>
@@ -144,7 +146,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div id="tg-msg" class="msg"></div>
     <div class="input-group">
       <label>Enter Your Telegram ID</label>
-      <input type="number" id="tg-id-input" placeholder="e.g. 123456789">
+      <input type="number" id="tg-id-input" placeholder="e.g. Botcode">
     </div>
     <button class="btn green" id="tg-save-btn" onclick="saveTgId()">
       <i class="fa-solid fa-floppy-disk"></i> Save & Continue
@@ -185,7 +187,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <div id="step-success" class="card pop-in" style="display:none">
     <div class="success-box">
       <div class="success-emoji">🏆</div>
-      <div class="success-amt" id="won-amt">₹0</div>
+      <div class="success-amt" id="won-amt"></div>
       <div class="success-label">Added to Your Wallet!</div>
       <a href="dashboard.html" class="btn green" style="text-decoration:none">
         <i class="fa-solid fa-wallet"></i> Go to Wallet
@@ -196,8 +198,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <script>
-const API      = 'https://unio-hazel.vercel.app'; // Apni API URL yahan dalein
+// --- CONFIGURATION ---
+const API      = 'YOUR_BACKEND_URL'; // Add your backend API URL here
 const token    = localStorage.getItem('token');
+const user     = JSON.parse(localStorage.getItem('user') || '{}');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
 if(!token) window.location.href = 'index.html';
@@ -216,11 +220,11 @@ function showMsg(id, text, type) {
   m.style.display = 'block';
 }
 
-// URL se code automatic uthana
+// Auto-load if code in URL
 const urlCode = new URLSearchParams(window.location.search).get('code');
 if(urlCode) {
   document.getElementById('code-input').value = urlCode.toUpperCase();
-  setTimeout(loadLifafa, 500);
+  loadLifafa();
 }
 
 async function loadLifafa() {
@@ -232,7 +236,9 @@ async function loadLifafa() {
   findBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Finding...';
 
   try {
-    const r = await fetch(API+'/lifafa/'+code);
+    const r = await fetch(API + '/lifafa/' + code, {
+        headers: {'Authorization': 'Bearer ' + token}
+    });
     const d = await r.json();
     
     if(d.status !== 'success') {
@@ -244,7 +250,7 @@ async function loadLifafa() {
     currentLifafa = d.lifafa;
     currentCode   = code;
 
-    // UI Update
+    // Update UI
     document.getElementById('banner-code').textContent = currentLifafa.code;
     document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
 
@@ -258,9 +264,9 @@ async function loadLifafa() {
     document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
 
     if(currentLifafa.claimed_users >= currentLifafa.max_users) {
-      findBtn.disabled = false;
-      findBtn.innerHTML = '<i class="fa-solid fa-search"></i> Find Lifafa';
-      return showMsg('code-msg', '❌ Lifafa Full! Koi slot nahi bacha.', 'error');
+       findBtn.disabled = false;
+       findBtn.innerHTML = '<i class="fa-solid fa-search"></i> Find Lifafa';
+       return showMsg('code-msg', '❌ Lifafa Full! Koi slot nahi bacha.', 'error');
     }
 
     document.getElementById('step-code').style.display   = 'none';
@@ -282,7 +288,7 @@ async function verifyMobile() {
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
   
   try {
-    const r = await fetch(API+'/auth/check-mobile', {
+    const r = await fetch(API + '/auth/check-mobile', {
       method:  'POST',
       headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
       body:    JSON.stringify({ mobile })
@@ -314,13 +320,13 @@ async function verifyMobile() {
 async function saveTgId() {
   const tg_id = document.getElementById('tg-id-input').value.trim();
   const btn = document.getElementById('tg-save-btn');
-  if(!tg_id || tg_id.length < 5) return showMsg('tg-msg', 'Valid Telegram ID enter karo!', 'error');
+  if(!tg_id) return showMsg('tg-msg', 'Telegram ID enter karo!', 'error');
 
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
 
   try {
-    const r = await fetch(API+'/auth/update-tg-by-mobile', {
+    const r = await fetch(API + '/auth/update-tg-by-mobile', {
       method:  'POST',
       headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
       body:    JSON.stringify({ mobile: userMobile, tg_id })
@@ -345,7 +351,8 @@ async function saveTgId() {
 
 function goToClaimStep() {
   document.getElementById('step-mobile').style.display = 'none';
-  document.getElementById('step-claim').style.display = 'block';
+  document.getElementById('step-tg').style.display     = 'none';
+  document.getElementById('step-claim').style.display  = 'block';
 
   const channels = currentLifafa.channels || [];
   verifiedChannels = new Array(channels.length).fill(false);
@@ -354,7 +361,7 @@ function goToClaimStep() {
     buildChannels(channels);
     document.getElementById('channels-wrap').style.display = 'block';
   } else {
-    showActionArea();
+    showFinalAction();
   }
 }
 
@@ -415,13 +422,4 @@ async function verifyChannel(i, link) {
 }
 
 async function verifyAllChannels() {
-  const btn = document.getElementById('verify-all-btn');
-  const icon = document.getElementById('verify-all-icon');
-  const text = document.getElementById('verify-all-text');
-  const channels = currentLifafa.channels || [];
-
-  btn.disabled = true;
-  icon.classList.add('spinning');
-  text.textContent = 'Verifying All...';
-
-  for(let i=0; i<channels.length; 
+    const btn
