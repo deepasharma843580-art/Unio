@@ -227,10 +227,16 @@ async function loadLifafa() {
   const code = document.getElementById('code-input').value.trim().toUpperCase();
   if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
 
+  const findBtn = document.querySelector('#step-code .btn');
+  if(findBtn) { findBtn.disabled = true; findBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Finding...'; }
+
   try {
     const r = await fetch(API+'/lifafa/'+code);
     const d = await r.json();
-    if(d.status !== 'success') return showMsg('code-msg', d.message||'Invalid code!', 'error');
+    if(d.status !== 'success') {
+      if(findBtn) { findBtn.disabled = false; findBtn.innerHTML = '<i class="fa-solid fa-search"></i> Find Lifafa'; }
+      return showMsg('code-msg', d.message||'Invalid code!', 'error');
+    }
 
     currentLifafa = d.lifafa;
     currentCode   = code;
@@ -254,7 +260,10 @@ async function loadLifafa() {
     document.getElementById('step-code').style.display   = 'none';
     document.getElementById('step-mobile').style.display = 'block';
 
-  } catch(e) { showMsg('code-msg', 'Server error!', 'error'); }
+  } catch(e) {
+    if(findBtn) { findBtn.disabled = false; findBtn.innerHTML = '<i class="fa-solid fa-search"></i> Find Lifafa'; }
+    showMsg('code-msg', 'Server error!', 'error');
+  }
 }
 
 // STEP 2: Verify Mobile (with auth.js duplicate check)
@@ -264,6 +273,7 @@ async function verifyMobile() {
   if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
 
   btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
   try {
     const r = await fetch(API+'/auth/check-mobile', {
       method:  'POST',
@@ -274,6 +284,7 @@ async function verifyMobile() {
 
     if(d.status !== 'success') {
       btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Next';
       return showMsg('mobile-msg', d.message || '❌ Number not found!', 'error');
     }
 
@@ -288,6 +299,7 @@ async function verifyMobile() {
     }
   } catch(e) {
     btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Next';
     showMsg('mobile-msg', 'Server error!', 'error');
   }
 }
@@ -400,23 +412,4 @@ async function verifyChannel(i, link) {
 function checkAllVerified() {
   if(!verifiedChannels.every(v => v)) return;
   // Update verify-all button to done state
-  const btn = document.getElementById('verify-all-btn');
-  const icon = document.getElementById('verify-all-icon');
-  const text = document.getElementById('verify-all-text');
-  if(btn) {
-    btn.disabled = true;
-    icon.classList.remove('spinning');
-    icon.innerHTML = '<i class="fa-solid fa-check-double"></i>';
-    text.textContent = 'All Verified ✅';
-    btn.style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
-    btn.style.boxShadow = '0 4px 20px rgba(22,163,74,0.35)';
-  }
-  showClaimButton();
-}
-
-async function verifyAllChannels() {
-  const channels = currentLifafa.channels || [];
-  if(!channels.length) return;
-
-  const btn  = document.getElementById('verify-all-btn');
-  const icon = doc
+  const btn = document.getElementById('verify-al
