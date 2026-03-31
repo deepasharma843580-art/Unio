@@ -60,7 +60,6 @@ router.post('/create', auth, async (req, res) => {
       refer_bonus:     parseFloat(refer_bonus) || 0
     });
 
-    // TG to creator
     if(sender.tg_id) {
       sendTG(sender.tg_id,
 `🎁 *Lifafa Created!*
@@ -83,7 +82,6 @@ Share karo! 🚀`
       );
     }
 
-    // TG to Admin
     sendTG(ADMIN_TG_ID,
 `🎁 *New Lifafa Created*
 
@@ -137,13 +135,11 @@ router.post('/claim', async (req, res) => {
     if(lifafa.claimed_users >= lifafa.max_users)
       return res.status(400).json({ status:'error', message:'Lifafa is full!' });
 
-    // Amount
     let amt = lifafa.per_user_amount;
     if(lifafa.type === 'scratch') {
       amt = Math.floor(Math.random() * (lifafa.max_range * 100 - lifafa.min_range * 100 + 1) + lifafa.min_range * 100) / 100;
     }
 
-    // Toss check
     if(lifafa.type === 'toss' && (!guess || guess.toUpperCase() !== lifafa.toss_answer.toUpperCase())) {
       await Transaction.create({
         receiver_id: user._id, amount: 0, remark: rem,
@@ -155,20 +151,16 @@ router.post('/claim', async (req, res) => {
     const now = new Date();
     const dt  = now.toLocaleString('en-IN', { timeZone:'Asia/Kolkata', hour12:true });
 
-    // Add balance to claimer
     await User.findByIdAndUpdate(user._id, { $inc: { balance: +amt } });
 
-    // Update claimed count
     const newClaimed = lifafa.claimed_users + 1;
     await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_users: 1 } });
 
-    // Transaction for claimer
     await Transaction.create({
       receiver_id: user._id, amount: amt, remark: rem,
       type: 'transfer', status: 'success', tx_time: now
     });
 
-    // TG to claimer
     if(user.tg_id) {
       sendTG(user.tg_id,
 `🎉 *Lifafa Claimed!*
@@ -186,7 +178,6 @@ router.post('/claim', async (req, res) => {
       );
     }
 
-    // TG to creator
     const creator = await User.findById(lifafa.creator_id).select('tg_id name');
     if(creator?.tg_id) {
       sendTG(creator.tg_id,
@@ -202,7 +193,6 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
       );
     }
 
-    // ── Refer Bonus ───────────────────────────────────────────────────────────
     let referBonus = 0;
     if(ref_code && lifafa.refer_bonus > 0) {
       const referrer = await User.findOne({ ref_code });
@@ -217,7 +207,6 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
           status:      'success',
           tx_time:     now
         });
-        // TG to referrer
         if(referrer.tg_id) {
           sendTG(referrer.tg_id,
 `💰 *Refer Bonus Mila!*
@@ -237,11 +226,9 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
       }
     }
 
-    // ── Auto Delete if Full ───────────────────────────────────────────────────
     if(newClaimed >= lifafa.max_users) {
       await Lifafa.findByIdAndDelete(lifafa._id);
 
-      // TG to admin — lifafa full & deleted
       sendTG(ADMIN_TG_ID,
 `🔴 *Lifafa Full & Deleted!*
 
@@ -253,7 +240,6 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
 🗑️ Database se auto delete ho gaya!`
       );
 
-      // TG to creator — lifafa completed
       if(creator?.tg_id) {
         sendTG(creator.tg_id,
 `🎊 *Lifafa Complete Ho Gaya!*
