@@ -88,6 +88,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <div class="progress-text"><span id="banner-claimed-text"></span><span id="banner-pct"></span></div>
       </div>
     </div>
+    
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total">0</div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a">0</div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">0</div></div>
+    </div>
+
     <div class="card">
       <div id="mobile-msg" class="msg"></div>
       <div class="input-group">
@@ -158,6 +165,16 @@ let userTgId = '';
 let verifiedChannels = [];
 let currentCode = '';
 
+// AUTO FILL CODE FROM URL
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  if(code) {
+    document.getElementById('code-input').value = code.toUpperCase();
+    loadLifafa(); // Automatically trigger search
+  }
+};
+
 function showMsg(id, text, type) {
   const m = document.getElementById(id);
   m.textContent = text;
@@ -188,8 +205,10 @@ function setBtnLoading(id, isLoading, originalText) {
 }
 
 async function loadLifafa() {
-  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  const codeInput = document.getElementById('code-input');
+  const code = codeInput.value.trim().toUpperCase();
   if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
+
   setBtnLoading('find-btn', true, 'Find Lifafa');
   try {
     const r = await fetch(API+'/lifafa/'+code);
@@ -198,17 +217,39 @@ async function loadLifafa() {
       setBtnLoading('find-btn', false, 'Find Lifafa');
       return showMsg('code-msg', d.message, 'error');
     }
+
     currentLifafa = d.lifafa;
     currentCode = code;
+
+    // Set Banner & Stats
     document.getElementById('banner-code').textContent = currentLifafa.code;
     document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
+    const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+    document.getElementById('banner-progress').style.width = pct + '%';
+    document.getElementById('banner-pct').textContent = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent = `${currentLifafa.claimed_users}/${currentLifafa.max_users} Claimed`;
+    
+    document.getElementById('stat-total').textContent = currentLifafa.max_users;
+    document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
+    document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
+
+    if(currentLifafa.claimed_users >= currentLifafa.max_users) {
+       setBtnLoading('find-btn', false, 'Find Lifafa');
+       return showMsg('code-msg', '❌ Lifafa is Full!', 'error');
+    }
+
     document.getElementById('step-code').style.display = 'none';
     document.getElementById('step-mobile').style.display = 'block';
-  } catch(e) { setBtnLoading('find-btn', false, 'Find Lifafa'); }
+  } catch(e) { 
+    setBtnLoading('find-btn', false, 'Find Lifafa');
+    showMsg('code-msg', 'Server error!', 'error');
+  }
 }
 
 async function verifyMobile() {
   const mobile = document.getElementById('mobile-input').value.trim();
+  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
+
   setBtnLoading('mobile-btn', true, 'Next');
   try {
     const r = await fetch(API+'/auth/check-mobile', {
@@ -225,12 +266,17 @@ async function verifyMobile() {
       } else {
         goToClaimStep();
       }
-    } else { setBtnLoading('mobile-btn', false, 'Next'); }
+    } else { 
+        setBtnLoading('mobile-btn', false, 'Next'); 
+        showMsg('mobile-msg', d.message || 'User not found', 'error');
+    }
   } catch(e) { setBtnLoading('mobile-btn', false, 'Next'); }
 }
 
 async function saveTgId() {
   const tg_id = document.getElementById('tg-id-input').value.trim();
+  if(!tg_id) return showMsg('tg-msg', 'Enter TG ID!', 'error');
+
   setBtnLoading('tg-save-btn', true, 'Save & Continue');
   try {
     const r = await fetch(API+'/auth/update-tg-by-mobile', {
@@ -242,7 +288,10 @@ async function saveTgId() {
       userTgId = tg_id;
       document.getElementById('step-tg').style.display = 'none';
       goToClaimStep();
-    } else { setBtnLoading('tg-save-btn', false, 'Save & Continue'); }
+    } else { 
+        setBtnLoading('tg-save-btn', false, 'Save & Continue');
+        showMsg('tg-msg', d.message, 'error');
+    }
   } catch(e) { setBtnLoading('tg-save-btn', false, 'Save & Continue'); }
 }
 
@@ -329,7 +378,10 @@ async function claimNow(guess) {
       document.getElementById('claim-btn-wrap').style.display = 'none';
       document.getElementById('won-amt').textContent = '₹' + d.amount;
       document.getElementById('step-success').style.display = 'block';
-    } else { setBtnLoading('claim-btn', false, 'Claim Now!'); showMsg('claim-msg', d.message, 'error'); }
+    } else { 
+      setBtnLoading('claim-btn', false, 'Claim Now!'); 
+      showMsg('claim-msg', d.message, 'error'); 
+    }
   } catch(e) { setBtnLoading('claim-btn', false, 'Claim Now!'); }
 }
 </script>
