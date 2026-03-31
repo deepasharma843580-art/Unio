@@ -81,6 +81,12 @@ const payLimiter = rateLimit({
   message: { status:'error', message:'Too many requests' }
 });
 
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: { status:'error', message:'Too many AI requests, thodi der baad try karo' }
+});
+
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/auth',        require('./routes/auth'));
 app.use('/wallet',      require('./routes/wallet'));
@@ -92,6 +98,7 @@ app.use('/api',         payLimiter, require('./routes/payment'));
 app.use('/giftcode',    require('./routes/giftCode'));
 app.use('/migrate',     require('./routes/migrate'));
 app.use('/leaderboard', require('./routes/leaderboard'));  // ✅ Leaderboard
+app.use('/ai',          aiLimiter,  require('./routes/ai'));  // ✅ AI Chat
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
