@@ -39,7 +39,7 @@ What you know about UNIO Hazel:
 - Users can link their Telegram ID for OTP-based login security and real-time transaction alerts
 - The platform runs on a secure Node.js + MongoDB backend deployed on Vercel
 - Wallet IDs start with "UW" followed by digits
-- Users earn refer bonuses through the lifafa system
+- Users earn lots bonuses through the lifafa system
 - Minimum withdrawal amount is ₹10
 - Withdrawals are processed manually by admin within 48 hours
 - Forgot password works via Telegram OTP verification
@@ -98,6 +98,51 @@ async function callSambaNova(messages, model, apiKey) {
   return response;
 }
 
+// ── GET /ai?quest= ────────────────────────────────────────────────────────────
+router.get('/', async (req, res) => {
+  try {
+    const message = req.query.quest;
+    if (!message || !message.trim())
+      return res.status(400).json({ status: 'error', message: 'Query param "quest" is required. Usage: /ai?quest=your question' });
+
+    const messages = [{ role: 'user', content: message.trim() }];
+
+    let lastError = '';
+    for (const model of MODELS) {
+      const apiKey = getNextKey();
+      try {
+        console.log(`[GET] Trying model: ${model}`);
+        const response = await callSambaNova(messages, model, apiKey);
+
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data?.choices?.[0]?.message?.content || 'Sorry, kuch problem hui. Dobara try karo.';
+          console.log(`[GET] Success with model: ${model}`);
+          return res.json({ status: 'success', reply, model });
+        } else {
+          const errText = await response.text();
+          lastError = `${model} → HTTP ${response.status}: ${errText}`;
+          console.error(`[GET] Failed model ${model}:`, lastError);
+          continue;
+        }
+      } catch (fetchErr) {
+        lastError = `${model} → ${fetchErr.message}`;
+        console.error(`[GET] Fetch error for model ${model}:`, fetchErr.message);
+        continue;
+      }
+    }
+
+    return res.status(500).json({
+      status: 'error',
+      message: 'AI service temporarily unavailable. Thodi der baad try karo. 🙏'
+    });
+
+  } catch (e) {
+    console.error('[GET] AI chat error:', e.message);
+    res.status(500).json({ status: 'error', message: 'Server error: ' + e.message });
+  }
+});
+
 // ── POST /ai/chat ─────────────────────────────────────────────────────────────
 router.post('/chat', async (req, res) => {
   try {
@@ -105,7 +150,6 @@ router.post('/chat', async (req, res) => {
     if (!message || !message.trim())
       return res.status(400).json({ status: 'error', message: 'Message required' });
 
-    // Build messages array (history without current message to avoid duplication)
     const messages = [];
     if (history && Array.isArray(history)) {
       for (const h of history.slice(-10)) {
@@ -116,7 +160,6 @@ router.post('/chat', async (req, res) => {
     }
     messages.push({ role: 'user', content: message.trim() });
 
-    // Try each model in order until one works
     let lastError = '';
     for (const model of MODELS) {
       const apiKey = getNextKey();
@@ -133,9 +176,6 @@ router.post('/chat', async (req, res) => {
           const errText = await response.text();
           lastError = `${model} → HTTP ${response.status}: ${errText}`;
           console.error(`Failed model ${model}:`, lastError);
-
-          // If 401 (auth error) or 400 (bad request), no point retrying same key
-          // Continue to next model
           continue;
         }
       } catch (fetchErr) {
@@ -145,7 +185,6 @@ router.post('/chat', async (req, res) => {
       }
     }
 
-    // All models failed
     console.error('All models failed. Last error:', lastError);
     return res.status(500).json({
       status: 'error',
