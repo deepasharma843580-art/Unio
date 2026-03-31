@@ -82,15 +82,16 @@ const payLimiter = rateLimit({
 });
 
 // ── Routes ────────────────────────────────────────────────────────────────────
-app.use('/auth',     require('./routes/auth'));
-app.use('/wallet',   require('./routes/wallet'));
-app.use('/transfer', require('./routes/transfer'));
-app.use('/lifafa',   require('./routes/lifafa'));
-app.use('/admin',    require('./routes/admin'));
-app.use('/payment',  payLimiter, require('./routes/payment'));
-app.use('/api',      payLimiter, require('./routes/payment'));
-app.use('/giftcode', require('./routes/giftCode'));
-app.use('/migrate',  require('./routes/migrate'));
+app.use('/auth',        require('./routes/auth'));
+app.use('/wallet',      require('./routes/wallet'));
+app.use('/transfer',    require('./routes/transfer'));
+app.use('/lifafa',      require('./routes/lifafa'));
+app.use('/admin',       require('./routes/admin'));
+app.use('/payment',     payLimiter, require('./routes/payment'));
+app.use('/api',         payLimiter, require('./routes/payment'));
+app.use('/giftcode',    require('./routes/giftCode'));
+app.use('/migrate',     require('./routes/migrate'));
+app.use('/leaderboard', require('./routes/leaderboard'));  // ✅ Leaderboard
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -108,6 +109,7 @@ app.get('/settings',      (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
 app.get('/migrate-tool',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'migrate.html')));
 app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'parese.html')));
+app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));  // ✅ Leaderboard Page
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -121,5 +123,3 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
-
-                           
