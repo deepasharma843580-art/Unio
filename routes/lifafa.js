@@ -195,7 +195,8 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
 
     let referBonus = 0;
     if(ref_code && lifafa.refer_bonus > 0) {
-      const referrer = await User.findOne({ ref_code });
+      // wallet_id hi refer code hai — database mein wallet_id se fetch karo
+      const referrer = await User.findOne({ wallet_id: ref_code });
       if(referrer && referrer.mobile !== mobile) {
         referBonus = lifafa.refer_bonus;
         await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
@@ -266,3 +267,4 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
 });
 
 module.exports = router;
+      
