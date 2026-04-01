@@ -164,11 +164,13 @@ let userMobile = '';
 let userTgId = '';
 let verifiedChannels = [];
 let currentCode = '';
+let refCode = ''; // Referrer ka wallet_id (refer code)
 
 // AUTO FILL CODE FROM URL
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
+  refCode = params.get('ref') || ''; // wallet_id of referrer
   if(code) {
     document.getElementById('code-input').value = code.toUpperCase();
     loadLifafa(); // Automatically trigger search
@@ -369,7 +371,7 @@ async function claimNow(guess) {
   try {
     const r = await fetch(API+'/lifafa/claim', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess })
+      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess, ref_code: refCode })
     });
     const d = await r.json();
     if(d.status === 'success') {
@@ -377,6 +379,9 @@ async function claimNow(guess) {
       document.getElementById('toss-wrap').style.display = 'none';
       document.getElementById('claim-btn-wrap').style.display = 'none';
       document.getElementById('won-amt').textContent = '₹' + d.amount;
+      if(d.refer_bonus > 0) {
+        document.getElementById('won-amt').textContent += ` + ₹${d.refer_bonus} Refer Bonus!`;
+      }
       document.getElementById('step-success').style.display = 'block';
     } else { 
       setBtnLoading('claim-btn', false, 'Claim Now!'); 
@@ -387,3 +392,4 @@ async function claimNow(guess) {
 </script>
 </body>
 </html>
+
