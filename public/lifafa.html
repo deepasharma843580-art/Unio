@@ -164,7 +164,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <script>
-const API   = '';
+const API   = ''; // Apna URL yahan rakhein
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
@@ -172,19 +172,19 @@ let userBalance  = 0;
 let userWalletId = '';
 let claimLink    = '';
 
-// Balance + wallet_id dono parallel fetch
-Promise.all([
-  fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()),
-  fetch(API+'/auth/me',        {headers:{'Authorization':'Bearer '+token}}).then(r=>r.json())
-]).then(([bal, me]) => {
-  if(bal.status === 'success') {
-    userBalance = parseFloat(bal.balance);
+// PURANA SIMPLE LOGIC: auth/balance se sab kuch fetch
+fetch(API+'/auth/balance', {
+  headers: {'Authorization': 'Bearer ' + token}
+})
+.then(r => r.json())
+.then(d => {
+  if(d.status === 'success') {
+    userBalance = parseFloat(d.balance);
+    userWalletId = d.wallet_id; // Referral ke liye
     document.getElementById('balance').textContent = userBalance.toFixed(2);
   }
-  if(me.status === 'success') {
-    userWalletId = me.user.wallet_id;
-  }
-}).catch(() => {});
+})
+.catch(err => console.log("Fetch Error"));
 
 function changeType() {
   const t = document.getElementById('c-type').value;
