@@ -42,7 +42,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
-.refer-card { background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 1rem; padding: 1rem; margin-bottom: 1.25rem; }
+.refer-card{background:#eff6ff;border:2px dashed #3b82f6;border-radius:1rem;padding:1rem;margin-bottom:1.25rem}
 </style>
 </head>
 <body>
@@ -108,8 +108,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="refer-card">
       <div class="input-group" style="margin-bottom:0">
         <label style="color:#1e40af"><i class="fa-solid fa-share-nodes"></i> Refer Bonus (Optional)</label>
-        <input type="number" id="c-refer" placeholder="₹ Bonus per claim" step="0.01" style="border-color:#bfdbfe; background:white">
-        <p style="font-size:0.6rem; color:#60a5fa; margin-top:0.4rem; font-weight:700">Referrer ko har claim par itna bonus milega.</p>
+        <input type="number" id="c-refer" placeholder="₹ Bonus per claim" step="0.01" style="border-color:#bfdbfe;background:white">
+        <p style="font-size:0.6rem;color:#60a5fa;margin-top:0.4rem;font-weight:700">Referrer ko har claim par itna bonus milega.</p>
       </div>
     </div>
 
@@ -168,19 +168,23 @@ const API   = '';
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
-let userBalance = 0;
+let userBalance  = 0;
 let userWalletId = '';
-let claimLink   = '';
+let claimLink    = '';
 
-// PURANA BALANCE FETCH LOGIC
-fetch(API+'/auth/balance', {headers:{'Authorization':'Bearer '+token}})
-  .then(r=>r.json()).then(d=>{
-    if(d.status==='success') {
-      userBalance = parseFloat(d.balance);
-      userWalletId = d.wallet_id; // Still keeping wallet_id for referral link
-      document.getElementById('balance').textContent = userBalance.toFixed(2);
-    }
-  });
+// Balance + wallet_id dono parallel fetch
+Promise.all([
+  fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()),
+  fetch(API+'/auth/me',        {headers:{'Authorization':'Bearer '+token}}).then(r=>r.json())
+]).then(([bal, me]) => {
+  if(bal.status === 'success') {
+    userBalance = parseFloat(bal.balance);
+    document.getElementById('balance').textContent = userBalance.toFixed(2);
+  }
+  if(me.status === 'success') {
+    userWalletId = me.user.wallet_id;
+  }
+}).catch(() => {});
 
 function changeType() {
   const t = document.getElementById('c-type').value;
@@ -199,7 +203,7 @@ function calcDeduction() {
   const box   = document.getElementById('deduction-box');
   if(total > 0 && users > 0) {
     const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
-    document.getElementById('d-calc').textContent = calc;
+    document.getElementById('d-calc').textContent  = calc;
     document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
     box.classList.add('show');
   } else {
@@ -223,22 +227,22 @@ function removeCh(btn) { btn.closest('.channel-item').remove(); }
 function showMsg(text, type) {
   const m = document.getElementById('create-msg');
   m.textContent = text;
-  m.className = 'msg ' + type;
+  m.className   = 'msg ' + type;
   m.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 async function createLifafa() {
-  const code  = document.getElementById('c-code').value.trim().toUpperCase();
-  const type  = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value) || 0;
-  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
-  const min   = parseFloat(document.getElementById('c-min').value) || 0;
-  const max   = parseFloat(document.getElementById('c-max').value) || 0;
+  const code        = document.getElementById('c-code').value.trim().toUpperCase();
+  const type        = document.getElementById('c-type').value;
+  const users       = parseInt(document.getElementById('c-users').value) || 0;
+  const amt         = parseFloat(document.getElementById('c-amt').value) || 0;
+  const min         = parseFloat(document.getElementById('c-min').value) || 0;
+  const max         = parseFloat(document.getElementById('c-max').value) || 0;
   const refer_bonus = parseFloat(document.getElementById('c-refer').value) || 0;
-  const toss  = document.getElementById('c-toss').value;
+  const toss        = document.getElementById('c-toss').value;
 
-  if(!code)         return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
+  if(!code)      return showMsg('❌ Unique code required!', 'error');
+  if(users <= 0) return showMsg('❌ Total users required!', 'error');
   if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
   if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
 
@@ -252,14 +256,14 @@ async function createLifafa() {
     .map(i => i.value.trim()).filter(v => v);
 
   const btn = document.getElementById('create-btn');
-  btn.disabled = true;
+  btn.disabled  = true;
   btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
 
   try {
     const r = await fetch(API+'/lifafa/create', {
-      method: 'POST',
+      method:  'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, refer_bonus })
+      body:    JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, refer_bonus })
     });
     const d = await r.json();
     if(d.status === 'success') {
@@ -275,7 +279,7 @@ async function createLifafa() {
     }
   } catch(e) { showMsg('❌ Server error!', 'error'); }
 
-  btn.disabled = false;
+  btn.disabled  = false;
   btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
 }
 
@@ -295,5 +299,4 @@ function createAnother() {
 }
 </script>
 </body>
-  </html>
-  
+</html>
