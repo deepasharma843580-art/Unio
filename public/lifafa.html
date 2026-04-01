@@ -42,6 +42,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
+/* New Referral Style */
+.refer-card { background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 1rem; padding: 1rem; margin-bottom: 1.25rem; }
 </style>
 </head>
 <body>
@@ -64,8 +66,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
     <div class="input-group">
       <label>Unique Code</label>
-      <input type="text" id="c-code" placeholder="e.g. DIWALI2025"
-        oninput="this.value=this.value.toUpperCase()">
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase()">
     </div>
 
     <div class="input-group">
@@ -105,12 +106,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <div class="input-group">
-      <label>Refer Bonus Per Refer (₹) <span style="font-size:.6rem;color:#94a3b8;font-weight:600">— 0 = Off</span></label>
-      <input type="number" id="c-refer" placeholder="e.g. 5 (0 for no bonus)" step="0.01" value="0">
+    <div class="refer-card">
+      <div class="input-group" style="margin-bottom:0">
+        <label style="color:#1e40af"><i class="fa-solid fa-share-nodes"></i> Refer Bonus (Optional)</label>
+        <input type="number" id="c-refer" placeholder="₹ Bonus per claim" step="0.01" style="border-color:#bfdbfe; background:white">
+        <p style="font-size:0.6rem; color:#60a5fa; margin-top:0.4rem; font-weight:700">Referrer ko har claim par itna bonus milega.</p>
+      </div>
     </div>
 
-    <!-- Deduction Preview -->
     <div class="deduction-box" id="deduction-box">
       <div class="deduction-row">
         <span>Calculation</span>
@@ -122,10 +125,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
     </div>
 
-    <!-- Channels -->
-    <div class="section-title">
-      <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
-    </div>
+    <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels</div>
     <div id="channels-container">
       <div class="channel-item">
         <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
@@ -133,29 +133,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
-    <button class="add-ch-btn" onclick="addChannel()">
-      <i class="fa-solid fa-plus"></i> Add Channel
-    </button>
+    <button class="add-ch-btn" onclick="addChannel()"><i class="fa-solid fa-plus"></i> Add Channel</button>
 
     <button class="btn" id="create-btn" onclick="createLifafa()">
       <i class="fa-solid fa-rocket"></i> Generate Lifafa
     </button>
   </div>
 
-  <!-- Result -->
   <div id="create-result" style="display:none" class="card">
     <div style="text-align:center">
       <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
       <div style="font-size:.75rem;font-weight:800;color:#16a34a;text-transform:uppercase;margin-bottom:.75rem">Lifafa Created!</div>
       <div style="font-size:.72rem;font-weight:700;color:#0f172a;background:#f8fafc;padding:.75rem 1rem;border-radius:.75rem;word-break:break-all;margin-bottom:.75rem;line-height:1.6" id="claim-link"></div>
-      
-      <!-- Refer Link Box -->
-      <div id="refer-link-box" style="display:none;margin-bottom:.75rem">
-        <div style="font-size:.65rem;font-weight:800;color:#7c3aed;text-transform:uppercase;margin-bottom:.4rem">🔗 Your Refer Link (share with ?ref=wallet_id)</div>
-        <div style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f5f3ff;border:1.5px solid #ddd6fe;padding:.75rem 1rem;border-radius:.75rem;word-break:break-all;line-height:1.6" id="refer-link-text"></div>
-        <div style="font-size:.6rem;color:#94a3b8;font-weight:600;margin-top:.35rem">ℹ️ ?ref= ke baad apna wallet_id lagao — share karo, claim par bonus milega!</div>
-      </div>
-
       <button class="btn" onclick="copyLink()">
         <i class="fa-solid fa-copy"></i> Copy Claim Link
       </button>
@@ -181,13 +170,15 @@ const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
 let userBalance = 0;
+let userWalletId = '';
 let claimLink   = '';
 
-// Load balance
-fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
+// Load balance and user data
+fetch(API+'/auth/me', {headers:{'Authorization':'Bearer '+token}}) // Updated to fetch me to get wallet_id
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') {
-      userBalance = parseFloat(d.balance);
+      userBalance = parseFloat(d.user.balance);
+      userWalletId = d.user.wallet_id;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     }
   });
@@ -244,24 +235,18 @@ async function createLifafa() {
   const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
   const min   = parseFloat(document.getElementById('c-min').value) || 0;
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
+  const refer_bonus = parseFloat(document.getElementById('c-refer').value) || 0;
   const toss  = document.getElementById('c-toss').value;
-  const refer = parseFloat(document.getElementById('c-refer').value) || 0;
 
-  // Validations
   if(!code)         return showMsg('❌ Unique code required!', 'error');
   if(users <= 0)    return showMsg('❌ Total users required!', 'error');
   if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
   if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
 
-  // Total deduction
   const total = type === 'scratch' ? (max * users) : (amt * users);
 
-  // Balance check
   if(userBalance < total) {
-    return showMsg(
-      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
-      'error'
-    );
+    return showMsg(`❌ Insufficient Balance! Required: ₹${total.toFixed(2)}`, 'error');
   }
 
   const channels = [...document.querySelectorAll('.ch-input')]
@@ -275,31 +260,22 @@ async function createLifafa() {
     const r = await fetch(API+'/lifafa/create', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, refer_bonus: refer })
+      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, refer_bonus })
     });
     const d = await r.json();
     if(d.status === 'success') {
-      claimLink = window.location.origin + '/claim.html?code=' + d.code;
+      // Automatic link with creator's wallet_id as referral code
+      claimLink = window.location.origin + '/claim.html?code=' + d.code + '&ref=' + userWalletId;
       document.getElementById('claim-link').textContent = claimLink;
-      // Refer link section show karo agar refer bonus hai
-      if(d.refer_bonus > 0) {
-        const referLinkEl = document.getElementById('refer-link-box');
-        const referLinkText = document.getElementById('refer-link-text');
-        referLinkText.textContent = claimLink + '?ref=YOUR_WALLET_ID';
-        referLinkEl.style.display = 'block';
-      }
       document.getElementById('create-result').style.display = 'block';
       document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
-      // Update balance
       userBalance -= total;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
       showMsg('', '');
     } else {
       showMsg('❌ ' + (d.message || 'Failed!'), 'error');
     }
-  } catch(e) {
-    showMsg('❌ Server error! Try again.', 'error');
-  }
+  } catch(e) { showMsg('❌ Server error!', 'error'); }
 
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
@@ -307,7 +283,7 @@ async function createLifafa() {
 
 function copyLink() {
   navigator.clipboard.writeText(claimLink);
-  alert('Claim link copied! ✅');
+  alert('Link with your Refer ID copied! ✅');
 }
 
 function createAnother() {
@@ -315,6 +291,7 @@ function createAnother() {
   document.getElementById('c-code').value  = '';
   document.getElementById('c-amt').value   = '';
   document.getElementById('c-users').value = '';
+  document.getElementById('c-refer').value = '';
   document.getElementById('deduction-box').classList.remove('show');
   window.scrollTo({top:0, behavior:'smooth'});
 }
