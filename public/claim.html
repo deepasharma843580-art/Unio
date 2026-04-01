@@ -22,36 +22,56 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .progress-bar{background:rgba(255,255,255,0.2);border-radius:1rem;height:8px;overflow:hidden}
 .progress-fill{background:white;height:100%;border-radius:1rem;transition:width .5s}
 .progress-text{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;opacity:.7;margin-top:.4rem}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:white;border-radius:1.25rem;padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.stat-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.stat-val{font-size:1rem;font-weight:900;color:#0f172a;margin-top:2px}
 .input-group{margin-bottom:1.25rem}
-.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:.5rem;margin-left:.25rem}
-.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;font-family:inherit}
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none}
+.input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
+.input-group input{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input:focus{border-color:#7c3aed;background:white}
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
 .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
 .btn.green{background:#16a34a}
-.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:disabled{background:#94a3b8;cursor:not-allowed;opacity:0.8}
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
-.share-box{background:#f8fafc;border:2px dashed #0057ff;padding:1.25rem;border-radius:1.25rem;margin-top:1.5rem;text-align:center}
-.share-url{font-size:.65rem;color:#64748b;word-break:break-all;margin-bottom:.75rem;display:block;background:white;padding:.5rem;border-radius:.5rem;border:1px solid #f1f5f9}
+.ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem}
+.ch-item.verified{border-color:#bbf7d0;background:#f0fdf4}
+.ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.ch-name{font-size:.8rem;font-weight:700;color:#0f172a}
+.ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
+.ch-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
+.ch-badge.verified{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.ch-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ch-btn{padding:.65rem;border:none;border-radius:.75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.35rem;text-decoration:none}
+.ch-btn.join{background:#0057ff;color:white}
+.ch-btn.verify{background:#f1f5f9;color:#64748b}
+.ch-btn.done{background:#f0fdf4;color:#16a34a}
+.toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s}
+.toss-btn.heads{background:#0057ff;color:white}
+.toss-btn.tails{background:#0f172a;color:white}
 </style>
 </head>
 <body>
 
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
-  <h1>Claim Reward</h1>
+  <h1>Claim Lifafa</h1>
 </div>
 
 <div class="container">
-  
+
   <div id="step-code" class="card">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:3rem">🎁</div>
-      <div style="font-size:1rem;font-weight:900">Enter Lifafa Code</div>
+      <div style="font-size:3rem;margin-bottom:.5rem">🎁</div>
+      <div style="font-size:1rem;font-weight:900;color:#0f172a">Claim Your Reward</div>
     </div>
     <div id="code-msg" class="msg"></div>
     <div class="input-group">
-      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;letter-spacing:.15em">
+      <label>Lifafa Code</label>
+      <input type="text" id="code-input" placeholder="e.g. DIWALI2025" style="text-transform:uppercase;text-align:center;letter-spacing:.15em;font-size:1rem">
     </div>
     <button class="btn purple" onclick="loadLifafa()" id="find-btn">
       <i class="fa-solid fa-search"></i> <span>Find Lifafa</span>
@@ -68,177 +88,301 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <div class="progress-text"><span id="banner-claimed-text"></span><span id="banner-pct"></span></div>
       </div>
     </div>
+    
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total">0</div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a">0</div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">0</div></div>
+    </div>
+
     <div class="card">
       <div id="mobile-msg" class="msg"></div>
       <div class="input-group">
         <label>Your Mobile Number</label>
-        <input type="number" id="mobile-input" placeholder="Enter registered number">
+        <input type="number" id="mobile-input" placeholder="Enter your number">
       </div>
-      <button class="btn purple" onclick="verifyMobileAndWallet()" id="mobile-btn">
-        <i class="fa-solid fa-arrow-right"></i> <span>Continue to Claim</span>
+      <button class="btn purple" onclick="verifyMobile()" id="mobile-btn">
+        <i class="fa-solid fa-arrow-right"></i> <span>Next</span>
       </button>
     </div>
+  </div>
+
+  <div id="step-tg" style="display:none" class="card">
+    <div id="tg-msg" class="msg"></div>
+    <div class="input-group">
+      <label>Enter Your Telegram ID</label>
+      <input type="number" id="tg-id-input" placeholder="e.g. 12345678">
+    </div>
+    <button class="btn green" id="tg-save-btn" onclick="saveTgId()">
+      <i class="fa-solid fa-floppy-disk"></i> <span>Save & Continue</span>
+    </button>
   </div>
 
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
     
-    <div id="claim-ui" class="card">
-      <div id="toss-wrap" style="display:none; gap:10px; display:flex">
-        <button class="btn purple" style="flex:1" onclick="claimNow('HEADS')">🪙 HEADS</button>
-        <button class="btn" style="flex:1; background:#0f172a" onclick="claimNow('TAILS')">🪙 TAILS</button>
+    <div id="channels-card" class="card" style="display:none">
+        <div style="font-size:.7rem;font-weight:800;color:#94a3b8;margin-bottom:1rem">JOIN CHANNELS</div>
+        <div id="channels-list"></div>
+    </div>
+
+    <div id="verify-all-wrap" class="card" style="display:none">
+        <button class="btn purple" id="verify-all-btn" onclick="verifyAllChannels()">
+            <i class="fa-solid fa-circle-check"></i> <span>Verify All Channels</span>
+        </button>
+    </div>
+
+    <div id="toss-wrap" class="card" style="display:none">
+      <div class="toss-btns">
+        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
+        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
       </div>
-      <button class="btn purple" id="direct-claim-btn" style="display:none" onclick="claimNow('')">
+    </div>
+
+    <div id="claim-btn-wrap" class="card" style="display:none">
+      <button class="btn purple" id="claim-btn" onclick="claimNow('')">
         <i class="fa-solid fa-rocket"></i> <span>Claim Now!</span>
       </button>
     </div>
 
     <div id="step-success" class="card" style="display:none; text-align:center">
-        <div style="font-size:3.5rem">🎉</div>
-        <div style="font-size:2.5rem;font-weight:900;color:#16a34a" id="won-amt">₹0.00</div>
-        <p style="font-size:.8rem;color:#64748b;font-weight:600">Amount added to your wallet!</p>
-        
-        <div class="share-box">
-          <div style="font-size:.65rem;font-weight:800;color:#0057ff;margin-bottom:.5rem;text-transform:uppercase">🚀 Refer Friends & Earn Extra!</div>
-          <span class="share-url" id="my-refer-link">...</span>
-          <button class="btn" style="padding:.6rem;font-size:.7rem;background:#16a34a" onclick="copyMyLink()">
-            <i class="fa-solid fa-copy"></i> Copy My Refer Link
-          </button>
-        </div>
-        <a href="dashboard.html" class="btn purple" style="margin-top:1.25rem">Back to Home</a>
+        <div style="font-size:4rem">🏆</div>
+        <div style="font-size:2.5rem;font-weight:900;color:#16a34a" id="won-amt"></div>
+        <a href="dashboard.html" class="btn green" style="margin-top:1.5rem">Go to Wallet</a>
     </div>
   </div>
 
 </div>
 
 <script>
-const API = ''; // Your API URL here
-let currentLifafa = null;
-let currentCode = '';
-let userMobile = '';
-let userWalletId = ''; 
-let referrerIdFromURL = '';
-let myPersonalLink = '';
+const API      = ''; 
+const token    = localStorage.getItem('token');
+const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
-// 1. URL se Code aur Referrer ID uthana
+let currentLifafa = null;
+let userMobile = '';
+let userTgId = '';
+let verifiedChannels = [];
+let currentCode = '';
+
+// AUTO FILL CODE FROM URL
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
-  referrerIdFromURL = params.get('ref') || ''; // Agar kisi ke link se aaya hai
-  
   if(code) {
     document.getElementById('code-input').value = code.toUpperCase();
-    loadLifafa();
+    loadLifafa(); // Automatically trigger search
   }
 };
-
-// 2. Lifafa Detail Fetch Karna
-async function loadLifafa() {
-  const code = document.getElementById('code-input').value.trim().toUpperCase();
-  if(!code) return showMsg('code-msg', 'Enter code!', 'error');
-
-  try {
-    const r = await fetch(API + '/lifafa/' + code);
-    const d = await r.json();
-    if(d.status === 'success') {
-      currentLifafa = d.lifafa;
-      currentCode = code;
-      
-      document.getElementById('banner-code').textContent = currentCode;
-      document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
-      const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
-      document.getElementById('banner-progress').style.width = pct + '%';
-      document.getElementById('banner-pct').textContent = pct + '% Full';
-      document.getElementById('banner-claimed-text').textContent = `${currentLifafa.claimed_users}/${currentLifafa.max_users} Claimed`;
-
-      document.getElementById('step-code').style.display = 'none';
-      document.getElementById('step-mobile').style.display = 'block';
-    } else {
-      showMsg('code-msg', d.message, 'error');
-    }
-  } catch(e) { showMsg('code-msg', 'Server error!', 'error'); }
-}
-
-// 3. Mobile Number se User Check karna aur Wallet ID lena
-async function verifyMobileAndWallet() {
-  const mobile = document.getElementById('mobile-input').value.trim();
-  if(mobile.length < 10) return showMsg('mobile-msg', 'Invalid mobile!', 'error');
-
-  const btn = document.getElementById('mobile-btn');
-  btn.disabled = true;
-
-  try {
-    const r = await fetch(API + '/auth/check-mobile', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ mobile })
-    });
-    const d = await r.json();
-    
-    if(d.status === 'success') {
-      userMobile = mobile;
-      userWalletId = d.wallet_id; // Backend se user ki Wallet ID mil gayi
-      
-      document.getElementById('step-mobile').style.display = 'none';
-      document.getElementById('step-claim').style.display = 'block';
-      
-      // UI adjust karna based on type
-      if(currentLifafa.type === 'toss') {
-        document.getElementById('toss-wrap').style.display = 'flex';
-      } else {
-        document.getElementById('direct-claim-btn').style.display = 'block';
-      }
-    } else {
-      showMsg('mobile-msg', 'Mobile not registered!', 'error');
-    }
-  } catch(e) { showMsg('mobile-msg', 'Error fetching user!', 'error'); }
-  btn.disabled = false;
-}
-
-// 4. Final Claim Process
-async function claimNow(guess) {
-  const btn = (currentLifafa.type === 'toss') ? null : document.getElementById('direct-claim-btn');
-  if(btn) btn.disabled = true;
-
-  try {
-    const r = await fetch(API + '/lifafa/claim', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ 
-        code: currentCode, 
-        mobile: userMobile, 
-        guess: guess,
-        ref_code: referrerIdFromURL // Original referrer ko credit dene ke liye
-      })
-    });
-    const d = await r.json();
-    
-    if(d.status === 'success') {
-      document.getElementById('claim-ui').style.display = 'none';
-      document.getElementById('won-amt').textContent = '₹' + d.amount;
-      
-      // USER KA KHUD KA REFER LINK GENERATE KARNA (Uski wallet_id ke saath)
-      myPersonalLink = window.location.origin + window.location.pathname + `?code=${currentCode}&ref=${userWalletId}`;
-      document.getElementById('my-refer-link').textContent = myPersonalLink;
-      
-      document.getElementById('step-success').style.display = 'block';
-    } else {
-      showMsg('claim-msg', d.message, 'error');
-    }
-  } catch(e) { showMsg('claim-msg', 'Claim failed!', 'error'); }
-  if(btn) btn.disabled = false;
-}
-
-function copyMyLink() {
-  navigator.clipboard.writeText(myPersonalLink);
-  alert('Your personal referral link copied! 🚀');
-}
 
 function showMsg(id, text, type) {
   const m = document.getElementById(id);
   m.textContent = text;
   m.className = 'msg ' + type;
-  m.style.display = 'block';
+}
+
+function setBtnLoading(id, isLoading, originalText) {
+  const btn = document.getElementById(id);
+  if(!btn) return;
+  const span = btn.querySelector('span');
+  const icon = btn.querySelector('i');
+  
+  if(isLoading) {
+    btn.disabled = true;
+    if(span) span.textContent = 'Processing...';
+    if(icon) icon.className = 'fa-solid fa-circle-notch fa-spin';
+  } else {
+    btn.disabled = false;
+    if(span) span.textContent = originalText;
+    if(icon) {
+        if(id === 'find-btn') icon.className = 'fa-solid fa-search';
+        if(id === 'mobile-btn') icon.className = 'fa-solid fa-arrow-right';
+        if(id === 'tg-save-btn') icon.className = 'fa-solid fa-floppy-disk';
+        if(id === 'claim-btn') icon.className = 'fa-solid fa-rocket';
+        if(id === 'verify-all-btn') icon.className = 'fa-solid fa-circle-check';
+    }
+  }
+}
+
+async function loadLifafa() {
+  const codeInput = document.getElementById('code-input');
+  const code = codeInput.value.trim().toUpperCase();
+  if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
+
+  setBtnLoading('find-btn', true, 'Find Lifafa');
+  try {
+    const r = await fetch(API+'/lifafa/'+code);
+    const d = await r.json();
+    if(d.status !== 'success') {
+      setBtnLoading('find-btn', false, 'Find Lifafa');
+      return showMsg('code-msg', d.message, 'error');
+    }
+
+    currentLifafa = d.lifafa;
+    currentCode = code;
+
+    // Set Banner & Stats
+    document.getElementById('banner-code').textContent = currentLifafa.code;
+    document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
+    const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+    document.getElementById('banner-progress').style.width = pct + '%';
+    document.getElementById('banner-pct').textContent = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent = `${currentLifafa.claimed_users}/${currentLifafa.max_users} Claimed`;
+    
+    document.getElementById('stat-total').textContent = currentLifafa.max_users;
+    document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
+    document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
+
+    if(currentLifafa.claimed_users >= currentLifafa.max_users) {
+       setBtnLoading('find-btn', false, 'Find Lifafa');
+       return showMsg('code-msg', '❌ Lifafa is Full!', 'error');
+    }
+
+    document.getElementById('step-code').style.display = 'none';
+    document.getElementById('step-mobile').style.display = 'block';
+  } catch(e) { 
+    setBtnLoading('find-btn', false, 'Find Lifafa');
+    showMsg('code-msg', 'Server error!', 'error');
+  }
+}
+
+async function verifyMobile() {
+  const mobile = document.getElementById('mobile-input').value.trim();
+  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
+
+  setBtnLoading('mobile-btn', true, 'Next');
+  try {
+    const r = await fetch(API+'/auth/check-mobile', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ mobile })
+    });
+    const d = await r.json();
+    if(d.status === 'success') {
+      userMobile = mobile;
+      userTgId = d.tg_id || '';
+      if(!userTgId) {
+        document.getElementById('step-mobile').style.display = 'none';
+        document.getElementById('step-tg').style.display = 'block';
+      } else {
+        goToClaimStep();
+      }
+    } else { 
+        setBtnLoading('mobile-btn', false, 'Next'); 
+        showMsg('mobile-msg', d.message || 'User not found', 'error');
+    }
+  } catch(e) { setBtnLoading('mobile-btn', false, 'Next'); }
+}
+
+async function saveTgId() {
+  const tg_id = document.getElementById('tg-id-input').value.trim();
+  if(!tg_id) return showMsg('tg-msg', 'Enter TG ID!', 'error');
+
+  setBtnLoading('tg-save-btn', true, 'Save & Continue');
+  try {
+    const r = await fetch(API+'/auth/update-tg-by-mobile', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ mobile: userMobile, tg_id })
+    });
+    const d = await r.json();
+    if(d.status === 'success') {
+      userTgId = tg_id;
+      document.getElementById('step-tg').style.display = 'none';
+      goToClaimStep();
+    } else { 
+        setBtnLoading('tg-save-btn', false, 'Save & Continue');
+        showMsg('tg-msg', d.message, 'error');
+    }
+  } catch(e) { setBtnLoading('tg-save-btn', false, 'Save & Continue'); }
+}
+
+function goToClaimStep() {
+  document.getElementById('step-claim').style.display = 'block';
+  document.getElementById('step-mobile').style.display = 'none';
+  const channels = currentLifafa.channels || [];
+  verifiedChannels = new Array(channels.length).fill(false);
+  if(channels.length > 0) {
+    buildChannels(channels);
+    document.getElementById('channels-card').style.display = 'block';
+    document.getElementById('verify-all-wrap').style.display = 'block';
+  } else {
+    showClaimButton();
+  }
+}
+
+function buildChannels(channels) {
+  let html = '';
+  channels.forEach((link, i) => {
+    const name = link.split('/').pop();
+    html += `<div class="ch-item" id="ch-${i}">
+      <div class="ch-top"><div class="ch-name">@${name}</div><div class="ch-badge pending" id="badge-${i}">⏳ Pending</div></div>
+      <div class="ch-btns">
+        <a href="${link}" target="_blank" class="ch-btn join">Join</a>
+        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}')">Verify</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('channels-list').innerHTML = html;
+}
+
+async function verifyChannel(i, link) {
+  if(verifiedChannels[i]) return true;
+  const btn = document.getElementById('vbtn-'+i);
+  const badge = document.getElementById('badge-'+i);
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+  try {
+    const res = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=@${link.split('/').pop()}`);
+    const data = await res.json();
+    if(data.ok && data.joined) {
+      verifiedChannels[i] = true;
+      badge.className = 'ch-badge verified'; badge.textContent = '✅ Verified';
+      btn.className = 'ch-btn done'; btn.innerHTML = 'Done';
+      document.getElementById('ch-'+i).style.borderColor = '#bbf7d0';
+      checkAllVerified();
+      return true;
+    } else { btn.disabled = false; btn.innerHTML = 'Verify'; return false; }
+  } catch(e) { btn.disabled = false; btn.innerHTML = 'Verify'; return false; }
+}
+
+async function verifyAllChannels() {
+  const channels = currentLifafa.channels || [];
+  setBtnLoading('verify-all-btn', true, 'Verify All Channels');
+  for(let i=0; i<channels.length; i++) {
+    if(!verifiedChannels[i]) await verifyChannel(i, channels[i]);
+  }
+  setBtnLoading('verify-all-btn', false, 'Verify All Channels');
+}
+
+function checkAllVerified() {
+  if(verifiedChannels.every(v => v)) {
+      document.getElementById('verify-all-wrap').style.display = 'none';
+      showClaimButton();
+  }
+}
+
+function showClaimButton() {
+  if(currentLifafa.type === 'toss') document.getElementById('toss-wrap').style.display = 'block';
+  else document.getElementById('claim-btn-wrap').style.display = 'block';
+}
+
+async function claimNow(guess) {
+  setBtnLoading('claim-btn', true, 'Claim Now!');
+  try {
+    const r = await fetch(API+'/lifafa/claim', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess })
+    });
+    const d = await r.json();
+    if(d.status === 'success') {
+      document.getElementById('channels-card').style.display = 'none';
+      document.getElementById('toss-wrap').style.display = 'none';
+      document.getElementById('claim-btn-wrap').style.display = 'none';
+      document.getElementById('won-amt').textContent = '₹' + d.amount;
+      document.getElementById('step-success').style.display = 'block';
+    } else { 
+      setBtnLoading('claim-btn', false, 'Claim Now!'); 
+      showMsg('claim-msg', d.message, 'error'); 
+    }
+  } catch(e) { setBtnLoading('claim-btn', false, 'Claim Now!'); }
 }
 </script>
 </body>
