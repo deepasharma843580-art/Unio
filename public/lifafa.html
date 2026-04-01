@@ -42,7 +42,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
-/* New Referral Style */
 .refer-card { background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 1rem; padding: 1rem; margin-bottom: 1.25rem; }
 </style>
 </head>
@@ -173,12 +172,12 @@ let userBalance = 0;
 let userWalletId = '';
 let claimLink   = '';
 
-// Load balance and user data
-fetch(API+'/auth/me', {headers:{'Authorization':'Bearer '+token}}) // Updated to fetch me to get wallet_id
+// PURANA BALANCE FETCH LOGIC
+fetch(API+'/auth/balance', {headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') {
-      userBalance = parseFloat(d.user.balance);
-      userWalletId = d.user.wallet_id;
+      userBalance = parseFloat(d.balance);
+      userWalletId = d.wallet_id; // Still keeping wallet_id for referral link
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     }
   });
@@ -264,7 +263,6 @@ async function createLifafa() {
     });
     const d = await r.json();
     if(d.status === 'success') {
-      // Automatic link with creator's wallet_id as referral code
       claimLink = window.location.origin + '/claim.html?code=' + d.code + '&ref=' + userWalletId;
       document.getElementById('claim-link').textContent = claimLink;
       document.getElementById('create-result').style.display = 'block';
@@ -297,4 +295,5 @@ function createAnother() {
 }
 </script>
 </body>
-</html>
+  </html>
+  
