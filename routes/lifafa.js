@@ -17,6 +17,18 @@ async function sendTG(tg_id, text) {
   } catch(e) {}
 }
 
+// ── Get Referrer Name by Wallet ID ──────────────────────────────────────────
+// Isse claim page par "Referred by: Name" dikhega
+router.get('/referrer/:walletId', async (req, res) => {
+  try {
+    const referrer = await User.findOne({ wallet_id: req.params.walletId }).select('name');
+    if (!referrer) return res.status(404).json({ status: 'error', message: 'Invalid Referrer' });
+    res.json({ status: 'success', name: referrer.name });
+  } catch (e) {
+    res.status(500).json({ status: 'error' });
+  }
+});
+
 // ── Create Lifafa ─────────────────────────────────────────────────────────────
 router.post('/create', auth, async (req, res) => {
   try {
@@ -120,7 +132,7 @@ router.get('/:code', async (req, res) => {
 // ── Claim Lifafa ──────────────────────────────────────────────────────────────
 router.post('/claim', async (req, res) => {
   try {
-    const { code, mobile, guess, ref_code } = req.body;
+    const { code, mobile, guess, ref_code } = req.body; // ref_code yahan Wallet ID hai
 
     const user = await User.findOne({ mobile });
     if(!user) return res.status(404).json({ status:'error', message:'Mobile not found' });
@@ -161,6 +173,44 @@ router.post('/claim', async (req, res) => {
       type: 'transfer', status: 'success', tx_time: now
     });
 
+    // REFERRAL BONUS LOGIC (Using Wallet ID)
+    let referBonus = 0;
+    if(ref_code && lifafa.refer_bonus > 0) {
+      // ref_code is expected to be the wallet_id of the referrer
+      const referrer = await User.findOne({ wallet_id: ref_code });
+      
+      // Self referral check
+      if(referrer && referrer.mobile !== mobile) {
+        referBonus = lifafa.refer_bonus;
+        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
+        await Transaction.create({
+          receiver_id: referrer._id,
+          amount:      referBonus,
+          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
+          type:        'transfer',
+          status:      'success',
+          tx_time:     now
+        });
+        
+        if(referrer.tg_id) {
+          sendTG(referrer.tg_id,
+`💰 *Refer Bonus Mila!*
+
+━━━━━━━━━━━━━━
+🎁   UNIO REFER BONUS ✅
+━━━━━━━━━━━━━━
+
+👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
+🔑 Lifafa : \`${code}\`
+💰 Bonus : ₹${referBonus}
+📅 Time : ${dt}
+
+✅ Balance mein add ho gaya!`
+          );
+        }
+      }
+    }
+
     if(user.tg_id) {
       sendTG(user.tg_id,
 `🎉 *Lifafa Claimed!*
@@ -191,40 +241,6 @@ router.post('/claim', async (req, res) => {
 
 ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.max_users - newClaimed} slots bache hain`}`
       );
-    }
-
-    let referBonus = 0;
-    if(ref_code && lifafa.refer_bonus > 0) {
-      // wallet_id hi refer code hai — database mein wallet_id se fetch karo
-      const referrer = await User.findOne({ wallet_id: ref_code });
-      if(referrer && referrer.mobile !== mobile) {
-        referBonus = lifafa.refer_bonus;
-        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
-        await Transaction.create({
-          receiver_id: referrer._id,
-          amount:      referBonus,
-          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
-          type:        'transfer',
-          status:      'success',
-          tx_time:     now
-        });
-        if(referrer.tg_id) {
-          sendTG(referrer.tg_id,
-`💰 *Refer Bonus Mila!*
-
-━━━━━━━━━━━━━━
-🎁   UNIO REFER BONUS ✅
-━━━━━━━━━━━━━━
-
-👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
-🔑 Lifafa : \`${code}\`
-💰 Bonus : ₹${referBonus}
-📅 Time : ${dt}
-
-✅ Balance mein add ho gaya!`
-          );
-        }
-      }
     }
 
     if(newClaimed >= lifafa.max_users) {
@@ -258,6 +274,7 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
       status:      'success',
       amount:      amt,
       refer_bonus: referBonus,
+      wallet_id:   user.wallet_id, // Succes page par khud ka refer link banane ke liye
       message:     `₹${amt} added to wallet!`
     });
 
@@ -267,4 +284,3 @@ ${newClaimed >= lifafa.max_users ? '🔴 Lifafa Full Ho Gaya!' : `⏳ ${lifafa.m
 });
 
 module.exports = router;
-      
