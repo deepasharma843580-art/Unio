@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- v3 updated -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -32,12 +31,39 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .name-tag span{font-size:.75rem;font-weight:700;color:#16a34a}
 .name-not-found{display:none;font-size:.7rem;font-weight:700;color:#dc2626;margin-top:.5rem;margin-left:.25rem}
 .name-not-found.show{display:block}
+
+/* Real-time breakdown style */
+.breakdown{background:#f8fafc;padding:.75rem;border-radius:.75rem;margin-top:.5rem;display:none}
+.breakdown.show{display:block}
+.breakdown-row{display:flex;justify-content:space-between;font-size:.7rem;font-weight:700;color:#64748b;margin-bottom:.25rem}
+.breakdown-row.total{border-top:1px dashed #cbd5e1;padding-top:.25rem;margin-top:.25rem;color:#0f172a}
+
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
 .btn:disabled{background:#94a3b8;cursor:not-allowed}
 .btn:active:not(:disabled){transform:scale(.98)}
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
 .msg.success{background:#dcfce7;color:#16a34a;display:block}
+
+/* Pro Receipt Modal */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1.5rem}
+#receipt-modal.open{display:flex}
+.receipt-card{background:white;width:100%;max-width:380px;border-radius:2rem;overflow:hidden;position:relative}
+.receipt-top{background:linear-gradient(135deg, #0057ff, #00c6ff);padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
+.receipt-top::after{content:'';position:absolute;bottom:-15px;left:0;right:0;height:30px;background:white;border-radius:50% / 100% 100% 0 0}
+.receipt-check{width:60px;height:60px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;box-shadow:0 10px 20px rgba(0,0,0,0.1)}
+.receipt-top h2{font-size:1.8rem;font-weight:900;margin-bottom:.2rem}
+.receipt-top p{font-size:.75rem;font-weight:600;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
+
+.receipt-body{padding:2rem 1.5rem 1.5rem;background:white}
+.receipt-item{display:flex;justify-content:space-between;margin-bottom:1rem}
+.receipt-item span{font-size:.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.receipt-item strong{font-size:.85rem;font-weight:800;color:#0f172a;text-align:right}
+
+.receipt-footer{padding:0 1.5rem 1.5rem;text-align:center}
+.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem;color:#cbd5e1;font-size:.7rem;font-weight:800;letter-spacing:1px}
+.done-btn{width:100%;padding:1rem;background:#0f172a;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
+
 #qr-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-end;justify-content:center}
 #qr-modal.open{display:flex}
 .qr-modal-card{background:white;border-radius:2rem 2rem 0 0;padding:1.5rem;width:100%;max-width:480px}
@@ -46,27 +72,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .close-qr{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
 #qr-reader{border-radius:1rem;overflow:hidden;border:2px solid #0057ff}
 .qr-cancel{width:100%;margin-top:1rem;padding:.75rem;background:#fee2e2;border:none;color:#dc2626;border-radius:1rem;font-size:.75rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
-#receipt-modal.open{display:flex}
-.receipt-card{background:linear-gradient(160deg,#f0f4ff 0%,#fff 100%);border-radius:2rem 2rem 0 0;padding:2rem;width:100%;max-width:480px}
-.receipt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
-.receipt-header h3{font-size:1rem;font-weight:800;color:#0f172a}
-.close-btn{width:32px;height:32px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b}
-.receipt-icon{width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem}
-.receipt-amt{text-align:center;font-size:2.25rem;font-weight:900;color:#dc2626}
-.receipt-label{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:1.25rem}
-.receipt-row{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f8fafc}
-.receipt-row:last-child{border:none}
-.receipt-row span{font-size:.72rem;color:#94a3b8;font-weight:600}
-.receipt-row strong{font-size:.72rem;color:#0f172a;font-weight:700;text-align:right;max-width:60%}
-.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem 0;color:#94a3b8;font-size:.7rem;font-weight:700;text-transform:uppercase}
-.done-btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
-@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.slide-up{animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) forwards}
+
+@keyframes popIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1) forwards}
 </style>
 </head>
 <body>
@@ -79,7 +92,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="container">
 
   <div class="balance-pill">
-    <span>Balance</span>
+    <span>Wallet Balance</span>
     <strong>&#8377;<span id="balance">0.00</span></strong>
   </div>
 
@@ -87,7 +100,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
   <div class="card">
     <div class="input-group">
-      <label>Receiver Number</label>
+      <label>Recipient Details</label>
       <div class="input-wrap">
         <input type="number" id="mobile" placeholder="Enter mobile number" oninput="fetchName(this.value)">
         <button class="qr-scan-btn" onclick="openQR()" title="Scan QR">
@@ -99,26 +112,31 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <span id="fetched-name"></span>
       </div>
       <div class="name-not-found" id="name-not-found">
-        <i class="fa-solid fa-circle-xmark"></i> User not found
+        <i class="fa-solid fa-circle-xmark"></i> User not registered
       </div>
     </div>
 
     <div class="input-group">
-      <label>Amount (&#8377;)</label>
+      <label>Amount to Send</label>
       <div class="input-wrap">
-        <input type="number" id="amount" placeholder="0.00" step="0.01">
+        <input type="number" id="amount" placeholder="0.00" step="0.01" oninput="updateBreakdown(this.value)">
+      </div>
+      <div class="breakdown" id="breakdown">
+        <div class="breakdown-row"><span>Transfer Amount</span><span id="bd-amt">₹0.00</span></div>
+        <div class="breakdown-row"><span>Service Fee (0%)</span><span>₹0.00</span></div>
+        <div class="breakdown-row total"><span>Total Payable</span><span id="bd-total" style="color:#0057ff">₹0.00</span></div>
       </div>
     </div>
 
     <div class="input-group">
-      <label>Comment (Optional)</label>
+      <label>Note (Optional)</label>
       <div class="input-wrap">
-        <input type="text" id="comment" placeholder="e.g. Rent, Birthday gift...">
+        <input type="text" id="comment" placeholder="Add a message...">
       </div>
     </div>
 
     <button class="btn" id="send-btn" onclick="sendMoney()">
-      <i class="fa-solid fa-paper-plane"></i> Send Money
+      <i class="fa-solid fa-paper-plane"></i> Confirm & Send
     </button>
   </div>
 
@@ -127,7 +145,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <div style="width:38px;height:38px;background:linear-gradient(135deg,#1a56db,#1e40af);border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🤖</div>
       <div>
         <div style="font-size:.8rem;font-weight:800;color:#0f172a;">Need Help?</div>
-        <div style="font-size:.7rem;color:#94a3b8;font-weight:600;">Talk to UNIO AI</div>
+        <div style="font-size:.7rem;color:#94a3b8;font-weight:600;">Chat with UNIO AI Assistant</div>
       </div>
     </div>
     <i class="fa-solid fa-arrow-right" style="color:#0057ff;font-size:.85rem;"></i>
@@ -135,40 +153,39 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 </div>
 
+<div id="receipt-modal">
+  <div id="receipt-card" class="receipt-card">
+    <div class="receipt-top">
+        <div class="receipt-check"><i class="fa-solid fa-check"></i></div>
+        <h2 id="r-amt">₹0.00</h2>
+        <p>Transfer Successful</p>
+    </div>
+    <div class="receipt-body">
+        <div class="receipt-item"><span>Transaction ID</span><strong id="r-txid">TXN123456</strong></div>
+        <div class="receipt-item"><span>Paid To</span><strong id="r-to">Loading...</strong></div>
+        <div class="receipt-item"><span>Date & Time</span><strong id="r-ist">Apr 03, 2026</strong></div>
+        <div class="receipt-item"><span>Status</span><strong style="color:#16a34a">COMPLETED</strong></div>
+        <div class="receipt-item"><span>Message</span><strong id="r-comment">—</strong></div>
+    </div>
+    <div class="receipt-footer">
+        <div class="receipt-brand">
+            <i class="fa-solid fa-shield-halved" style="color:#0057ff"></i> SECURED BY UNIO
+        </div>
+        <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
+    </div>
+  </div>
+</div>
+
 <div id="qr-modal">
   <div class="qr-modal-card">
     <div class="qr-modal-header">
-      <h3><i class="fa-solid fa-qrcode" style="color:#0057ff"></i> Scan UNIO QR</h3>
+      <h3><i class="fa-solid fa-qrcode" style="color:#0057ff"></i> Scan Recipient QR</h3>
       <button class="close-qr" onclick="closeQR()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="qr-reader"></div>
     <button class="qr-cancel" onclick="closeQR()">
       <i class="fa-solid fa-xmark"></i> Cancel
     </button>
-  </div>
-</div>
-
-<div id="receipt-modal">
-  <div id="receipt-card" class="receipt-card">
-    <div class="receipt-header">
-      <h3>Transaction Receipt</h3>
-      <button class="close-btn" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="receipt-icon">
-      <i class="fa-solid fa-check" style="color:#16a34a;font-size:1.5rem"></i>
-    </div>
-    <div class="receipt-amt" id="r-amt"></div>
-    <div class="receipt-label">Transfer Sent</div>
-    <div class="receipt-row"><span>Transaction ID</span><strong id="r-txid"></strong></div>
-    <div class="receipt-row"><span>To</span><strong id="r-to"></strong></div>
-    <div class="receipt-row"><span>India Time</span><strong id="r-ist"></strong></div>
-    <div class="receipt-row"><span>USA Time</span><strong id="r-usa"></strong></div>
-    <div class="receipt-row"><span>Comment</span><strong id="r-comment">—</strong></div>
-    <div class="receipt-row"><span>Status</span><strong style="color:#16a34a">Success</strong></div>
-    <div class="receipt-brand">
-      <i class="fa-solid fa-wallet" style="color:#0057ff"></i> UNIO Wallet
-    </div>
-    <button class="done-btn" onclick="closeReceipt()">Done</button>
   </div>
 </div>
 
@@ -188,10 +205,23 @@ if(!token) window.location.href = 'index.html';
 var fetchTimer = null;
 var html5QrCode = null;
 
+// Initial balance fetch
 fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
   .then(function(r){return r.json();}).then(function(d){
     if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
   });
+
+function updateBreakdown(val) {
+    var bd = document.getElementById('breakdown');
+    if(!val || val <= 0) {
+        bd.classList.remove('show');
+        return;
+    }
+    bd.classList.add('show');
+    var amt = parseFloat(val);
+    document.getElementById('bd-amt').textContent = '₹' + amt.toFixed(2);
+    document.getElementById('bd-total').textContent = '₹' + amt.toFixed(2);
+}
 
 function fetchName(val){
   clearTimeout(fetchTimer);
@@ -221,11 +251,13 @@ function sendMoney(){
   var mobile=document.getElementById('mobile').value;
   var amount=document.getElementById('amount').value;
   var comment=document.getElementById('comment').value.trim();
-  if(!mobile) return showMsg('Number enter karo!','error');
-  if(!amount) return showMsg('Amount enter karo!','error');
+  if(!mobile) return showMsg('Mobile number required!','error');
+  if(!amount || amount <= 0) return showMsg('Invalid amount!','error');
+  
   var btn=document.getElementById('send-btn');
   btn.disabled=true;
-  btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+  btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+  
   fetch(API+'/transfer/send',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
@@ -233,23 +265,28 @@ function sendMoney(){
   }).then(function(r){return r.json();}).then(function(d){
     if(d.status==='success'){
       var now=new Date();
-      document.getElementById('r-amt').textContent='-'+amount;
+      // Fill Pro Receipt
+      document.getElementById('r-amt').textContent='-₹'+parseFloat(amount).toFixed(2);
       document.getElementById('r-txid').textContent=d.tx_id;
-      document.getElementById('r-to').textContent=(d.receiver&&d.receiver.name?d.receiver.name:'User')+' ('+mobile+')';
-      document.getElementById('r-comment').textContent=comment||'—';
-      document.getElementById('r-ist').textContent=now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
-      document.getElementById('r-usa').textContent=now.toLocaleString('en-US',{timeZone:'America/New_York',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+      document.getElementById('r-to').textContent=(d.receiver && d.receiver.name ? d.receiver.name : 'User')+' ('+mobile+')';
+      document.getElementById('r-comment').textContent=comment||'General Transfer';
+      document.getElementById('r-ist').textContent=now.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+      
+      // Open Pro Modal
       var modal=document.getElementById('receipt-modal');
       var card=document.getElementById('receipt-card');
-      modal.classList.add('open');
-      card.classList.remove('slide-up');
-      void card.offsetWidth;
-      card.classList.add('slide-up');
+      modal.style.display = 'flex';
+      card.classList.add('pop-in');
+      
+      // Reset Form
       document.getElementById('mobile').value='';
       document.getElementById('amount').value='';
       document.getElementById('comment').value='';
       document.getElementById('name-tag').classList.remove('show');
+      document.getElementById('breakdown').classList.remove('show');
       document.getElementById('msg').className='msg';
+      
+      // Refresh Balance
       fetch(API+'/wallet/balance',{headers:{'Authorization':'Bearer '+token}})
         .then(function(r){return r.json();}).then(function(d){
           if(d.status==='success') document.getElementById('balance').textContent=parseFloat(d.balance).toFixed(2);
@@ -258,16 +295,16 @@ function sendMoney(){
       showMsg(d.message||'Transfer failed!','error');
     }
     btn.disabled=false;
-    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send Money';
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Confirm & Send';
   }).catch(function(){
-    showMsg('Server error!','error');
+    showMsg('Server connection lost!','error');
     btn.disabled=false;
-    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send Money';
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Confirm & Send';
   });
 }
 
 function closeReceipt(){
-  document.getElementById('receipt-modal').classList.remove('open');
+  document.getElementById('receipt-modal').style.display = 'none';
 }
 
 function openQR(){
@@ -288,7 +325,7 @@ function onQRScan(decoded){
       document.getElementById('mobile').value=mobile;
       fetchName(mobile);
     } else {
-      alert('Invalid UNIO QR!');
+      alert('Invalid QR Code!');
     }
   });
 }
@@ -310,5 +347,4 @@ if(urlTo){
 }
 </script>
 </body>
-  </html>
-
+</html>
