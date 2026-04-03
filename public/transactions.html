@@ -29,7 +29,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-left{display:flex;align-items:center;gap:.75rem}
 .txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
 .txn-icon.cr{background:#f0fdf4;color:#16a34a}
-.txn-icon.dr{background:#f8fafc;color:#64748b} /* Removed Red, made it neutral */
+.txn-icon.dr{background:#f8fafc;color:#64748b}
 .txn-icon.api{background:#eff6ff;color:#0057ff}
 .txn-name{font-size:.8rem;font-weight:700;color:#0f172a;margin-bottom:2px}
 .txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
@@ -38,36 +38,54 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-type-badge.admin{background:#fdf4ff;color:#9333ea}
 .txn-time{font-size:.62rem;color:#94a3b8;font-weight:600;margin-top:2px}
 .txn-amt{font-size:.9rem;font-weight:800;text-align:right}
-.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#0f172a} /* Neutral color for Debit text */
+.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#0f172a}
 .txn-status{font-size:.6rem;font-weight:700;margin-top:2px;text-align:right}
 
-/* ── PRO RECEIPT MODAL (BLUE THEME) ── */
+/* Withdrawal Items */
+.wd-item{background:white;border-radius:1.25rem;padding:1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);border-left:4px solid #94a3b8}
+.wd-item.success{border-left-color:#16a34a}
+.wd-item.pending{border-left-color:#f59e0b}
+.wd-item.rejected{border-left-color:#ef4444}
+.wd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.wd-info p{font-size:.85rem;font-weight:800;color:#0f172a}
+.wd-amt{font-size:1rem;font-weight:900;color:#0f172a}
+.wd-details{display:flex;justify-content:space-between;align-items:flex-end}
+.wd-upi{font-size:.7rem;font-weight:700;color:#64748b;display:flex;align-items:center;gap:.4rem}
+.wd-status-badge{font-size:.6rem;font-weight:800;padding:.2rem .6rem;border-radius:2rem;text-transform:uppercase}
+.wd-status-badge.success{background:#dcfce7;color:#16a34a}
+.wd-status-badge.pending{background:#fef3c7;color:#d97706}
+.wd-status-badge.rejected{background:#fee2e2;color:#ef4444}
+
+/* Loading Animation */
+.skeleton{background:#e2e8f0;height:70px;margin-bottom:10px;border-radius:1rem;position:relative;overflow:hidden}
+.skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
+.empty i{font-size:2.5rem;margin-bottom:1rem;opacity:.3}
+
+/* Pro Receipt Modal */
 #receipt-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1.5rem}
 #receipt-modal.open{display:flex}
 .receipt-card{background:white;width:100%;max-width:380px;border-radius:2rem;overflow:hidden;position:relative;animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1)}
-
 @keyframes popIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
-
 .receipt-top{background:linear-gradient(135deg, #0057ff, #00c6ff);padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
 .receipt-top::after{content:'';position:absolute;bottom:-15px;left:0;right:0;height:30px;background:white;border-radius:50% / 100% 100% 0 0}
-
 .receipt-check{width:60px;height:60px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;box-shadow:0 10px 20px rgba(0,0,0,0.1)}
 .receipt-top h2{font-size:1.8rem;font-weight:900;margin-bottom:.2rem}
 .receipt-top p{font-size:.75rem;font-weight:600;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
-
-.receipt-body{padding:2rem 1.5rem 1.5rem;background:white}
-.receipt-item{display:flex;justify-content:space-between;margin-bottom:1rem}
+.receipt-body{padding:2rem 1.5rem 1rem;background:white}
+.receipt-item{display:flex;justify-content:space-between;margin-bottom:.8rem}
 .receipt-item span{font-size:.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
 .receipt-item strong{font-size:.85rem;font-weight:800;color:#0f172a;text-align:right}
+
+/* Green Note Box */
+#r-comment-box{background:#f0fdf4;border:1px solid #bbf7d0;padding:1rem;border-radius:1rem;margin-top:1rem;display:none;flex-direction:column;gap:.25rem}
+#r-comment-box span{font-size:.65rem;font-weight:800;color:#16a34a;text-transform:uppercase}
+#r-comment-box strong{font-size:.8rem;font-weight:700;color:#14532d}
 
 .receipt-footer{padding:0 1.5rem 1.5rem;text-align:center}
 .receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem;color:#cbd5e1;font-size:.7rem;font-weight:800;letter-spacing:1px}
 .done-btn{width:100%;padding:1rem;background:#0f172a;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
-
-.wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
-.wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
-.wd-amt{font-size:1rem;font-weight:900;color:#ea580c}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
@@ -79,39 +97,38 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
-  <h1>Transactions</h1>
+  <h1>History</h1>
   <button class="dl-btn" onclick="downloadHistory()">
-    <i class="fa-solid fa-download"></i> Download
+    <i class="fa-solid fa-download"></i> CSV
   </button>
 </div>
 
 <div class="container">
   <div class="bal-pill">
     <div class="bal-pill-left">
-      <p>Available Balance</p>
+      <p>Total Balance</p>
       <h2>&#8377;<span id="balance">0.00</span></h2>
     </div>
-    <div class="bal-pill-right"><i class="fa-solid fa-wallet"></i></div>
+    <div class="bal-pill-right"><i class="fa-solid fa-shield-check"></i></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('txns',this)">
-      <i class="fa-solid fa-receipt"></i> Transactions
-    </button>
-    <button class="tab" onclick="switchTab('withdrawals',this)">
-      <i class="fa-solid fa-arrow-up"></i> Withdrawals
-    </button>
+    <button class="tab active" onclick="switchTab('txns',this)">Transactions</button>
+    <button class="tab" onclick="switchTab('withdrawals',this)">Withdrawals</button>
   </div>
 
   <div id="tab-txns" class="tab-section active">
     <div id="txn-list" class="txn-card">
-      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
     </div>
   </div>
 
   <div id="tab-withdrawals" class="tab-section">
     <div id="wd-list">
-      <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
     </div>
   </div>
 </div>
@@ -121,21 +138,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="receipt-top">
         <div class="receipt-check"><i class="fa-solid fa-check"></i></div>
         <h2 id="r-amt">₹0.00</h2>
-        <p id="r-type-head">Transaction Successful</p>
+        <p id="r-type-head">Success</p>
     </div>
     <div class="receipt-body">
-        <div class="receipt-item"><span>Transaction ID</span><strong id="r-txid">—</strong></div>
-        <div class="receipt-item"><span>Payment Type</span><strong id="r-type">—</strong></div>
-        <div class="receipt-item"><span>Date & Time</span><strong id="r-ist">—</strong></div>
+        <div class="receipt-item"><span>Txn ID</span><strong id="r-txid">—</strong></div>
+        <div class="receipt-item"><span>Method</span><strong id="r-type">—</strong></div>
+        <div class="receipt-item"><span>Time</span><strong id="r-ist">—</strong></div>
         <div class="receipt-item"><span>Status</span><strong id="r-status-label" style="color:#16a34a">COMPLETED</strong></div>
-        <div class="receipt-item"><span>Details</span><strong id="r-details">—</strong></div>
-        <div class="receipt-item" id="r-comment-row"><span>Note</span><strong id="r-comment">—</strong></div>
+        <div class="receipt-item"><span>Party</span><strong id="r-details">—</strong></div>
+        
+        <div id="r-comment-box">
+          <span>Remark/Note</span>
+          <strong id="r-comment">—</strong>
+        </div>
     </div>
     <div class="receipt-footer">
-        <div class="receipt-brand">
-            <i class="fa-solid fa-shield-halved" style="color:#0057ff"></i> SECURED BY UNIO
-        </div>
-        <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
+        <div class="receipt-brand">UNIO WALLET SECURE</div>
+        <button class="done-btn" onclick="closeReceipt()">Okay, Got it</button>
     </div>
   </div>
 </div>
@@ -167,7 +186,7 @@ Promise.all([
     renderWithdrawals();
   }
 }).catch(e => {
-  document.getElementById('txn-list').innerHTML = '<div class="empty"><i class="fa-solid fa-exclamation-circle"></i><p>Error loading!</p></div>';
+  document.getElementById('txn-list').innerHTML = '<div class="empty"><i class="fa-solid fa-circle-exclamation"></i><p>Failed to load data</p></div>';
 });
 
 function getIST(dt) {
@@ -177,41 +196,33 @@ function getIST(dt) {
 function renderTxns() {
   const list = document.getElementById('txn-list');
   const txns = allTxns.filter(t => t.type !== 'withdraw');
-  if(!txns.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions yet</p></div>'; return; }
+  if(!txns.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions found</p></div>'; return; }
   let html = '';
   txns.forEach(t => {
-    const uid      = user.id || user._id || '';
-    const rid      = t.receiver_id?._id || t.receiver_id || '';
+    const uid = user.id || user._id || '';
+    const rid = t.receiver_id?._id || t.receiver_id || '';
     const isCredit = rid && rid.toString() === uid.toString();
-    const amt      = parseFloat(t.amount).toFixed(2);
-    const isApi    = t.type === 'api' || t.type === 'api_transfer';
-    const isAdmin  = t.type === 'admin_add' || t.type === 'admin_deduct';
-    const time     = new Date(t.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    const amt = parseFloat(t.amount).toFixed(2);
+    const time = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
 
-    let typeBadge='', iconClass='', typeLabel='';
-    if(isApi){typeBadge='<span class="txn-type-badge api">API</span>';iconClass='api';typeLabel='API Transfer';}
-    else if(isAdmin){typeBadge='<span class="txn-type-badge admin">Admin</span>';iconClass=isCredit?'cr':'dr';typeLabel='Admin';}
-    else{typeBadge='<span class="txn-type-badge p2p">P2P</span>';iconClass=isCredit?'cr':'dr';typeLabel='P2P Transfer';}
+    let typeLabel = t.type==='api'||t.type==='api_transfer'?'API':(t.type.includes('admin')?'Admin':'P2P');
+    const fromFull = t.sender_id?.name ? t.sender_id.name : (t.sender_id?.mobile||'System');
+    const toFull   = t.receiver_id?.name ? t.receiver_id.name : (t.receiver_id?.mobile||'System');
+    const displayPartner = isCredit ? fromFull : toFull;
 
-    const fromFull = t.sender_id?.name ? t.sender_id.name+' ('+t.sender_id.mobile+')' : (t.sender_id?.mobile||'System');
-    const toFull   = t.receiver_id?.name ? t.receiver_id.name+' ('+t.receiver_id.mobile+')' : (t.receiver_id?.mobile||'System');
-    const other    = isCredit ? fromFull : toFull;
-    const comment  = t.remark || '';
-
-    const txData = JSON.stringify({tx_id:t.tx_id||t._id,type:typeLabel,amt,credit:isCredit,from:fromFull,to:toFull,time:t.tx_time,status:t.status,comment}).replace(/'/g,"&#39;");
+    const txData = JSON.stringify({tx_id:t.tx_id||t._id,type:typeLabel,amt,credit:isCredit,from:fromFull,to:toFull,time:t.tx_time,status:t.status,comment:t.remark||''}).replace(/'/g,"&#39;");
 
     html += `<div class="txn-item" onclick='openReceipt(${txData})'>
       <div class="txn-left">
-        <div class="txn-icon ${iconClass}"><i class="fa-solid fa-${isCredit?'arrow-down':'arrow-up'}"></i></div>
+        <div class="txn-icon ${isCredit?'cr':'dr'}"><i class="fa-solid fa-${isCredit?'arrow-down-left':'arrow-up-right'}"></i></div>
         <div>
-          <div class="txn-name">${other}</div>
-          <div>${typeBadge}</div>
-          <div class="txn-time">${time}</div>
+          <div class="txn-name">${displayPartner}</div>
+          <div class="txn-time">${time} • ${typeLabel}</div>
         </div>
       </div>
       <div>
-        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
-        <div class="txn-status" style="color:${t.status==='success'?'#16a34a':t.status==='pending'?'#f59e0b':'#64748b'}">${t.status}</div>
+        <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${amt}</div>
+        <div class="txn-status" style="color:${t.status==='success'?'#16a34a':'#f59e0b'}">${t.status}</div>
       </div>
     </div>`;
   });
@@ -221,19 +232,21 @@ function renderTxns() {
 function renderWithdrawals() {
   const list = document.getElementById('wd-list');
   const wds  = allTxns.filter(t => t.type === 'withdraw');
-  if(!wds.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-arrow-up"></i><p>No withdrawals yet</p></div>'; return; }
+  if(!wds.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-clock-rotate-left"></i><p>No withdrawal requests</p></div>'; return; }
   let html = '';
   wds.forEach(w => {
     const amt = parseFloat(w.amount).toFixed(2);
-    const time = new Date(w.tx_time).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
-    const badgeClass = w.status==='success'?'success':w.status==='pending'?'pending':'rejected';
-    html += `<div class="wd-item">
+    const dateStr = new Date(w.tx_time).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+    const status = w.status || 'pending';
+    html += `<div class="wd-item ${status}">
       <div class="wd-top">
-        <div class="wd-info"><p>Withdrawal Request</p><span>${time}</span></div>
-        <div class="wd-amt">-&#8377;${amt}</div>
+        <div class="wd-info"><p>Wallet Withdrawal</p><span style="font-size:.65rem;color:#94a3b8">${dateStr}</span></div>
+        <div class="wd-amt">-₹${amt}</div>
       </div>
-      <div class="wd-upi"><i class="fa-solid fa-wallet" style="color:#0057ff"></i> UPI: ${w.remark||'—'}</div>
-      <span class="wd-badge ${badgeClass}">${w.status}</span>
+      <div class="wd-details">
+        <div class="wd-upi"><i class="fa-solid fa-paper-plane"></i> ${w.remark||'UPI Payout'}</div>
+        <span class="wd-status-badge ${status}">${status}</span>
+      </div>
     </div>`;
   });
   list.innerHTML = html;
@@ -247,24 +260,22 @@ function switchTab(tab, el) {
 }
 
 function openReceipt(d) {
-  const isCredit = d.credit;
-  
-  // Set Pro UI
-  document.getElementById('r-amt').textContent = (isCredit?'+':'-') + '₹' + d.amt;
+  document.getElementById('r-amt').textContent = (d.credit?'+':'-') + '₹' + d.amt;
   document.getElementById('r-txid').textContent = d.tx_id || '—';
-  document.getElementById('r-type').textContent = d.type || 'Transfer';
+  document.getElementById('r-type').textContent = d.type;
   document.getElementById('r-ist').textContent = getIST(d.time);
-  document.getElementById('r-details').textContent = isCredit ? 'Received from ' + d.from : 'Sent to ' + d.to;
+  document.getElementById('r-details').textContent = d.credit ? 'From: ' + d.from : 'To: ' + d.to;
   
   const statusEl = document.getElementById('r-status-label');
   statusEl.textContent = d.status.toUpperCase();
-  statusEl.style.color = d.status === 'success' ? '#16a34a' : '#64748b';
+  statusEl.style.color = d.status === 'success' ? '#16a34a' : '#f59e0b';
 
-  if(d.comment && d.comment !== '') {
+  const cBox = document.getElementById('r-comment-box');
+  if(d.comment) {
     document.getElementById('r-comment').textContent = d.comment;
-    document.getElementById('r-comment-row').style.display = 'flex';
+    cBox.style.display = 'flex';
   } else {
-    document.getElementById('r-comment-row').style.display = 'none';
+    cBox.style.display = 'none';
   }
 
   document.getElementById('receipt-modal').classList.add('open');
@@ -275,19 +286,14 @@ function closeReceipt() {
 }
 
 function downloadHistory() {
-  if(!allTxns.length) return alert('No transactions to download!');
-  const uid = user.id || user._id || '';
-  let csv = 'TXN ID,Type,Amount,Direction,From,To,Comment,Date,Status\n';
+  if(!allTxns.length) return alert('Nothing to download');
+  let csv = 'ID,Type,Amount,Date,Status\n';
   allTxns.forEach(t => {
-    const rid = t.receiver_id?._id || t.receiver_id || '';
-    const isCredit = rid && rid.toString() === uid.toString();
-    const from = t.sender_id?.name ? t.sender_id.name+' ('+t.sender_id.mobile+')' : (t.sender_id?.mobile||'System');
-    const to   = t.receiver_id?.name ? t.receiver_id.name+' ('+t.receiver_id.mobile+')' : (t.receiver_id?.mobile||'System');
-    csv += [t.tx_id||t._id,t.type,parseFloat(t.amount).toFixed(2),isCredit?'Credit':'Debit','"'+from+'"','"'+to+'"','"'+(t.remark||'')+'"','"'+getIST(t.tx_time)+'"',t.status].join(',')+'\n';
+    csv += `${t.tx_id||t._id},${t.type},${t.amount},"${getIST(t.tx_time)}",${t.status}\n`;
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = 'UNIO_Transactions_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.download = 'UNIO_Statement.csv';
   a.click();
 }
 </script>
