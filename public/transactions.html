@@ -12,14 +12,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:40}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;flex:1}
-.dl-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.35rem;-webkit-tap-highlight-color:transparent}
+.dl-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.35rem}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
 .bal-pill-left h2{font-size:1.75rem;font-weight:900;letter-spacing:-1px}
 .bal-pill-right{opacity:.3;font-size:2rem}
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
 .tab-section{display:none}.tab-section.active{display:block}
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
@@ -29,7 +29,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-left{display:flex;align-items:center;gap:.75rem}
 .txn-icon{width:40px;height:40px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
 .txn-icon.cr{background:#f0fdf4;color:#16a34a}
-.txn-icon.dr{background:#fff1f2;color:#dc2626}
+.txn-icon.dr{background:#f8fafc;color:#64748b} /* Removed Red, made it neutral */
 .txn-icon.api{background:#eff6ff;color:#0057ff}
 .txn-name{font-size:.8rem;font-weight:700;color:#0f172a;margin-bottom:2px}
 .txn-type-badge{font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
@@ -38,65 +38,36 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-type-badge.admin{background:#fdf4ff;color:#9333ea}
 .txn-time{font-size:.62rem;color:#94a3b8;font-weight:600;margin-top:2px}
 .txn-amt{font-size:.9rem;font-weight:800;text-align:right}
-.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#dc2626}
+.txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#0f172a} /* Neutral color for Debit text */
 .txn-status{font-size:.6rem;font-weight:700;margin-top:2px;text-align:right}
+
+/* ── PRO RECEIPT MODAL (BLUE THEME) ── */
+#receipt-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1.5rem}
+#receipt-modal.open{display:flex}
+.receipt-card{background:white;width:100%;max-width:380px;border-radius:2rem;overflow:hidden;position:relative;animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1)}
+
+@keyframes popIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+
+.receipt-top{background:linear-gradient(135deg, #0057ff, #00c6ff);padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
+.receipt-top::after{content:'';position:absolute;bottom:-15px;left:0;right:0;height:30px;background:white;border-radius:50% / 100% 100% 0 0}
+
+.receipt-check{width:60px;height:60px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;box-shadow:0 10px 20px rgba(0,0,0,0.1)}
+.receipt-top h2{font-size:1.8rem;font-weight:900;margin-bottom:.2rem}
+.receipt-top p{font-size:.75rem;font-weight:600;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
+
+.receipt-body{padding:2rem 1.5rem 1.5rem;background:white}
+.receipt-item{display:flex;justify-content:space-between;margin-bottom:1rem}
+.receipt-item span{font-size:.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
+.receipt-item strong{font-size:.85rem;font-weight:800;color:#0f172a;text-align:right}
+
+.receipt-footer{padding:0 1.5rem 1.5rem;text-align:center}
+.receipt-brand{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem;color:#cbd5e1;font-size:.7rem;font-weight:800;letter-spacing:1px}
+.done-btn{width:100%;padding:1rem;background:#0f172a;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
 
 .wd-item{background:white;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
 .wd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
 .wd-info p{font-size:.8rem;font-weight:700;color:#0f172a}
-.wd-info span{font-size:.65rem;color:#94a3b8;font-weight:600}
 .wd-amt{font-size:1rem;font-weight:900;color:#ea580c}
-.wd-upi{background:#f8fafc;border-radius:.75rem;padding:.5rem .75rem;font-size:.7rem;font-weight:700;color:#64748b;margin-bottom:.5rem}
-.wd-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:.5rem;text-transform:uppercase;display:inline-block}
-.wd-badge.pending{background:#fff7ed;color:#ea580c;border:1px solid #fed7aa}
-.wd-badge.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
-.wd-badge.rejected{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
-.empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
-.empty i{font-size:2.5rem;margin-bottom:.75rem;display:block}
-.empty p{font-size:.8rem;font-weight:600}
-
-/* ── REVAMPED PROFESSIONAL RECEIPT ── */
-#receipt-modal{display:none;position:fixed;inset:0;background:rgba(15, 23, 42, 0.7);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1.5rem}
-#receipt-modal.open{display:flex}
-.receipt-card{background:white;border-radius:1.5rem;width:100%;max-width:360px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);position:relative;animation: modalScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)}
-
-@keyframes modalScale {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.r-banner{padding:2rem 1rem;text-align:center;position:relative}
-.r-banner.green{background:linear-gradient(to bottom, #f0fdf4, #ffffff)}
-.r-banner.red{background:linear-gradient(to bottom, #fef2f2, #ffffff)}
-
-.r-close{position:absolute;top:1rem;right:1rem;width:28px;height:28px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#64748b;font-size:.7rem;transition:0.2s}
-.r-close:hover{background:#e2e8f0}
-
-.r-check-circle{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.25rem}
-.r-banner.green .r-check-circle{background:#16a34a;color:white;box-shadow:0 8px 16px rgba(22,163,74,0.2)}
-.r-banner.red .r-check-circle{background:#dc2626;color:white;box-shadow:0 8px 16px rgba(220,38,38,0.2)}
-
-.r-amount{font-size:2rem;font-weight:900;color:#0f172a;letter-spacing:-1px}
-.r-status-pill{display:inline-block;font-size:.6rem;font-weight:800;padding:.3rem .8rem;border-radius:2rem;margin-top:.5rem;text-transform:uppercase;letter-spacing:.05em}
-.r-banner.green .r-status-pill{background:#dcfce7;color:#15803d}
-.r-banner.red .r-status-pill{background:#fee2e2;color:#b91c1c}
-
-.r-body{padding:0 1.5rem 1.5rem}
-.r-rows{border-top:1px dashed #e2e8f0;padding-top:1rem;margin-bottom:1.25rem}
-.r-row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0}
-.r-label{font-size:.65rem;color:#94a3b8;font-weight:700;text-transform:uppercase}
-.r-val{font-size:.75rem;color:#1e293b;font-weight:700;text-align:right}
-
-.r-comment-box{background:#f8fafc;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1.25rem;display:none}
-.r-comment-box.show{display:block}
-.r-comment-label{font-size:.55rem;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:2px}
-.r-comment-val{font-size:.75rem;font-weight:600;color:#475569}
-
-.r-brand{display:flex;align-items:center;justify-content:center;gap:.4rem;color:#cbd5e1;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;margin-bottom:1.25rem}
-.r-done{width:100%;padding:.9rem;border:none;border-radius:.75rem;font-size:.8rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:0.2s}
-.r-done.green{background:#0f172a;color:white}
-.r-done.red{background:#0f172a;color:white}
-.r-done:active{transform:scale(0.98)}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
@@ -147,47 +118,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
 <div id="receipt-modal">
   <div id="receipt-card" class="receipt-card">
-    <div class="r-banner" id="r-banner">
-      <button class="r-close" onclick="closeReceipt()"><i class="fa-solid fa-xmark"></i></button>
-      <div class="r-check-circle" id="r-icon-circle"><i class="fa-solid fa-check"></i></div>
-      <div class="r-amount" id="r-amt"></div>
-      <div class="r-status-pill" id="r-status-pill"></div>
+    <div class="receipt-top">
+        <div class="receipt-check"><i class="fa-solid fa-check"></i></div>
+        <h2 id="r-amt">₹0.00</h2>
+        <p id="r-type-head">Transaction Successful</p>
     </div>
-
-    <div class="r-body">
-      <div class="r-rows">
-        <div class="r-row">
-          <span class="r-label">Txn ID</span>
-          <span class="r-val" id="r-txid" style="font-family:monospace"></span>
+    <div class="receipt-body">
+        <div class="receipt-item"><span>Transaction ID</span><strong id="r-txid">—</strong></div>
+        <div class="receipt-item"><span>Payment Type</span><strong id="r-type">—</strong></div>
+        <div class="receipt-item"><span>Date & Time</span><strong id="r-ist">—</strong></div>
+        <div class="receipt-item"><span>Status</span><strong id="r-status-label" style="color:#16a34a">COMPLETED</strong></div>
+        <div class="receipt-item"><span>Details</span><strong id="r-details">—</strong></div>
+        <div class="receipt-item" id="r-comment-row"><span>Note</span><strong id="r-comment">—</strong></div>
+    </div>
+    <div class="receipt-footer">
+        <div class="receipt-brand">
+            <i class="fa-solid fa-shield-halved" style="color:#0057ff"></i> SECURED BY UNIO
         </div>
-        <div class="r-row">
-          <span class="r-label">Payment Type</span>
-          <span class="r-val" id="r-type"></span>
-        </div>
-        <div class="r-row">
-          <span class="r-label">Date & Time</span>
-          <span class="r-val" id="r-ist"></span>
-        </div>
-        <div class="r-row">
-          <span class="r-label">Sender</span>
-          <span class="r-val" id="r-from"></span>
-        </div>
-        <div class="r-row">
-          <span class="r-label">Recipient</span>
-          <span class="r-val" id="r-to"></span>
-        </div>
-      </div>
-
-      <div class="r-comment-box" id="r-comment-box">
-        <div class="r-comment-label">Note</div>
-        <div class="r-comment-val" id="r-comment"></div>
-      </div>
-
-      <div class="r-brand">
-        <i class="fa-solid fa-shield-halved" style="color:#0057ff"></i> Secure UNIO Payment
-      </div>
-
-      <button class="r-done" id="r-done" onclick="closeReceipt()">Dismiss</button>
+        <button class="done-btn" onclick="closeReceipt()">Close Receipt</button>
     </div>
   </div>
 </div>
@@ -263,7 +211,7 @@ function renderTxns() {
       </div>
       <div>
         <div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}&#8377;${amt}</div>
-        <div class="txn-status" style="color:${t.status==='success'?'#16a34a':t.status==='pending'?'#f59e0b':'#dc2626'}">${t.status}</div>
+        <div class="txn-status" style="color:${t.status==='success'?'#16a34a':t.status==='pending'?'#f59e0b':'#64748b'}">${t.status}</div>
       </div>
     </div>`;
   });
@@ -300,38 +248,31 @@ function switchTab(tab, el) {
 
 function openReceipt(d) {
   const isCredit = d.credit;
-  const color    = isCredit ? 'green' : 'red';
+  
+  // Set Pro UI
+  document.getElementById('r-amt').textContent = (isCredit?'+':'-') + '₹' + d.amt;
+  document.getElementById('r-txid').textContent = d.tx_id || '—';
+  document.getElementById('r-type').textContent = d.type || 'Transfer';
+  document.getElementById('r-ist').textContent = getIST(d.time);
+  document.getElementById('r-details').textContent = isCredit ? 'Received from ' + d.from : 'Sent to ' + d.to;
+  
+  const statusEl = document.getElementById('r-status-label');
+  statusEl.textContent = d.status.toUpperCase();
+  statusEl.style.color = d.status === 'success' ? '#16a34a' : '#64748b';
 
-  document.getElementById('r-banner').className = 'r-banner ' + color;
-  document.getElementById('r-amt').textContent  = (isCredit?'+':'-') + '₹' + d.amt;
-  document.getElementById('r-status-pill').textContent = d.status.toUpperCase();
-  document.getElementById('r-done').className   = 'r-done ' + color;
-
-  document.getElementById('r-txid').textContent = (d.tx_id || '—').substring(0,16);
-  document.getElementById('r-type').textContent = d.type  || '—';
-  document.getElementById('r-ist').textContent  = getIST(d.time);
-  document.getElementById('r-from').textContent = d.from  || '—';
-  document.getElementById('r-to').textContent   = d.to    || '—';
-
-  const cBox = document.getElementById('r-comment-box');
   if(d.comment && d.comment !== '') {
     document.getElementById('r-comment').textContent = d.comment;
-    cBox.classList.add('show');
+    document.getElementById('r-comment-row').style.display = 'flex';
   } else {
-    cBox.classList.remove('show');
+    document.getElementById('r-comment-row').style.display = 'none';
   }
 
-  const modal = document.getElementById('receipt-modal');
-  modal.classList.add('open');
+  document.getElementById('receipt-modal').classList.add('open');
 }
 
 function closeReceipt() {
   document.getElementById('receipt-modal').classList.remove('open');
 }
-
-document.getElementById('receipt-modal').addEventListener('click', function(e) {
-  if(e.target === this) closeReceipt();
-});
 
 function downloadHistory() {
   if(!allTxns.length) return alert('No transactions to download!');
