@@ -16,19 +16,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;flex-shrink:0}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;flex:1}
 .dl-btn{background:#eff6ff;border:none;color:#0057ff;padding:.5rem .85rem;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.35rem}
-
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
 .bal-pill{background:linear-gradient(135deg,#0057ff,#0033cc);border-radius:1.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;color:white}
 .bal-pill-left p{font-size:.65rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
 .bal-pill-left h2{font-size:1.75rem;font-weight:900;letter-spacing:-1px}
 .bal-pill-right{opacity:.3;font-size:2rem}
-
 .tabs{display:flex;background:white;border-radius:1rem;padding:4px;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .tab{flex:1;padding:.7rem;text-align:center;font-weight:700;font-size:.75rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:#94a3b8;text-transform:uppercase;border:none;background:none;font-family:inherit}
 .tab.active{background:#0057ff;color:white;box-shadow:0 4px 12px rgba(0,87,255,0.3)}
 .tab-section{display:none}.tab-section.active{display:block}
-
-/* Transaction List Styling */
 .txn-card{background:white;border-radius:1.5rem;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .txn-item{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s}
 .txn-item:active{background:#f0f4ff}
@@ -40,8 +36,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .txn-time{font-size:.62rem;color:#94a3b8;font-weight:600}
 .txn-amt{font-size:.9rem;font-weight:800;text-align:right}
 .txn-amt.cr{color:#16a34a}.txn-amt.dr{color:#0f172a}
-
-/* Withdrawal Items */
 .wd-item{background:white;border-radius:1.25rem;padding:1.25rem;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer}
 .wd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .wd-info p{font-size:.85rem;font-weight:800;color:#0f172a}
@@ -49,14 +43,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .wd-status-badge{font-size:.6rem;font-weight:800;padding:.2rem .6rem;border-radius:2rem;text-transform:uppercase}
 .wd-status-badge.success{background:#dcfce7;color:#16a34a}
 .wd-status-badge.pending{background:#fef3c7;color:#d97706}
-
-/* Loading & Skeletons */
 .skeleton{background:#e2e8f0;height:70px;margin-bottom:10px;border-radius:1rem;position:relative;overflow:hidden}
 .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);animation:shimmer 1.5s infinite}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .empty{text-align:center;padding:3rem 1rem;color:#94a3b8}
-
-/* Receipt Modal */
 #receipt-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1.5rem}
 #receipt-modal.open{display:flex}
 .receipt-card{background:white;width:100%;max-width:380px;border-radius:2rem;overflow:hidden;animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1)}
@@ -64,23 +54,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .receipt-top{background:linear-gradient(135deg, #0057ff, #00c6ff);padding:2.5rem 1.5rem;text-align:center;color:white;position:relative}
 .receipt-top::after{content:'';position:absolute;bottom:-15px;left:0;right:0;height:30px;background:white;border-radius:50% / 100% 100% 0 0}
 .receipt-check{width:60px;height:60px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem}
-
 .receipt-body{padding:2rem 1.5rem 1rem;background:white}
-.receipt-item{display:flex;justify-content:space-between;margin-bottom:.8rem}
-.receipt-item span{font-size:.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
-.receipt-item strong{font-size:.85rem;font-weight:800;color:#0f172a;text-align:right}
-
-/* Note Box Upgrade with Tick */
+.receipt-item{display:flex;justify-content:space-between;margin-bottom:.8rem;gap:10px}
+.receipt-item span{font-size:.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase;flex-shrink:0}
+.receipt-item strong{font-size:.85rem;font-weight:800;color:#0f172a;text-align:right;word-break:break-word}
 #r-comment-box{background:#f0fdf4;border:1px solid #bbf7d0;padding:1rem;border-radius:1rem;margin-top:1rem;display:none;align-items:flex-start;gap:.75rem}
 #r-comment-box i{color:#16a34a;margin-top:2px}
 .r-comment-text{display:flex;flex-direction:column;gap:2px}
 .r-comment-text span{font-size:.65rem;font-weight:800;color:#16a34a;text-transform:uppercase}
 .r-comment-text strong{font-size:.8rem;font-weight:700;color:#14532d}
-
 .receipt-footer{padding:0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.75rem}
 .done-btn{width:100%;padding:1rem;background:#0f172a;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer}
 .pdf-btn{width:100%;padding:.8rem;background:#eff6ff;color:#0057ff;border:1px dashed #0057ff;border-radius:1rem;font-size:.75rem;font-weight:700;cursor:pointer}
-
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
@@ -202,14 +187,19 @@ function renderTxns() {
     const time = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
     
     let typeLabel = t.type.includes('api')?'API':(t.type.includes('admin')?'Admin':'P2P');
-    const displayPartner = isCredit ? (t.sender_id?.name || 'System') : (t.receiver_id?.name || 'System');
+    
+    // Yahan change kiya hai: Name (Mobile) fetch karne ke liye
+    const partnerData = isCredit ? t.sender_id : t.receiver_id;
+    const partnerName = partnerData?.name || 'System';
+    const partnerMobile = partnerData?.mobile ? `(${partnerData.mobile})` : '';
+    const displayPartner = partnerName + ' ' + partnerMobile;
 
     const txData = JSON.stringify({isWD:false, tx_id:t.tx_id||t._id,type:typeLabel,amt,credit:isCredit,partner:displayPartner,time:t.tx_time,status:t.status,comment:t.remark||''}).replace(/'/g,"&#39;");
 
     html += `<div class="txn-item" onclick='openReceipt(${txData})'>
       <div class="txn-left">
         <div class="txn-icon ${isCredit?'cr':'dr'}"><i class="fa-solid fa-circle-check"></i></div>
-        <div><div class="txn-name">${displayPartner}</div><div class="txn-time">${time} • ${typeLabel}</div></div>
+        <div><div class="txn-name">${partnerName}</div><div class="txn-time">${time} • ${typeLabel}</div></div>
       </div>
       <div><div class="txn-amt ${isCredit?'cr':'dr'}">${isCredit?'+':'-'}₹${amt}</div><div class="txn-status" style="color:${t.status==='success'?'#16a34a':'#f59e0b'}">${t.status}</div></div>
     </div>`;
@@ -256,7 +246,7 @@ function openReceipt(d) {
   document.getElementById('r-txid-row').style.display = d.isWD ? 'none' : 'flex';
   document.getElementById('r-type').textContent = d.isWD ? 'Withdrawal' : d.type;
   document.getElementById('r-ist').textContent = getIST(d.time);
-  document.getElementById('r-details').textContent = d.partner;
+  document.getElementById('r-details').textContent = d.partner; // Isme ab Name (Mobile) dikhega
   
   const statusEl = document.getElementById('r-status-label');
   statusEl.textContent = d.status.toUpperCase();
@@ -274,7 +264,6 @@ function openReceipt(d) {
 
 function closeReceipt() { document.getElementById('receipt-modal').classList.remove('open'); }
 
-// PDF DOWNLOAD LOGIC
 async function downloadReceiptPDF() {
   const { jsPDF } = window.jspdf;
   const element = document.getElementById('receipt-area');
