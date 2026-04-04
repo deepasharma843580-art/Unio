@@ -71,9 +71,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="input-group">
       <label>Type</label>
       <select id="c-type" onchange="changeType()">
-        <option value="standard">Standard (Fixed Amount)</option>
-        <option value="scratch">Scratch Card (Range)</option>
-        <option value="toss">Toss (Guess)</option>
+        <optgroup label="Basic Types">
+          <option value="standard">Standard (Fixed Amount)</option>
+          <option value="scratch">Scratch Card (Range)</option>
+          <option value="toss">Toss (Heads/Tails)</option>
+        </optgroup>
+        <optgroup label="Special Types">
+          <option value="luck_test">Luck Test (Random Split)</option>
+          <option value="first_come">First Come (Solo Winner)</option>
+          <option value="math_quiz">Math Quiz (Fast Answer)</option>
+          <option value="fast_finger">Fastest Finger First</option>
+          <option value="golden_hour">Golden Hour (Timed)</option>
+          <option value="even_odd">Even or Odd Guess</option>
+          <option value="jackpot">Jackpot (1 Lucky Winner)</option>
+          <option value="hidden_box">Hidden Box (Choice)</option>
+          <option value="voucher">Voucher Code</option>
+          <option value="refer_special">Referral Special</option>
+        </optgroup>
       </select>
     </div>
 
@@ -97,6 +111,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <select id="c-toss">
         <option value="HEADS">HEADS</option>
         <option value="TAILS">TAILS</option>
+        <option value="EVEN">EVEN</option>
+        <option value="ODD">ODD</option>
       </select>
     </div>
 
@@ -105,7 +121,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <!-- Deduction Preview -->
     <div class="deduction-box" id="deduction-box">
       <div class="deduction-row">
         <span>Calculation</span>
@@ -117,7 +132,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
     </div>
 
-    <!-- Channels -->
     <div class="section-title">
       <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
     </div>
@@ -137,7 +151,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </button>
   </div>
 
-  <!-- Result -->
   <div id="create-result" style="display:none" class="card">
     <div style="text-align:center">
       <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
@@ -163,14 +176,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <script>
-const API   = '';
+const API   = ''; // Base URL here
 const token = localStorage.getItem('token');
 if(!token) window.location.href = 'index.html';
 
 let userBalance = 0;
 let claimLink   = '';
 
-// Load balance
 fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
     if(d.status==='success') {
@@ -181,9 +193,15 @@ fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
 
 function changeType() {
   const t = document.getElementById('c-type').value;
-  document.getElementById('f-amt').style.display   = t==='scratch' ? 'none'  : 'block';
-  document.getElementById('f-range').style.display = t==='scratch' ? 'block' : 'none';
-  document.getElementById('f-toss').style.display  = t==='toss'    ? 'block' : 'none';
+  
+  // Logic for UI visibility based on types
+  const isRange = ['scratch', 'luck_test', 'jackpot'].includes(t);
+  const isChoice = ['toss', 'even_odd', 'hidden_box'].includes(t);
+  
+  document.getElementById('f-amt').style.display   = isRange ? 'none'  : 'block';
+  document.getElementById('f-range').style.display = isRange ? 'block' : 'none';
+  document.getElementById('f-toss').style.display  = isChoice ? 'block' : 'none';
+  
   calcDeduction();
 }
 
@@ -192,10 +210,19 @@ function calcDeduction() {
   const users = parseInt(document.getElementById('c-users').value) || 0;
   const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
-  const total = t==='scratch' ? (max*users) : (amt*users);
-  const box   = document.getElementById('deduction-box');
+  
+  let total = 0;
+  if(['scratch', 'luck_test', 'jackpot'].includes(t)) {
+      total = max * users;
+  } else if(t === 'first_come') {
+      total = amt; // Only one winner
+  } else {
+      total = amt * users;
+  }
+
+  const box = document.getElementById('deduction-box');
   if(total > 0 && users > 0) {
-    const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
+    const calc = (t==='first_come') ? `Fixed ₹${amt} (1 User)` : `₹${(total/users).toFixed(2)} × ${users} users`;
     document.getElementById('d-calc').textContent = calc;
     document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
     box.classList.add('show');
@@ -219,43 +246,33 @@ function removeCh(btn) { btn.closest('.channel-item').remove(); }
 
 function showMsg(text, type) {
   const m = document.getElementById('create-msg');
+  if(!text) { m.style.display = 'none'; return; }
   m.textContent = text;
   m.className = 'msg ' + type;
-  m.scrollIntoView({behavior:'smooth', block:'center'});
+  m.style.display = 'block';
 }
 
 async function createLifafa() {
   const code  = document.getElementById('c-code').value.trim().toUpperCase();
   const type  = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value) || 0;
+  const users = (type === 'first_come') ? 1 : (parseInt(document.getElementById('c-users').value) || 0);
   const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
   const min   = parseFloat(document.getElementById('c-min').value) || 0;
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
   const toss  = document.getElementById('c-toss').value;
 
-  // Validations
-  if(!code)         return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
-  if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
-  if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
+  if(!code) return showMsg('❌ Unique code required!', 'error');
+  if(users <= 0) return showMsg('❌ Users count required!', 'error');
 
-  // Total deduction
-  const total = type === 'scratch' ? (max * users) : (amt * users);
+  let total = (['scratch', 'luck_test', 'jackpot'].includes(type)) ? (max * users) : (amt * (type === 'first_come' ? 1 : users));
 
-  // Balance check
-  if(userBalance < total) {
-    return showMsg(
-      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
-      'error'
-    );
-  }
+  if(userBalance < total) return showMsg('❌ Insufficient Balance!', 'error');
 
-  const channels = [...document.querySelectorAll('.ch-input')]
-    .map(i => i.value.trim()).filter(v => v);
+  const channels = [...document.querySelectorAll('.ch-input')].map(i => i.value.trim()).filter(v => v);
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
 
   try {
     const r = await fetch(API+'/lifafa/create', {
@@ -268,8 +285,6 @@ async function createLifafa() {
       claimLink = window.location.origin + '/claim.html?code=' + d.code;
       document.getElementById('claim-link').textContent = claimLink;
       document.getElementById('create-result').style.display = 'block';
-      document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
-      // Update balance
       userBalance -= total;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
       showMsg('', '');
@@ -277,25 +292,19 @@ async function createLifafa() {
       showMsg('❌ ' + (d.message || 'Failed!'), 'error');
     }
   } catch(e) {
-    showMsg('❌ Server error! Try again.', 'error');
+    showMsg('❌ Connection Error!', 'error');
   }
-
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
 }
 
 function copyLink() {
   navigator.clipboard.writeText(claimLink);
-  alert('Claim link copied! ✅');
+  alert('Copied! ✅');
 }
 
 function createAnother() {
-  document.getElementById('create-result').style.display = 'none';
-  document.getElementById('c-code').value  = '';
-  document.getElementById('c-amt').value   = '';
-  document.getElementById('c-users').value = '';
-  document.getElementById('deduction-box').classList.remove('show');
-  window.scrollTo({top:0, behavior:'smooth'});
+  location.reload();
 }
 </script>
 </body>
