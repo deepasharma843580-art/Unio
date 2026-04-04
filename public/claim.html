@@ -37,6 +37,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
 .msg.error{background:#fee2e2;color:#dc2626;display:block}
 .ch-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:1.25rem;padding:1rem;margin-bottom:.75rem}
+.ch-item.verified{border-color:#bbf7d0;background:#f0fdf4}
 .ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .ch-name{font-size:.8rem;font-weight:700;color:#0f172a}
 .ch-badge{font-size:.6rem;font-weight:800;padding:.25rem .6rem;border-radius:2rem;text-transform:uppercase}
@@ -47,10 +48,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .ch-btn.join{background:#0057ff;color:white}
 .ch-btn.verify{background:#f1f5f9;color:#64748b}
 .ch-btn.done{background:#f0fdf4;color:#16a34a}
-.game-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
-.game-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s;background:#f8fafc;color:#0f172a;border:2px solid #f1f5f9}
-.game-btn:active{transform:scale(0.95)}
-.game-btn.selected{background:#0057ff;color:white;border-color:#0057ff}
+.toss-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s}
+.toss-btn.heads{background:#0057ff;color:white}
+.toss-btn.tails{background:#0f172a;color:white}
 </style>
 </head>
 <body>
@@ -79,7 +80,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
   <div id="step-mobile" style="display:none">
     <div class="banner" id="lifafa-banner">
-      <div class="banner-emoji" id="banner-icon">🎁</div>
+      <div class="banner-emoji">🎁</div>
       <div class="banner-code" id="banner-code"></div>
       <div class="banner-type" id="banner-type"></div>
       <div class="progress-wrap">
@@ -131,24 +132,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         </button>
     </div>
 
-    <div id="game-wrap" class="card" style="display:none">
-      <div id="game-title" style="font-size:.7rem;font-weight:800;color:#94a3b8;margin-bottom:1rem;text-transform:uppercase">COMPLETE TASK</div>
-      
-      <div id="ui-options" class="game-btns" style="display:none"></div>
-
-      <div id="ui-input" class="input-group" style="display:none">
-        <label id="input-label">Your Answer</label>
-        <input type="text" id="game-answer" placeholder="...">
+    <div id="toss-wrap" class="card" style="display:none">
+      <div class="toss-btns">
+        <button class="toss-btn heads" onclick="claimNow('HEADS')">🪙 HEADS</button>
+        <button class="toss-btn tails" onclick="claimNow('TAILS')">🪙 TAILS</button>
       </div>
+    </div>
 
-      <button class="btn purple" id="claim-btn" onclick="claimNow()">
+    <div id="claim-btn-wrap" class="card" style="display:none">
+      <button class="btn purple" id="claim-btn" onclick="claimNow('')">
         <i class="fa-solid fa-rocket"></i> <span>Claim Now!</span>
       </button>
     </div>
 
     <div id="step-success" class="card" style="display:none; text-align:center">
         <div style="font-size:4rem">🏆</div>
-        <div style="font-size:1.2rem;font-weight:700;color:#0f172a;margin-top:1rem">CONGRATULATIONS!</div>
         <div style="font-size:2.5rem;font-weight:900;color:#16a34a" id="won-amt"></div>
         <a href="dashboard.html" class="btn green" style="margin-top:1.5rem">Go to Wallet</a>
     </div>
@@ -157,7 +155,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 </div>
 
 <script>
-const API      = ''; // Your API Base URL
+const API      = ''; 
 const token    = localStorage.getItem('token');
 const G_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzuBsw7QuG5PkjSdx2L0noHtnEpqeOtbq0yqVp3mlYsah3DRbt3GecPDjt7F9rkk1t/exec';
 
@@ -166,22 +164,21 @@ let userMobile = '';
 let userTgId = '';
 let verifiedChannels = [];
 let currentCode = '';
-let selectedOption = '';
 
+// AUTO FILL CODE FROM URL
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
   if(code) {
     document.getElementById('code-input').value = code.toUpperCase();
-    loadLifafa();
+    loadLifafa(); // Automatically trigger search
   }
 };
 
 function showMsg(id, text, type) {
   const m = document.getElementById(id);
   m.textContent = text;
-  m.className = 'msg ' + (type || '');
-  m.style.display = text ? 'block' : 'none';
+  m.className = 'msg ' + type;
 }
 
 function setBtnLoading(id, isLoading, originalText) {
@@ -189,14 +186,28 @@ function setBtnLoading(id, isLoading, originalText) {
   if(!btn) return;
   const span = btn.querySelector('span');
   const icon = btn.querySelector('i');
-  btn.disabled = isLoading;
-  if(span) span.textContent = isLoading ? 'Processing...' : originalText;
-  if(icon && isLoading) icon.className = 'fa-solid fa-circle-notch fa-spin';
+  
+  if(isLoading) {
+    btn.disabled = true;
+    if(span) span.textContent = 'Processing...';
+    if(icon) icon.className = 'fa-solid fa-circle-notch fa-spin';
+  } else {
+    btn.disabled = false;
+    if(span) span.textContent = originalText;
+    if(icon) {
+        if(id === 'find-btn') icon.className = 'fa-solid fa-search';
+        if(id === 'mobile-btn') icon.className = 'fa-solid fa-arrow-right';
+        if(id === 'tg-save-btn') icon.className = 'fa-solid fa-floppy-disk';
+        if(id === 'claim-btn') icon.className = 'fa-solid fa-rocket';
+        if(id === 'verify-all-btn') icon.className = 'fa-solid fa-circle-check';
+    }
+  }
 }
 
 async function loadLifafa() {
-  const code = document.getElementById('code-input').value.trim().toUpperCase();
-  if(!code) return showMsg('code-msg', 'Enter code!', 'error');
+  const codeInput = document.getElementById('code-input');
+  const code = codeInput.value.trim().toUpperCase();
+  if(!code) return showMsg('code-msg', 'Code enter karo!', 'error');
 
   setBtnLoading('find-btn', true, 'Find Lifafa');
   try {
@@ -210,9 +221,9 @@ async function loadLifafa() {
     currentLifafa = d.lifafa;
     currentCode = code;
 
-    // Update UI Stats
+    // Set Banner & Stats
     document.getElementById('banner-code').textContent = currentLifafa.code;
-    document.getElementById('banner-type').textContent = currentLifafa.type.replace('_',' ').toUpperCase();
+    document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
     const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
     document.getElementById('banner-progress').style.width = pct + '%';
     document.getElementById('banner-pct').textContent = pct + '% Full';
@@ -221,6 +232,11 @@ async function loadLifafa() {
     document.getElementById('stat-total').textContent = currentLifafa.max_users;
     document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
     document.getElementById('stat-left').textContent = currentLifafa.max_users - currentLifafa.claimed_users;
+
+    if(currentLifafa.claimed_users >= currentLifafa.max_users) {
+       setBtnLoading('find-btn', false, 'Find Lifafa');
+       return showMsg('code-msg', '❌ Lifafa is Full!', 'error');
+    }
 
     document.getElementById('step-code').style.display = 'none';
     document.getElementById('step-mobile').style.display = 'block';
@@ -232,12 +248,12 @@ async function loadLifafa() {
 
 async function verifyMobile() {
   const mobile = document.getElementById('mobile-input').value.trim();
-  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Enter 10 digit number!', 'error');
+  if(!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
 
   setBtnLoading('mobile-btn', true, 'Next');
   try {
     const r = await fetch(API+'/auth/check-mobile', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body: JSON.stringify({ mobile })
     });
     const d = await r.json();
@@ -264,7 +280,7 @@ async function saveTgId() {
   setBtnLoading('tg-save-btn', true, 'Save & Continue');
   try {
     const r = await fetch(API+'/auth/update-tg-by-mobile', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body: JSON.stringify({ mobile: userMobile, tg_id })
     });
     const d = await r.json();
@@ -289,7 +305,7 @@ function goToClaimStep() {
     document.getElementById('channels-card').style.display = 'block';
     document.getElementById('verify-all-wrap').style.display = 'block';
   } else {
-    setupGameUI();
+    showClaimButton();
   }
 }
 
@@ -320,6 +336,7 @@ async function verifyChannel(i, link) {
       verifiedChannels[i] = true;
       badge.className = 'ch-badge verified'; badge.textContent = '✅ Verified';
       btn.className = 'ch-btn done'; btn.innerHTML = 'Done';
+      document.getElementById('ch-'+i).style.borderColor = '#bbf7d0';
       checkAllVerified();
       return true;
     } else { btn.disabled = false; btn.innerHTML = 'Verify'; return false; }
@@ -338,71 +355,27 @@ async function verifyAllChannels() {
 function checkAllVerified() {
   if(verifiedChannels.every(v => v)) {
       document.getElementById('verify-all-wrap').style.display = 'none';
-      setupGameUI();
+      showClaimButton();
   }
 }
 
-function setupGameUI() {
-  const type = currentLifafa.type;
-  const gameWrap = document.getElementById('game-wrap');
-  const uiOptions = document.getElementById('ui-options');
-  const uiInput = document.getElementById('ui-input');
-  
-  gameWrap.style.display = 'block';
-  uiOptions.style.display = 'none';
-  uiInput.style.display = 'none';
-
-  if(type === 'toss') {
-    uiOptions.style.display = 'grid';
-    uiOptions.innerHTML = `<button class="game-btn" onclick="selectGameOption('HEADS', this)">🪙 HEADS</button>
-                           <button class="game-btn" onclick="selectGameOption('TAILS', this)">🪙 TAILS</button>`;
-  } else if(type === 'even_odd') {
-    uiOptions.style.display = 'grid';
-    uiOptions.innerHTML = `<button class="game-btn" onclick="selectGameOption('EVEN', this)">🔢 EVEN</button>
-                           <button class="game-btn" onclick="selectGameOption('ODD', this)">🔢 ODD</button>`;
-  } else if(type === 'hidden_box') {
-    uiOptions.style.display = 'grid';
-    uiOptions.innerHTML = `<button class="game-btn" onclick="selectGameOption('BOX1', this)">📦 BOX 1</button>
-                           <button class="game-btn" onclick="selectGameOption('BOX2', this)">📦 BOX 2</button>
-                           <button class="game-btn" onclick="selectGameOption('BOX3', this)">📦 BOX 3</button>`;
-  } else if(type === 'math_quiz') {
-    uiInput.style.display = 'block';
-    document.getElementById('input-label').textContent = 'Solve: ' + (currentLifafa.quiz_question || '2 + 2 = ?');
-  } else if(type === 'voucher') {
-    uiInput.style.display = 'block';
-    document.getElementById('input-label').textContent = 'Enter Voucher Code';
-  }
+function showClaimButton() {
+  if(currentLifafa.type === 'toss') document.getElementById('toss-wrap').style.display = 'block';
+  else document.getElementById('claim-btn-wrap').style.display = 'block';
 }
 
-function selectGameOption(val, btn) {
-  selectedOption = val;
-  document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-async function claimNow() {
-  const type = currentLifafa.type;
-  let guess = selectedOption;
-  
-  if(type === 'math_quiz' || type === 'voucher') {
-    guess = document.getElementById('game-answer').value.trim();
-    if(!guess) return showMsg('claim-msg', 'Answer enter karo!', 'error');
-  }
-
-  if(['toss', 'even_odd', 'hidden_box'].includes(type) && !guess) {
-    return showMsg('claim-msg', 'Ek option select karo!', 'error');
-  }
-
+async function claimNow(guess) {
   setBtnLoading('claim-btn', true, 'Claim Now!');
   try {
     const r = await fetch(API+'/lifafa/claim', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess: guess })
+      body: JSON.stringify({ code: currentCode, mobile: userMobile, guess })
     });
     const d = await r.json();
     if(d.status === 'success') {
       document.getElementById('channels-card').style.display = 'none';
-      document.getElementById('game-wrap').style.display = 'none';
+      document.getElementById('toss-wrap').style.display = 'none';
+      document.getElementById('claim-btn-wrap').style.display = 'none';
       document.getElementById('won-amt').textContent = '₹' + d.amount;
       document.getElementById('step-success').style.display = 'block';
     } else { 
