@@ -20,8 +20,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
 .input-group{margin-bottom:1.25rem}
 .input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
-.input-group input,.input-group select{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
-.input-group input:focus,.input-group select:focus{border-color:#0057ff;background:white}
+.input-group input,.input-group select,.input-group textarea{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group textarea{resize:vertical;min-height:80px;line-height:1.5}
+.input-group input:focus,.input-group select:focus,.input-group textarea:focus{border-color:#0057ff;background:white}
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
 .btn:disabled{background:#94a3b8;cursor:not-allowed}
@@ -38,6 +39,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .deduction-box.show{display:block}
 .deduction-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:.25rem}
 .deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
+/* Type info banner */
+.type-info{background:#f0f4ff;border:2px solid #bfdbfe;border-radius:1rem;padding:.875rem 1rem;margin-bottom:1.25rem;display:none}
+.type-info.show{display:flex;align-items:flex-start;gap:.625rem}
+.type-info-icon{font-size:1.25rem;flex-shrink:0;margin-top:.1rem}
+.type-info-text{font-size:.75rem;font-weight:700;color:#1e40af;line-height:1.5}
+.type-info-title{font-size:.72rem;font-weight:900;color:#1d4ed8;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem}
+/* Voucher codes list */
+.voucher-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.voucher-row{display:flex;align-items:center;gap:.5rem}
+.voucher-row input{flex:1;padding:.75rem 1rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:.75rem;font-size:.85rem;font-weight:600;outline:none;font-family:inherit}
+.voucher-row input:focus{border-color:#0057ff;background:white}
+.voucher-row button{width:32px;height:32px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:.85rem;flex-shrink:0}
+.add-voucher-btn{background:#f0f4ff;border:2px dashed #bfdbfe;border-radius:.75rem;padding:.625rem;width:100%;font-size:.7rem;font-weight:700;color:#0057ff;cursor:pointer;font-family:inherit;margin-top:.5rem}
+/* Hidden box choices */
+.box-list{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
+.box-item{background:#f8fafc;border:2px solid #f1f5f9;border-radius:.75rem;padding:.625rem .75rem;display:flex;align-items:center;gap:.5rem}
+.box-item span{font-size:.75rem;font-weight:800;color:#64748b;flex-shrink:0}
+.box-item input{flex:1;background:transparent;border:none;font-size:.85rem;font-weight:600;outline:none;font-family:inherit;width:0}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
@@ -91,33 +110,131 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </select>
     </div>
 
+    <!-- Type Info Banner -->
+    <div class="type-info" id="type-info">
+      <div class="type-info-icon" id="type-info-icon">ℹ️</div>
+      <div>
+        <div class="type-info-title" id="type-info-title"></div>
+        <div class="type-info-text" id="type-info-desc"></div>
+      </div>
+    </div>
+
+    <!-- STANDARD / FIRST_COME / MATH_QUIZ / FAST_FINGER / REFER_SPECIAL: Fixed Amount -->
     <div id="f-amt" class="input-group">
       <label>Amount Per User (₹)</label>
       <input type="number" id="c-amt" placeholder="0.00" step="0.01" oninput="calcDeduction()">
     </div>
 
+    <!-- SCRATCH / LUCK_TEST / JACKPOT: Range -->
     <div id="f-range" style="display:none">
       <div class="input-group">
         <label>Amount Range (₹)</label>
         <div class="range-row">
-          <input type="number" id="c-min" placeholder="Min ₹">
+          <input type="number" id="c-min" placeholder="Min ₹" oninput="calcDeduction()">
           <input type="number" id="c-max" placeholder="Max ₹" oninput="calcDeduction()">
         </div>
       </div>
     </div>
 
+    <!-- TOSS: Correct Answer (Heads/Tails) -->
     <div id="f-toss" class="input-group" style="display:none">
       <label>Correct Answer</label>
       <select id="c-toss">
         <option value="HEADS">HEADS</option>
         <option value="TAILS">TAILS</option>
+      </select>
+    </div>
+
+    <!-- EVEN_ODD: Correct Answer (Even/Odd) -->
+    <div id="f-evenodd" class="input-group" style="display:none">
+      <label>Correct Answer</label>
+      <select id="c-evenodd">
         <option value="EVEN">EVEN</option>
         <option value="ODD">ODD</option>
       </select>
     </div>
 
-    <div class="input-group">
-      <label>Total Users</label>
+    <!-- MATH_QUIZ: Question & Answer -->
+    <div id="f-quiz" style="display:none">
+      <div class="input-group">
+        <label>Math Question</label>
+        <input type="text" id="c-question" placeholder="e.g. 12 × 8 = ?">
+      </div>
+      <div class="input-group">
+        <label>Correct Answer</label>
+        <input type="number" id="c-answer" placeholder="96">
+      </div>
+      <div class="input-group">
+        <label>Time Limit (seconds)</label>
+        <input type="number" id="c-quiz-time" placeholder="e.g. 30" value="30" min="5" max="300">
+      </div>
+    </div>
+
+    <!-- GOLDEN_HOUR: Start & End Time -->
+    <div id="f-golden" style="display:none">
+      <div class="input-group">
+        <label>Start Time</label>
+        <input type="datetime-local" id="c-start-time">
+      </div>
+      <div class="input-group">
+        <label>End Time</label>
+        <input type="datetime-local" id="c-end-time">
+      </div>
+    </div>
+
+    <!-- HIDDEN_BOX: Box Labels & Amounts -->
+    <div id="f-hidden" style="display:none">
+      <div class="input-group">
+        <label>Number of Boxes</label>
+        <select id="c-box-count" onchange="renderBoxes()">
+          <option value="2">2 Boxes</option>
+          <option value="3">3 Boxes</option>
+          <option value="4">4 Boxes</option>
+          <option value="5">5 Boxes</option>
+          <option value="6">6 Boxes</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Box Amounts (₹)</label>
+        <div class="box-list" id="box-list"></div>
+      </div>
+    </div>
+
+    <!-- VOUCHER: Voucher Codes List -->
+    <div id="f-voucher" style="display:none">
+      <div class="input-group">
+        <label>Voucher Codes</label>
+        <div class="voucher-list" id="voucher-list">
+          <div class="voucher-row">
+            <input type="text" placeholder="e.g. GIFT100" oninput="this.value=this.value.toUpperCase()">
+            <button onclick="removeVoucher(this)"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <button class="add-voucher-btn" onclick="addVoucher()">
+          <i class="fa-solid fa-plus"></i> Add Voucher Code
+        </button>
+      </div>
+      <div class="input-group">
+        <label>Voucher Value Each (₹)</label>
+        <input type="number" id="c-voucher-val" placeholder="0.00" step="0.01" oninput="calcDeduction()">
+      </div>
+    </div>
+
+    <!-- REFER_SPECIAL: Min Referrals Required -->
+    <div id="f-refer" class="input-group" style="display:none">
+      <label>Min Referrals Required</label>
+      <input type="number" id="c-min-refer" placeholder="e.g. 3" min="1">
+    </div>
+
+    <!-- FAST_FINGER: Winner Count -->
+    <div id="f-fast" class="input-group" style="display:none">
+      <label>Number of Winners</label>
+      <input type="number" id="c-winners" placeholder="e.g. 5" min="1" oninput="calcDeduction()">
+    </div>
+
+    <!-- Total Users (hidden for some types) -->
+    <div id="f-users" class="input-group">
+      <label id="users-label">Total Users</label>
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
@@ -191,121 +308,127 @@ fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
     }
   });
 
+// Type metadata: which fields to show + info banner
+const TYPE_CONFIG = {
+  standard: {
+    icon: '💸', title: 'Standard', desc: 'Har user ko fixed amount milta hai.',
+    fields: ['f-amt', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  scratch: {
+    icon: '🎰', title: 'Scratch Card', desc: 'Har user ko min-max range mein random amount milta hai.',
+    fields: ['f-range', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  toss: {
+    icon: '🪙', title: 'Toss', desc: 'User HEADS ya TAILS choose karta hai. Sahi jawab pe amount milta hai.',
+    fields: ['f-amt', 'f-toss', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  luck_test: {
+    icon: '🍀', title: 'Luck Test', desc: 'Total amount users mein randomly split hota hai. Kisi ko zyada, kisi ko kam.',
+    fields: ['f-range', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  first_come: {
+    icon: '🏃', title: 'First Come', desc: 'Sirf pehla user claim kar sakta hai. Ek hi winner hoga.',
+    fields: ['f-amt'],
+    usersLabel: null // hide users
+  },
+  math_quiz: {
+    icon: '🧮', title: 'Math Quiz', desc: 'Jo user time limit mein sahi answer dega, usse amount milega.',
+    fields: ['f-amt', 'f-quiz', 'f-users'],
+    usersLabel: 'Max Winners'
+  },
+  fast_finger: {
+    icon: '⚡', title: 'Fastest Finger First', desc: 'Sabse pehle claim karne wale N users ko amount milta hai.',
+    fields: ['f-amt', 'f-fast'],
+    usersLabel: null // winners field se handle hoga
+  },
+  golden_hour: {
+    icon: '⏰', title: 'Golden Hour', desc: 'Sirf set time window mein claim ho sakta hai.',
+    fields: ['f-amt', 'f-golden', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  even_odd: {
+    icon: '🎯', title: 'Even or Odd', desc: 'User EVEN ya ODD guess karta hai. Sahi guess pe amount milta hai.',
+    fields: ['f-amt', 'f-evenodd', 'f-users'],
+    usersLabel: 'Total Users'
+  },
+  jackpot: {
+    icon: '🎪', title: 'Jackpot', desc: 'Sab users mein se sirf 1 lucky winner ko poora amount milta hai.',
+    fields: ['f-range', 'f-users'],
+    usersLabel: 'Participants (Pool)'
+  },
+  hidden_box: {
+    icon: '📦', title: 'Hidden Box', desc: 'User ek box choose karta hai. Har box mein alag amount hota hai.',
+    fields: ['f-hidden'],
+    usersLabel: null
+  },
+  voucher: {
+    icon: '🎟️', title: 'Voucher Code', desc: 'Preset voucher codes share hote hain. Har code ek baar use ho sakta hai.',
+    fields: ['f-voucher'],
+    usersLabel: null
+  },
+  refer_special: {
+    icon: '👥', title: 'Referral Special', desc: 'Sirf wahi users claim kar sakte hain jinhone minimum required referrals kiye hon.',
+    fields: ['f-amt', 'f-refer', 'f-users'],
+    usersLabel: 'Total Users'
+  }
+};
+
+// All possible field IDs
+const ALL_FIELDS = ['f-amt','f-range','f-toss','f-evenodd','f-quiz','f-golden','f-hidden','f-voucher','f-refer','f-fast','f-users'];
+
 function changeType() {
   const t = document.getElementById('c-type').value;
-  
-  // Logic for UI visibility based on types
-  const isRange = ['scratch', 'luck_test', 'jackpot'].includes(t);
-  const isChoice = ['toss', 'even_odd', 'hidden_box'].includes(t);
-  
-  document.getElementById('f-amt').style.display   = isRange ? 'none'  : 'block';
-  document.getElementById('f-range').style.display = isRange ? 'block' : 'none';
-  document.getElementById('f-toss').style.display  = isChoice ? 'block' : 'none';
-  
+  const cfg = TYPE_CONFIG[t];
+
+  // Hide all dynamic fields first
+  ALL_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+
+  // Show fields for this type
+  cfg.fields.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'block';
+  });
+
+  // Users label
+  if(cfg.usersLabel === null) {
+    document.getElementById('f-users').style.display = 'none';
+  } else {
+    document.getElementById('f-users').style.display = 'block';
+    document.getElementById('users-label').textContent = cfg.usersLabel;
+  }
+
+  // Type info banner
+  const info = document.getElementById('type-info');
+  document.getElementById('type-info-icon').textContent = cfg.icon;
+  document.getElementById('type-info-title').textContent = cfg.title;
+  document.getElementById('type-info-desc').textContent = cfg.desc;
+  info.classList.add('show');
+
+  // Init boxes for hidden_box
+  if(t === 'hidden_box') renderBoxes();
+
   calcDeduction();
 }
 
-function calcDeduction() {
-  const t     = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value) || 0;
-  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
-  const max   = parseFloat(document.getElementById('c-max').value) || 0;
-  
-  let total = 0;
-  if(['scratch', 'luck_test', 'jackpot'].includes(t)) {
-      total = max * users;
-  } else if(t === 'first_come') {
-      total = amt; // Only one winner
-  } else {
-      total = amt * users;
-  }
-
-  const box = document.getElementById('deduction-box');
-  if(total > 0 && users > 0) {
-    const calc = (t==='first_come') ? `Fixed ₹${amt} (1 User)` : `₹${(total/users).toFixed(2)} × ${users} users`;
-    document.getElementById('d-calc').textContent = calc;
-    document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
-    box.classList.add('show');
-  } else {
-    box.classList.remove('show');
+function renderBoxes() {
+  const count = parseInt(document.getElementById('c-box-count').value) || 4;
+  const list = document.getElementById('box-list');
+  const emojis = ['📦','🎁','💼','🧧','🎀','🪄'];
+  list.innerHTML = '';
+  for(let i = 0; i < count; i++) {
+    list.innerHTML += `
+      <div class="box-item">
+        <span>${emojis[i]}</span>
+        <input type="number" placeholder="₹" step="0.01" min="0" oninput="calcDeduction()">
+      </div>`;
   }
 }
 
-function addChannel() {
-  const container = document.getElementById('channels-container');
-  if(container.children.length >= 10) return alert('Max 10 channels!');
-  const div = document.createElement('div');
-  div.className = 'channel-item';
-  div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
-    <input type="url" placeholder="https://t.me/channel" class="ch-input">
-    <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
-  container.appendChild(div);
-}
-
-function removeCh(btn) { btn.closest('.channel-item').remove(); }
-
-function showMsg(text, type) {
-  const m = document.getElementById('create-msg');
-  if(!text) { m.style.display = 'none'; return; }
-  m.textContent = text;
-  m.className = 'msg ' + type;
-  m.style.display = 'block';
-}
-
-async function createLifafa() {
-  const code  = document.getElementById('c-code').value.trim().toUpperCase();
-  const type  = document.getElementById('c-type').value;
-  const users = (type === 'first_come') ? 1 : (parseInt(document.getElementById('c-users').value) || 0);
-  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
-  const min   = parseFloat(document.getElementById('c-min').value) || 0;
-  const max   = parseFloat(document.getElementById('c-max').value) || 0;
-  const toss  = document.getElementById('c-toss').value;
-
-  if(!code) return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0) return showMsg('❌ Users count required!', 'error');
-
-  let total = (['scratch', 'luck_test', 'jackpot'].includes(type)) ? (max * users) : (amt * (type === 'first_come' ? 1 : users));
-
-  if(userBalance < total) return showMsg('❌ Insufficient Balance!', 'error');
-
-  const channels = [...document.querySelectorAll('.ch-input')].map(i => i.value.trim()).filter(v => v);
-
-  const btn = document.getElementById('create-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-
-  try {
-    const r = await fetch(API+'/lifafa/create', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels })
-    });
-    const d = await r.json();
-    if(d.status === 'success') {
-      claimLink = window.location.origin + '/claim.html?code=' + d.code;
-      document.getElementById('claim-link').textContent = claimLink;
-      document.getElementById('create-result').style.display = 'block';
-      userBalance -= total;
-      document.getElementById('balance').textContent = userBalance.toFixed(2);
-      showMsg('', '');
-    } else {
-      showMsg('❌ ' + (d.message || 'Failed!'), 'error');
-    }
-  } catch(e) {
-    showMsg('❌ Connection Error!', 'error');
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
-}
-
-function copyLink() {
-  navigator.clipboard.writeText(claimLink);
-  alert('Copied! ✅');
-}
-
-function createAnother() {
-  location.reload();
-}
-</script>
-</body>
-</html>
+function calcDe
