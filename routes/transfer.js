@@ -53,7 +53,7 @@ router.post('/send', auth, async (req, res) => {
     if(receiver._id.equals(sender._id))
       return res.status(400).json({ status:'error', message:'Cannot send to yourself' });
 
-    const txId   = 'TX' + Date.now() + Math.floor(Math.random()*99999);
+    const txId   = 'UW' + String(Math.floor(10000 + Math.random()*90000));
     const now    = new Date();
     const remark = comment || ('Transfer to ' + receiver_mobile);
     const dt     = now.toLocaleString('en-IN', {
@@ -79,10 +79,28 @@ router.post('/send', auth, async (req, res) => {
     const rNew = await User.findById(receiver._id).select('balance tg_id');
 
     if(sNew.tg_id) sendTG(sNew.tg_id,
-`🔴 *DEBIT ALERT*\n\n━━━━━━━━━━━━━━\n🔴   UNIO WALLET ✅ 🔴\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 Sent To : \`${receiver_mobile}\`\n👤 Name : ${receiver.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${sNew.balance}\n━━━━━━━━━━━━━━\n\n❌ Amount Debited through UNIO Wallet 🔴`);
+`⚡ *Debit Alert*
+
+Amount : ₹${amt}
+To : ${receiver.name||'User'} (${receiver_mobile})
+Txn ID : \`${txId}\`
+Comment : ${comment||'—'}
+Date : ${dt}
+
+Balance : ₹${sNew.balance}
+⚡ UNIO Wallet`);
 
     if(rNew.tg_id) sendTG(rNew.tg_id,
-`🟢 *CREDIT ALERT*\n\n━━━━━━━━━━━━━━\n🟢   UNIO WALLET ✅ 🟢\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 From : \`${sender.mobile}\`\n👤 Name : ${sender.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : P2P TRANSFER\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${rNew.balance}\n━━━━━━━━━━━━━━\n\n✅ Amount Credited through UNIO Wallet 🟢`);
+`⚡ *Credit Alert*
+
+Amount : ₹${amt}
+From : ${sender.name||'User'} (${sender.mobile})
+Txn ID : \`${txId}\`
+Comment : ${comment||'—'}
+Date : ${dt}
+
+Balance : ₹${rNew.balance}
+⚡ UNIO Wallet`);
 
     res.json({
       status:   'success',
@@ -141,7 +159,7 @@ router.post('/bulk-send', auth, async (req, res) => {
         const receiver = await User.findOne({ mobile });
         if(!receiver) { failed.push({ mobile, reason:'User not found' }); continue; }
 
-        const txId = 'TX' + Date.now() + Math.floor(Math.random()*99999);
+        const txId = 'UW' + String(Math.floor(10000 + Math.random()*90000));
 
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -174,7 +192,16 @@ router.post('/bulk-send', auth, async (req, res) => {
         const rNew = await User.findById(receiver._id).select('tg_id balance');
         if(rNew?.tg_id) {
           sendTG(rNew.tg_id,
-`⚡ *BULK CREDIT ALERT*\n\n━━━━━━━━━━━━━━\n⚡   UNIO WALLET ✅ ⚡\n━━━━━━━━━━━━━━\n\n💰 Amount : ₹${amt}\n👤 From : \`${sender.mobile}\`\n👤 Name : ${sender.name||'User'}\n🆔 Txn ID : \`${txId}\`\n📋 Type : BULK TRANSFER\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${rNew.balance}\n━━━━━━━━━━━━━━\n\n✅ Amount Credited through UNIO Wallet`);
+`⚡ *Credit Alert*
+
+Amount : ₹${amt}
+From : ${sender.name||'User'} (${sender.mobile})
+Txn ID : \`${txId}\`
+Comment : ${comment||'—'}
+Date : ${dt}
+
+Balance : ₹${rNew.balance}
+⚡ UNIO Wallet`);
         }
 
       } catch(e) {
@@ -186,7 +213,15 @@ router.post('/bulk-send', auth, async (req, res) => {
     const sNew = await User.findById(sender._id).select('tg_id balance');
     if(sNew?.tg_id) {
       sendTG(sNew.tg_id,
-`⚡ *BULK PAYMENT SUCCESSFUL*\n\n━━━━━━━━━━━━━━\n⚡   UNIO WALLET ✅ ⚡\n━━━━━━━━━━━━━━\n\n💰 Total Sent : ₹${totalSent.toFixed(2)}\n👥 Recipients : ${results.length}\n💬 Comment : ${comment||'—'}\n📅 Date : ${dt}\n\n━━━━━━━━━━━━━━\n🪙 Balance : ₹${sNew.balance}\n━━━━━━━━━━━━━━\n\n✅ Bulk Payment Done through UNIO Wallet`);
+`⚡ *Debit Alert — Bulk*
+
+Total Sent : ₹${totalSent.toFixed(2)}
+Recipients : ${results.length}
+Comment : ${comment||'—'}
+Date : ${dt}
+
+Balance : ₹${sNew.balance}
+⚡ UNIO Wallet`);
     }
 
     res.json({
