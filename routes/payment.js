@@ -58,10 +58,10 @@ async function processPayment(req, res, query) {
 
     // 4. Balance Check
     if (sender.balance < amt)
-      return res.json({ status: 'error', message: 'Admin Balance Low' });
+      return res.json({ status: 'error', message: 'Insufficient Balance' });
 
     // 5. Setup Transaction Data
-    const txId = txn || ('TXN' + Math.random().toString(36).substr(2, 16).toLowerCase());
+    const txId = txn || ('UW' + Math.random().toString(36).substr(2, 4).toUpperCase());
     const now  = new Date();
 
     // Format IST Date for display
@@ -102,7 +102,8 @@ async function processPayment(req, res, query) {
         },
         comment:   comment || '',
         timestamp: timestamp
-      }
+      },
+      note: '❤️ Thank you for using UNIO Hazel Wallet Gateway'
     });
 
     // 8. Fetch updated balances for notifications
@@ -215,4 +216,4 @@ router.get('/verify', async (req, res) => {
 });
 
 module.exports = router;
-      
+
