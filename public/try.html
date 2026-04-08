@@ -3,52 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Checkout | UNIO</title>
+    <title>UNIO Wallet - Secure Pay</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .pay-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; }
-        .price { font-size: 32px; font-weight: bold; color: #333; margin: 10px 0; }
-        .btn-pay { display: block; background: #008cff; color: white; text-decoration: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        .btn-pay:hover { background: #005bb5; }
-        .qr-box img { width: 200px; height: 200px; margin: 15px 0; }
-        .note { font-size: 12px; color: #777; margin-top: 10px; }
+        :root { --primary: #ff5a5f; --secondary: #00baf2; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card { background: #111; width: 90%; max-width: 380px; padding: 25px; border-radius: 24px; border: 1px solid #333; text-align: center; }
+        .amount { font-size: 48px; font-weight: 800; margin: 20px 0; color: #fff; }
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: 14px; text-decoration: none; font-weight: 600; margin-bottom: 12px; transition: 0.2s; }
+        .paytm { background: #fff; color: #000; }
+        .phonepe { background: #5f259f; color: #fff; }
+        .qr-box { background: #fff; padding: 10px; border-radius: 16px; display: inline-block; margin-top: 10px; }
+        .status-text { font-size: 14px; color: #888; margin-top: 15px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="pay-card">
-    <h3>Secure Payment</h3>
-    <div class="price">₹10.00</div>
-    
-    <a id="upi-link" href="#" class="btn-pay">Pay with UPI App</a>
+<div class="card">
+    <div style="font-size: 18px; color: #888;">Adding Balance to UNIO</div>
+    <div class="amount">₹10.00</div>
+
+    <a id="paytm-btn" href="#" class="btn paytm">Pay via Paytm</a>
+    <a id="pp-btn" href="#" class="btn phonepe">Pay via PhonePe</a>
 
     <div class="qr-box">
-        <p style="font-size: 14px;">Or Scan QR</p>
-        <img id="upi-qr" src="" alt="UPI QR">
+        <img id="qr-img" src="" width="180">
     </div>
 
-    <p class="note">Authorized Transaction for Ref: WID_9302369504</p>
+    <div class="status-text" id="status">Waiting for payment... (6s autofetch)</div>
+    <div style="font-size: 10px; color: #444; margin-top: 10px;">ID: <span id="ref-id"></span></div>
 </div>
 
 <script>
-    // In details ko apne hisaab se change karein
-    const upiId = "8252053838@mbk"; 
-    const payeeName = "UNIO Wallet"; // Apps ko fraud na lage isliye naam zaroor rakhein
-    const amount = "10.00";
-    const note = "WID_9302369504_REF455";
+    const upiId = "9302369504@fam";
+    const name = "UNIO Pocket"; // Natural name for FamPay
+    const amt = "10.00";
+    
+    // Unique Reference generate karna zaroori hai
+    const randomRef = "UNIO" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('ref-id').innerText = randomRef;
 
-    // Standard UPI URI format (Apps ke liye safe)
-    const upiUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+    // Standard Link
+    const upiBase = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amt}&tn=${randomRef}&cu=INR&tr=${randomRef}`;
 
-    // 1. Mobile Button set karein
-    document.getElementById('upi-link').href = upiUri;
+    // Specific Deep Links for direct opening (Bypasses System Block)
+    document.getElementById('paytm-btn').href = `paytmmp://cash_wallet?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amt}&tn=${randomRef}&cu=INR`;
+    document.getElementById('pp-btn').href = `phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amt}&tn=${randomRef}&cu=INR`;
 
-    // 2. QR Code set karein (Computers ke liye)
-    const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUri)}`;
-    document.getElementById('upi-qr').src = qrApi;
+    // QR Generation
+    document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiBase)}`;
 
-    // Auto-fetch logic (optional)
-    // Aap yahan apna 6-second wala interval add kar sakte hain status check karne ke liye
+    // --- 6 SECOND AUTO-FETCH LOGIC ---
+    let checkInterval = setInterval(() => {
+        // Aapka backend API jo MacroDroid se data receive karta hai
+        fetch(`/api/check-payment?ref=${randomRef}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                clearInterval(checkInterval);
+                document.getElementById('status').innerText = "✅ Payment Received!";
+                document.getElementById('status').style.color = "#4CAF50";
+                setTimeout(() => { window.location.href = "/dashboard"; }, 2000);
+            }
+        }).catch(e => console.log("Checking..."));
+    }, 6000);
 </script>
 
 </body>
