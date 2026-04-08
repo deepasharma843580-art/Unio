@@ -13,12 +13,14 @@
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
   --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
   --purple:#7c3aed;
-  --white:#ffffff;--shadow:0 24px 60px rgba(0,87,255,.10);
+  --white:#ffffff;--shadow:0 24px 60px rgba(0,87,255,.12);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
-body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.08),transparent 70%);pointer-events:none}
-body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(124,58,237,.07),transparent 70%);pointer-events:none}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+
+/* Background Accents */
+body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.1),transparent 70%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(124,58,237,.1),transparent 70%);pointer-events:none}
 
 .card{background:var(--white);border-radius:2.5rem;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:var(--shadow);text-align:center;position:relative;z-index:1;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
@@ -33,33 +35,42 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
 .pin-dot{width:56px;height:56px;border-radius:1.1rem;background:var(--gray-50);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
 .pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
 .pin-dot.filled::after{content:'';position:absolute;width:14px;height:14px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
-.pin-dot.error{border-color:var(--red);background:#fee2e2}
+.pin-dot.error{border-color:var(--red);background:#fee2e2;animation:shake 0.4s;}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  25% {transform: translateX(-5px);}
+  75% {transform: translateX(5px);}
+}
 
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;max-width:300px;margin:0 auto 1.5rem}
-.key{padding:1.1rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1.2rem;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center}
+.key{padding:1.1rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1.2rem;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center;outline:none}
 .key:active{background:var(--gray-100);transform:scale(.92)}
 .key.del{color:var(--red)}
-.key.go{background:var(--blue);color:white;border-color:var(--blue)}
-.key:disabled{opacity:.4;pointer-events:none}
 
-.key.loading .fa-arrow-right{display:none}
-.key.loading .key-spinner{display:block}
-.key-spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none}
+/* Keypad Submit Button Specific */
+.key.go{background:var(--blue);color:white;border-color:var(--blue);position:relative}
+.key.go.loading i {display:none;}
+.key.go .spinner {display:none; width:20px; height:20px; border-width:3px;}
+.key.go.loading .spinner {display:block;}
 
 .action-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .act-btn{padding:.8rem;background:var(--gray-50);border:2px solid var(--gray-100);border-radius:.9rem;font-size:.75rem;font-weight:700;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s}
 .act-btn:hover{background:var(--white);border-color:var(--blue);color:var(--blue)}
 
-.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.65rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+/* Toast Styling */
+.toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.75rem 1.5rem;border-radius:2rem;font-size:.8rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;box-shadow: 0 10px 30px rgba(0,0,0,0.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.green{background:var(--green)}
 .toast.red{background:var(--red)}
 
+/* Modal & Overlay */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
 .overlay.open{display:flex}
 .modal{background:white;border-radius:2rem;padding:2rem;width:100%;max-width:390px;position:relative;animation:modalIn .3s ease-out;max-height:90vh;overflow-y:auto}
 @keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .modal-close{position:absolute;top:1.2rem;right:1.2rem;width:32px;height:32px;border-radius:50%;background:var(--gray-100);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+
 .m-icon{width:56px;height:56px;border-radius:1.2rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem}
 .m-icon.blue{background:var(--blue-light);color:var(--blue)}
 .m-icon.purple{background:#f3f0ff;color:var(--purple)}
@@ -68,11 +79,10 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
 
 .input-group{margin-bottom:1rem;text-align:left}
 .input-group label{display:block;font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.4rem;margin-left:.3rem}
-.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem}
-.input-group input:focus{border-color:var(--blue);background:white}
+.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;transition: all 0.2s;}
+.input-group input:focus{border-color:var(--blue);background:white;box-shadow: 0 0 0 4px var(--blue-light);}
 
 .tg-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:1rem}
-.tg-row .input-group{margin-bottom:0}
 .get-id-btn{padding:.9rem 1rem;background:var(--green);color:white;border:none;border-radius:1rem;font-size:.7rem;font-weight:700;cursor:pointer;height:50px;display:flex;align-items:center;white-space:nowrap;text-decoration:none;gap:.3rem}
 
 .bot-box{display:flex;align-items:center;gap:.75rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:.9rem;padding:.8rem 1rem;margin-bottom:1rem;text-decoration:none;transition:opacity .2s}
@@ -82,16 +92,23 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
 
 .otp-banner{background:#f0fdf4;border:2px solid #86efac;border-radius:.9rem;padding:.6rem .9rem;font-size:.72rem;font-weight:700;color:var(--green);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 
-.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s}
+/* General Buttons with Universal Spinner Support */
+.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s;position:relative;overflow:hidden}
 .btn:disabled{background:var(--gray-400);cursor:not-allowed}
 .btn:active:not(:disabled){transform:scale(.98)}
 .btn.green-btn{background:var(--green)}
-.btn.green-btn:disabled{background:var(--gray-400)}
+
+/* UNIVERSAL SPINNER */
 .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none;flex-shrink:0}
-.btn.loading .spinner{display:block}
-.btn.loading span:not(.spinner){display:none}
+.loading .spinner{display:block}
+.loading span, .loading i {display:none}
 
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer Logo Styling */
+.footer-brand {margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.8; z-index: 1;}
+.footer-text {font-size: 0.65rem; font-weight: 700; color: var(--gray-600); letter-spacing: 2px; text-transform: uppercase;}
+.footer-subtext {font-size: 0.8rem; font-family: 'Syne', sans-serif; font-weight: 800; color: var(--blue);}
 </style>
 </head>
 <body>
@@ -122,7 +139,7 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
     <div class="key del" onclick="del()"><i class="fa-solid fa-delete-left"></i></div>
     <div class="key" onclick="press('0')">0</div>
     <button class="key go" id="submit-btn" onclick="submit()">
-      <div class="key-spinner"></div>
+      <div class="spinner"></div>
       <i class="fa-solid fa-arrow-right"></i>
     </button>
   </div>
@@ -137,21 +154,17 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
   </div>
 </div>
 
+<div class="footer-brand">
+  <span class="footer-text">POWERED BY</span>
+  <span class="footer-subtext">UNIO — HAZEL</span>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- ════════════════════════════════════════════
-     FORGOT PIN MODAL
-     Step 1a: TG linked   → Send OTP button
-     Step 1b: TG na linked → Link karo (Enter ID + Get ID + Connect & Send OTP)
-     Step 2: OTP verify
-     Step 3: New PIN
-     Step 4: Confirm PIN
-════════════════════════════════════════════ -->
 <div class="overlay" id="forgot-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('forgot-overlay')"><i class="fa-solid fa-xmark"></i></button>
 
-    <!-- 1a: TG already linked -->
     <div id="f-step-linked">
       <div class="m-icon blue"><i class="fa-solid fa-mobile-screen"></i></div>
       <div class="m-title">Forgot PIN?</div>
@@ -162,42 +175,37 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
       </button>
     </div>
 
-    <!-- 1b: TG not linked → link first -->
     <div id="f-step-link" style="display:none">
       <div class="m-icon purple"><i class="fa-brands fa-telegram"></i></div>
       <div class="m-title">Link Telegram</div>
-      <div class="m-sub">Telegram linked nahi hai. Pehle link karo, phir OTP aayega aur PIN reset kar sakte ho.</div>
-
+      <div class="m-sub">Telegram linked nahi hai. Pehle link karo reset karne ke liye.</div>
       <a href="https://t.me/OTP_UNIO_BOT?start=start" target="_blank" class="bot-box">
         <i class="fa-brands fa-telegram" style="font-size:1.4rem"></i>
         <div>
-          <div class="bot-box-text">Start bot to receive OTP</div>
+          <div class="bot-box-text">Start bot for OTP</div>
           <div class="bot-box-name">@OTP_UNIO_BOT</div>
         </div>
       </a>
-
       <div class="tg-row">
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom:0">
           <label>Telegram ID</label>
-          <input type="number" id="f-tgid" placeholder="Enter Telegram ID" oninput="onForgotTGInput()">
+          <input type="number" id="f-tgid" placeholder="Enter ID" oninput="onForgotTGInput()">
         </div>
         <a href="https://t.me/OTP_UNIO_BOT?start=getid" target="_blank" class="get-id-btn">
           <i class="fa-solid fa-id-badge"></i> Get ID
         </a>
       </div>
-
-      <button class="btn green-btn" id="f-connect-btn" onclick="connectAndSendForgotOTP()" disabled>
+      <button class="btn green-btn" id="f-connect-btn" onclick="connectAndSendForgotOTP()" disabled style="margin-top:1rem">
         <div class="spinner"></div>
         <span><i class="fa-solid fa-link"></i>&nbsp; Connect &amp; Send OTP</span>
       </button>
     </div>
 
-    <!-- Step 2: OTP -->
     <div id="f-step-otp" style="display:none">
       <div class="m-icon blue"><i class="fa-solid fa-shield-halved"></i></div>
       <div class="m-title">Enter OTP</div>
-      <div class="m-sub">OTP Telegram pe bheja gaya hai. 5 minute valid hai.</div>
-      <div class="otp-banner"><i class="fa-solid fa-circle-check"></i> OTP sent! Check @OTP_UNIO_BOT</div>
+      <div class="m-sub">OTP Telegram pe bheja gaya hai.</div>
+      <div class="otp-banner"><i class="fa-solid fa-circle-check"></i> OTP sent to @OTP_UNIO_BOT</div>
       <div class="input-group">
         <label>OTP Code</label>
         <input type="number" id="f-otp" placeholder="4-digit OTP">
@@ -208,15 +216,13 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
       </button>
     </div>
 
-    <!-- Step 3: New PIN -->
     <div id="f-step-newpin1" style="display:none">
       <div class="m-icon blue"><i class="fa-solid fa-lock"></i></div>
-      <div class="step-badge" style="display:inline-block;margin-bottom:.75rem">Step 1 of 2</div>
       <div class="m-title">New PIN</div>
       <div class="m-sub">Apna naya 4-digit PIN enter karo.</div>
       <div class="input-group">
         <label>New PIN</label>
-        <input type="password" id="f-newpin1" placeholder="4-digit PIN" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <input type="password" id="f-newpin1" placeholder="4-digit PIN" maxlength="4">
       </div>
       <button class="btn" id="f-newpin1-btn" onclick="goToConfirmForgotPin()">
         <div class="spinner"></div>
@@ -224,43 +230,33 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
       </button>
     </div>
 
-    <!-- Step 4: Confirm PIN -->
     <div id="f-step-newpin2" style="display:none">
       <div class="m-icon blue"><i class="fa-solid fa-lock"></i></div>
-      <div class="step-badge" style="display:inline-block;margin-bottom:.75rem">Step 2 of 2</div>
       <div class="m-title">Confirm PIN</div>
-      <div class="m-sub">Same PIN dobara enter karo confirm karne ke liye.</div>
+      <div class="m-sub">Same PIN dobara enter karo.</div>
       <div class="input-group">
         <label>Confirm PIN</label>
-        <input type="password" id="f-newpin2" placeholder="Re-enter PIN" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <input type="password" id="f-newpin2" placeholder="Re-enter PIN" maxlength="4">
       </div>
       <button class="btn" id="f-reset-btn" onclick="resetPINFinal()">
         <div class="spinner"></div>
         <span><i class="fa-solid fa-check"></i>&nbsp; Set New PIN</span>
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════
-     CHANGE PIN MODAL
-     Step 1: Old PIN verify (via /auth/verify-pin)
-     Step 2: New PIN
-     Step 3: Confirm New PIN
-════════════════════════════════════════════ -->
 <div class="overlay" id="change-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('change-overlay')"><i class="fa-solid fa-xmark"></i></button>
 
-    <!-- Step C1: Old PIN -->
     <div id="c-step-oldpin">
       <div class="m-icon blue"><i class="fa-solid fa-lock-open"></i></div>
       <div class="m-title">Change PIN</div>
       <div class="m-sub">Pehle apna current PIN verify karo.</div>
       <div class="input-group">
         <label>Current PIN</label>
-        <input type="password" id="c-oldpin" placeholder="4-digit current PIN" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <input type="password" id="c-oldpin" placeholder="4-digit PIN" maxlength="4">
       </div>
       <button class="btn" id="c-oldpin-btn" onclick="verifyOldPIN()">
         <div class="spinner"></div>
@@ -268,38 +264,33 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40
       </button>
     </div>
 
-    <!-- Step C2: New PIN -->
     <div id="c-step-newpin1" style="display:none">
       <div class="m-icon blue"><i class="fa-solid fa-lock"></i></div>
-      <div class="step-badge" style="display:inline-block;margin-bottom:.75rem">Step 1 of 2</div>
       <div class="m-title">New PIN</div>
-      <div class="m-sub">Apna naya 4-digit PIN enter karo.</div>
+      <div class="m-sub">Naya PIN enter karo.</div>
       <div class="input-group">
         <label>New PIN</label>
-        <input type="password" id="c-newpin1" placeholder="4-digit PIN" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <input type="password" id="c-newpin1" placeholder="4-digit PIN" maxlength="4">
       </div>
       <button class="btn" id="c-newpin1-btn" onclick="goToConfirmChangePIN()">
         <div class="spinner"></div>
-        <span>Continue <i class="fa-solid fa-arrow-right"></i></span>
+        <span>Continue</span>
       </button>
     </div>
 
-    <!-- Step C3: Confirm New PIN -->
     <div id="c-step-newpin2" style="display:none">
       <div class="m-icon blue"><i class="fa-solid fa-lock"></i></div>
-      <div class="step-badge" style="display:inline-block;margin-bottom:.75rem">Step 2 of 2</div>
       <div class="m-title">Confirm PIN</div>
-      <div class="m-sub">Same naya PIN dobara enter karo.</div>
+      <div class="m-sub">Re-enter naya PIN.</div>
       <div class="input-group">
         <label>Confirm PIN</label>
-        <input type="password" id="c-newpin2" placeholder="Re-enter PIN" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <input type="password" id="c-newpin2" placeholder="Re-enter PIN" maxlength="4">
       </div>
       <button class="btn" id="c-confirm-btn" onclick="saveChangedPIN()">
         <div class="spinner"></div>
-        <span><i class="fa-solid fa-check"></i>&nbsp; Save New PIN</span>
+        <span>Save New PIN</span>
       </button>
     </div>
-
   </div>
 </div>
 
@@ -315,14 +306,11 @@ let step1Pin   = '';
 let step       = 1;
 let code       = '';
 
-// Forgot flow state
-let forgotTGID    = '';
+// Flow states
+let forgotTGID = '';
 let forgotNewPin1 = '';
-
-// Change flow state
 let changeNewPin1 = '';
 
-// ── Init UI ────────────────────────────────────────────────────────────────────
 function initUI() {
   if (mode === 'set') {
     document.getElementById('main-icon').innerHTML = '<i class="fa-solid fa-lock"></i>';
@@ -343,19 +331,11 @@ function setStep(n) {
   if (n === 1) {
     badge.textContent = 'Step 1 of 2';
     document.getElementById('main-title').textContent = mode === 'change' ? 'New PIN' : 'Create PIN';
-    document.getElementById('main-sub').textContent   = 'Enter a 4-digit PIN';
   } else {
     badge.textContent = 'Step 2 of 2';
     document.getElementById('main-title').textContent = 'Confirm PIN';
-    document.getElementById('main-sub').textContent   = 'Re-enter the same PIN to confirm';
   }
 }
-
-initUI();
-
-// ── Keypad ─────────────────────────────────────────────────────────────────────
-function press(n) { if (code.length < 4) { code += n; updateDots(); } }
-function del()    { code = code.slice(0, -1); updateDots(); }
 
 function updateDots(isError = false) {
   for (let i = 0; i < 4; i++) {
@@ -365,13 +345,42 @@ function updateDots(isError = false) {
   }
 }
 
-function submit() {
+function press(n) { if (code.length < 4) { code += n; updateDots(); } }
+function del()    { code = code.slice(0, -1); updateDots(); }
+
+async function submit() {
   if (code.length < 4) return toast('4 digit ka PIN chahiye!', 'red');
-  if (mode === 'set' || mode === 'change') handleSetOrChangeFlow();
-  else handleVerifyPin();
+  const btn = document.getElementById('submit-btn');
+  
+  if (mode === 'verify') {
+    btnLoad(btn, true);
+    await handleVerifyPin();
+    btnLoad(btn, false);
+  } else {
+    handleSetOrChangeFlow();
+  }
 }
 
-async function handleSetOrChangeFlow() {
+async function handleVerifyPin() {
+  try {
+    const res = await fetch(`${API}/auth/verify-pin`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ pin: code })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      toast('Access Granted ✅', 'green');
+      setTimeout(() => window.location.href = 'dashboard.html', 800);
+    } else {
+      toast('Invalid PIN ❌', 'red');
+      updateDots(true);
+      setTimeout(() => { code = ''; updateDots(); }, 800);
+    }
+  } catch(e) { toast('Network error', 'red'); }
+}
+
+function handleSetOrChangeFlow() {
   if (step === 1) {
     step1Pin = code; setStep(2);
   } else {
@@ -381,13 +390,13 @@ async function handleSetOrChangeFlow() {
       setTimeout(() => { setStep(1); step1Pin = ''; }, 800);
       return;
     }
-    if (mode === 'change') await callChangePinAPI(code);
-    else await callSetPin(code);
+    const btn = document.getElementById('submit-btn');
+    btnLoad(btn, true);
+    callSetPin(code);
   }
 }
 
 async function callSetPin(pin) {
-  disableKeypad(true);
   try {
     const res  = await fetch(`${API}/auth/set-pin`, {
       method: 'POST',
@@ -399,33 +408,20 @@ async function callSetPin(pin) {
       localStorage.setItem('pin_set','true');
       toast('PIN set ho gaya! ✅','green');
       setTimeout(() => window.location.href = 'dashboard.html', 1000);
-    } else { toast(data.message||'Error','red'); setStep(1); }
+    } else { toast(data.message,'red'); setStep(1); }
   } catch(e) { toast('Network error','red'); setStep(1); }
-  finally { disableKeypad(false); }
+  finally { btnLoad(document.getElementById('submit-btn'), false); }
 }
 
-// ══════════════════════════════════════════════════════════════
-// FORGOT PIN
-// ══════════════════════════════════════════════════════════════
-function openForgot() {
-  // Reset
-  ['f-otp','f-tgid','f-newpin1','f-newpin2'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
-  forgotTGID = ''; forgotNewPin1 = '';
-  if(document.getElementById('f-connect-btn'))
-    document.getElementById('f-connect-btn').disabled = true;
 
+  // FORGOT FLOW
+function openForgot() {
   const tgLinked = userData.tg_id && String(userData.tg_id).trim() !== '';
   if (tgLinked) {
     forgotTGID = userData.tg_id;
-    document.getElementById('f-linked-sub').textContent =
-      `Telegram ID ${userData.tg_id} pe OTP bhejenge.`;
+    document.getElementById('f-linked-sub').textContent = `Telegram ID ${userData.tg_id} pe OTP bhejenge.`;
     showForgotStep('linked');
-  } else {
-    showForgotStep('link');
-  }
+  } else { showForgotStep('link'); }
   openModal('forgot-overlay');
 }
 
@@ -435,126 +431,79 @@ function showForgotStep(s) {
   });
 }
 
-// TG linked → send OTP
 async function sendForgotOTPLinked() {
   const btn = document.getElementById('f-send-btn');
   btnLoad(btn, true);
   try {
-    const res  = await fetch(`${API}/auth/forgot-pin-otp`, {
+    const res = await fetch(`${API}/auth/forgot-pin-otp`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ tg_id: forgotTGID })
     });
     const data = await res.json();
-    if (data.status === 'success') { toast('OTP bhej diya! ✅','green'); showForgotStep('otp'); }
-    else toast(data.message||'Error','red');
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if (data.status === 'success') { toast('OTP bhej diya!','green'); showForgotStep('otp'); }
+    else toast(data.message,'red');
+  } finally { btnLoad(btn, false); }
 }
 
-// Enable connect btn when TG ID typed
-function onForgotTGInput() {
-  const val = document.getElementById('f-tgid').value.trim();
-  document.getElementById('f-connect-btn').disabled = val.length < 5;
-}
-
-// TG not linked → connect + send OTP together
 async function connectAndSendForgotOTP() {
   const tgid = document.getElementById('f-tgid').value.trim();
-  if (!tgid) return toast('Telegram ID daalo','red');
   const btn = document.getElementById('f-connect-btn');
   btnLoad(btn, true);
   try {
-    // Step 1: Link TG
-    const mobile = userData.mobile;
-    if (!mobile) { toast('Login dobara karo','red'); return; }
-    const linkRes  = await fetch(`${API}/auth/update-tg-by-mobile`, {
+    const linkRes = await fetch(`${API}/auth/update-tg-by-mobile`, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ mobile, tg_id: tgid })
+      body: JSON.stringify({ mobile: userData.mobile, tg_id: tgid })
     });
     const linkData = await linkRes.json();
-    if (linkData.status !== 'success') { toast(linkData.message||'Link failed','red'); return; }
-
-    // Update local data
-    userData.tg_id = tgid;
-    localStorage.setItem('user', JSON.stringify(userData));
-    forgotTGID = tgid;
-
-    // Step 2: Send OTP
-    const otpRes  = await fetch(`${API}/auth/forgot-pin-otp`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ tg_id: tgid })
-    });
-    const otpData = await otpRes.json();
-    if (otpData.status === 'success') {
-      toast('Connected! OTP bhej diya ✅','green');
-      showForgotStep('otp');
-    } else toast(otpData.message||'OTP send nahi hua','red');
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if (linkData.status === 'success') {
+      forgotTGID = tgid;
+      sendForgotOTPLinked();
+    } else toast(linkData.message,'red');
+  } finally { btnLoad(btn, false); }
 }
 
-// Verify OTP
 async function verifyForgotOTP() {
-  const otp = document.getElementById('f-otp').value.trim();
-  if (!otp||otp.length<4) return toast('OTP daalo','red');
+  const otp = document.getElementById('f-otp').value;
   const btn = document.getElementById('f-verify-btn');
   btnLoad(btn, true);
   try {
-    const res  = await fetch(`${API}/auth/verify-forgot-pin-otp`, {
+    const res = await fetch(`${API}/auth/verify-forgot-pin-otp`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ tg_id: forgotTGID, otp })
     });
     const data = await res.json();
-    if (data.status === 'success') { toast('OTP verified ✅','green'); showForgotStep('newpin1'); }
-    else { toast(data.message||'Wrong OTP','red'); document.getElementById('f-otp').value=''; }
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if (data.status === 'success') { showForgotStep('newpin1'); }
+    else toast('Wrong OTP','red');
+  } finally { btnLoad(btn, false); }
 }
 
 function goToConfirmForgotPin() {
-  const pin = document.getElementById('f-newpin1').value.trim();
-  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
-  forgotNewPin1 = pin;
+  const p = document.getElementById('f-newpin1').value;
+  if(p.length < 4) return toast('4 digit PIN chahiye','red');
+  forgotNewPin1 = p;
   showForgotStep('newpin2');
 }
 
 async function resetPINFinal() {
-  const pin = document.getElementById('f-newpin2').value.trim();
-  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
-  if (pin!==forgotNewPin1) {
-    toast('PINs match nahi kiye! Dobara try karo.','red');
-    document.getElementById('f-newpin2').value=''; return;
-  }
+  const p2 = document.getElementById('f-newpin2').value;
+  if(p2 !== forgotNewPin1) return toast('PIN match nahi hue','red');
   const btn = document.getElementById('f-reset-btn');
   btnLoad(btn, true);
   try {
-    const res  = await fetch(`${API}/auth/reset-pin`, {
+    const res = await fetch(`${API}/auth/reset-pin`, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ tg_id: forgotTGID, new_pin: pin })
+      body: JSON.stringify({ tg_id: forgotTGID, new_pin: p2 })
     });
     const data = await res.json();
-    if (data.status === 'success') {
-      localStorage.setItem('pin_set','true');
-      toast('PIN reset ho gaya! ✅','green');
-      closeModal('forgot-overlay');
-      mode = 'verify'; initUI();
-    } else toast(data.message||'Error','red');
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if(data.status==='success') { 
+        toast('Reset Successful','green'); 
+        location.reload(); 
+    } else toast(data.message,'red');
+  } finally { btnLoad(btn, false); }
 }
 
-// ══════════════════════════════════════════════════════════════
-// CHANGE PIN
-// ══════════════════════════════════════════════════════════════
-function openChange() {
-  ['c-oldpin','c-newpin1','c-newpin2'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  changeNewPin1 = '';
-  showChangeStep('oldpin');
-  openModal('change-overlay');
-}
-
+// CHANGE FLOW
+function openChange() { showChangeStep('oldpin'); openModal('change-overlay'); }
 function showChangeStep(s) {
   ['oldpin','newpin1','newpin2'].forEach(x => {
     document.getElementById(`c-step-${x}`).style.display = x===s ? 'block' : 'none';
@@ -562,68 +511,50 @@ function showChangeStep(s) {
 }
 
 async function verifyOldPIN() {
-  const pin = document.getElementById('c-oldpin').value.trim();
-  if (pin.length!==4) return toast('4 digit ka PIN daalo','red');
+  const pin = document.getElementById('c-oldpin').value;
   const btn = document.getElementById('c-oldpin-btn');
   btnLoad(btn, true);
   try {
-    const res  = await fetch(`${API}/auth/verify-pin`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+    const res = await fetch(`${API}/auth/verify-pin`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
       body: JSON.stringify({ pin })
     });
     const data = await res.json();
-    if (data.status === 'success') { toast('PIN verified ✅','green'); showChangeStep('newpin1'); }
-    else { toast(data.message||'Wrong PIN','red'); document.getElementById('c-oldpin').value=''; }
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if(data.status==='success') showChangeStep('newpin1');
+    else toast('Wrong Old PIN','red');
+  } finally { btnLoad(btn, false); }
 }
 
 function goToConfirmChangePIN() {
-  const pin = document.getElementById('c-newpin1').value.trim();
-  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
-  changeNewPin1 = pin;
+  changeNewPin1 = document.getElementById('c-newpin1').value;
   showChangeStep('newpin2');
 }
 
 async function saveChangedPIN() {
-  const pin = document.getElementById('c-newpin2').value.trim();
-  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
-  if (pin!==changeNewPin1) {
-    toast('PINs match nahi kiye! Dobara try karo.','red');
-    document.getElementById('c-newpin2').value=''; return;
-  }
+  const p2 = document.getElementById('c-newpin2').value;
+  if(p2 !== changeNewPin1) return toast('Match nahi hua','red');
   const btn = document.getElementById('c-confirm-btn');
   btnLoad(btn, true);
   try {
-    const res  = await fetch(`${API}/auth/change-pin`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
-      body: JSON.stringify({ new_pin: pin })
+    const res = await fetch(`${API}/auth/change-pin`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ new_pin: p2 })
     });
     const data = await res.json();
-    if (data.status === 'success') {
-      localStorage.setItem('pin_set','true');
-      toast('PIN change ho gaya! ✅','green');
-      closeModal('change-overlay');
-    } else toast(data.message||'Error','red');
-  } catch(e) { toast('Network error','red'); }
-  finally { btnLoad(btn, false); }
+    if(data.status==='success') { toast('Changed!','green'); closeModal('change-overlay'); }
+    else toast(data.message,'red');
+  } finally { btnLoad(btn, false); }
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-function disableKeypad(on) {
-  const goBtn = document.getElementById('submit-btn');
-  goBtn.classList.toggle('loading', on);
-  document.querySelectorAll('.key').forEach(k => {
-    k.style.pointerEvents = on ? 'none' : '';
-    k.style.opacity       = on ? '0.7'  : '1';
-  });
-}
-
+// Helpers
 function btnLoad(btn, on) {
-  on ? (btn.classList.add('loading'),    btn.disabled = true)
-     : (btn.classList.remove('loading'), btn.disabled = false);
+  if(on) { btn.classList.add('loading'); btn.disabled = true; }
+  else { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+function onForgotTGInput() {
+  const val = document.getElementById('f-tgid').value.trim();
+  document.getElementById('f-connect-btn').disabled = val.length < 5;
 }
 
 function toast(msg, type='') {
@@ -632,8 +563,10 @@ function toast(msg, type='') {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function openModal(id)  { document.getElementById(id).classList.add('open');    }
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+initUI();
 </script>
 </body>
 </html>
