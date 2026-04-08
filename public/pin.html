@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify PIN — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-dark:#0041cc;--blue-light:#e8efff;
+  --green:#16a34a;--red:#dc2626;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --purple:#7c3aed;--white:#ffffff;
+  --shadow:0 24px 60px rgba(0,87,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-30%;left:-20%;width:60%;height:70%;background:radial-gradient(circle,rgba(0,87,255,.12),transparent 60%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60%;background:radial-gradient(circle,rgba(124,58,237,.10),transparent 60%);pointer-events:none}
+
+/* ── Main card ── */
+.card{background:var(--white);border-radius:2rem;padding:2rem 1.75rem 2.25rem;width:100%;max-width:400px;box-shadow:var(--shadow);text-align:center;position:relative;z-index:1;animation:cardIn .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ── Icon ── */
+.card-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--blue),#4d8aff);border-radius:1.25rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 10px 24px rgba(0,87,255,.3)}
+.card-icon i{color:#fff;font-size:1.6rem}
+.card-title{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--gray-900);margin-bottom:.3rem}
+.card-sub{font-size:.78rem;color:var(--gray-400);margin-bottom:1.5rem;font-weight:500}
+
+/* ── PIN dots ── */
+.pin-dots{display:flex;gap:.7rem;justify-content:center;margin-bottom:1.5rem}
+.pin-dot{width:58px;height:58px;border-radius:1.1rem;background:var(--gray-100);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
+.pin-dot.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,87,255,.12)}
+.pin-dot.filled{background:var(--blue-light);border-color:var(--blue)}
+.pin-dot.filled::after{content:'';width:14px;height:14px;background:var(--blue);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+
+/* ── Keypad ── */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;max-width:280px;margin:0 auto 1.25rem}
+.key{padding:.95rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-size:1.15rem;font-weight:700;color:var(--gray-900);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;user-select:none}
+.key:active{transform:scale(.91);background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.key.del{background:#fff0f0;border-color:#fecaca;color:var(--red)}
+.key.go{background:linear-gradient(135deg,var(--blue),#4d8aff);border-color:var(--blue);color:white;box-shadow:0 4px 14px rgba(0,87,255,.3)}
+.key.go:active{background:var(--blue-dark)}
+.key.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+
+/* ── Footer buttons ── */
+.footer-btns{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.ghost-btn{padding:.65rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.9rem;font-size:.73rem;font-weight:700;color:var(--gray-600);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:.4rem}
+.ghost-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.ghost-btn:active{transform:scale(.97)}
+
+/* ── Security notice ── */
+.security-notice{display:flex;align-items:center;gap:.6rem;background:#fff9db;border:2px solid #fbbf24;border-radius:.9rem;padding:.65rem .9rem;font-size:.7rem;font-weight:600;color:#92400e;text-align:left}
+.security-notice i{color:#f59e0b;flex-shrink:0;font-size:.9rem}
+
+/* ── Error state ── */
+.error-badge{background:#fee2e2;border:2px solid #fca5a5;border-radius:.8rem;padding:.5rem .85rem;font-size:.72rem;font-weight:700;color:var(--red);margin-bottom:1rem;display:none;animation:slideDown .25s ease}
+.error-badge.show{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* ── Shake ── */
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-9px)}
+  30%{transform:translateX(9px)}
+  45%{transform:translateX(-7px)}
+  60%{transform:translateX(7px)}
+  75%{transform:translateX(-4px)}
+  90%{transform:translateX(4px)}
+}
+
+/* ── Overlay / Modal ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--white);border-radius:1.75rem;padding:1.75rem;width:100%;max-width:380px;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1) both;position:relative}
+@keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:.9rem;right:.9rem;background:var(--gray-100);border:none;font-size:.85rem;color:var(--gray-600);cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--gray-200)}
+.modal-icon{width:52px;height:52px;border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;font-size:1.3rem}
+.modal-icon.purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 8px 20px rgba(124,58,237,.3)}
+.modal-icon.blue{background:linear-gradient(135deg,var(--blue),#4d8aff);color:#fff;box-shadow:0 8px 20px rgba(0,87,255,.3)}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--gray-900);text-align:center;margin-bottom:.3rem}
+.modal-sub{font-size:.75rem;color:var(--gray-400);text-align:center;margin-bottom:1.25rem;font-weight:500}
+
+/* ── Inputs ── */
+.input-group{margin-bottom:.85rem}
+.input-group label{display:block;font-size:.63rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;margin-left:.2rem}
+.input-group input{width:100%;padding:.82rem 1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.9rem;font-size:.88rem;font-weight:500;outline:none;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--gray-900)}
+.input-group input:focus{border-color:var(--blue);background:var(--white);box-shadow:0 0 0 4px rgba(0,87,255,.08)}
+.input-group input::placeholder{color:var(--gray-400);font-weight:400}
+
+/* ── Buttons ── */
+.btn{width:100%;padding:.88rem;background:var(--blue);color:white;border:none;border-radius:.9rem;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;margin-top:.25rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn:not(:disabled):hover{background:var(--blue-dark);box-shadow:0 8px 20px rgba(0,87,255,.3)}
+.btn.purple-btn{background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 8px 20px rgba(124,58,237,.25)}
+.btn.purple-btn:hover{background:linear-gradient(135deg,#6d28d9,#5b21b6)}
+
+/* ── Spinner ── */
+.spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{opacity:0;width:0;overflow:hidden}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── OTP box ── */
+.otp-banner{background:#f0fdf4;border:2px solid #86efac;border-radius:.9rem;padding:.6rem .9rem;font-size:.72rem;font-weight:700;color:var(--green);margin-bottom:.85rem;display:none;align-items:center;gap:.5rem;animation:slideDown .3s ease}
+.otp-banner.show{display:flex}
+
+/* ── TG row ── */
+.tg-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:.85rem}
+.tg-row .input-group{margin-bottom:0}
+.get-id-btn{padding:.82rem .9rem;background:var(--green);color:white;border:none;border-radius:.9rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .2s;text-decoration:none;display:flex;align-items:center;height:50px}
+.get-id-btn:active{transform:scale(.97)}
+
+/* ── OTP row ── */
+.otp-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:.85rem}
+.otp-row .input-group{margin-bottom:0}
+.send-otp-btn{padding:.82rem .9rem;background:var(--green);color:white;border:none;border-radius:.9rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .2s;height:50px;display:flex;align-items:center}
+.send-otp-btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.send-otp-btn:active:not(:disabled){transform:scale(.97)}
+
+/* ── msg ── */
+.modal-msg{padding:.6rem .85rem;border-radius:.75rem;font-size:.72rem;font-weight:600;text-align:center;margin-bottom:.85rem;display:none}
+.modal-msg.error{background:#fee2e2;color:var(--red);display:block}
+.modal-msg.success{background:#dcfce7;color:var(--green);display:block}
+
+/* ── Change PIN mini keypad ── */
+.mini-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-width:240px;margin:0 auto .85rem}
+.mini-key{padding:.75rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.85rem;font-size:1rem;font-weight:700;color:var(--gray-900);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.mini-key:active{transform:scale(.91);background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.mini-key.del{background:#fff0f0;border-color:#fecaca;color:var(--red)}
+.mini-key.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+.mini-dots{display:flex;gap:.55rem;justify-content:center;margin-bottom:1rem}
+.mini-dot{width:46px;height:46px;border-radius:.85rem;background:var(--gray-100);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
+.mini-dot.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,87,255,.1)}
+.mini-dot.filled{background:var(--blue-light);border-color:var(--blue)}
+.mini-dot.filled::after{content:'';width:12px;height:12px;background:var(--blue);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+
+/* ── Step dots ── */
+.step-dots{display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem}
+.step-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-200);transition:all .3s}
+.step-dot.active{background:var(--purple);width:20px;border-radius:50px}
+
+/* ── Purple text ── */
+.purple-text{color:var(--purple);font-weight:700}
+
+/* ── Start bot box ── */
+.start-bot-box{display:flex;align-items:center;gap:.7rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:.9rem;padding:.75rem 1rem;margin-bottom:.85rem;text-decoration:none;transition:all .2s;font-size:.78rem}
+.start-bot-box:active{transform:scale(.98)}
+.start-bot-box i.fa-telegram{font-size:1.35rem;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ VERIFY PIN CARD ══════════════════ -->
+<div class="card" id="verify-card">
+  <div class="card-icon"><i class="fa-solid fa-lock"></i></div>
+  <div class="card-title">Verify Secure PIN</div>
+  <div class="card-sub">Enter your 4-digit S-PIN to continue</div>
+
+  <div class="error-badge" id="pin-error">❌ Wrong PIN! Try again.</div>
+
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot active" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+
+  <div class="keypad">
+    <div class="key" onclick="pkKey('1')">1</div>
+    <div class="key" onclick="pkKey('2')">2</div>
+    <div class="key" onclick="pkKey('3')">3</div>
+    <div class="key" onclick="pkKey('4')">4</div>
+    <div class="key" onclick="pkKey('5')">5</div>
+    <div class="key" onclick="pkKey('6')">6</div>
+    <div class="key" onclick="pkKey('7')">7</div>
+    <div class="key" onclick="pkKey('8')">8</div>
+    <div class="key" onclick="pkKey('9')">9</div>
+    <div class="key del" onclick="pkDel()"><i class="fa-solid fa-delete-left"></i></div>
+    <div class="key" onclick="pkKey('0')">0</div>
+    <div class="key go" onclick="pkVerify()"><i class="fa-solid fa-arrow-right"></i></div>
+  </div>
+
+  <div class="footer-btns">
+    <button class="ghost-btn" onclick="openForgotPin()">
+      <i class="fa-solid fa-rotate-left"></i> Forgot PIN
+    </button>
+    <button class="ghost-btn" onclick="openChangePin()">
+      <i class="fa-regular fa-pen-to-square"></i> Change PIN
+    </button>
+  </div>
+
+  <div class="security-notice">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>Your PIN secures all transactions. <strong>Never share it with anyone — not even support.</strong></span>
+  </div>
+</div>
+
+
+<!-- ══════════════════ FORGOT PIN MODAL ══════════════════ -->
+<div class="overlay" id="forgot-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeForgotPin()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-icon purple"><i class="fa-solid fa-key"></i></div>
+
+    <div class="step-dots">
+      <div class="step-dot active" id="fp-dot1"></div>
+      <div class="step-dot" id="fp-dot2"></div>
+      <div class="step-dot" id="fp-dot3"></div>
+    </div>
+
+    <div class="modal-title" id="fp-title">Forgot PIN</div>
+    <div class="modal-sub" id="fp-sub">Enter your Telegram ID to receive an OTP</div>
+    <div class="modal-msg" id="fp-msg"></div>
+
+    <!-- Step 1: TG ID + OTP -->
+    <div id="fp-step1">
+      <div class="tg-row">
+        <div class="input-group">
+          <label>Telegram ID</label>
+          <input type="number" id="fp-tgid" placeholder="Your Telegram ID">
+        </div>
+        <a href="https://t.me/OTP_UNIO_BOT?start=getid" target="_blank" class="get-id-btn">
+          Get ID
+        </a>
+      </div>
+
+      <a href="https://t.me/OTP_UNIO_BOT?start=start" target="_blank" class="start-bot-box">
+        <i class="fa-brands fa-telegram"></i>
+        <div>
+          <div style="font-size:.68rem;font-weight:700;opacity:.85">Start bot — copy your ID</div>
+          <div style="font-size:.78rem;font-weight:800">@OTP_UNIO_BOT</div>
+        </div>
+        <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left:auto;font-size:.75rem;opacity:.7"></i>
+      </a>
+
+      <div class="otp-banner" id="fp-otp-banner">
+        <i class="fa-solid fa-circle-check"></i>
+        <span class="purple-text">OTP sent!</span>&nbsp;Check @OTP_UNIO_BOT on Telegram
+      </div>
+      <div class="otp-row">
+        <div class="input-group">
+          <label>Enter OTP</label>
+          <input type="number" id="fp-otp" placeholder="4-digit OTP">
+        </div>
+        <button class="send-otp-btn" id="fp-send-btn" onclick="fpSendOTP()">Send OTP</button>
+      </div>
+
+      <button class="btn purple-btn" id="fp-verify-btn" onclick="fpVerifyOTP()">
+        <span class="spinner"></span>
+        <span class="btn-text"><i class="fa-solid fa-shield-check"></i>&nbsp; Confirm Verification</span>
+      </button>
+    </div>
+
+    <!-- Step 2: New PIN (mini keypad) -->
+    <div id="fp-step2" style="display:none">
+      <div class="mini-dots" id="fp-mini-dots">
+        <div class="mini-dot active" id="fp-md0"></div>
+        <div class="mini-dot" id="fp-md1"></div>
+        <div class="mini-dot" id="fp-md2"></div>
+        <div class="mini-dot" id="fp-md3"></div>
+      </div>
+      <div class="mini-keypad">
+        <div class="mini-key" onclick="fpKey('1')">1</div>
+        <div class="mini-key" onclick="fpKey('2')">2</div>
+        <div class="mini-key" onclick="fpKey('3')">3</div>
+        <div class="mini-key" onclick="fpKey('4')">4</div>
+        <div class="mini-key" onclick="fpKey('5')">5</div>
+        <div class="mini-key" onclick="fpKey('6')">6</div>
+        <div class="mini-key" onclick="fpKey('7')">7</div>
+        <div class="mini-key" onclick="fpKey('8')">8</div>
+        <div class="mini-key" onclick="fpKey('9')">9</div>
+        <div class="mini-key del" onclick="fpDel()"><i class="fa-solid fa-delete-left"></i></div>
+        <div class="mini-key" onclick="fpKey('0')">0</div>
+        <div class="mini-key empty"></div>
+      </div>
+      <button class="btn purple-btn" id="fp-set-btn" onclick="fpSetNewPin()">
+        <span class="spinner"></span>
+        <span class="btn-text"><i class="fa-solid fa-lock"></i>&nbsp; Save New PIN</span>
+      </button>
+    </div>
+
+    <!-- Step 3: Confirm new PIN -->
+    <div id="fp-step3" style="display:none">
+      <div class="mini-dots" id="fp-mini-dots2">
+        <div class="mini-dot active" id="fp-md20"></div>
+        <div class="mini-dot" id="fp-md21"></div>
+        <div class="mini-dot" id="fp-md22"></div>
+        <div class="mini-dot" id="fp-md23"></div>
+      </div>
+      <div class="mini-keypad">
+        <div class="mini-key" onclick="fpKey2('1')">1</div>
+        <div class="mini-key" onclick="fpKey2('2')">2</div>
+        <div class="mini-key" onclick="fpKey2('3')">3</div>
+        <div class="mini-key" onclick="fpKey2('4')">4</div>
+        <div class="mini-key" onclick="fpKey2('5')">5</div>
+        <div class="mini-key" onclick="fpKey2('6')">6</div>
+        <div class="mini-key" onclick="fpKey2('7')">7</div>
+        <div class="mini-key" onclick="fpKey2('8')">8</div>
+        <div class="mini-key" onclick="fpKey2('9')">9</div>
+        <div class="mini-key del" onclick="fpDel2()"><i class="fa-solid fa-delete-left"></i></div>
+        <div class="mini-key" onclick="fpKey2('0')">0</div>
+        <div class="mini-key empty"></div>
+      </div>
+      <button class="btn purple-btn" id="fp-confirm-btn" onclick="fpConfirmPin()">
+        <span class="spinner"></span>
+        <span class="btn-text"><i class="fa-solid fa-check"></i>&nbsp; Confirm New PIN</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════ CHANGE PIN MODAL ══════════════════ -->
+<div class="overlay" id="change-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeChangePin()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-icon blue"><i class="fa-regular fa-pen-to-square"></i></div>
+
+    <div class="step-dots">
+      <div class="step-dot active" id="cp-dot1"></div>
+      <div class="step-dot" id="cp-dot2"></div>
+      <div class="step-dot" id="cp-dot3"></div>
+    </div>
+
+    <div class="modal-title" id="cp-title">Change PIN</div>
+    <div class="modal-sub" id="cp-sub">Enter your current password to verify identity</div>
+    <div class="modal-msg" id="cp-msg"></div>
+
+    <!-- Step 1: Password -->
+    <div id="cp-step1">
+      <div class="input-group">
+        <label>Current Password</label>
+        <input type="password" id="cp-pass" placeholder="Enter account password">
+      </div>
+      <button class="btn" id="cp-pass-btn" onclick="cpVerifyPass()">
+        <span class="spinner"></span>
+        <span class="btn-text"><i class="fa-solid fa-unlock-keyhole"></i>&nbsp; Verify Password</span>
+      </button>
+    </div>
+
+    <!-- Step 2: New PIN -->
+    <div id="cp-step2" style="display:none">
+      <div class="mini-dots" id="cp-mini-dots">
+        <div class="mini-dot active" id="cp-md0">
