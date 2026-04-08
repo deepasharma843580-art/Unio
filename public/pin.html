@@ -398,4 +398,242 @@ async function callSetPin(pin) {
     if (data.status === 'success') {
       localStorage.setItem('pin_set','true');
       toast('PIN set ho gaya! ✅','green');
-      setTimeout(() => window.location.href = 'dashboard.h
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else { toast(data.message||'Error','red'); setStep(1); }
+  } catch(e) { toast('Network error','red'); setStep(1); }
+  finally { disableKeypad(false); }
+}
+
+// ══════════════════════════════════════════════════════════════
+// FORGOT PIN
+// ══════════════════════════════════════════════════════════════
+function openForgot() {
+  // Reset
+  ['f-otp','f-tgid','f-newpin1','f-newpin2'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  forgotTGID = ''; forgotNewPin1 = '';
+  if(document.getElementById('f-connect-btn'))
+    document.getElementById('f-connect-btn').disabled = true;
+
+  const tgLinked = userData.tg_id && String(userData.tg_id).trim() !== '';
+  if (tgLinked) {
+    forgotTGID = userData.tg_id;
+    document.getElementById('f-linked-sub').textContent =
+      `Telegram ID ${userData.tg_id} pe OTP bhejenge.`;
+    showForgotStep('linked');
+  } else {
+    showForgotStep('link');
+  }
+  openModal('forgot-overlay');
+}
+
+function showForgotStep(s) {
+  ['linked','link','otp','newpin1','newpin2'].forEach(x => {
+    document.getElementById(`f-step-${x}`).style.display = x===s ? 'block' : 'none';
+  });
+}
+
+// TG linked → send OTP
+async function sendForgotOTPLinked() {
+  const btn = document.getElementById('f-send-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/forgot-pin-otp`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ tg_id: forgotTGID })
+    });
+    const data = await res.json();
+    if (data.status === 'success') { toast('OTP bhej diya! ✅','green'); showForgotStep('otp'); }
+    else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// Enable connect btn when TG ID typed
+function onForgotTGInput() {
+  const val = document.getElementById('f-tgid').value.trim();
+  document.getElementById('f-connect-btn').disabled = val.length < 5;
+}
+
+// TG not linked → connect + send OTP together
+async function connectAndSendForgotOTP() {
+  const tgid = document.getElementById('f-tgid').value.trim();
+  if (!tgid) return toast('Telegram ID daalo','red');
+  const btn = document.getElementById('f-connect-btn');
+  btnLoad(btn, true);
+  try {
+    // Step 1: Link TG
+    const mobile = userData.mobile;
+    if (!mobile) { toast('Login dobara karo','red'); return; }
+    const linkRes  = await fetch(`${API}/auth/update-tg-by-mobile`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ mobile, tg_id: tgid })
+    });
+    const linkData = await linkRes.json();
+    if (linkData.status !== 'success') { toast(linkData.message||'Link failed','red'); return; }
+
+    // Update local data
+    userData.tg_id = tgid;
+    localStorage.setItem('user', JSON.stringify(userData));
+    forgotTGID = tgid;
+
+    // Step 2: Send OTP
+    const otpRes  = await fetch(`${API}/auth/forgot-pin-otp`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ tg_id: tgid })
+    });
+    const otpData = await otpRes.json();
+    if (otpData.status === 'success') {
+      toast('Connected! OTP bhej diya ✅','green');
+      showForgotStep('otp');
+    } else toast(otpData.message||'OTP send nahi hua','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// Verify OTP
+async function verifyForgotOTP() {
+  const otp = document.getElementById('f-otp').value.trim();
+  if (!otp||otp.length<4) return toast('OTP daalo','red');
+  const btn = document.getElementById('f-verify-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/verify-forgot-pin-otp`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ tg_id: forgotTGID, otp })
+    });
+    const data = await res.json();
+    if (data.status === 'success') { toast('OTP verified ✅','green'); showForgotStep('newpin1'); }
+    else { toast(data.message||'Wrong OTP','red'); document.getElementById('f-otp').value=''; }
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+function goToConfirmForgotPin() {
+  const pin = document.getElementById('f-newpin1').value.trim();
+  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
+  forgotNewPin1 = pin;
+  showForgotStep('newpin2');
+}
+
+async function resetPINFinal() {
+  const pin = document.getElementById('f-newpin2').value.trim();
+  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
+  if (pin!==forgotNewPin1) {
+    toast('PINs match nahi kiye! Dobara try karo.','red');
+    document.getElementById('f-newpin2').value=''; return;
+  }
+  const btn = document.getElementById('f-reset-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/reset-pin`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ tg_id: forgotTGID, new_pin: pin })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      localStorage.setItem('pin_set','true');
+      toast('PIN reset ho gaya! ✅','green');
+      closeModal('forgot-overlay');
+      mode = 'verify'; initUI();
+    } else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ══════════════════════════════════════════════════════════════
+// CHANGE PIN
+// ══════════════════════════════════════════════════════════════
+function openChange() {
+  ['c-oldpin','c-newpin1','c-newpin2'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  changeNewPin1 = '';
+  showChangeStep('oldpin');
+  openModal('change-overlay');
+}
+
+function showChangeStep(s) {
+  ['oldpin','newpin1','newpin2'].forEach(x => {
+    document.getElementById(`c-step-${x}`).style.display = x===s ? 'block' : 'none';
+  });
+}
+
+async function verifyOldPIN() {
+  const pin = document.getElementById('c-oldpin').value.trim();
+  if (pin.length!==4) return toast('4 digit ka PIN daalo','red');
+  const btn = document.getElementById('c-oldpin-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/verify-pin`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+    if (data.status === 'success') { toast('PIN verified ✅','green'); showChangeStep('newpin1'); }
+    else { toast(data.message||'Wrong PIN','red'); document.getElementById('c-oldpin').value=''; }
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+function goToConfirmChangePIN() {
+  const pin = document.getElementById('c-newpin1').value.trim();
+  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
+  changeNewPin1 = pin;
+  showChangeStep('newpin2');
+}
+
+async function saveChangedPIN() {
+  const pin = document.getElementById('c-newpin2').value.trim();
+  if (pin.length!==4) return toast('4 digit ka PIN chahiye','red');
+  if (pin!==changeNewPin1) {
+    toast('PINs match nahi kiye! Dobara try karo.','red');
+    document.getElementById('c-newpin2').value=''; return;
+  }
+  const btn = document.getElementById('c-confirm-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/change-pin`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ new_pin: pin })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      localStorage.setItem('pin_set','true');
+      toast('PIN change ho gaya! ✅','green');
+      closeModal('change-overlay');
+    } else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+function disableKeypad(on) {
+  const goBtn = document.getElementById('submit-btn');
+  goBtn.classList.toggle('loading', on);
+  document.querySelectorAll('.key').forEach(k => {
+    k.style.pointerEvents = on ? 'none' : '';
+    k.style.opacity       = on ? '0.7'  : '1';
+  });
+}
+
+function btnLoad(btn, on) {
+  on ? (btn.classList.add('loading'),    btn.disabled = true)
+     : (btn.classList.remove('loading'), btn.disabled = false);
+}
+
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open');    }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+</script>
+</body>
+</html>
