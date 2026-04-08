@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify PIN — UNIO</title>
+<title>PIN — UNIO</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -12,8 +12,7 @@
   --green:#16a34a;--red:#dc2626;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
   --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
-  --purple:#7c3aed;--white:#ffffff;
-  --shadow:0 24px 60px rgba(0,87,255,.10);
+  --white:#ffffff;--shadow:0 24px 60px rgba(0,87,255,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
@@ -24,22 +23,33 @@ body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;b
 
 .icon-box{width:72px;height:72px;background:linear-gradient(135deg,var(--blue),#4d8aff);border-radius:1.5rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;color:white;font-size:1.8rem;box-shadow:0 10px 25px rgba(0,87,255,.25)}
 .card h2{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem}
-.card p{font-size:.85rem;color:var(--gray-400);font-weight:500;margin-bottom:1.5rem}
+.card p{font-size:.85rem;color:var(--gray-400);font-weight:500;margin-bottom:1.5rem;min-height:1.3rem}
+
+/* Step badge for set-pin mode */
+.step-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.68rem;font-weight:800;padding:.3rem .75rem;border-radius:2rem;margin-bottom:1rem;letter-spacing:.05em;text-transform:uppercase}
 
 .pin-display{display:flex;gap:.8rem;justify-content:center;margin-bottom:2rem}
 .pin-dot{width:56px;height:56px;border-radius:1.1rem;background:var(--gray-50);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
 .pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
 .pin-dot.filled::after{content:'';position:absolute;width:14px;height:14px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.pin-dot.error{border-color:var(--red);background:#fee2e2}
 
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;max-width:300px;margin:0 auto 1.5rem}
 .key{padding:1.1rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1.2rem;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900)}
 .key:active{background:var(--gray-100);transform:scale(.92)}
 .key.del{color:var(--red)}
 .key.go{background:var(--blue);color:white;border-color:var(--blue)}
+.key:disabled{opacity:.4;pointer-events:none}
 
 .action-btns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .act-btn{padding:.8rem;background:var(--gray-50);border:2px solid var(--gray-100);border-radius:.9rem;font-size:.75rem;font-weight:700;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s}
 .act-btn:hover{background:var(--white);border-color:var(--blue);color:var(--blue)}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.65rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
 
 /* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
@@ -54,10 +64,10 @@ body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;b
 
 .input-group{margin-bottom:1rem;text-align:left}
 .input-group label{display:block;font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.4rem;margin-left:.3rem}
-.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none}
+.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif}
 .input-group input:focus{border-color:var(--blue);background:white}
 
-.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem}
+.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:'DM Sans',sans-serif}
 .btn:disabled{background:var(--gray-400)}
 .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none}
 .btn.loading .spinner{display:block}
@@ -68,9 +78,10 @@ body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;b
 <body>
 
 <div class="card">
-  <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
-  <h2>Secure Access</h2>
-  <p>Enter your 4-digit security PIN</p>
+  <div class="icon-box" id="main-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <div class="step-badge" id="step-badge" style="display:none">Step 1 of 2</div>
+  <h2 id="main-title">Secure Access</h2>
+  <p id="main-sub">Enter your 4-digit security PIN</p>
 
   <div class="pin-display">
     <div class="pin-dot" id="dot-0"></div>
@@ -91,10 +102,11 @@ body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;b
     <div class="key" onclick="press('9')">9</div>
     <div class="key del" onclick="del()"><i class="fa-solid fa-delete-left"></i></div>
     <div class="key" onclick="press('0')">0</div>
-    <div class="key go" onclick="verify()"><i class="fa-solid fa-arrow-right"></i></div>
+    <div class="key go" onclick="submit()"><i class="fa-solid fa-arrow-right"></i></div>
   </div>
 
-  <div class="action-btns">
+  <!-- Only shown in verify mode -->
+  <div class="action-btns" id="action-btns">
     <div class="act-btn" onclick="openModal('forgot-overlay')">
       <i class="fa-solid fa-key"></i> Forgot PIN
     </div>
@@ -104,96 +116,320 @@ body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;b
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Forgot PIN Modal -->
 <div class="overlay" id="forgot-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('forgot-overlay')"><i class="fa-solid fa-xmark"></i></button>
     <div class="m-icon blue"><i class="fa-solid fa-mobile-screen"></i></div>
     <div class="m-title">Forgot PIN?</div>
-    <div class="m-sub">Enter your registered mobile number to receive a reset OTP.</div>
+    <div class="m-sub">Apna registered Telegram ID daalo, OTP aayega.</div>
     <div class="input-group">
-      <label>Mobile Number</label>
-      <input type="number" id="f-mobile" placeholder="Enter mobile number">
+      <label>Telegram ID</label>
+      <input type="number" id="f-tgid" placeholder="Your Telegram ID">
     </div>
-    <button class="btn" id="f-btn" onclick="sendResetOTP()">
+    <button class="btn" id="f-btn" onclick="sendForgotOTP()">
       <div class="spinner"></div>
       <span>Send OTP</span>
     </button>
   </div>
 </div>
 
+<!-- Change PIN Modal -->
 <div class="overlay" id="change-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('change-overlay')"><i class="fa-solid fa-xmark"></i></button>
     <div class="m-icon blue"><i class="fa-solid fa-lock-open"></i></div>
     <div class="m-title">Change PIN</div>
-    <div class="m-sub">Please enter your current account password to set a new PIN.</div>
+    <div class="m-sub">Pehle password verify karo, phir naya PIN set hoga.</div>
     <div class="input-group">
       <label>Current Password</label>
       <input type="password" id="c-pass" placeholder="Enter password">
     </div>
-    <button class="btn" onclick="verifyPass()">Continue</button>
+    <button class="btn" id="c-btn" onclick="verifyPassForChange()">
+      <div class="spinner"></div>
+      <span>Continue</span>
+    </button>
   </div>
 </div>
 
 <script>
-let code = "";
+const API   = 'https://unio-hazel.vercel.app/api';
+const token = localStorage.getItem('token');
 
-function press(n) {
-  if(code.length < 4) {
-    code += n;
-    update();
+// ── Auth guard ─────────────────────────────────────────────────────────────────
+if (!token) window.location.href = 'index.html';
+
+// ── Mode detection ─────────────────────────────────────────────────────────────
+// 'set'    → first time PIN set karna hai (confirm flow)
+// 'verify' → normal PIN verify
+const pinSet = localStorage.getItem('pin_set') === 'true';
+let mode     = pinSet ? 'verify' : 'set';
+
+// Set-PIN flow state
+let step1Pin = '';  // Step 1 mein enter kiya hua PIN
+let step     = 1;   // 1 = enter new PIN, 2 = confirm PIN
+
+let code = '';
+
+// ── Init UI ────────────────────────────────────────────────────────────────────
+function initUI() {
+  if (mode === 'set') {
+    document.getElementById('main-icon').innerHTML = '<i class="fa-solid fa-lock"></i>';
+    document.getElementById('step-badge').style.display = 'inline-block';
+    document.getElementById('action-btns').style.display = 'none';
+    setStep(1);
+  } else {
+    document.getElementById('step-badge').style.display = 'none';
+    document.getElementById('action-btns').style.display = 'grid';
+    document.getElementById('main-title').textContent = 'Secure Access';
+    document.getElementById('main-sub').textContent   = 'Enter your 4-digit security PIN';
   }
+}
+
+function setStep(s) {
+  step = s;
+  code = '';
+  updateDots();
+  const badge = document.getElementById('step-badge');
+  if (s === 1) {
+    badge.textContent = 'Step 1 of 2';
+    document.getElementById('main-title').textContent = 'Set Your PIN';
+    document.getElementById('main-sub').textContent   = 'Choose a 4-digit security PIN';
+  } else {
+    badge.textContent = 'Step 2 of 2';
+    document.getElementById('main-title').textContent = 'Confirm PIN';
+    document.getElementById('main-sub').textContent   = 'Re-enter the same PIN to confirm';
+  }
+}
+
+initUI();
+
+// ── Keypad ─────────────────────────────────────────────────────────────────────
+function press(n) {
+  if (code.length < 4) { code += n; updateDots(); }
 }
 
 function del() {
   code = code.slice(0, -1);
-  update();
+  updateDots();
 }
 
-function update() {
-  for(let i=0; i<4; i++) {
-    document.getElementById(`dot-${i}`).classList.toggle('filled', i < code.length);
+function updateDots(isError = false) {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.classList.toggle('filled', i < code.length);
+    dot.classList.toggle('error', isError);
   }
 }
 
-function verify() {
-  if(code.length < 4) return alert("Please enter 4 digits");
-  
-  // Simulation check
-  if(code === "1234") { 
-    alert("Access Granted!");
-    window.location.href = "dashboard.html";
+function submit() {
+  if (code.length < 4) return toast('4 digit ka PIN chahiye!', 'red');
+  if (mode === 'set') handleSetPin();
+  else handleVerifyPin();
+}
+
+// ── SET PIN flow ───────────────────────────────────────────────────────────────
+function handleSetPin() {
+  if (step === 1) {
+    step1Pin = code;
+    setStep(2);
   } else {
-    alert("Invalid PIN. Try again.");
-    code = "";
-    update();
+    // Confirm step
+    if (code !== step1Pin) {
+      toast('PINs match nahi kiya! Dobara try karo', 'red');
+      updateDots(true);
+      setTimeout(() => { setStep(1); step1Pin = ''; }, 800);
+      return;
+    }
+    callSetPin(code);
   }
 }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+async function callSetPin(pin) {
+  disableKeypad(true);
+  try {
+    const res  = await fetch(`${API}/auth/set-pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      localStorage.setItem('pin_set', 'true');
+      toast('PIN set ho gaya! ✅', 'green');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+      toast(data.message || 'PIN set nahi hua', 'red');
+      setStep(1);
+      step1Pin = '';
+    }
+  } catch(e) {
+    toast('Network error', 'red');
+    setStep(1);
+  } finally {
+    disableKeypad(false);
+  }
+}
+
+// ── VERIFY PIN flow ────────────────────────────────────────────────────────────
+async function handleVerifyPin() {
+  disableKeypad(true);
+  try {
+    const res  = await fetch(`${API}/auth/verify-pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ pin: code })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      toast('Access granted ✅', 'green');
+      setTimeout(() => window.location.href = 'dashboard.html', 700);
+    } else {
+      toast('Wrong PIN! Try again', 'red');
+      updateDots(true);
+      setTimeout(() => { code = ''; updateDots(); }, 600);
+    }
+  } catch(e) {
+    toast('Network error', 'red');
+    code = '';
+    updateDots();
+  } finally {
+    disableKeypad(false);
+  }
+}
+
+// ── Forgot PIN ─────────────────────────────────────────────────────────────────
+async function sendForgotOTP() {
+  const tg_id = document.getElementById('f-tgid').value.trim();
+  if (!tg_id) return toast('Telegram ID daalo', 'red');
+
+  const btn = document.getElementById('f-btn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const res  = await fetch(`${API}/auth/forgot-pin-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tg_id })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      toast('OTP bheja! @OTP_UNIO_BOT check karo', 'green');
+      closeModal('forgot-overlay');
+      // Forgot-pin flow ke liye alag page ya in-page OTP entry add kar sakte ho
+    } else {
+      toast(data.message || 'OTP nahi bheja', 'red');
+    }
+  } catch(e) {
+    toast('Network error', 'red');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+// ── Change PIN (password verify → set-pin mode) ────────────────────────────────
+async function verifyPassForChange() {
+  const pass = document.getElementById('c-pass').value.trim();
+  if (!pass) return toast('Password daalo', 'red');
+
+  const btn = document.getElementById('c-btn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const res  = await fetch(`${API}/auth/verify-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ password: pass })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      closeModal('change-overlay');
+      // Change PIN mode — set-pin flow use karo but /change-pin endpoint pe
+      toast('Password verified! Naya PIN set karo', 'green');
+      mode = 'change';
+      document.getElementById('action-btns').style.display = 'none';
+      document.getElementById('step-badge').style.display = 'inline-block';
+      setStep(1);
+      document.getElementById('main-icon').innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    } else {
+      toast(data.message || 'Wrong password', 'red');
+    }
+  } catch(e) {
+    toast('Network error', 'red');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+// Change-PIN mode ka submit override
+const _origHandleSetPin = handleSetPin;
+function handleSetPin() {
+  if (mode === 'change') {
+    if (step === 1) {
+      step1Pin = code;
+      setStep(2);
+      document.getElementById('main-title').textContent = 'Confirm New PIN';
+    } else {
+      if (code !== step1Pin) {
+        toast('PINs match nahi kiya!', 'red');
+        updateDots(true);
+        setTimeout(() => { setStep(1); step1Pin = ''; }, 800);
+        return;
+      }
+      callChangePinAPI(code);
+    }
+  } else {
+    _origHandleSetPin();
+  }
+}
+
+async function callChangePinAPI(pin) {
+  disableKeypad(true);
+  try {
+    const res  = await fetch(`${API}/auth/change-pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ new_pin: pin })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      localStorage.setItem('pin_set', 'true');
+      toast('PIN change ho gaya! ✅', 'green');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+      toast(data.message || 'PIN change nahi hua', 'red');
+      setStep(1);
+    }
+  } catch(e) {
+    toast('Network error', 'red');
+    setStep(1);
+  } finally {
+    disableKeypad(false);
+  }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+function disableKeypad(on) {
+  document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = on ? 'none' : '');
+}
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-async function sendResetOTP() {
-  const m = document.getElementById('f-mobile').value;
-  if(!m) return alert("Mobile number enter karein");
-  
-  const b = document.getElementById('f-btn');
-  b.classList.add('loading');
-  b.disabled = true;
-
-  setTimeout(() => {
-    b.classList.remove('loading');
-    alert("OTP Sent to @OTP_UNIO_BOT");
-    closeModal('forgot-overlay');
-  }, 1500);
-}
-
-function verifyPass() {
-  const p = document.getElementById('c-pass').value;
-  if(!p) return alert("Password enter karein");
-  alert("Password verified. Ab naya PIN set karein.");
-  closeModal('change-overlay');
-}
 </script>
 
 </body>
