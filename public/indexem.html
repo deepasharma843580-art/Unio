@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* CSS copied from your original code - No changes needed there */
 :root{
   --blue:#0057ff;--blue-dark:#0041cc;--blue-light:#e8efff;
   --green:#16a34a;--red:#dc2626;
@@ -157,7 +156,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60
 
 <div class="set-pin-overlay" id="set-pin-overlay">
   <div class="set-pin-card">
-    <div class="set-pin-title" id="sp-title">Set Your Secure PIN</div>
+    <div class="set-pin-title" id="sp-title" style="font-weight: 800; font-family: 'Syne'; margin-bottom: 1rem; color: var(--blue);">SET YOUR SECURE PIN</div>
     <div class="confirm-pin-badge" id="sp-badge">⚠️ PINs don't match. Try again.</div>
     <div class="keypad-dots">
       <div class="keypad-dot" id="dot-0"></div>
@@ -183,7 +182,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60
 </div>
 
 <script>
-const API = 'YOUR_API_ENDPOINT'; // Replace with your actual API URL
+const API = 'YOUR_API_ENDPOINT'; 
 let currentPin = "";
 
 function switchTab(tab) {
@@ -212,30 +211,29 @@ function btnLoad(id, on) {
 async function login() {
   const mobile = document.getElementById('l-mobile').value;
   const pass = document.getElementById('l-pass').value;
-  if(!mobile || !pass) return showMsg("Sabhi fields bhariye!", "error");
+  if(!mobile || !pass) return showMsg("Kripya sabhi details bhariye!", "error");
 
   btnLoad('login-btn', true);
   
-  // Simulate API Call
+  // Simulation: API call logic yaha aayegi
   setTimeout(() => {
     btnLoad('login-btn', false);
     document.getElementById('set-pin-overlay').classList.add('open');
-  }, 2000);
+  }, 1500);
 }
 
 async function sendOTP() {
   const tg_id = document.getElementById('r-tgid').value;
-  if(!tg_id) return showMsg("Pehle Telegram ID daliye!", "error");
+  if(!tg_id) return showMsg("Pehle Telegram ID enter karein!", "error");
 
   const btn = document.getElementById('send-otp-btn');
   btn.disabled = true;
   btn.textContent = "Sending...";
 
-  // Simulate API Call
   setTimeout(() => {
     document.getElementById('otp-banner').classList.add('show');
     btn.textContent = "Sent";
-  }, 1500);
+  }, 1200);
 }
 
 async function register() {
@@ -244,15 +242,15 @@ async function register() {
   const otp = document.getElementById('r-otp').value;
   const cb = document.getElementById('terms-cb').checked;
 
-  if(!mobile || !name || !otp) return showMsg("Please fill all details", "error");
-  if(!cb) return showMsg("Terms accept kijiye", "error");
+  if(!mobile || !name || !otp) return showMsg("Sari jankari bharna anivarya hai", "error");
+  if(!cb) return showMsg("Terms & Conditions accept karein", "error");
 
   btnLoad('register-btn', true);
   
   setTimeout(() => {
     btnLoad('register-btn', false);
     document.getElementById('set-pin-overlay').classList.add('open');
-  }, 2000);
+  }, 1500);
 }
 
 // PIN KEYPAD LOGIC
@@ -277,9 +275,16 @@ function updateDots() {
 }
 
 function spNext() {
-  if (currentPin.length < 4) return alert("4 digit PIN set karein");
-  alert("PIN Saved Successfully!");
-  window.location.href = "dashboard.html"; // Final redirect
+  if (currentPin.length < 4) {
+    alert("Kripya 4 digit ka PIN set karein!");
+    return;
+  }
+  
+  // Success Message
+  alert("PIN successfully set!");
+  
+  // Final Redirection to pin.html
+  window.location.href = "pin.html"; 
 }
 </script>
 
