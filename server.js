@@ -99,6 +99,7 @@ app.use('/giftcode',    require('./routes/giftCode'));
 app.use('/migrate',     require('./routes/migrate'));
 app.use('/leaderboard', require('./routes/leaderboard'));  // ✅ Leaderboard
 app.use('/ai',          aiLimiter,  require('./routes/ai'));  // ✅ AI Chat
+app.use('/reset',       require('./routes/reset'));           // ✅ API Reset
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -117,6 +118,7 @@ app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/migrate-tool',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'migrate.html')));
 app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'parese.html')));
 app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));  // ✅ Leaderboard Page
+app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-panel.html')));  // ✅ Admin Reset
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
