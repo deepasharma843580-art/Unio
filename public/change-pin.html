@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Change PIN — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#e8efff;
+  --green:#16a34a;--red:#dc2626;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#ffffff;--shadow:0 24px 60px rgba(0,87,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.08),transparent 70%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.05),transparent 70%);pointer-events:none}
+
+.card{background:var(--white);border-radius:2.5rem;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:var(--shadow);text-align:center;position:relative;z-index:1;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+
+/* Back button */
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:var(--gray-400);font-size:.75rem;font-weight:700;text-decoration:none;margin-bottom:1.5rem;cursor:pointer;transition:color .2s}
+.back-btn:hover{color:var(--blue)}
+
+.icon-box{width:68px;height:68px;background:linear-gradient(135deg,var(--blue),#4d8aff);border-radius:1.4rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;color:white;font-size:1.7rem;box-shadow:0 10px 25px rgba(0,87,255,.25);transition:all .3s}
+.step-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.68rem;font-weight:800;padding:.3rem .75rem;border-radius:2rem;margin-bottom:.85rem;letter-spacing:.05em;text-transform:uppercase}
+.card h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.4rem}
+.card p.sub{font-size:.82rem;color:var(--gray-400);font-weight:500;margin-bottom:1.5rem;line-height:1.5}
+
+/* Step panels */
+.step-panel{display:none;animation:fadeUp .3s ease both}
+.step-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.input-group{margin-bottom:1rem;text-align:left}
+.input-group label{display:block;font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.4rem;margin-left:.3rem}
+.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--gray-900);letter-spacing:.15em}
+.input-group input:focus{border-color:var(--blue);background:white}
+
+/* PIN dots row */
+.pin-dots{display:flex;gap:.7rem;justify-content:center;margin-bottom:1.5rem}
+.pin-dot{width:52px;height:52px;border-radius:1rem;background:var(--gray-50);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
+.pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
+.pin-dot.filled::after{content:'';position:absolute;width:13px;height:13px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.pin-dot.error{border-color:var(--red);background:#fee2e2;animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Keypad */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;max-width:290px;margin:0 auto 1.5rem}
+.key{padding:1rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1.1rem;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center;user-select:none}
+.key:active{background:var(--gray-100);transform:scale(.91)}
+.key.del{color:var(--red)}
+.key.go{background:var(--blue);color:white;border-color:var(--blue)}
+.key.go.loading .fa-arrow-right{display:none}
+.key.go.loading .key-spinner{display:block}
+.key-spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none}
+
+.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spinner{display:block}
+.btn.loading span:not(.spinner){display:none}
+
+/* Success screen */
+.success-box{padding:1rem 0}
+.success-icon{width:80px;height:80px;background:linear-gradient(135deg,#16a34a,#22c55e);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;color:white;font-size:2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.success-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem}
+.success-sub{font-size:.83rem;color:var(--gray-400);margin-bottom:1.5rem}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.65rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Back -->
+  <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i> Back</div>
+
+  <!-- Dynamic icon + badge -->
+  <div class="icon-box" id="main-icon"><i class="fa-solid fa-lock-open"></i></div>
+  <div class="step-badge" id="step-badge" style="display:none">Step 1 of 2</div>
+  <h2 id="main-title">Change PIN</h2>
+  <p class="sub" id="main-sub">Pehle apna current PIN verify karo.</p>
+
+  <!-- ── Step 1: Current PIN (keypad) ── -->
+  <div class="step-panel active" id="panel-old">
+    <div class="pin-dots">
+      <div class="pin-dot" id="od-0"></div>
+      <div class="pin-dot" id="od-1"></div>
+      <div class="pin-dot" id="od-2"></div>
+      <div class="pin-dot" id="od-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key" onclick="press('old','1')">1</div>
+      <div class="key" onclick="press('old','2')">2</div>
+      <div class="key" onclick="press('old','3')">3</div>
+      <div class="key" onclick="press('old','4')">4</div>
+      <div class="key" onclick="press('old','5')">5</div>
+      <div class="key" onclick="press('old','6')">6</div>
+      <div class="key" onclick="press('old','7')">7</div>
+      <div class="key" onclick="press('old','8')">8</div>
+      <div class="key" onclick="press('old','9')">9</div>
+      <div class="key del" onclick="del('old')"><i class="fa-solid fa-delete-left"></i></div>
+      <div class="key" onclick="press('old','0')">0</div>
+      <button class="key go" id="old-submit" onclick="verifyOldPIN()">
+        <div class="key-spinner"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Step 2: New PIN (keypad) ── -->
+  <div class="step-panel" id="panel-new1">
+    <div class="pin-dots">
+      <div class="pin-dot" id="n1-0"></div>
+      <div class="pin-dot" id="n1-1"></div>
+      <div class="pin-dot" id="n1-2"></div>
+      <div class="pin-dot" id="n1-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key" onclick="press('new1','1')">1</div>
+      <div class="key" onclick="press('new1','2')">2</div>
+      <div class="key" onclick="press('new1','3')">3</div>
+      <div class="key" onclick="press('new1','4')">4</div>
+      <div class="key" onclick="press('new1','5')">5</div>
+      <div class="key" onclick="press('new1','6')">6</div>
+      <div class="key" onclick="press('new1','7')">7</div>
+      <div class="key" onclick="press('new1','8')">8</div>
+      <div class="key" onclick="press('new1','9')">9</div>
+      <div class="key del" onclick="del('new1')"><i class="fa-solid fa-delete-left"></i></div>
+      <div class="key" onclick="press('new1','0')">0</div>
+      <button class="key go" id="new1-submit" onclick="goToConfirm()">
+        <div class="key-spinner"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Step 3: Confirm New PIN (keypad) ── -->
+  <div class="step-panel" id="panel-new2">
+    <div class="pin-dots">
+      <div class="pin-dot" id="n2-0"></div>
+      <div class="pin-dot" id="n2-1"></div>
+      <div class="pin-dot" id="n2-2"></div>
+      <div class="pin-dot" id="n2-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key" onclick="press('new2','1')">1</div>
+      <div class="key" onclick="press('new2','2')">2</div>
+      <div class="key" onclick="press('new2','3')">3</div>
+      <div class="key" onclick="press('new2','4')">4</div>
+      <div class="key" onclick="press('new2','5')">5</div>
+      <div class="key" onclick="press('new2','6')">6</div>
+      <div class="key" onclick="press('new2','7')">7</div>
+      <div class="key" onclick="press('new2','8')">8</div>
+      <div class="key" onclick="press('new2','9')">9</div>
+      <div class="key del" onclick="del('new2')"><i class="fa-solid fa-delete-left"></i></div>
+      <div class="key" onclick="press('new2','0')">0</div>
+      <button class="key go" id="new2-submit" onclick="saveChangedPIN()">
+        <div class="key-spinner"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Step 4: Success ── -->
+  <div class="step-panel" id="panel-success">
+    <div class="success-box">
+      <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+      <div class="success-title">PIN Changed!</div>
+      <div class="success-sub">Aapka PIN successfully change ho gaya. Ab nayi PIN se login kar sakte hain.</div>
+      <button class="btn" onclick="window.location.href='pin.html'">
+        <span><i class="fa-solid fa-shield-halved"></i>&nbsp; Go to PIN Screen</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API   = 'https://unio-hazel.vercel.app';
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'index.html';
+
+// State per panel
+const codes = { old:'', new1:'', new2:'' };
+let newPin1 = '';
+
+// Panel prefix → dot ids
+const dotPrefix = { old:'od', new1:'n1', new2:'n2' };
+
+function press(panel, n) {
+  if (codes[panel].length < 4) { codes[panel] += n; updateDots(panel); }
+}
+
+function del(panel) {
+  codes[panel] = codes[panel].slice(0,-1); updateDots(panel);
+}
+
+function updateDots(panel, isError=false) {
+  const pre = dotPrefix[panel];
+  for(let i=0;i<4;i++){
+    const d = document.getElementById(`${pre}-${i}`);
+    d.classList.toggle('filled', i < codes[panel].length);
+    d.classList.toggle('error', isError);
+  }
+}
+
+function showPanel(name) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+}
+
+function setHeader(icon, badge, title, sub) {
+  document.getElementById('main-icon').innerHTML = icon;
+  const badgeEl = document.getElementById('step-badge');
+  if(badge){ badgeEl.style.display='inline-block'; badgeEl.textContent=badge; }
+  else badgeEl.style.display='none';
+  document.getElementById('main-title').textContent = title;
+  document.getElementById('main-sub').textContent   = sub;
+}
+
+function goBack() {
+  window.location.href = 'pin.html';
+}
+
+// ── Step 1: Verify old PIN ──────────────────────────────────────────────────
+async function verifyOldPIN() {
+  if(codes.old.length!==4) return toast('4 digit ka PIN daalo','red');
+  const btn = document.getElementById('old-submit');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/verify-pin`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({pin:codes.old})
+    });
+    const data = await res.json();
+    if(data.status==='success'){
+      toast('PIN verified ✅','green');
+      codes.new1=''; updateDots('new1');
+      setHeader(
+        '<i class="fa-solid fa-lock"></i>',
+        'Step 1 of 2','New PIN','Apna naya 4-digit PIN enter karo.'
+      );
+      showPanel('new1');
+    } else {
+      toast(data.message||'Wrong PIN','red');
+      updateDots('old', true);
+      setTimeout(()=>{ codes.old=''; updateDots('old'); }, 600);
+    }
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── Step 2: Go to confirm ───────────────────────────────────────────────────
+function goToConfirm() {
+  if(codes.new1.length!==4) return toast('4 digit ka PIN chahiye','red');
+  newPin1 = codes.new1;
+  codes.new2=''; updateDots('new2');
+  setHeader(
+    '<i class="fa-solid fa-lock"></i>',
+    'Step 2 of 2','Confirm PIN','Same naya PIN dobara enter karo.'
+  );
+  showPanel('new2');
+}
+
+// ── Step 3: Save ────────────────────────────────────────────────────────────
+async function saveChangedPIN() {
+  if(codes.new2.length!==4) return toast('4 digit ka PIN chahiye','red');
+  if(codes.new2!==newPin1){
+    toast('PINs match nahi kiye!','red');
+    updateDots('new2',true);
+    setTimeout(()=>{ codes.new2=''; updateDots('new2'); },600);
+    return;
+  }
+  const btn = document.getElementById('new2-submit');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/change-pin`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({new_pin:codes.new2})
+    });
+    const data = await res.json();
+    if(data.status==='success'){
+      localStorage.setItem('pin_set','true');
+      document.getElementById('step-badge').style.display='none';
+      document.getElementById('main-title').textContent='';
+      document.getElementById('main-sub').textContent='';
+      showPanel('success');
+    } else {
+      toast(data.message||'Error','red');
+      codes.new2=''; updateDots('new2');
+    }
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function btnLoad(btn, on){
+  btn.classList.toggle('loading', on);
+}
+
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+  </html>
+                                       
