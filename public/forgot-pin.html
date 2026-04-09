@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgot PIN — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#e8efff;
+  --green:#16a34a;--red:#dc2626;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --purple:#7c3aed;
+  --white:#ffffff;--shadow:0 24px 60px rgba(0,87,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-10%;left:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(124,58,237,.08),transparent 70%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.06),transparent 70%);pointer-events:none}
+
+.card{background:var(--white);border-radius:2.5rem;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:var(--shadow);text-align:center;position:relative;z-index:1;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:var(--gray-400);font-size:.75rem;font-weight:700;text-decoration:none;margin-bottom:1.5rem;cursor:pointer;transition:color .2s}
+.back-btn:hover{color:var(--blue)}
+
+.icon-box{width:68px;height:68px;border-radius:1.4rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;color:white;font-size:1.7rem;box-shadow:0 10px 25px rgba(0,87,255,.2);transition:all .4s}
+.icon-box.blue{background:linear-gradient(135deg,var(--blue),#4d8aff)}
+.icon-box.purple{background:linear-gradient(135deg,#7c3aed,#9f67ff)}
+.icon-box.green{background:linear-gradient(135deg,var(--green),#22c55e)}
+
+.step-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.68rem;font-weight:800;padding:.3rem .75rem;border-radius:2rem;margin-bottom:.85rem;letter-spacing:.05em;text-transform:uppercase}
+.card h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.4rem}
+.card p.sub{font-size:.82rem;color:var(--gray-400);font-weight:500;margin-bottom:1.5rem;line-height:1.5}
+
+/* Step panels */
+.step-panel{display:none;animation:fadeUp .3s ease both}
+.step-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* TG bot link box */
+.bot-box{display:flex;align-items:center;gap:.75rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:.9rem;padding:.85rem 1rem;margin-bottom:1rem;text-decoration:none;transition:opacity .2s}
+.bot-box:hover{opacity:.9}
+.bot-box-text{font-size:.68rem;font-weight:700;opacity:.85;text-align:left}
+.bot-box-name{font-size:.82rem;font-weight:900;text-align:left}
+
+/* TG ID row */
+.tg-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:1rem}
+.tg-row .input-group{margin-bottom:0}
+.get-id-btn{padding:.9rem .9rem;background:var(--green);color:white;border:none;border-radius:1rem;font-size:.7rem;font-weight:700;cursor:pointer;height:50px;display:flex;align-items:center;white-space:nowrap;text-decoration:none;gap:.3rem}
+
+/* OTP sent banner */
+.otp-banner{background:#f0fdf4;border:2px solid #86efac;border-radius:.9rem;padding:.65rem .9rem;font-size:.73rem;font-weight:700;color:var(--green);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+/* Linked info banner */
+.info-banner{background:var(--blue-light);border:2px solid #bfdbfe;border-radius:.9rem;padding:.65rem .9rem;font-size:.73rem;font-weight:700;color:var(--blue);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+.input-group{margin-bottom:1rem;text-align:left}
+.input-group label{display:block;font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.4rem;margin-left:.3rem}
+.input-group input{width:100%;padding:.9rem 1.1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--gray-900)}
+.input-group input:focus{border-color:var(--blue);background:white}
+
+/* PIN dots */
+.pin-dots{display:flex;gap:.7rem;justify-content:center;margin-bottom:1.5rem}
+.pin-dot{width:52px;height:52px;border-radius:1rem;background:var(--gray-50);border:2.5px solid var(--gray-200);transition:all .2s;position:relative}
+.pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
+.pin-dot.filled::after{content:'';position:absolute;width:13px;height:13px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.pin-dot.error{border-color:var(--red);background:#fee2e2;animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Keypad */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;max-width:290px;margin:0 auto 1.5rem}
+.key{padding:1rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1.1rem;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center;user-select:none}
+.key:active{background:var(--gray-100);transform:scale(.91)}
+.key.del{color:var(--red)}
+.key.go{background:var(--blue);color:white;border-color:var(--blue)}
+.key.go.loading .fa-arrow-right{display:none}
+.key.go.loading .key-spinner{display:block}
+.key-spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none}
+
+.btn{width:100%;padding:1rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s;margin-bottom:.6rem}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn.green-btn{background:var(--green)}
+.btn.green-btn:disabled{background:var(--gray-400)}
+.spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spinner{display:block}
+.btn.loading span:not(.spinner){display:none}
+
+/* Success */
+.success-icon{width:80px;height:80px;background:linear-gradient(135deg,var(--green),#22c55e);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;color:white;font-size:2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.success-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem}
+.success-sub{font-size:.83rem;color:var(--gray-400);margin-bottom:1.5rem}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.65rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i> Back</div>
+
+  <div class="icon-box blue" id="main-icon"><i class="fa-solid fa-key"></i></div>
+  <div class="step-badge" id="step-badge" style="display:none">Step 1 of 2</div>
+  <h2 id="main-title">Forgot PIN?</h2>
+  <p class="sub" id="main-sub">OTP verify karke naya PIN set karo.</p>
+
+  <!-- ══════════════════════════════════════════
+       Panel A: TG linked → send OTP button
+  ══════════════════════════════════════════ -->
+  <div class="step-panel active" id="panel-linked">
+    <div class="info-banner" id="linked-banner">
+      <i class="fa-brands fa-telegram"></i>
+      <span id="linked-tg-text">Telegram linked hai</span>
+    </div>
+    <button class="btn" id="send-linked-btn" onclick="sendOTPLinked()">
+      <div class="spinner"></div>
+      <span><i class="fa-brands fa-telegram"></i>&nbsp; Send OTP on Telegram</span>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Panel B: TG NOT linked → link first
+  ══════════════════════════════════════════ -->
+  <div class="step-panel" id="panel-link">
+    <!-- Start bot -->
+    <a href="https://t.me/OTP_UNIO_BOT?start=start" target="_blank" class="bot-box">
+      <i class="fa-brands fa-telegram" style="font-size:1.5rem"></i>
+      <div>
+        <div class="bot-box-text">Start bot to receive OTP</div>
+        <div class="bot-box-name">@OTP_UNIO_BOT</div>
+      </div>
+    </a>
+
+    <!-- Telegram ID + Get ID -->
+    <div class="tg-row">
+      <div class="input-group">
+        <label>Telegram ID</label>
+        <input type="number" id="f-tgid" placeholder="Enter Telegram ID" oninput="onTGInput()">
+      </div>
+      <a href="https://t.me/OTP_UNIO_BOT?start=getid" target="_blank" class="get-id-btn">
+        <i class="fa-solid fa-id-badge"></i> Get ID
+      </a>
+    </div>
+
+    <!-- Connect → link TG + send OTP -->
+    <button class="btn green-btn" id="connect-btn" onclick="connectAndSend()" disabled>
+      <div class="spinner"></div>
+      <span><i class="fa-solid fa-link"></i>&nbsp; Connect &amp; Send OTP</span>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Panel C: OTP verify
+  ══════════════════════════════════════════ -->
+  <div class="step-panel" id="panel-otp">
+    <div class="otp-banner">
+      <i class="fa-solid fa-circle-check"></i> OTP sent! Check @OTP_UNIO_BOT
+    </div>
+    <div class="input-group">
+      <label>OTP Code</label>
+      <input type="number" id="f-otp" placeholder="4-digit OTP">
+    </div>
+    <button class="btn" id="verify-otp-btn" onclick="verifyOTP()">
+      <div class="spinner"></div>
+      <span><i class="fa-solid fa-shield-halved"></i>&nbsp; Verify OTP</span>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Panel D: New PIN (keypad, step 1 of 2)
+  ══════════════════════════════════════════ -->
+  <div class="step-panel" id="panel-new1">
+    <div class="pin-dots">
+      <div class="pin-dot" id="n1-0"></div>
+      <div class="pin-dot" id="n1-1"></div>
+      <div class="pin-dot" id="n1-2"></div>
+      <div class="pin-dot" id="n1-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key" onclick="press('new1','1')">1</div>
+      <div class="key" onclick="press('new1','2')">2</div>
+      <div class="key" onclick="press('new1','3')">3</div>
+      <div class="key" onclick="press('new1','4')">4</div>
+      <div class="key" onclick="press('new1','5')">5</div>
+      <div class="key" onclick="press('new1','6')">6</div>
+      <div class="key" onclick="press('new1','7')">7</div>
+      <div class="key" onclick="press('new1','8')">8</div>
+      <div class="key" onclick="press('new1','9')">9</div>
+      <div class="key del" onclick="del('new1')"><i class="fa-solid fa-delete-left"></i></div>
+      <div class="key" onclick="press('new1','0')">0</div>
+      <button class="key go" id="new1-submit" onclick="goToConfirm()">
+        <div class="key-spinner"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Panel E: Confirm New PIN (keypad, step 2 of 2)
+  ══════════════════════════════════════════ -->
+  <div class="step-panel" id="panel-new2">
+    <div class="pin-dots">
+      <div class="pin-dot" id="n2-0"></div>
+      <div class="pin-dot" id="n2-1"></div>
+      <div class="pin-dot" id="n2-2"></div>
+      <div class="pin-dot" id="n2-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key" onclick="press('new2','1')">1</div>
+      <div class="key" onclick="press('new2','2')">2</div>
+      <div class="key" onclick="press('new2','3')">3</div>
+      <div class="key" onclick="press('new2','4')">4</div>
+      <div class="key" onclick="press('new2','5')">5</div>
+      <div class="key" onclick="press('new2','6')">6</div>
+      <div class="key" onclick="press('new2','7')">7</div>
+      <div class="key" onclick="press('new2','8')">8</div>
+      <div class="key" onclick="press('new2','9')">9</div>
+      <div class="key del" onclick="del('new2')"><i class="fa-solid fa-delete-left"></i></div>
+      <div class="key" onclick="press('new2','0')">0</div>
+      <button class="key go" id="new2-submit" onclick="resetPINFinal()">
+        <div class="key-spinner"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Panel F: Success
+  ══════════════════════════════════════════ -->
+  <div class="step-panel" id="panel-success">
+    <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+    <div class="success-title">PIN Reset!</div>
+    <div class="success-sub">Aapka PIN successfully reset ho gaya. Ab nayi PIN se login karo.</div>
+    <button class="btn" onclick="window.location.href='pin.html'">
+      <span><i class="fa-solid fa-shield-halved"></i>&nbsp; Go to PIN Screen</span>
+    </button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API      = 'https://unio-hazel.vercel.app';
+const token    = localStorage.getItem('token');
+const userData = JSON.parse(localStorage.getItem('user') || '{}');
+if (!token) window.location.href = 'index.html';
+
+let forgotTGID = '';
+let newPin1    = '';
+const codes    = { new1:'', new2:'' };
+const dotPre   = { new1:'n1', new2:'n2' };
+
+// ── Init: check TG linked ──────────────────────────────────────────────────
+function init() {
+  const tgLinked = userData.tg_id && String(userData.tg_id).trim() !== '';
+  if (tgLinked) {
+    forgotTGID = userData.tg_id;
+    document.getElementById('linked-tg-text').textContent =
+      `Telegram ID: ${userData.tg_id} pe OTP aayega`;
+    showPanel('linked');
+    setHeader('blue','<i class="fa-solid fa-key"></i>', null, 'Forgot PIN?', 'Aapke registered Telegram pe OTP bhejenge.');
+  } else {
+    showPanel('link');
+    setHeader('purple','<i class="fa-brands fa-telegram"></i>', null, 'Link Telegram', 'Pehle Telegram link karo, phir OTP milega.');
+  }
+}
+init();
+
+// ── Keypad helpers ─────────────────────────────────────────────────────────
+function press(panel, n) {
+  if(codes[panel].length<4){ codes[panel]+=n; updateDots(panel); }
+}
+function del(panel) {
+  codes[panel]=codes[panel].slice(0,-1); updateDots(panel);
+}
+function updateDots(panel, isError=false) {
+  const pre=dotPre[panel];
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(`${pre}-${i}`);
+    d.classList.toggle('filled', i<codes[panel].length);
+    d.classList.toggle('error', isError);
+  }
+}
+
+// ── Panel/header helpers ───────────────────────────────────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+}
+
+function setHeader(iconColor, iconHTML, badge, title, sub) {
+  const box = document.getElementById('main-icon');
+  box.className = `icon-box ${iconColor}`;
+  box.innerHTML = iconHTML;
+  const badgeEl = document.getElementById('step-badge');
+  if(badge){ badgeEl.style.display='inline-block'; badgeEl.textContent=badge; }
+  else badgeEl.style.display='none';
+  document.getElementById('main-title').textContent = title;
+  document.getElementById('main-sub').textContent   = sub;
+}
+
+function goBack() { window.location.href = 'pin.html'; }
+
+// ── Enable connect button on TG input ─────────────────────────────────────
+function onTGInput() {
+  const val = document.getElementById('f-tgid').value.trim();
+  document.getElementById('connect-btn').disabled = val.length < 5;
+}
+
+// ── Send OTP (TG already linked) ───────────────────────────────────────────
+async function sendOTPLinked() {
+  const btn = document.getElementById('send-linked-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/forgot-pin-otp`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({tg_id: forgotTGID})
+    });
+    const data = await res.json();
+    if(data.status==='success'){
+      toast('OTP bhej diya! ✅','green');
+      setHeader('blue','<i class="fa-solid fa-shield-halved"></i>', null, 'Enter OTP', 'Telegram pe OTP check karo.');
+      showPanel('otp');
+    } else toast(data.message||'Error','red');
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── Connect TG + Send OTP ──────────────────────────────────────────────────
+async function connectAndSend() {
+  const tgid = document.getElementById('f-tgid').value.trim();
+  if(!tgid) return toast('Telegram ID daalo','red');
+  const btn = document.getElementById('connect-btn');
+  btnLoad(btn, true);
+  try {
+    // 1. Link TG
+    const mobile = userData.mobile;
+    if(!mobile){ toast('Login dobara karo','red'); return; }
+    const lr  = await fetch(`${API}/auth/update-tg-by-mobile`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({mobile, tg_id:tgid})
+    });
+    const ld  = await lr.json();
+    if(ld.status!=='success'){ toast(ld.message||'Link failed','red'); return; }
+
+    // Update local storage
+    userData.tg_id = tgid;
+    localStorage.setItem('user', JSON.stringify(userData));
+    forgotTGID = tgid;
+
+    // 2. Send OTP
+    const or  = await fetch(`${API}/auth/forgot-pin-otp`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({tg_id:tgid})
+    });
+    const od  = await or.json();
+    if(od.status==='success'){
+      toast('Connected! OTP bhej diya ✅','green');
+      setHeader('blue','<i class="fa-solid fa-shield-halved"></i>', null, 'Enter OTP', 'Telegram pe OTP check karo.');
+      showPanel('otp');
+    } else toast(od.message||'OTP send nahi hua','red');
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── Verify OTP ─────────────────────────────────────────────────────────────
+async function verifyOTP() {
+  const otp = document.getElementById('f-otp').value.trim();
+  if(!otp||otp.length<4) return toast('OTP daalo','red');
+  const btn = document.getElementById('verify-otp-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/verify-forgot-pin-otp`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({tg_id:forgotTGID, otp})
+    });
+    const data = await res.json();
+    if(data.status==='success'){
+      toast('OTP verified ✅','green');
+      codes.new1=''; updateDots('new1');
+      setHeader('blue','<i class="fa-solid fa-lock"></i>', 'Step 1 of 2', 'New PIN', 'Apna naya 4-digit PIN enter karo.');
+      showPanel('new1');
+    } else {
+      toast(data.message||'Wrong OTP','red');
+      document.getElementById('f-otp').value='';
+    }
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── New PIN step 2 → reset ────────────────────────────────────────────────
+async function resetPINFinal() {
+  if(codes.new2.length!==4) return toast('4 digit ka PIN chahiye','red');
+  if(codes.new2!==newPin1){
+    toast('PINs match nahi kiye!','red');
+    updateDots('new2',true);
+    setTimeout(()=>{ codes.new2=''; updateDots('new2'); },600);
+    return;
+  }
+  const btn = document.getElementById('new2-submit');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/auth/reset-pin`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({tg_id:forgotTGID, new_pin:codes.new2})
+    });
+    const data = await res.json();
+    if(data.status==='success'){
+      localStorage.setItem('pin_set','true');
+      document.getElementById('step-badge').style.display='none';
+      document.getElementById('main-title').textContent='';
+      document.getElementById('main-sub').textContent='';
+      showPanel('success');
+    } else {
+      toast(data.message||'Error','red');
+      codes.new2=''; updateDots('new2');
+    }
+  } catch(e){ toast('Network error','red'); }
+  finally{ btnLoad(btn, false); }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function btnLoad(btn, on){
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
+  // Re-enable green-btn manually when loading off (disabled removed above)
+  if(!on && btn.classList.contains('green-btn')) {
+    const tg = document.getElementById('f-tgid');
+    if(tg) btn.disabled = tg.value.trim().length < 5;
+  }
+}
+
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
