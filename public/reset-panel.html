@@ -70,17 +70,19 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
 .week-empty{text-align:center;padding:1.25rem;color:var(--gray-400);font-size:.8rem}
 
 /* Buttons */
-.btn{width:100%;padding:.85rem;border:none;border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.76rem;transition:all .2s}
+.btn{width:100%;padding:.85rem;border:none;border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.76rem;transition:all .2s;position:relative}
 .btn:active:not(:disabled){transform:scale(.98)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-blue{background:var(--blue);color:white}
 .btn-red{background:var(--red);color:white}
 .btn-gray{background:var(--gray-100);color:var(--gray-600);border:2px solid var(--gray-200)}
 .btn-sm{padding:.6rem 1.1rem;width:auto;font-size:.7rem}
-.spinner{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+
+/* Spinner logic */
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
 .spinner.dark{border-color:rgba(0,0,0,.12);border-top-color:var(--gray-600)}
 .btn.loading .spinner{display:block}
-.btn.loading .btn-text{display:none}
+.btn.loading .btn-text, .btn.loading i{display:none}
 
 .action-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem}
 
@@ -132,7 +134,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
     <p>UNIO Wallet — Transaction Manager</p>
   </div>
 
-  <!-- ── LOCKED ── -->
   <div id="app-locked">
     <div class="card">
       <div class="card-title"><i class="fa-solid fa-lock" style="color:var(--blue)"></i> Admin Authentication</div>
@@ -150,14 +151,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
     </div>
   </div>
 
-  <!-- ── MAIN ── -->
   <div id="app-main">
 
     <div class="result" id="result-alert">
       <i id="result-icon"></i><span id="result-msg"></span>
     </div>
 
-    <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon blue"><i class="fa-solid fa-bolt"></i></div>
@@ -176,7 +175,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
       </div>
     </div>
 
-    <!-- Tabs + Week Selector -->
     <div class="card">
       <div class="card-title" style="justify-content:space-between">
         <span><i class="fa-solid fa-calendar-week" style="color:var(--blue)"></i> Select Week</span>
@@ -186,7 +184,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
         </button>
       </div>
 
-      <!-- Type tabs -->
       <div class="tabs" id="type-tabs">
         <div class="tab active" onclick="switchTab('api')">
           <i class="fa-solid fa-bolt"></i> API
@@ -197,7 +194,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
       </div>
 
       <div id="week-list-wrap">
-        <div class="week-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        <div class="week-empty">Wait kariye...</div>
       </div>
 
       <div style="margin-top:.85rem">
@@ -208,18 +205,17 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
       </div>
     </div>
 
-    <!-- Actions -->
     <div class="action-row">
-      <button class="btn btn-gray" onclick="loadStats()">
+      <button class="btn btn-gray" id="stats-btn" onclick="loadStats()">
         <div class="spinner dark"></div>
         <span class="btn-text"><i class="fa-solid fa-chart-bar"></i>&nbsp; Stats</span>
       </button>
-      <button class="btn btn-gray" onclick="logout()">
+      <button class="btn btn-gray" id="logout-btn" onclick="logout()">
+        <div class="spinner dark"></div>
         <span class="btn-text"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Logout</span>
       </button>
     </div>
 
-    <!-- Log -->
     <div class="card">
       <div class="card-title"><i class="fa-solid fa-list-ul" style="color:var(--gray-400)"></i> Activity Log</div>
       <ul class="log-list" id="log-list">
@@ -230,7 +226,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
   </div>
 </div>
 
-<!-- ── Confirm Modal ── -->
 <div class="overlay" id="confirm-overlay">
   <div class="modal">
     <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -260,20 +255,38 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:210px;backgro
 <script>
 const API        = 'https://unio-hazel.vercel.app';
 let adminSecret  = '';
-let activeTab    = 'api';   // 'api' | 'transfer'
+let activeTab    = 'api';   
 let selectedWeek = null;
-let weeksCache   = {};      // { api: [...], transfer: [...] }
+let weeksCache   = {};      
 const logs       = [];
+
+// ── UI Helper: Toggle Button Loading ──
+function btnLoad(btnId, isLoading) {
+  const btn = typeof btnId === 'string' ? document.getElementById(btnId) : btnId;
+  if (!btn) return;
+  if (isLoading) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+  } else {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
 
 // ── Unlock ─────────────────────────────────────────────────────────────────
 async function unlock() {
   const secret = document.getElementById('secret-input').value.trim();
   if (!secret) return toast('Secret daalo', 'red');
-  const btn = document.getElementById('unlock-btn');
-  btnLoad(btn, true);
+  
+  btnLoad('unlock-btn', true);
+  
   try {
     const res = await fetch(`${API}/reset/count`, { headers: {'x-admin-secret': secret} });
-    if (res.status === 403) { toast('Wrong secret!', 'red'); return; }
+    if (res.status === 403) { 
+        toast('Wrong secret!', 'red'); 
+        btnLoad('unlock-btn', false);
+        return; 
+    }
     const data = await res.json();
     if (data.status === 'success') {
       adminSecret = secret;
@@ -283,42 +296,55 @@ async function unlock() {
       addLog('Panel unlocked', 'info');
       loadWeeks();
     } else toast(data.message || 'Error', 'red');
-  } catch(e) { toast('Network error', 'red'); }
-  finally { btnLoad(btn, false); }
+  } catch(e) { 
+      toast('Network error', 'red'); 
+  } finally { 
+      btnLoad('unlock-btn', false); 
+  }
 }
 
 // ── Stats ──────────────────────────────────────────────────────────────────
 async function loadStats() {
+  btnLoad('stats-btn', true);
   try {
     const res  = await fetch(`${API}/reset/count`, { headers: {'x-admin-secret': adminSecret} });
     const data = await res.json();
-    if (data.status === 'success') { updateStatCards(data); addLog('Stats refreshed','info'); }
-  } catch(e) { toast('Network error','red'); }
+    if (data.status === 'success') { 
+        updateStatCards(data); 
+        addLog('Stats refreshed','info'); 
+    }
+  } catch(e) { 
+      toast('Network error','red'); 
+  } finally {
+      btnLoad('stats-btn', false);
+  }
 }
 
 function updateStatCards(data) {
-  document.getElementById('stat-api').textContent      = data.api      ?? '—';
-  document.getElementById('stat-transfer').textContent = data.transfer ?? '—';
-  document.getElementById('stat-total').textContent    = data.total    ?? '—';
+  document.getElementById('stat-api').textContent      = data.api      ?? '0';
+  document.getElementById('stat-transfer').textContent = data.transfer ?? '0';
+  document.getElementById('stat-total').textContent    = data.total    ?? '0';
 }
 
 // ── Tab switch ─────────────────────────────────────────────────────────────
 function switchTab(type) {
+  if (activeTab === type) return;
   activeTab    = type;
   selectedWeek = null;
   document.getElementById('delete-week-btn').disabled = true;
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', (i===0 && type==='api') || (i===1 && type==='transfer'));
+  
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', (type === 'api' ? t.innerText.includes('API') : t.innerText.includes('Transfer')));
   });
+
   if (weeksCache[type]) renderWeeks(weeksCache[type]);
   else loadWeeks();
 }
 
 // ── Load weeks ─────────────────────────────────────────────────────────────
 async function loadWeeks() {
-  const btn  = document.getElementById('refresh-btn');
+  btnLoad('refresh-btn', true);
   const wrap = document.getElementById('week-list-wrap');
-  btnLoad(btn, true);
   wrap.innerHTML = '<div class="week-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
   selectedWeek   = null;
   document.getElementById('delete-week-btn').disabled = true;
@@ -337,12 +363,14 @@ async function loadWeeks() {
   } catch(e) {
     wrap.innerHTML = '<div class="week-empty" style="color:var(--red)">Load failed.</div>';
     toast('Network error','red');
-  } finally { btnLoad(btn, false); }
+  } finally { 
+      btnLoad('refresh-btn', false); 
+  }
 }
 
 function renderWeeks(weeks) {
   const wrap = document.getElementById('week-list-wrap');
-  if (!weeks.length) { wrap.innerHTML='<div class="week-empty">Koi weeks nahi mili.</div>'; return; }
+  if (!weeks.length) { wrap.innerHTML='<div class="week-empty">Koi data nahi mila.</div>'; return; }
   wrap.innerHTML = `<div class="week-list">${weeks.map(w=>`
     <div class="week-item" onclick="selectWeek(${w.weekOffset})" data-offset="${w.weekOffset}">
       <div class="week-radio" id="radio-${w.weekOffset}"></div>
@@ -353,7 +381,6 @@ function renderWeeks(weeks) {
       <span class="week-badge ${w.count>0?'has-data':'no-data'}">${w.count>0?w.count+' txns':'Empty'}</span>
     </div>`).join('')}
   </div>`;
-  wrap._weeks = weeks;
 }
 
 function selectWeek(offset) {
@@ -363,26 +390,29 @@ function selectWeek(offset) {
   document.querySelectorAll('.week-item').forEach(el => el.classList.remove('selected'));
   document.querySelector(`[data-offset="${offset}"]`)?.classList.add('selected');
   selectedWeek = found;
-  document.getElementById('delete-week-btn').disabled = found.count === 0;
+  document.getElementById('delete-week-btn').disabled = (found.count === 0);
 }
 
 // ── Confirm + Delete ────────────────────────────────────────────────────────
 function confirmWeekDelete() {
-  if (!selectedWeek)           return toast('Koi week select karo','red');
-  if (selectedWeek.count === 0) return toast('Is week mein koi transactions nahi','red');
+  if (!selectedWeek) return toast('Koi week select karo','red');
+  if (selectedWeek.count === 0) return toast('Is week mein data nahi hai','red');
+  
   const typeLabel = activeTab === 'api' ? '⚡ API' : '↔️ Transfer';
   document.getElementById('confirm-type-label').textContent  = typeLabel + ' Transactions';
   document.getElementById('confirm-week-label').textContent  = selectedWeek.label;
-  document.getElementById('confirm-count').textContent       = selectedWeek.count + ' transactions';
+  document.getElementById('confirm-count').textContent       = selectedWeek.count + ' txns';
   document.getElementById('confirm-overlay').classList.add('open');
 }
 
-function closeModal() { document.getElementById('confirm-overlay').classList.remove('open'); }
+function closeModal() { 
+    document.getElementById('confirm-overlay').classList.remove('open'); 
+}
 
 async function doDelete() {
   if (!selectedWeek) return;
-  const btn = document.getElementById('confirm-yes-btn');
-  btnLoad(btn, true);
+  btnLoad('confirm-yes-btn', true);
+  
   try {
     const res  = await fetch(`${API}/reset/week`, {
       method:  'DELETE',
@@ -390,10 +420,67 @@ async function doDelete() {
       body:    JSON.stringify({ weekOffset: selectedWeek.weekOffset, txType: activeTab })
     });
     const data = await res.json();
-    closeModal();
+    
     if (data.status === 'success') {
-      showResult(`✅ ${data.deleted} transactions deleted — ${data.week}`, 'success');
-      addLog(`${data.deleted} [${activeTab}] deleted | ${data.week}`, 'delete');
-      toast(`Deleted ${data.deleted} ✅`,'green');
+      showResult(`✅ Deleted ${data.deleted} txns`, 'success');
+      addLog(`${data.deleted} [${activeTab}] deleted`, 'delete');
+      toast(`Success: ${data.deleted} deleted`,'green');
       selectedWeek = null;
-      weeksCache  
+      weeksCache = {}; // Cache clear taaki refresh ho
+      closeModal();
+      loadStats(); 
+      loadWeeks();
+    } else {
+      toast(data.message || 'Error','red');
+    }
+  } catch(e) { 
+      toast('Network error','red'); 
+  } finally { 
+      btnLoad('confirm-yes-btn', false); 
+  }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function addLog(msg, type='info') {
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  logs.unshift({msg,type,time:now});
+  document.getElementById('log-list').innerHTML = logs.map(l=>
+    `<li class="log-item"><span class="log-dot ${l.type}"></span><span style="flex:1">${l.msg}</span><span style="color:var(--gray-400);font-size:.66rem">${l.time}</span></li>`
+  ).join('');
+}
+
+function showResult(msg, type) {
+  const el = document.getElementById('result-alert');
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-icon').className  = type==='success'?'fa-solid fa-circle-check':'fa-solid fa-circle-xmark';
+  el.className = `result show ${type}`;
+  setTimeout(()=>el.classList.remove('show'), 5000);
+}
+
+function toggleEye() {
+  const inp = document.getElementById('secret-input');
+  const ico = document.getElementById('eye-icon');
+  inp.type  = inp.type==='password'?'text':'password';
+  ico.className = inp.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function logout() {
+  btnLoad('logout-btn', true);
+  setTimeout(() => {
+      adminSecret=''; selectedWeek=null; weeksCache={};
+      document.getElementById('secret-input').value='';
+      document.getElementById('app-main').style.display='none';
+      document.getElementById('app-locked').style.display='block';
+      btnLoad('logout-btn', false);
+      toast('Logged out');
+  }, 500);
+}
+</script>
+</body>
+</html>
