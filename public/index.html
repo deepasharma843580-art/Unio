@@ -6,11 +6,6 @@
 <title>UNIO Wallet</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
 <style>
 :root{
   --blue:#0057ff;--blue-dark:#0041cc;--blue-light:#e8efff;
@@ -71,13 +66,12 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('login')">Login</div>
-    <div class="tab" onclick="switchTab('register')">Register</div>
+    <div class="tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+    <div class="tab" id="tab-register" onclick="switchTab('register')">Register</div>
   </div>
 
   <div id="msg" class="msg"></div>
 
-  <!-- LOGIN FORM -->
   <div id="login-form" class="form active">
     <div class="input-group">
       <label>Mobile Number</label>
@@ -96,7 +90,6 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60
     </div>
   </div>
 
-  <!-- REGISTER FORM -->
   <div id="register-form" class="form">
     <div class="input-group">
       <label>Full Name</label>
@@ -148,11 +141,27 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:50%;height:60
 <script>
 const API = 'https://unio-hazel.vercel.app';
 
+// --- AUTO LOGIN CHECK ---
+// Jab page load hoga, check karega ki token hai ya nahi
+window.onload = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    // Agar token pehle se hai, toh login page dikhane ki zaroorat nahi
+    window.location.href = 'pin.html';
+  }
+};
+
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
-  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById(`${tab}-form`).classList.add('active');
+  
+  if(tab === 'login') {
+    document.getElementById('tab-login').classList.add('active');
+    document.getElementById('login-form').classList.add('active');
+  } else {
+    document.getElementById('tab-register').classList.add('active');
+    document.getElementById('register-form').classList.add('active');
+  }
   hideMsg();
 }
 
@@ -190,12 +199,11 @@ async function login() {
       return;
     }
 
-    // Token aur user info save karo
+    // SAVING DATA
     localStorage.setItem('token',   data.token);
     localStorage.setItem('user',    JSON.stringify(data.user));
     localStorage.setItem('pin_set', data.user.pin_set ? 'true' : 'false');
 
-    // Hamesha pin.html pe bhejo — wahan se decide hoga set karna hai ya verify
     window.location.href = 'pin.html';
 
   } catch(e) {
@@ -263,7 +271,6 @@ async function register() {
       return;
     }
 
-    // Naya user — pin_set hamesha false hoga
     localStorage.setItem('token',   data.token);
     localStorage.setItem('user',    JSON.stringify(data.user));
     localStorage.setItem('pin_set', 'false');
