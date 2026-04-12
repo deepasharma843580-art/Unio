@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redeem Admin — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#e8efff;
+  --green:#16a34a;--red:#dc2626;--red-light:#fee2e2;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --purple:#7c3aed;--purple-light:#f3f0ff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 8px 32px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#f1f5f9;padding:16px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;background:linear-gradient(135deg,#0057ff,#4d8aff);z-index:0}
+
+.container{max-width:560px;margin:0 auto;position:relative;z-index:1}
+
+.page-header{padding:1.25rem 0 1.5rem;text-align:center}
+.admin-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.2);color:white;font-size:.66rem;font-weight:800;padding:.25rem .7rem;border-radius:2rem;margin-bottom:.6rem;letter-spacing:.06em;text-transform:uppercase}
+.page-header h1{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;color:white;margin-bottom:.2rem}
+.page-header p{font-size:.75rem;color:rgba(255,255,255,.7)}
+
+/* Auth */
+.card{background:var(--white);border-radius:1.5rem;padding:1.5rem;box-shadow:var(--shadow);margin-bottom:.85rem}
+.card-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--gray-900);margin-bottom:.9rem;display:flex;align-items:center;gap:.4rem}
+
+.input-group{margin-bottom:.75rem}
+.input-group label{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.3rem;letter-spacing:.06em}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;padding:.78rem 2.5rem .78rem .9rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.8rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--gray-900)}
+.input-wrap input:focus{border-color:var(--blue);background:white}
+.eye-btn{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:.85rem}
+.input-group input,.input-group textarea,.input-group select{width:100%;padding:.78rem .9rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.8rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--gray-900)}
+.input-group input:focus,.input-group textarea:focus,.input-group select:focus{border-color:var(--blue);background:white}
+.input-group textarea{resize:vertical;min-height:90px;line-height:1.5}
+
+/* Tabs */
+.main-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--gray-100);border-radius:1rem;padding:4px;gap:4px;margin-bottom:.85rem}
+.mtab{padding:.6rem;text-align:center;font-weight:700;font-size:.72rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
+.mtab.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+
+/* Buttons */
+.btn{width:100%;padding:.82rem;border:none;border-radius:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.74rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-blue{background:var(--blue);color:white}
+.btn-red{background:var(--red);color:white}
+.btn-green{background:var(--green);color:white}
+.btn-gray{background:var(--gray-100);color:var(--gray-600);border:2px solid var(--gray-200)}
+.btn-sm{padding:.58rem .9rem;width:auto;font-size:.68rem}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.spinner.dark{border-color:rgba(0,0,0,.12);border-top-color:var(--gray-600)}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{display:none}
+
+/* Stock cards */
+.stock-grid{display:flex;flex-direction:column;gap:.5rem}
+.stock-item{display:flex;align-items:center;justify-content:space-between;padding:.82rem 1rem;background:var(--gray-50);border-radius:1rem;border:2px solid var(--gray-200)}
+.stock-info{flex:1}
+.stock-label{font-size:.82rem;font-weight:700;color:var(--gray-900)}
+.stock-meta{font-size:.65rem;color:var(--gray-400);font-weight:600;margin-top:.1rem}
+.stock-count{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue);margin-right:.75rem}
+.stock-empty{text-align:center;padding:1.25rem;color:var(--gray-400);font-size:.78rem}
+
+/* Week list */
+.week-list{display:flex;flex-direction:column;gap:.5rem}
+.week-item{display:flex;align-items:center;gap:.6rem;padding:.78rem .9rem;background:var(--gray-50);border-radius:.9rem;border:2px solid var(--gray-200);cursor:pointer;transition:all .2s}
+.week-item:hover{border-color:#fca5a5;background:var(--red-light)}
+.week-item.selected{border-color:var(--red);background:var(--red-light)}
+.week-radio{width:16px;height:16px;border:2px solid var(--gray-300);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.week-item.selected .week-radio{border-color:var(--red);background:var(--red)}
+.week-item.selected .week-radio::after{content:'';width:5px;height:5px;background:white;border-radius:50%}
+.week-info{flex:1}
+.week-range{font-size:.75rem;font-weight:700;color:var(--gray-900)}
+.week-meta{font-size:.65rem;color:var(--gray-400);font-weight:600;margin-top:.08rem}
+.week-badge{font-size:.6rem;font-weight:800;padding:.18rem .45rem;border-radius:.35rem;text-transform:uppercase;flex-shrink:0}
+.week-badge.has{background:#fee2e2;color:var(--red)}
+.week-badge.empty{background:var(--gray-100);color:var(--gray-400)}
+
+/* Result */
+.result{border-radius:.8rem;padding:.78rem .9rem;font-size:.76rem;font-weight:600;display:none;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.result.show{display:flex}
+.result.success{background:#dcfce7;color:var(--green);border:2px solid #86efac}
+.result.error{background:var(--red-light);color:var(--red);border:2px solid #fca5a5}
+
+/* Confirm modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.modal{background:white;border-radius:2rem 2rem 1.25rem 1.25rem;padding:1.75rem;width:100%;max-width:520px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-icon{width:52px;height:52px;background:var(--red-light);border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;color:var(--red);font-size:1.2rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;text-align:center;color:var(--gray-900);margin-bottom:.35rem}
+.modal-chip{font-size:.72rem;font-weight:700;color:var(--blue);text-align:center;background:var(--blue-light);border-radius:.5rem;padding:.28rem .65rem;display:inline-block;margin:0 auto .35rem}
+.modal-refund{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--green);text-align:center;margin-bottom:.25rem}
+.modal-sub{font-size:.74rem;color:var(--gray-400);text-align:center;margin-bottom:1.25rem;line-height:1.5}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+
+/* Log */
+.log-list{list-style:none;max-height:140px;overflow-y:auto}
+.log-item{display:flex;align-items:center;gap:.5rem;padding:.38rem 0;border-bottom:1px solid var(--gray-100);font-size:.7rem;color:var(--gray-600);font-weight:500}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.log-dot.success{background:var(--green)}
+.log-dot.delete{background:var(--red)}
+.log-dot.info{background:var(--blue)}
+.log-empty{font-size:.72rem;color:var(--gray-400);text-align:center;padding:.6rem 0}
+
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.85rem}
+
+.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.55rem 1.1rem;border-radius:2rem;font-size:.72rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+
+#app-locked{display:block}
+#app-main{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Admin</div>
+    <h1>Redeem Panel</h1>
+    <p>UNIO Wallet — Codes Manager</p>
+  </div>
+
+  <!-- ── LOCKED ── -->
+  <div id="app-locked">
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-lock" style="color:var(--blue)"></i> Admin Authentication</div>
+      <div class="input-group">
+        <label>Admin Secret</label>
+        <div class="input-wrap">
+          <input type="password" id="secret-input" placeholder="Enter secret key" onkeydown="if(event.key==='Enter')unlock()">
+          <button class="eye-btn" onclick="toggleEye()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
+        </div>
+      </div>
+      <button class="btn btn-blue" id="unlock-btn" onclick="unlock()">
+        <div class="spinner"></div>
+        <span class="btn-text"><i class="fa-solid fa-unlock"></i>&nbsp; Access Panel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div id="app-main">
+
+    <div class="result" id="result-alert">
+      <i id="result-icon"></i><span id="result-msg"></span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="main-tabs">
+      <div class="mtab active" onclick="switchTab('redeem')">
+        <i class="fa-solid fa-tag"></i> Redeem Codes
+      </div>
+      <div class="mtab" onclick="switchTab('giftcode')">
+        <i class="fa-solid fa-gift"></i> Gift Codes
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         REDEEM TAB
+    ═══════════════════════════════════════ -->
+    <div id="tab-redeem">
+
+      <!-- Add Codes -->
+      <div class="card">
+        <div class="card-title"><i class="fa-solid fa-plus" style="color:var(--green)"></i> Add Codes</div>
+
+        <div class="input-group">
+          <label>Product ID (e.g. google_play_10)</label>
+          <input type="text" id="add-product" placeholder="google_play_10">
+        </div>
+        <div class="input-group">
+          <label>Display Label</label>
+          <input type="text" id="add-label" placeholder="Google Play ₹10">
+        </div>
+        <div class="input-group">
+          <label>Price (₹)</label>
+          <input type="number" id="add-price" placeholder="10">
+        </div>
+        <div class="input-group">
+          <label>Codes (ek line mein ek code)</label>
+          <textarea id="add-codes" placeholder="ABCD-1234-EFGH&#10;WXYZ-5678-IJKL&#10;..."></textarea>
+        </div>
+        <button class="btn btn-green" id="add-btn" onclick="addCodes()">
+          <div class="spinner"></div>
+          <span class="btn-text"><i class="fa-solid fa-plus"></i>&nbsp; Add Codes</span>
+        </button>
+      </div>
+
+      <!-- Stock -->
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between">
+          <span><i class="fa-solid fa-boxes-stacked" style="color:var(--blue)"></i> Current Stock</span>
+          <button class="btn btn-gray btn-sm" id="stock-refresh-btn" onclick="loadStock()">
+            <div class="spinner dark"></div>
+            <span class="btn-text"><i class="fa-solid fa-rotate"></i></span>
+          </button>
+        </div>
+        <div id="stock-wrap">
+          <div class="stock-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+      </div>
+
+      <!-- API URL info -->
+      <div class="card" style="background:var(--blue-light);border:2px solid #bfdbfe">
+        <div class="card-title" style="color:var(--blue)"><i class="fa-solid fa-link"></i> API URL</div>
+        <div style="font-size:.72rem;color:var(--blue);font-weight:600;line-height:1.6;word-break:break-all">
+          GET /redeem?key=<b>API_KEY</b>&type=<b>google_play_10</b><br><br>
+          Response mein code milega + DB se auto delete ho jaayega.
+        </div>
+      </div>
+
+    </div><!-- /#tab-redeem -->
+
+    <!-- ═══════════════════════════════════════
+         GIFTCODE TAB
+    ═══════════════════════════════════════ -->
+    <div id="tab-giftcode" style="display:none">
+
+      <!-- Weeks -->
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between">
+          <span><i class="fa-solid fa-calendar-week" style="color:var(--blue)"></i> Select Week</span>
+          <button class="btn btn-gray btn-sm" id="gc-refresh-btn" onclick="loadGiftWeeks()">
+            <div class="spinner dark"></div>
+            <span class="btn-text"><i class="fa-solid fa-rotate"></i></span>
+          </button>
+        </div>
+        <div id="gc-week-wrap">
+          <div class="stock-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+        <div style="margin-top:.75rem">
+          <button class="btn btn-red" id="gc-delete-btn" onclick="confirmGCDelete()" disabled>
+            <div class="spinner"></div>
+            <span class="btn-text"><i class="fa-solid fa-trash-can"></i>&nbsp; Delete Week + Refund</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /#tab-giftcode -->
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn btn-gray" onclick="loadAll()">
+        <div class="spinner dark"></div>
+        <span class="btn-text"><i class="fa-solid fa-rotate"></i>&nbsp; Refresh</span>
+      </button>
+      <button class="btn btn-gray" onclick="logout()">
+        <span class="btn-text"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Logout</span>
+      </button>
+    </div>
+
+    <!-- Log -->
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-list-ul" style="color:var(--gray-400)"></i> Activity Log</div>
+      <ul class="log-list" id="log-list"><li class="log-empty">Koi activity nahi.</li></ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="overlay" id="confirm-overlay">
+  <div class="modal">
+    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="modal-title">Delete + Refund?</div>
+    <div style="text-align:center;margin-bottom:.4rem">
+      <span class="modal-chip" id="confirm-week">—</span>
+    </div>
+    <div class="modal-refund" id="confirm-refund">₹0 Refund</div>
+    <div class="modal-sub" id="confirm-sub">Is week ke sare gift codes delete honge. Unclaimed slots ka fund creators ko refund hoga.</div>
+    <div class="modal-btns">
+      <button class="btn btn-gray" onclick="closeModal()">
+        <span class="btn-text"><i class="fa-solid fa-xmark"></i>&nbsp; Cancel</span>
+      </button>
+      <button class="btn btn-red" id="confirm-yes-btn" onclick="doGCDelete()">
+        <div class="spinner"></div>
+        <span class="btn-text"><i class="fa-solid fa-trash-can"></i>&nbsp; Confirm</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://unio-hazel.vercel.app';
+let adminSecret   = '';
+let activeTab     = 'redeem';
+let gcWeeks       = [];
+let selectedGCWeek = null;
+const logs = [];
+
+// ── Unlock ──────────────────────────────────────────────────────────────────
+async function unlock() {
+  const secret = document.getElementById('secret-input').value.trim();
+  if (!secret) return toast('Secret daalo','red');
+  const btn = document.getElementById('unlock-btn');
+  btnLoad(btn, true);
+  try {
+    const res = await fetch(`${API}/redeem/admin/stock`, { headers:{'x-admin-secret':secret} });
+    if (res.status === 403) { toast('Wrong secret!','red'); return; }
+    const data = await res.json();
+    if (data.status === 'success') {
+      adminSecret = secret;
+      document.getElementById('app-locked').style.display = 'none';
+      document.getElementById('app-main').style.display   = 'block';
+      renderStock(data.stock);
+      loadGiftWeeks();
+      addLog('Panel unlocked','info');
+    } else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Tab switch ──────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.mtab').forEach((t,i) =>
+    t.classList.toggle('active', (i===0&&tab==='redeem')||(i===1&&tab==='giftcode')));
+  document.getElementById('tab-redeem').style.display   = tab==='redeem'   ? 'block' : 'none';
+  document.getElementById('tab-giftcode').style.display = tab==='giftcode' ? 'block' : 'none';
+}
+
+// ── Add Codes ───────────────────────────────────────────────────────────────
+async function addCodes() {
+  const product = document.getElementById('add-product').value.trim();
+  const label   = document.getElementById('add-label').value.trim();
+  const price   = document.getElementById('add-price').value.trim();
+  const raw     = document.getElementById('add-codes').value.trim();
+
+  if (!product||!label||!price||!raw) return toast('Sab fields bharo','red');
+  const codes = raw.split('\n').map(c=>c.trim()).filter(c=>c.length>0);
+  if (!codes.length) return toast('Koi valid code nahi mila','red');
+
+  const btn = document.getElementById('add-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/redeem/admin/add`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-secret':adminSecret},
+      body: JSON.stringify({ product, label, price: parseFloat(price), codes })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      showResult(`✅ ${data.added} codes added — ${label}`,'success');
+      addLog(`${data.added} codes added [${label}]`,'success');
+      document.getElementById('add-codes').value = '';
+      loadStock();
+    } else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+  // ── Load Stock ──────────────────────────────────────────────────────────────
+async function loadStock() {
+  const btn = document.getElementById('stock-refresh-btn');
+  btnLoad(btn, true);
+  const wrap = document.getElementById('stock-wrap');
+  wrap.innerHTML = '<div class="stock-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const res  = await fetch(`${API}/redeem/admin/stock`, { headers:{'x-admin-secret':adminSecret} });
+    const data = await res.json();
+    if (data.status === 'success') renderStock(data.stock);
+    else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+function renderStock(stock) {
+  const wrap = document.getElementById('stock-wrap');
+  if (!stock.length) { wrap.innerHTML='<div class="stock-empty">Koi codes nahi hain abhi.</div>'; return; }
+  wrap.innerHTML = `<div class="stock-grid">${stock.map(s=>`
+    <div class="stock-item">
+      <div class="stock-info">
+        <div class="stock-label">${s.label}</div>
+        <div class="stock-meta">₹${s.price} · ${s.product}</div>
+      </div>
+      <span class="stock-count">${s.count}</span>
+      <button class="btn btn-red btn-sm" onclick="deleteProduct('${s.product}')" style="padding:.5rem .7rem">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </div>`).join('')}
+  </div>`;
+}
+
+async function deleteProduct(product) {
+  if (!confirm(`Sare unsold "${product}" codes delete karo?`)) return;
+  try {
+    const res  = await fetch(`${API}/redeem/admin/product?product=${encodeURIComponent(product)}`, {
+      method:'DELETE', headers:{'x-admin-secret':adminSecret}
+    });
+    const data = await res.json();
+    if (data.status==='success') {
+      showResult(`✅ ${data.deleted} codes deleted — ${product}`,'success');
+      addLog(`${data.deleted} [${product}] deleted`,'delete');
+      loadStock();
+    } else toast(data.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+}
+
+// ── Gift Code Weeks ─────────────────────────────────────────────────────────
+async function loadGiftWeeks() {
+  const btn  = document.getElementById('gc-refresh-btn');
+  const wrap = document.getElementById('gc-week-wrap');
+  btnLoad(btn, true);
+  wrap.innerHTML = '<div class="stock-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  selectedGCWeek = null;
+  document.getElementById('gc-delete-btn').disabled = true;
+  try {
+    const res  = await fetch(`${API}/redeem/admin/giftcode/weeks`, { headers:{'x-admin-secret':adminSecret} });
+    const data = await res.json();
+    if (data.status !== 'success' || !data.weeks.length) {
+      wrap.innerHTML = '<div class="stock-empty">Koi gift codes nahi mili.</div>';
+      gcWeeks = [];
+      return;
+    }
+    gcWeeks = data.weeks;
+    renderGCWeeks(data.weeks);
+  } catch(e) { toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+function renderGCWeeks(weeks) {
+  const wrap = document.getElementById('gc-week-wrap');
+  wrap.innerHTML = `<div class="week-list">${weeks.map(w=>`
+    <div class="week-item" onclick="selectGCWeek(${w.weekOffset})" data-offset="${w.weekOffset}">
+      <div class="week-radio" id="gcr-${w.weekOffset}"></div>
+      <div class="week-info">
+        <div class="week-range">${w.label}</div>
+        <div class="week-meta">${w.count} codes · Refund: ₹${w.totalRefund}</div>
+      </div>
+      <span class="week-badge ${w.count>0?'has':'empty'}">${w.count} codes</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function selectGCWeek(offset) {
+  const found = gcWeeks.find(w => w.weekOffset === offset);
+  if (!found) return;
+  document.querySelectorAll('.week-item').forEach(el => el.classList.remove('selected'));
+  document.querySelector(`[data-offset="${offset}"]`)?.classList.add('selected');
+  selectedGCWeek = found;
+  document.getElementById('gc-delete-btn').disabled = found.count === 0;
+}
+
+function confirmGCDelete() {
+  if (!selectedGCWeek || selectedGCWeek.count === 0) return toast('Pehle week select karo','red');
+  document.getElementById('confirm-week').textContent  = selectedGCWeek.label;
+  document.getElementById('confirm-refund').textContent = `₹${selectedGCWeek.totalRefund} Refund`;
+  document.getElementById('confirm-sub').textContent   =
+    `${selectedGCWeek.count} gift codes delete honge. Unclaimed slots ka ₹${selectedGCWeek.totalRefund} creators ko refund hoga.`;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('confirm-overlay').classList.remove('open'); }
+
+async function doGCDelete() {
+  if (!selectedGCWeek) return;
+  const btn = document.getElementById('confirm-yes-btn');
+  btnLoad(btn, true);
+  try {
+    const res  = await fetch(`${API}/redeem/admin/giftcode/week`, {
+      method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-secret':adminSecret},
+      body: JSON.stringify({ weekOffset: selectedGCWeek.weekOffset })
+    });
+    const data = await res.json();
+    closeModal();
+    if (data.status==='success') {
+      showResult(`✅ ${data.deleted} codes deleted · ₹${data.total_refunded} refunded`,'success');
+      addLog(`${data.deleted} GC deleted · ₹${data.total_refunded} refunded`,'delete');
+      selectedGCWeek = null;
+      document.getElementById('gc-delete-btn').disabled = true;
+      loadGiftWeeks();
+    } else { showResult(data.message||'Error','error'); toast(data.message||'Error','red'); }
+  } catch(e) { closeModal(); toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function loadAll() { loadStock(); loadGiftWeeks(); }
+
+function addLog(msg, type='info') {
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  logs.unshift({msg,type,time:now});
+  document.getElementById('log-list').innerHTML = logs.map(l=>
+    `<li class="log-item"><span class="log-dot ${l.type}"></span><span style="flex:1">${l.msg}</span><span style="color:var(--gray-400);font-size:.64rem">${l.time}</span></li>`
+  ).join('');
+}
+
+function showResult(msg, type) {
+  const el = document.getElementById('result-alert');
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-icon').className  = type==='success'?'fa-solid fa-circle-check':'fa-solid fa-circle-xmark';
+  el.className = `result show ${type}`;
+  setTimeout(()=>el.classList.remove('show'), 5000);
+}
+
+function toggleEye() {
+  const inp=document.getElementById('secret-input'), ico=document.getElementById('eye-icon');
+  inp.type = inp.type==='password'?'text':'password';
+  ico.className = inp.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+function btnLoad(btn, on) { btn.classList.toggle('loading',on); btn.disabled=on; }
+
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function logout() {
+  adminSecret=''; selectedGCWeek=null; gcWeeks=[];
+  document.getElementById('secret-input').value='';
+  document.getElementById('app-main').style.display='none';
+  document.getElementById('app-locked').style.display='block';
+  toast('Logged out');
+}
+</script>
+</body>
+</html>
