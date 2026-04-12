@@ -121,107 +121,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </button>
   </div>
 
-  <!-- JWT Token -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-shield-halved" style="color:#9333ea"></i> JWT Token
-    </div>
-    <div class="token-box" style="position:relative">
-      <div class="token-label">Bearer Token</div>
-      <div class="token-val" id="jwt-token">Loading...</div>
-      <button class="copy-btn" onclick="copyEl('jwt-token')" style="top:.75rem;right:.75rem">
-        <i class="fa-solid fa-copy"></i>
-      </button>
-    </div>
-    <div style="font-size:.65rem;font-weight:600;color:#94a3b8;margin-top:.75rem;line-height:1.6">
-      Header mein use karo: <code style="background:#f8fafc;padding:.1rem .4rem;border-radius:.4rem;color:#0057ff">Authorization: Bearer {token}</code>
-    </div>
-  </div>
-
-  <!-- Responses -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-circle-check" style="color:#10b981"></i> Response Examples
-    </div>
-
-    <div class="res-box success">
-      <div class="res-label success">
-        <i class="fa-solid fa-circle-check"></i> Success Response
-      </div>
-      <div class="res-code success">{
-  "status": "success",
-  "message": "Payment successful",
-  "data": {
-    "transaction_id": "TXNhgphgfqre1med5sc",
-    "amount": 50,
-    "receiver": {
-      "name": "Name",
-      "number": "number"
-    },
-    "comment": "payout",
-    "timestamp": "16-03-2026 15:12:06"
-  }
-}</div>
-    </div>
-
-    <div class="res-box error">
-      <div class="res-label error">
-        <i class="fa-solid fa-circle-xmark"></i> Error — Invalid Key
-      </div>
-      <div class="res-code error">{
-  "status": "error",
-  "message": "Invalid API key"
-}</div>
-    </div>
-
-    <div class="res-box error">
-      <div class="res-label error">
-        <i class="fa-solid fa-circle-xmark"></i> Error — Low Balance
-      </div>
-      <div class="res-code error">{
-  "status": "error",
-  "message": "Admin Balance Low"
-}</div>
-    </div>
-
-    <div class="res-box error">
-      <div class="res-label error">
-        <i class="fa-solid fa-circle-xmark"></i> Error — Number Not Found
-      </div>
-      <div class="res-code error">{
-  "status": "error",
-  "message": "Receiver 9876543210 not found"
-}</div>
-    </div>
-
-    <div class="res-box error">
-      <div class="res-label error">
-        <i class="fa-solid fa-circle-xmark"></i> Error — Duplicate TXN
-      </div>
-      <div class="res-code error">{
-  "status": "error",
-  "message": "Already Claimed! This Transaction ID is used."
-}</div>
-    </div>
-  </div>
-
-  <!-- Other Endpoints -->
-  <div class="card">
-    <div class="card-title">
-      <i class="fa-solid fa-circle-info" style="color:#0057ff"></i> Other Endpoints
-    </div>
-
-    <div class="api-url-box" style="margin-bottom:.75rem">
-      <div class="api-url-label">Check Balance</div>
-      <div class="api-url-text" id="bal-url">Loading...</div>
-    </div>
-
-    <div class="api-url-box">
-      <div class="api-url-label">Verify Number</div>
-      <div class="api-url-text" id="verify-url">Loading...</div>
-    </div>
-  </div>
-
   <!-- Deposit Gateway API -->
   <div class="card">
     <div class="card-title">
@@ -333,6 +232,107 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 }</div>
     </div>
 
+  </div>
+
+  <!-- JWT Token -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-shield-halved" style="color:#9333ea"></i> JWT Token
+    </div>
+    <div class="token-box" style="position:relative">
+      <div class="token-label">Bearer Token</div>
+      <div class="token-val" id="jwt-token">Loading...</div>
+      <button class="copy-btn" onclick="copyEl('jwt-token')" style="top:.75rem;right:.75rem">
+        <i class="fa-solid fa-copy"></i>
+      </button>
+    </div>
+    <div style="font-size:.65rem;font-weight:600;color:#94a3b8;margin-top:.75rem;line-height:1.6">
+      Header mein use karo: <code style="background:#f8fafc;padding:.1rem .4rem;border-radius:.4rem;color:#0057ff">Authorization: Bearer {token}</code>
+    </div>
+  </div>
+
+  <!-- Responses -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-circle-check" style="color:#10b981"></i> Response Examples
+    </div>
+
+    <div class="res-box success">
+      <div class="res-label success">
+        <i class="fa-solid fa-circle-check"></i> Success Response
+      </div>
+      <div class="res-code success">{
+  "status": "success",
+  "message": "Payment successful",
+  "data": {
+    "transaction_id": "TXNhgphgfqre1med5sc",
+    "amount": 50,
+    "receiver": {
+      "name": "Name",
+      "number": "number"
+    },
+    "comment": "payout",
+    "timestamp": "16-03-2026 15:12:06"
+  }
+}</div>
+    </div>
+
+    <div class="res-box error">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Error — Invalid Key
+      </div>
+      <div class="res-code error">{
+  "status": "error",
+  "message": "Invalid API key"
+}</div>
+    </div>
+
+    <div class="res-box error">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Error — Low Balance
+      </div>
+      <div class="res-code error">{
+  "status": "error",
+  "message": "Admin Balance Low"
+}</div>
+    </div>
+
+    <div class="res-box error">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Error — Number Not Found
+      </div>
+      <div class="res-code error">{
+  "status": "error",
+  "message": "Receiver 9876543210 not found"
+}</div>
+    </div>
+
+    <div class="res-box error">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Error — Duplicate TXN
+      </div>
+      <div class="res-code error">{
+  "status": "error",
+  "message": "Already Claimed! This Transaction ID is used."
+}</div>
+    </div>
+  </div>
+
+  <!-- Other Endpoints -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-circle-info" style="color:#0057ff"></i> Other Endpoints
+    </div>
+
+    <div class="api-url-box" style="margin-bottom:.75rem">
+      <div class="api-url-label">Check Balance</div>
+      <div class="api-url-text" id="bal-url">Loading...</div>
+    </div>
+
+    <div class="api-url-box">
+      <div class="api-url-label">Verify Number</div>
+      <div class="api-url-text" id="verify-url">Loading...</div>
+    </div>
   </div>
 
 </div>
@@ -455,5 +455,5 @@ async function regenKey() {
 loadData();
 </script>
 </body>
-  </html>
-  
+                              </html>
+                              
