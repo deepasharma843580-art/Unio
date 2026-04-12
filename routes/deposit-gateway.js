@@ -151,10 +151,10 @@ router.get('/invoice/:id', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/pay', async (req, res) => {
   try {
-    const { invoice_id, mobile, pin } = req.body;
+    const { invoice_id, mobile, pin, password } = req.body;
 
-    if (!invoice_id || !mobile || !pin)
-      return res.status(400).json({ status: 'error', message: 'invoice_id, mobile aur PIN required hai' });
+    if (!invoice_id || !mobile || !pin || !password)
+      return res.status(400).json({ status: 'error', message: 'invoice_id, mobile, PIN aur password required hai' });
 
     // Fetch invoice
     const inv = await Invoice.findOne({ invoice_id });
@@ -166,7 +166,7 @@ router.post('/pay', async (req, res) => {
       return res.json({ status: 'error', message: 'Invoice expire ho gaya hai' });
 
     // Customer find — PIN select karo
-    const customer = await User.findOne({ mobile: mobile.toString() }).select('+pin +pin_set +balance +tg_id +name');
+    const customer = await User.findOne({ mobile: mobile.toString() }).select('+pin +pin_set +password +balance +tg_id +name');
     if (!customer)
       return res.json({ status: 'error', message: 'Ye mobile UNIO pe registered nahi hai' });
 
@@ -176,6 +176,11 @@ router.post('/pay', async (req, res) => {
 
     if (customer.pin !== pin.toString())
       return res.json({ status: 'error', message: 'Wrong PIN' });
+
+    // Password verify
+    const passMatch = await customer.matchPassword(password);
+    if (!passMatch)
+      return res.json({ status: 'error', message: 'Wrong password' });
 
     // Self payment block
     if (customer._id.toString() === inv.merchant_id.toString())
@@ -333,5 +338,6 @@ router.get('/status/:id', async (req, res) => {
 });
 
 module.exports = router;
+
 
         
