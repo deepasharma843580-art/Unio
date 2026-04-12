@@ -122,6 +122,7 @@ app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));         // ✅ Leaderboard
 app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-panel.html')));  // ✅ Reset Panel
 app.get('/pay/:id',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'pay.html')));          // ✅ Gateway Pay Page
+app.get('/redeem-store',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem.html')));       // ✅ Redeem User Page
 app.get('/redeem-admin',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem-admin.html'))); // ✅ Redeem Admin
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
@@ -136,4 +137,3 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
-
