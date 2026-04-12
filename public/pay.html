@@ -72,12 +72,12 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 .key:active{background:var(--gray-100);transform:scale(.92)}
 .key.del{color:var(--red)}
 
-.btn{width:100%;padding:.8rem;background:var(--blue);color:white;border:none;border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.75rem;transition:all .2s}
-.btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn{width:100%;padding:.8rem;background:var(--blue);color:white;border:none;border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.75rem;transition:all .2s;position:relative;overflow:hidden}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed;opacity:0.8}
 .btn:active:not(:disabled){transform:scale(.98)}
-.spinner{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
-.btn.loading .spinner{display:block}
-.btn.loading .btn-text{display:none}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;margin-right:8px}
+.btn.loading .spinner{display:inline-block}
+.btn.loading .btn-text-content{opacity:0.7}
 
 /* States */
 .state{display:none;text-align:center;padding:.75rem 0}
@@ -103,8 +103,6 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 <body>
 
 <div class="wrap">
-
-  <!-- ── Invoice Info Card ── -->
   <div class="inv-card">
     <div class="unio-badge">
       <div class="unio-logo"><i class="fa-solid fa-wallet"></i></div>
@@ -135,13 +133,12 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
     </div>
   </div>
 
-  <!-- ── Payment Form ── -->
   <div class="pay-card" id="pay-form">
     <div class="section-title"><i class="fa-solid fa-lock" style="color:var(--blue)"></i> Pay with UNIO Wallet</div>
 
     <div class="input-group">
       <label>Registered Mobile Number</label>
-      <input type="number" id="mobile-input" placeholder="Enter your UNIO mobile number" maxlength="10">
+      <input type="number" id="mobile-input" placeholder="Enter your UNIO mobile number" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
     </div>
 
     <div>
@@ -172,7 +169,7 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 
     <button class="btn" id="pay-btn" onclick="submitPay()">
       <div class="spinner"></div>
-      <span class="btn-text"><i class="fa-solid fa-shield-halved"></i>&nbsp; Pay ₹<span id="btn-amount">—</span></span>
+      <span class="btn-text-content"><i class="fa-solid fa-shield-halved"></i>&nbsp; Pay ₹<span id="btn-amount">—</span></span>
     </button>
 
     <div class="secure-badge">
@@ -180,58 +177,56 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
     </div>
   </div>
 
-  <!-- ── Success State ── -->
   <div class="pay-card" id="state-success" style="display:none">
     <div class="state show">
       <div class="state-icon success"><i class="fa-solid fa-check"></i></div>
       <div class="state-title">Payment Successful!</div>
-      <div class="state-sub">Aapka payment successfully process ho gaya. Merchant ko confirm ho gaya hai.</div>
+      <div class="state-sub">Aapka payment successfully process ho gaya hai.</div>
       <div class="txn-chip" id="success-txid">—</div>
-      <div style="font-size:.75rem;color:var(--gray-400)">Ye page band kar sakte hain.</div>
+      <div style="font-size:.75rem;color:var(--gray-400)">Aap ye tab band kar sakte hain.</div>
     </div>
   </div>
 
-  <!-- ── Error State ── -->
   <div class="pay-card" id="state-expired" style="display:none">
     <div class="state show">
       <div class="state-icon expired"><i class="fa-regular fa-clock"></i></div>
-      <div class="state-title">Invoice Expired</div>
-      <div class="state-sub">Ye payment link expire ho gaya hai. Merchant se naya link lo.</div>
+      <div class="state-title">Invoice Alert</div>
+      <div class="state-sub">Link invalid ya expire ho chuka hai.</div>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// Invoice ID URL se lo: /pay/INV-XXXXX
 const invoiceId = window.location.pathname.split('/').pop();
 const API       = 'https://unio-hazel.vercel.app';
 
 let pin        = '';
 let expiresAt  = null;
 let timerInt   = null;
-let invoiceAmt = 0;
+let isSubmitting = false;
 
-// ── Load Invoice ──────────────────────────────────────────────────────────────
+// ── Load Invoice Data ──────────────────────────────────────────────────────
 async function loadInvoice() {
+  if(!invoiceId || invoiceId === 'pay') {
+      showExpired('Invalid Payment Link.');
+      return;
+  }
+  
   try {
     const res  = await fetch(`${API}/deposit-gateway/invoice/${invoiceId}`);
     const data = await res.json();
 
     if (data.status !== 'success') {
-      showExpired(data.message);
+      showExpired(data.message || 'Invoice not found.');
       return;
     }
 
-    // Populate UI
-    const av = data.merchant_name?.charAt(0)?.toUpperCase() || '?';
-    document.getElementById('merchant-av').textContent   = av;
-    document.getElementById('merchant-name').textContent = data.merchant_name;
+    document.getElementById('merchant-av').textContent   = (data.merchant_name || 'M').charAt(0).toUpperCase();
+    document.getElementById('merchant-name').textContent = data.merchant_name || 'Merchant';
     document.getElementById('amount-val').textContent    = data.amount;
     document.getElementById('btn-amount').textContent    = data.amount;
-    invoiceAmt = data.amount;
 
     if (data.note) {
       const n = document.getElementById('note-row');
@@ -241,25 +236,28 @@ async function loadInvoice() {
 
     expiresAt = data.expires_at;
     startTimer();
-
   } catch(e) {
-    showExpired('Network error. Try again.');
+    toast('Connection Error. Refresh karein.', 'red');
   }
 }
 
-// ── Timer ─────────────────────────────────────────────────────────────────────
+// ── Timer Logic ─────────────────────────────────────────────────────────────
 function startTimer() {
+  if(timerInt) clearInterval(timerInt);
   timerInt = setInterval(() => {
     const diff = new Date(expiresAt) - Date.now();
-    if (diff <= 0) { clearInterval(timerInt); showExpired('Invoice expire ho gaya'); return; }
+    if (diff <= 0) { 
+      clearInterval(timerInt); 
+      showExpired('Link expire ho gaya hai.'); 
+      return; 
+    }
     const m = Math.floor(diff / 60000);
     const s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('timer-val').textContent =
-      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    document.getElementById('timer-val').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
   }, 1000);
 }
 
-// ── PIN Keypad ────────────────────────────────────────────────────────────────
+// ── PIN Controls ────────────────────────────────────────────────────────────
 function press(n) {
   if (pin.length < 4) { pin += n; updateDots(); }
 }
@@ -276,74 +274,79 @@ function updateDots(isError = false) {
   }
 }
 
-// ── Submit Payment ─────────────────────────────────────────────────────────────
+// ── Submit Payment ─────────────────────────────────────────────────────────
 async function submitPay() {
+  if(isSubmitting) return;
+
   const mobile = document.getElementById('mobile-input').value.trim();
-  if (!mobile || mobile.length < 10) return toast('Sahi mobile number daalo', 'red');
-  if (pin.length < 4)                return toast('4 digit PIN daalo', 'red');
+  if (mobile.length !== 10) return toast('Valid 10-digit number daalein', 'red');
+  if (pin.length < 4) return toast('4-digit PIN daalein', 'red');
 
   const btn = document.getElementById('pay-btn');
-  btnLoad(btn, true);
-  document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = 'none');
+  toggleLoading(true);
 
   try {
-    const res  = await fetch(`${API}/deposit-gateway/pay`, {
-      method:  'POST',
+    const response = await fetch(`${API}/deposit-gateway/pay`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ invoice_id: invoiceId, mobile, pin })
+      body: JSON.stringify({ invoice_id: invoiceId, mobile, pin })
     });
 
-    // Response text pehle lo — JSON parse fail ho sakta hai
-    const text = await res.text();
-    let data;
-    try { data = JSON.parse(text); }
-    catch(e) { toast('Server error. Try again.', 'red'); return; }
+    const data = await response.json();
 
     if (data.status === 'success') {
       clearInterval(timerInt);
-      document.getElementById('pay-form').style.display      = 'none';
+      document.getElementById('pay-form').style.display = 'none';
       document.getElementById('state-success').style.display = 'block';
-      document.getElementById('success-txid').textContent    = 'Txn ID: ' + data.tx_id;
+      document.getElementById('success-txid').textContent = 'Txn ID: ' + (data.tx_id || 'SUCCESS');
     } else {
-      toast(data.message || 'Payment failed', 'red');
-      if (data.message?.toLowerCase().includes('pin') || data.message?.toLowerCase().includes('wrong')) {
-        updateDots(true);
-        setTimeout(() => { pin = ''; updateDots(); }, 600);
-      }
+      toast(data.message || 'Payment Failed', 'red');
+      handlePinError();
     }
-  } catch(e) {
-    toast('Network error. Try again.', 'red');
+  } catch (err) {
+    toast('Network issue. Try again.', 'red');
   } finally {
-    btnLoad(btn, false);
-    document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = '');
+    toggleLoading(false);
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function showExpired(msg) {
-  clearInterval(timerInt);
-  document.getElementById('pay-form').style.display    = 'none';
-  document.getElementById('state-expired').style.display = 'block';
-  document.querySelector('#state-expired .state-sub').textContent = msg || 'Invoice expire ho gaya.';
+// ── UI Helpers ─────────────────────────────────────────────────────────────
+function toggleLoading(isLoading) {
+  isSubmitting = isLoading;
+  const btn = document.getElementById('pay-btn');
+  const keys = document.querySelectorAll('.key');
+  
+  btn.classList.toggle('loading', isLoading);
+  btn.disabled = isLoading;
+  keys.forEach(k => k.style.pointerEvents = isLoading ? 'none' : 'auto');
 }
 
-function btnLoad(btn, on) {
-  btn.classList.toggle('loading', on);
-  btn.disabled = on;
+function handlePinError() {
+  updateDots(true);
+  setTimeout(() => {
+    pin = '';
+    updateDots();
+  }, 800);
+}
+
+function showExpired(msg) {
+  clearInterval(timerInt);
+  document.getElementById('pay-form').style.display = 'none';
+  const errState = document.getElementById('state-expired');
+  errState.style.display = 'block';
+  errState.querySelector('.state-sub').textContent = msg;
 }
 
 function toast(msg, type = '') {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast show ${type}`;
-  setTimeout(() => t.classList.remove('show'), 2800);
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-if (!invoiceId || invoiceId === 'pay') {
-  showExpired('Invalid payment link.');
-} else {
-  loadInvoice();
-}
+// Start
+loadInvoice();
 </script>
 </body>
-</html>
+  </html>
+        
