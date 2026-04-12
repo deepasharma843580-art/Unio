@@ -44,17 +44,11 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 .input-group input{width:100%;padding:.7rem .85rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.75rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--gray-900);transition:all .2s}
 .input-group input:focus{border-color:var(--blue);background:white}
 .input-group input::placeholder{color:var(--gray-400)}
-.pin-label{display:block;font-size:.58rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.5rem;letter-spacing:.06em}
-.pin-dots{display:flex;gap:.45rem;justify-content:center;margin-bottom:.75rem}
-.pin-dot{width:38px;height:38px;border-radius:.7rem;background:var(--gray-50);border:2px solid var(--gray-200);transition:all .2s;position:relative}
-.pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
-.pin-dot.filled::after{content:'';position:absolute;width:10px;height:10px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
-.pin-dot.error{border-color:var(--red);background:var(--red-light);animation:shake .3s ease}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;max-width:230px;margin:0 auto .9rem}
-.key{padding:.75rem;background:var(--white);border:2px solid var(--gray-100);border-radius:.85rem;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center;user-select:none}
-.key:active{background:var(--gray-100);transform:scale(.92)}
-.key.del{color:var(--red)}
+.input-group input.error{border-color:var(--red);background:var(--red-light);animation:shake .3s ease}
+.eye-wrap{position:relative}
+.eye-wrap input{padding-right:2.5rem}
+.eye-btn{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--gray-400);font-size:.85rem;padding:.25rem}
 .btn{width:100%;padding:.8rem;background:var(--blue);color:white;border:none;border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.75rem;transition:all .2s}
 .btn:disabled{background:var(--gray-400);cursor:not-allowed;opacity:.8}
 .btn:active:not(:disabled){transform:scale(.98)}
@@ -139,27 +133,19 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
       <input type="tel" id="mobile-input" placeholder="10-digit UNIO mobile" maxlength="10"
         oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
     </div>
-    <span class="pin-label">Enter 4-Digit PIN</span>
-    <div class="pin-dots">
-      <div class="pin-dot" id="pd-0"></div>
-      <div class="pin-dot" id="pd-1"></div>
-      <div class="pin-dot" id="pd-2"></div>
-      <div class="pin-dot" id="pd-3"></div>
+    <div class="input-group">
+      <label>Password</label>
+      <div class="eye-wrap">
+        <input type="password" id="password-input" placeholder="Account password">
+        <button class="eye-btn" type="button" onclick="toggleEye('password-input','eye1')"><i class="fa-regular fa-eye" id="eye1"></i></button>
+      </div>
     </div>
-    <div class="keypad">
-      <div class="key" onclick="kp('1')">1</div>
-      <div class="key" onclick="kp('2')">2</div>
-      <div class="key" onclick="kp('3')">3</div>
-      <div class="key" onclick="kp('4')">4</div>
-      <div class="key" onclick="kp('5')">5</div>
-      <div class="key" onclick="kp('6')">6</div>
-      <div class="key" onclick="kp('7')">7</div>
-      <div class="key" onclick="kp('8')">8</div>
-      <div class="key" onclick="kp('9')">9</div>
-      <div class="key del" onclick="kdel()"><i class="fa-solid fa-delete-left"></i></div>
-      <div class="key" onclick="kp('0')">0</div>
-      <div class="key" onclick="submitPay()" style="background:var(--blue);color:white;border-color:var(--blue)">
-        <i class="fa-solid fa-arrow-right"></i>
+    <div class="input-group">
+      <label>4-Digit PIN</label>
+      <div class="eye-wrap">
+        <input type="password" id="pin-input" placeholder="4-digit PIN" maxlength="4"
+          inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+        <button class="eye-btn" type="button" onclick="toggleEye('pin-input','eye2')"><i class="fa-regular fa-eye" id="eye2"></i></button>
       </div>
     </div>
     <button class="btn" id="pay-btn" onclick="submitPay()">
@@ -168,6 +154,13 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
     </button>
     <div class="secure-badge">
       <i class="fa-solid fa-lock"></i> Secured by UNIO Wallet · Encrypted
+    </div>
+    <div style="text-align:center;margin-top:.75rem">
+      <a href="https://unio-hazel.vercel.app" target="_blank"
+        style="font-size:.72rem;color:var(--blue);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;padding:.45rem .9rem;background:var(--blue-light);border-radius:2rem;transition:opacity .2s"
+        onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
+        <i class="fa-solid fa-user-plus"></i> UNIO Wallet pe Register karo
+      </a>
     </div>
   </div>
 
@@ -262,7 +255,7 @@ const API = 'https://unio-hazel.vercel.app';
 const _segments  = window.location.pathname.split('/').filter(Boolean);
 const invoiceId  = _segments.find(s => s.startsWith('INV-')) || _segments.pop() || null;
 
-let pin = '', expiresAt = null, timerInt = null, busy = false;
+let expiresAt = null, timerInt = null, busy = false;
 let invMerchant = '', invAmount = 0;
 
 // Load invoice
@@ -298,23 +291,29 @@ function startTimer() {
   }, 1000);
 }
 
-// Keypad
-function kp(n)  { if (pin.length < 4) { pin += n; dots(); } }
-function kdel() { pin = pin.slice(0,-1); dots(); }
-function dots(err=false) {
-  for(let i=0;i<4;i++){
-    const d=document.getElementById(`pd-${i}`);
-    d.classList.toggle('filled', i<pin.length);
-    d.classList.toggle('error',  err);
+// Toggle password/pin visibility
+function toggleEye(inputId, iconId) {
+  const inp  = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'fa-regular fa-eye-slash';
+  } else {
+    inp.type = 'password';
+    icon.className = 'fa-regular fa-eye';
   }
 }
 
 // Pay
 async function submitPay() {
   if (busy) return;
-  const mobile = document.getElementById('mobile-input').value.trim();
+  const mobile   = document.getElementById('mobile-input').value.trim();
+  const password = document.getElementById('password-input').value;
+  const pin      = document.getElementById('pin-input').value.trim();
+
   if (mobile.length !== 10) { toast('Valid 10-digit mobile daalein','red'); return; }
-  if (pin.length < 4)       { toast('4-digit PIN daalein','red'); return; }
+  if (!password)             { toast('Password daalo','red'); return; }
+  if (pin.length !== 4)      { toast('4-digit PIN daalo','red'); return; }
   if (!invoiceId || invoiceId === 'pay') { toast('Invalid invoice link','red'); return; }
 
   setLoading(true);
@@ -323,15 +322,14 @@ async function submitPay() {
     const r = await fetch(`${API}/deposit-gateway/pay`, {
       method:  'POST',
       headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify({ invoice_id: invoiceId, mobile, pin })
+      body:    JSON.stringify({ invoice_id: invoiceId, mobile, pin, password })
     });
 
-    // Server ne kuch bhi return kiya ho - safely parse karo
     const raw = await r.text();
     console.log('[UNIO Pay] raw response:', raw);
     try { d = JSON.parse(raw); } catch(parseErr) {
       console.error('[UNIO Pay] JSON parse failed:', raw);
-      toast('Server error (invalid response). Try again.','red');
+      toast('Server error. Try again.','red');
       setLoading(false);
       return;
     }
@@ -341,9 +339,13 @@ async function submitPay() {
       showReceipt(d);
     } else {
       toast(d.message || 'Payment failed','red');
-      if ((d.message||'').toLowerCase().match(/pin|wrong/)) {
-        dots(true);
-        setTimeout(() => { pin=''; dots(); }, 800);
+      // Shake wrong field
+      if ((d.message||'').toLowerCase().includes('pin')) {
+        document.getElementById('pin-input').classList.add('error');
+        setTimeout(() => document.getElementById('pin-input').classList.remove('error'), 800);
+      } else if ((d.message||'').toLowerCase().includes('password')) {
+        document.getElementById('password-input').classList.add('error');
+        setTimeout(() => document.getElementById('password-input').classList.remove('error'), 800);
       }
     }
   } catch(e) {
@@ -381,8 +383,8 @@ function setLoading(on) {
   busy = on;
   const btn = document.getElementById('pay-btn');
   if (!btn) return;
-  btn.classList.toggle('loading', on); btn.disabled = on;
-  document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = on?'none':'auto');
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
 }
 
 // Confetti mini burst
