@@ -222,6 +222,119 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </div>
   </div>
 
+  <!-- Deposit Gateway API -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-store" style="color:#10b981"></i> Deposit Gateway API
+    </div>
+
+    <!-- Step 1: Create Invoice -->
+    <div class="api-url-box" style="margin-bottom:.75rem">
+      <div class="api-url-label">Step 1 — Create Invoice (GET)</div>
+      <div class="api-url-text" id="gw-create-url">Loading...</div>
+      <button class="copy-btn" onclick="copyRaw('gw-create-raw')" title="Copy">
+        <i class="fa-solid fa-copy"></i>
+      </button>
+      <input type="hidden" id="gw-create-raw">
+    </div>
+
+    <div class="card-title" style="margin-top:.5rem;margin-bottom:.75rem">
+      <i class="fa-solid fa-sliders" style="color:#94a3b8"></i> Invoice Parameters
+    </div>
+    <div class="param-row">
+      <span class="param-name">key<span class="param-req">*</span></span>
+      <span class="param-desc">Your API Key</span>
+    </div>
+    <div class="param-row">
+      <span class="param-name">amount<span class="param-req">*</span></span>
+      <span class="param-desc">Amount in ₹ (min ₹1)</span>
+    </div>
+    <div class="param-row">
+      <span class="param-name">callback_url</span>
+      <span class="param-desc">Webhook URL (paid hone pe)</span>
+    </div>
+    <div class="param-row">
+      <span class="param-name">order_id</span>
+      <span class="param-desc">Your order ID (no duplicate)</span>
+    </div>
+    <div class="param-row" style="margin-bottom:1rem">
+      <span class="param-name">note</span>
+      <span class="param-desc">Optional note for customer</span>
+    </div>
+
+    <!-- Step 2: Status Check -->
+    <div class="api-url-box" style="margin-bottom:.75rem">
+      <div class="api-url-label">Step 2 — Check Status (GET)</div>
+      <div class="api-url-text" id="gw-status-url">Loading...</div>
+    </div>
+
+    <!-- Response Examples -->
+    <div class="card-title" style="margin-top:.75rem;margin-bottom:.75rem">
+      <i class="fa-solid fa-circle-check" style="color:#10b981"></i> Response Examples
+    </div>
+
+    <div class="res-box success" style="margin-bottom:.75rem">
+      <div class="res-label success">
+        <i class="fa-solid fa-circle-check"></i> Create Invoice — Success
+      </div>
+      <div class="res-code success">{
+  "status": "success",
+  "invoice_id": "INV-ABC123",
+  "payment_url": "https://unio.app/pay/INV-ABC123",
+  "amount": 100,
+  "merchant": "Your Name",
+  "order_id": "ORDER001",
+  "expires_in": "30 minutes"
+}</div>
+    </div>
+
+    <div class="res-box success" style="margin-bottom:.75rem">
+      <div class="res-label success">
+        <i class="fa-solid fa-circle-check"></i> Status Check — Paid
+      </div>
+      <div class="res-code success">{
+  "status": "success",
+  "invoice_id": "INV-ABC123",
+  "order_id": "ORDER001",
+  "amount": 100,
+  "inv_status": "paid",
+  "tx_id": "UW12345",
+  "payer_mobile": "9876543210",
+  "paid_at": "2026-04-12T10:30:00.000Z"
+}</div>
+    </div>
+
+    <div class="res-box error" style="margin-bottom:.75rem">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Status Check — Pending
+      </div>
+      <div class="res-code error">{
+  "status": "success",
+  "inv_status": "pending",
+  "tx_id": null,
+  "payer_mobile": null
+}</div>
+    </div>
+
+    <div class="res-box error">
+      <div class="res-label error">
+        <i class="fa-solid fa-circle-xmark"></i> Webhook Payload (callback_url pe aata hai)
+      </div>
+      <div class="res-code error">{
+  "event": "invoice.paid",
+  "status": "success",
+  "invoice_id": "INV-ABC123",
+  "order_id": "ORDER001",
+  "tx_id": "UW12345",
+  "amount": 100,
+  "payer_mobile": "9876543210",
+  "merchant": "Your Name",
+  "paid_at": "2026-04-12T10:30:00.000Z"
+}</div>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- Toast -->
@@ -280,6 +393,27 @@ function loadData() {
     `<span class="key-highlight">key=${apiKey}</span>` +
     `<span style="color:#94a3b8">&</span>` +
     `<span class="param-highlight">number={number}</span>`;
+
+  // Gateway — Create Invoice URL
+  const gwCreate = `${BASE}/deposit-gateway/create?key=${apiKey}&amount={amount}&order_id={order_id}&callback_url={callback_url}&note={note}`;
+  document.getElementById('gw-create-url').innerHTML =
+    `<span style="color:#94a3b8">${BASE}/deposit-gateway/create?</span>` +
+    `<span style="color:#94a3b8">key=</span>` +
+    `<span class="key-highlight">${apiKey}</span>` +
+    `<span style="color:#94a3b8">&amount=</span>` +
+    `<span class="param-highlight">{amount}</span>` +
+    `<span style="color:#94a3b8">&order_id=</span>` +
+    `<span class="param-highlight">{order_id}</span>` +
+    `<span style="color:#94a3b8">&callback_url=</span>` +
+    `<span class="param-highlight">{callback_url}</span>`;
+  document.getElementById('gw-create-raw').value = gwCreate;
+
+  // Gateway — Status Check URL
+  document.getElementById('gw-status-url').innerHTML =
+    `<span style="color:#94a3b8">${BASE}/deposit-gateway/status/</span>` +
+    `<span class="param-highlight">{invoice_id}</span>` +
+    `<span style="color:#94a3b8">?key=</span>` +
+    `<span class="key-highlight">${apiKey}</span>`;
 }
 
 function showToast(msg) {
@@ -321,4 +455,5 @@ async function regenKey() {
 loadData();
 </script>
 </body>
-</html>
+  </html>
+  
