@@ -13,6 +13,15 @@ const Transaction = require('../models/Transaction');
 const Invoice     = require('../models/Invoice');
 const axios       = require('axios');
 
+// ── CORS — every route pe preflight allow karo ───────────────────────────────
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin',  '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 const BOT_TOKEN = process.env.BOT_TOKEN || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -324,4 +333,5 @@ router.get('/status/:id', async (req, res) => {
 });
 
 module.exports = router;
-      
+
+        
