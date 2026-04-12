@@ -6,7 +6,7 @@ const TxSchema = new mongoose.Schema({
   receiver_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   amount:      { type: Number, required: true },
   fee:         { type: Number, default: 0 },
-  type:        { type: String, enum: ['transfer','api','admin_add','admin_deduct','withdraw'], default: 'transfer' },
+  type:        { type: String, enum: ['transfer','api','admin_add','admin_deduct','withdraw','gateway'], default: 'transfer' },
   status:      { type: String, enum: ['success','pending','rejected','failed'], default: 'success' },
   remark:      { type: String, default: '' },
   tx_time:     { type: Date, default: Date.now }
