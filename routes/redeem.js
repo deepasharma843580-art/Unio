@@ -69,6 +69,32 @@ function getWeekRange(weekOffset = -1) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// PUBLIC — STOCK LIST (user side ke liye — count only, codes nahi)
+// GET /redeem/stock
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/stock', async (req, res) => {
+  try {
+    const stock = await RedeemCode.aggregate([
+      { $match: { sold: false } },
+      { $group: { _id: { product: '$product', label: '$label', price: '$price' }, count: { $sum: 1 } } },
+      { $sort: { '_id.price': 1 } }
+    ]);
+
+    res.json({
+      status: 'success',
+      stock: stock.map(s => ({
+        product: s._id.product,
+        label:   s._id.label,
+        price:   s._id.price,
+        count:   s.count
+      }))
+    });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // USER — BUY CODE VIA API
 // GET /redeem?key=API_KEY&type=google_play_10
 // ─────────────────────────────────────────────────────────────────────────────
@@ -396,4 +422,4 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-        
+      
