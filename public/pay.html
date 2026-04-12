@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay — UNIO Gateway</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#e8efff;
+  --green:#16a34a;--red:#dc2626;--red-light:#fee2e2;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 24px 60px rgba(0,87,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-15%;left:-10%;width:50%;height:50%;background:radial-gradient(circle,rgba(0,87,255,.10),transparent 65%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45%;background:radial-gradient(circle,rgba(124,58,237,.08),transparent 65%);pointer-events:none}
+
+.wrap{width:100%;max-width:380px;position:relative;z-index:1}
+
+/* ── Invoice Card ── */
+.inv-card{background:var(--white);border-radius:2rem;padding:1.75rem 1.6rem;box-shadow:var(--shadow);margin-bottom:.9rem;animation:popIn .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+
+.unio-badge{display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem}
+.unio-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),#4d8aff);border-radius:.7rem;display:flex;align-items:center;justify-content:center;color:white;font-size:.85rem}
+.unio-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--gray-900)}
+.unio-sub{font-size:.62rem;color:var(--gray-400);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+
+.merchant-row{display:flex;align-items:center;gap:.75rem;background:var(--gray-50);border-radius:1rem;padding:.85rem 1rem;margin-bottom:1.1rem}
+.merchant-av{width:42px;height:42px;background:linear-gradient(135deg,#7c3aed,#9f67ff);border-radius:.85rem;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:800;flex-shrink:0}
+.merchant-name{font-size:.9rem;font-weight:700;color:var(--gray-900)}
+.merchant-label{font-size:.65rem;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+
+.amount-box{text-align:center;padding:1rem 0 1.25rem}
+.amount-label{font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.amount-val{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:var(--gray-900);line-height:1}
+.amount-rs{font-size:1.4rem;color:var(--blue);margin-right:.1rem}
+
+.note-row{background:var(--blue-light);border-radius:.8rem;padding:.55rem .85rem;font-size:.73rem;font-weight:600;color:var(--blue);margin-bottom:1rem;display:none}
+.note-row.show{display:block}
+
+.timer-row{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:.72rem;font-weight:600;color:var(--gray-400);margin-bottom:.25rem}
+.timer-val{color:var(--orange,#ea580c);font-weight:800}
+
+/* ── Pay Card ── */
+.pay-card{background:var(--white);border-radius:2rem;padding:1.75rem 1.6rem;box-shadow:var(--shadow);animation:popIn .45s cubic-bezier(.34,1.56,.64,1) .1s both}
+
+.section-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--gray-900);margin-bottom:1rem}
+
+.input-group{margin-bottom:.85rem}
+.input-group label{display:block;font-size:.62rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.38rem;letter-spacing:.06em}
+.input-group input{width:100%;padding:.85rem 1rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.9rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--gray-900);transition:all .2s}
+.input-group input:focus{border-color:var(--blue);background:white}
+.input-group input::placeholder{color:var(--gray-400)}
+
+/* PIN dots */
+.pin-label{display:block;font-size:.62rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.6rem;letter-spacing:.06em}
+.pin-dots{display:flex;gap:.55rem;justify-content:center;margin-bottom:1rem}
+.pin-dot{width:44px;height:44px;border-radius:.85rem;background:var(--gray-50);border:2px solid var(--gray-200);transition:all .2s;position:relative}
+.pin-dot.filled{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05)}
+.pin-dot.filled::after{content:'';position:absolute;width:11px;height:11px;background:var(--blue);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.pin-dot.error{border-color:var(--red);background:var(--red-light);animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Keypad */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;max-width:260px;margin:0 auto 1.25rem}
+.key{padding:.9rem;background:var(--white);border:2px solid var(--gray-100);border-radius:1rem;font-size:1.15rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--gray-900);display:flex;align-items:center;justify-content:center;user-select:none}
+.key:active{background:var(--gray-100);transform:scale(.92)}
+.key.del{color:var(--red)}
+
+.btn{width:100%;padding:.95rem;background:var(--blue);color:white;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .2s}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{display:none}
+
+/* States */
+.state{display:none;text-align:center;padding:1rem 0}
+.state.show{display:block}
+.state-icon{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem}
+.state-icon.success{background:#dcfce7;color:var(--green)}
+.state-icon.error{background:var(--red-light);color:var(--red)}
+.state-icon.expired{background:var(--gray-100);color:var(--gray-400)}
+.state-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--gray-900);margin-bottom:.4rem}
+.state-sub{font-size:.8rem;color:var(--gray-400);line-height:1.5;margin-bottom:1rem}
+.txn-chip{display:inline-block;background:var(--gray-100);border-radius:.5rem;padding:.3rem .75rem;font-size:.72rem;font-weight:700;color:var(--gray-600);font-family:monospace;margin-bottom:.75rem}
+
+.secure-badge{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:.67rem;color:var(--gray-400);font-weight:600;margin-top:1rem}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.76rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.red{background:var(--red)}
+.toast.green{background:var(--green)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ── Invoice Info Card ── -->
+  <div class="inv-card">
+    <div class="unio-badge">
+      <div class="unio-logo"><i class="fa-solid fa-wallet"></i></div>
+      <div>
+        <div class="unio-name">UNIO Wallet</div>
+        <div class="unio-sub">Secure Payment Gateway</div>
+      </div>
+    </div>
+
+    <div class="merchant-row">
+      <div class="merchant-av" id="merchant-av">?</div>
+      <div>
+        <div class="merchant-label">Paying to</div>
+        <div class="merchant-name" id="merchant-name">Loading...</div>
+      </div>
+    </div>
+
+    <div class="amount-box">
+      <div class="amount-label">Amount to Pay</div>
+      <div class="amount-val"><span class="amount-rs">₹</span><span id="amount-val">—</span></div>
+    </div>
+
+    <div class="note-row" id="note-row"></div>
+
+    <div class="timer-row">
+      <i class="fa-regular fa-clock"></i>
+      Expires in <span class="timer-val" id="timer-val">--:--</span>
+    </div>
+  </div>
+
+  <!-- ── Payment Form ── -->
+  <div class="pay-card" id="pay-form">
+    <div class="section-title"><i class="fa-solid fa-lock" style="color:var(--blue)"></i> Pay with UNIO Wallet</div>
+
+    <div class="input-group">
+      <label>Registered Mobile Number</label>
+      <input type="number" id="mobile-input" placeholder="Enter your UNIO mobile number" maxlength="10">
+    </div>
+
+    <div>
+      <span class="pin-label">Enter 4-Digit PIN</span>
+      <div class="pin-dots">
+        <div class="pin-dot" id="pd-0"></div>
+        <div class="pin-dot" id="pd-1"></div>
+        <div class="pin-dot" id="pd-2"></div>
+        <div class="pin-dot" id="pd-3"></div>
+      </div>
+      <div class="keypad">
+        <div class="key" onclick="press('1')">1</div>
+        <div class="key" onclick="press('2')">2</div>
+        <div class="key" onclick="press('3')">3</div>
+        <div class="key" onclick="press('4')">4</div>
+        <div class="key" onclick="press('5')">5</div>
+        <div class="key" onclick="press('6')">6</div>
+        <div class="key" onclick="press('7')">7</div>
+        <div class="key" onclick="press('8')">8</div>
+        <div class="key" onclick="press('9')">9</div>
+        <div class="key del" onclick="del()"><i class="fa-solid fa-delete-left"></i></div>
+        <div class="key" onclick="press('0')">0</div>
+        <div class="key" onclick="submitPay()" style="background:var(--blue);color:white;border-color:var(--blue)">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" id="pay-btn" onclick="submitPay()">
+      <div class="spinner"></div>
+      <span class="btn-text"><i class="fa-solid fa-shield-halved"></i>&nbsp; Pay ₹<span id="btn-amount">—</span></span>
+    </button>
+
+    <div class="secure-badge">
+      <i class="fa-solid fa-lock"></i> Secured by UNIO Wallet · End-to-end encrypted
+    </div>
+  </div>
+
+  <!-- ── Success State ── -->
+  <div class="pay-card" id="state-success" style="display:none">
+    <div class="state show">
+      <div class="state-icon success"><i class="fa-solid fa-check"></i></div>
+      <div class="state-title">Payment Successful!</div>
+      <div class="state-sub">Aapka payment successfully process ho gaya. Merchant ko confirm ho gaya hai.</div>
+      <div class="txn-chip" id="success-txid">—</div>
+      <div style="font-size:.75rem;color:var(--gray-400)">Ye page band kar sakte hain.</div>
+    </div>
+  </div>
+
+  <!-- ── Error State ── -->
+  <div class="pay-card" id="state-expired" style="display:none">
+    <div class="state show">
+      <div class="state-icon expired"><i class="fa-regular fa-clock"></i></div>
+      <div class="state-title">Invoice Expired</div>
+      <div class="state-sub">Ye payment link expire ho gaya hai. Merchant se naya link lo.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Invoice ID URL se lo: /pay/INV-XXXXX
+const invoiceId = window.location.pathname.split('/').pop();
+const API       = window.location.origin;
+
+let pin        = '';
+let expiresAt  = null;
+let timerInt   = null;
+let invoiceAmt = 0;
+
+// ── Load Invoice ──────────────────────────────────────────────────────────────
+async function loadInvoice() {
+  try {
+    const res  = await fetch(`${API}/deposit-gateway/invoice/${invoiceId}`);
+    const data = await res.json();
+
+    if (data.status !== 'success') {
+      showExpired(data.message);
+      return;
+    }
+
+    // Populate UI
+    const av = data.merchant_name?.charAt(0)?.toUpperCase() || '?';
+    document.getElementById('merchant-av').textContent   = av;
+    document.getElementById('merchant-name').textContent = data.merchant_name;
+    document.getElementById('amount-val').textContent    = data.amount;
+    document.getElementById('btn-amount').textContent    = data.amount;
+    invoiceAmt = data.amount;
+
+    if (data.note) {
+      const n = document.getElementById('note-row');
+      n.textContent = '📝 ' + data.note;
+      n.classList.add('show');
+    }
+
+    expiresAt = data.expires_at;
+    startTimer();
+
+  } catch(e) {
+    showExpired('Network error. Try again.');
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startTimer() {
+  timerInt = setInterval(() => {
+    const diff = new Date(expiresAt) - Date.now();
+    if (diff <= 0) { clearInterval(timerInt); showExpired('Invoice expire ho gaya'); return; }
+    const m = Math.floor(diff / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('timer-val').textContent =
+      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
+
+// ── PIN Keypad ────────────────────────────────────────────────────────────────
+function press(n) {
+  if (pin.length < 4) { pin += n; updateDots(); }
+}
+
+function del() {
+  pin = pin.slice(0, -1); updateDots();
+}
+
+function updateDots(isError = false) {
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById(`pd-${i}`);
+    d.classList.toggle('filled', i < pin.length);
+    d.classList.toggle('error', isError);
+  }
+}
+
+// ── Submit Payment ─────────────────────────────────────────────────────────────
+async function submitPay() {
+  const mobile = document.getElementById('mobile-input').value.trim();
+  if (!mobile || mobile.length < 10) return toast('Sahi mobile number daalo', 'red');
+  if (pin.length < 4)                return toast('4 digit PIN daalo', 'red');
+
+  const btn = document.getElementById('pay-btn');
+  btnLoad(btn, true);
+  document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = 'none');
+
+  try {
+    const res  = await fetch(`${API}/deposit-gateway/pay`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ invoice_id: invoiceId, mobile, pin })
+    });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      clearInterval(timerInt);
+      document.getElementById('pay-form').style.display    = 'none';
+      document.getElementById('state-success').style.display = 'block';
+      document.getElementById('success-txid').textContent  = 'Txn ID: ' + data.tx_id;
+    } else {
+      toast(data.message || 'Payment failed', 'red');
+      if (data.message?.toLowerCase().includes('pin')) {
+        updateDots(true);
+        setTimeout(() => { pin = ''; updateDots(); }, 600);
+      }
+    }
+  } catch(e) {
+    toast('Network error. Try again.', 'red');
+  } finally {
+    btnLoad(btn, false);
+    document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = '');
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showExpired(msg) {
+  clearInterval(timerInt);
+  document.getElementById('pay-form').style.display    = 'none';
+  document.getElementById('state-expired').style.display = 'block';
+  document.querySelector('#state-expired .state-sub').textContent = msg || 'Invoice expire ho gaya.';
+}
+
+function btnLoad(btn, on) {
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
+}
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+if (!invoiceId || invoiceId === 'pay') {
+  showExpired('Invalid payment link.');
+} else {
+  loadInvoice();
+}
+</script>
+</body>
+          </html>
+  
