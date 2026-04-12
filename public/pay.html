@@ -73,6 +73,31 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.red{background:var(--red)}
 .toast.green{background:var(--green)}
+/* ── Receipt Card ─────────────────────────────────────── */
+.receipt-card{background:var(--white);border-radius:1.6rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,87,255,.18);animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.receipt-header{background:linear-gradient(135deg,#0057ff 0%,#4d8aff 60%,#7c3aed 100%);padding:2rem 1.5rem 1.4rem;text-align:center;position:relative;overflow:hidden}
+.receipt-header::before{content:'';position:absolute;top:-30%;left:-10%;width:60%;height:120%;background:rgba(255,255,255,.06);border-radius:50%;pointer-events:none}
+#confetti-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.receipt-check-ring{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;animation:ringPop .5s .1s cubic-bezier(.34,1.56,.64,1) both}
+.receipt-check-circle{width:48px;height:48px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;color:#0057ff;font-size:1.3rem}
+@keyframes ringPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.receipt-header-text{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:white;margin-bottom:.25rem}
+.receipt-header-sub{font-size:.72rem;color:rgba(255,255,255,.75);font-weight:500}
+.receipt-amount-row{display:flex;align-items:baseline;justify-content:center;gap:.2rem;padding:1.1rem 1.5rem .6rem;animation:popIn .4s .15s both}
+.receipt-currency{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--blue)}
+.receipt-amount-val{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--gray-900);line-height:1}
+.receipt-divider{display:flex;align-items:center;position:relative;padding:0 .75rem;margin-bottom:.75rem}
+.receipt-dot{width:18px;height:18px;border-radius:50%;background:#eef2ff;flex-shrink:0;margin-top:-1px}
+.receipt-dot.left{margin-left:-1.35rem}
+.receipt-dot.right{margin-right:-1.35rem}
+.receipt-dashes{flex:1;border-top:2px dashed var(--gray-200);margin:0 .25rem}
+.receipt-details{padding:0 1.25rem;display:flex;flex-direction:column;gap:.55rem;margin-bottom:.85rem}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.receipt-row-label{font-size:.67rem;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;display:flex;align-items:center;gap:.3rem}
+.receipt-row-val{font-size:.78rem;font-weight:700;color:var(--gray-900);text-align:right;word-break:break-all}
+.receipt-row-val.mono{font-family:monospace;font-size:.75rem;background:var(--gray-100);padding:.15rem .4rem;border-radius:.35rem;color:var(--gray-600)}
+.receipt-row-val.small{font-size:.66rem}
+.receipt-status-badge{display:flex;align-items:center;justify-content:center;gap:.4rem;background:var(--green-light);color:var(--green);font-size:.67rem;font-weight:700;padding:.4rem .9rem;border-radius:.6rem;margin:0 1.25rem;letter-spacing:.03em}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -80,7 +105,7 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 <div class="wrap">
 
   <!-- Invoice info -->
-  <div class="inv-card">
+  <div class="inv-card" id="inv-card">
     <div class="unio-badge">
       <div class="unio-logo"><i class="fa-solid fa-wallet"></i></div>
       <div>
@@ -146,14 +171,74 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
     </div>
   </div>
 
-  <!-- Success -->
-  <div class="pay-card" id="state-success" style="display:none">
-    <div class="state show">
-      <div class="state-icon success"><i class="fa-solid fa-check"></i></div>
-      <div class="state-title">Payment Successful!</div>
-      <div class="state-sub">Aapka payment successfully process ho gaya hai.</div>
-      <div class="txn-chip" id="success-txid">—</div>
-      <div style="font-size:.72rem;color:var(--gray-400)">Ye tab band kar sakte hain.</div>
+  <!-- Receipt / Success -->
+  <div id="state-success" style="display:none">
+    <div class="receipt-card" id="receipt-card">
+
+      <!-- Top glow header -->
+      <div class="receipt-header">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="receipt-check-ring">
+          <div class="receipt-check-circle">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+        <div class="receipt-header-text">Payment Successful</div>
+        <div class="receipt-header-sub">Transaction complete ho gaya ✨</div>
+      </div>
+
+      <!-- Amount big -->
+      <div class="receipt-amount-row">
+        <span class="receipt-currency">₹</span>
+        <span id="r-amount" class="receipt-amount-val">—</span>
+      </div>
+
+      <!-- Divider with dots -->
+      <div class="receipt-divider">
+        <span class="receipt-dot left"></span>
+        <div class="receipt-dashes"></div>
+        <span class="receipt-dot right"></span>
+      </div>
+
+      <!-- Details rows -->
+      <div class="receipt-details">
+        <div class="receipt-row">
+          <span class="receipt-row-label"><i class="fa-solid fa-store"></i> Merchant</span>
+          <span class="receipt-row-val" id="r-merchant">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label"><i class="fa-solid fa-hashtag"></i> Txn ID</span>
+          <span class="receipt-row-val mono" id="r-txid">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label"><i class="fa-solid fa-file-invoice"></i> Invoice</span>
+          <span class="receipt-row-val mono small" id="r-invid">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label"><i class="fa-solid fa-tag"></i> Order ID</span>
+          <span class="receipt-row-val mono" id="r-order">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label"><i class="fa-regular fa-calendar"></i> Date & Time</span>
+          <span class="receipt-row-val" id="r-time">—</span>
+        </div>
+      </div>
+
+      <!-- Bottom divider -->
+      <div class="receipt-divider" style="margin-bottom:1rem">
+        <span class="receipt-dot left"></span>
+        <div class="receipt-dashes"></div>
+        <span class="receipt-dot right"></span>
+      </div>
+
+      <!-- Status badge -->
+      <div class="receipt-status-badge">
+        <i class="fa-solid fa-shield-check"></i> Secured by UNIO Wallet
+      </div>
+
+      <div style="text-align:center;font-size:.65rem;color:var(--gray-400);margin-top:.65rem">
+        Ye tab band kar sakte hain
+      </div>
     </div>
   </div>
 
@@ -170,10 +255,15 @@ body::after{content:'';position:fixed;bottom:-15%;right:-10%;width:45%;height:45
 <div class="toast" id="toast"></div>
 
 <script>
-const API       = 'https://unio-hazel.vercel.app';
-const invoiceId = window.location.pathname.split('/').filter(Boolean).pop();
+const API = 'https://unio-hazel.vercel.app';
+
+// Fix: pathname ke saare segments me se INV- wala ID nikalo
+// Works for: /pay/INV-XXX  |  /INV-XXX  |  /api/pay/INV-XXX  sab ke liye
+const _segments  = window.location.pathname.split('/').filter(Boolean);
+const invoiceId  = _segments.find(s => s.startsWith('INV-')) || _segments.pop() || null;
 
 let pin = '', expiresAt = null, timerInt = null, busy = false;
+let invMerchant = '', invAmount = 0;
 
 // Load invoice
 async function loadInvoice() {
@@ -186,6 +276,8 @@ async function loadInvoice() {
     document.getElementById('merchant-name').textContent = d.merchant_name || 'Merchant';
     document.getElementById('amount-val').textContent    = d.amount;
     document.getElementById('btn-amount').textContent    = d.amount;
+    invMerchant = d.merchant_name || 'Merchant';
+    invAmount   = d.amount;
     if (d.note) {
       const n = document.getElementById('note-row');
       n.textContent = '📝 ' + d.note; n.classList.add('show');
@@ -221,24 +313,32 @@ function dots(err=false) {
 async function submitPay() {
   if (busy) return;
   const mobile = document.getElementById('mobile-input').value.trim();
-  if (mobile.length !== 10) return toast('Valid 10-digit mobile daalein','red');
-  if (pin.length < 4)       return toast('4-digit PIN daalein','red');
+  if (mobile.length !== 10) { toast('Valid 10-digit mobile daalein','red'); return; }
+  if (pin.length < 4)       { toast('4-digit PIN daalein','red'); return; }
+  if (!invoiceId || invoiceId === 'pay') { toast('Invalid invoice link','red'); return; }
 
   setLoading(true);
+  let d = null;
   try {
     const r = await fetch(`${API}/deposit-gateway/pay`, {
       method:  'POST',
       headers: {'Content-Type':'application/json'},
       body:    JSON.stringify({ invoice_id: invoiceId, mobile, pin })
     });
-    let d;
-    try { d = await r.json(); } catch(e) { toast('Server error. Try again.','red'); return; }
+
+    // Server ne kuch bhi return kiya ho - safely parse karo
+    const raw = await r.text();
+    console.log('[UNIO Pay] raw response:', raw);
+    try { d = JSON.parse(raw); } catch(parseErr) {
+      console.error('[UNIO Pay] JSON parse failed:', raw);
+      toast('Server error (invalid response). Try again.','red');
+      setLoading(false);
+      return;
+    }
 
     if (d.status === 'success') {
       clearInterval(timerInt);
-      document.getElementById('pay-form').style.display      = 'none';
-      document.getElementById('state-success').style.display = 'block';
-      document.getElementById('success-txid').textContent    = 'Txn ID: ' + (d.tx_id||'—');
+      showReceipt(d);
     } else {
       toast(d.message || 'Payment failed','red');
       if ((d.message||'').toLowerCase().match(/pin|wrong/)) {
@@ -247,17 +347,72 @@ async function submitPay() {
       }
     }
   } catch(e) {
-    toast('Network issue. Try again.','red');
-  } finally {
-    setLoading(false);
+    console.error('[UNIO Pay] fetch error:', e);
+    toast('Network issue. Check internet aur try again.','red');
   }
+  setLoading(false);
+}
+
+// Receipt show karo
+function showReceipt(d) {
+  document.getElementById('pay-form').style.display = 'none';
+  document.getElementById('inv-card').style.display = 'none';
+
+  const now = new Date();
+  const dt  = now.toLocaleString('en-IN', {
+    timeZone:'Asia/Kolkata', day:'2-digit', month:'short',
+    year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true
+  });
+
+  document.getElementById('r-amount').textContent  = '₹' + (d.amount || invAmount);
+  document.getElementById('r-merchant').textContent = invMerchant;
+  document.getElementById('r-txid').textContent    = d.tx_id || '—';
+  document.getElementById('r-invid').textContent   = invoiceId;
+  document.getElementById('r-order').textContent   = d.order_id || '—';
+  document.getElementById('r-time').textContent    = dt;
+
+  document.getElementById('state-success').style.display = 'block';
+
+  // Confetti burst
+  confettiBurst();
 }
 
 function setLoading(on) {
   busy = on;
   const btn = document.getElementById('pay-btn');
+  if (!btn) return;
   btn.classList.toggle('loading', on); btn.disabled = on;
   document.querySelectorAll('.key').forEach(k => k.style.pointerEvents = on?'none':'auto');
+}
+
+// Confetti mini burst
+function confettiBurst() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const colors  = ['#fff','#fbbf24','#34d399','#60a5fa','#f472b6','#a78bfa'];
+  const pieces  = Array.from({length:60}, () => ({
+    x: Math.random()*canvas.width, y: canvas.height + 10,
+    r: 2 + Math.random()*4,
+    vx:(Math.random()-.5)*3, vy:-(4+Math.random()*6),
+    color: colors[Math.floor(Math.random()*colors.length)],
+    life:1, decay:.012+Math.random()*.008
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.15; p.life-=p.decay;
+      if (p.life<=0) return;
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,2*Math.PI); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    if (pieces.some(p=>p.life>0)) requestAnimationFrame(draw);
+  }
+  draw();
 }
 
 function showExpired(msg) {
