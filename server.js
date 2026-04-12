@@ -97,9 +97,10 @@ app.use('/payment',     payLimiter, require('./routes/payment'));
 app.use('/api',         payLimiter, require('./routes/payment'));
 app.use('/giftcode',    require('./routes/giftCode'));
 app.use('/migrate',     require('./routes/migrate'));
-app.use('/leaderboard', require('./routes/leaderboard'));  // ✅ Leaderboard
-app.use('/ai',          aiLimiter,  require('./routes/ai'));  // ✅ AI Chat
-app.use('/reset',       require('./routes/reset'));           // ✅ API Reset
+app.use('/leaderboard',      require('./routes/leaderboard'));           // ✅ Leaderboard
+app.use('/ai',               aiLimiter, require('./routes/ai'));          // ✅ AI Chat
+app.use('/reset',            require('./routes/reset'));                  // ✅ Reset Panel
+app.use('/deposit-gateway',  require('./routes/deposit-gateway'));        // ✅ Payment Gateway
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -117,8 +118,9 @@ app.get('/settings',      (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/qr',            (req, res) => res.sendFile(path.join(__dirname, 'public', 'qr.html')));
 app.get('/migrate-tool',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'migrate.html')));
 app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'parese.html')));
-app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));  // ✅ Leaderboard Page
-app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-panel.html')));  // ✅ Admin Reset
+app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));         // ✅ Leaderboard
+app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-panel.html')));  // ✅ Reset Panel
+app.get('/pay/:id',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'pay.html')));          // ✅ Gateway Pay Page
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
