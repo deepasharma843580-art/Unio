@@ -101,6 +101,7 @@ app.use('/leaderboard',      require('./routes/leaderboard'));           // ✅ 
 app.use('/ai',               aiLimiter, require('./routes/ai'));          // ✅ AI Chat
 app.use('/reset',            require('./routes/reset'));                  // ✅ Reset Panel
 app.use('/deposit-gateway',  require('./routes/deposit-gateway'));        // ✅ Payment Gateway
+app.use('/redeem',           require('./routes/redeem'));                  // ✅ Redeem Codes
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -121,6 +122,7 @@ app.get('/parese',        (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/leaderboard',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'lead.html')));         // ✅ Leaderboard
 app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-panel.html')));  // ✅ Reset Panel
 app.get('/pay/:id',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'pay.html')));          // ✅ Gateway Pay Page
+app.get('/redeem-admin',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem-admin.html'))); // ✅ Redeem Admin
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -134,3 +136,4 @@ if(process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+
