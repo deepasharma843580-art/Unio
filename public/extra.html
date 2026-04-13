@@ -1,137 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Extra Features | UNIO</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root {
-  --blue: #0057ff;
-  --bg: #f0f4ff;
-  --white: #ffffff;
-  --text: #0f172a;
-  --muted: #94a3b8;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extra - UNIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  overflow: hidden;
-}
+        .container {
+            width: 100%;
+            max-width: 400px; /* Mobile focused width */
+        }
 
-.card {
-  background: var(--white);
-  max-width: 400px;
-  width: 100%;
-  padding: 3rem 2rem;
-  border-radius: 2.5rem;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 87, 255, 0.1);
-  position: relative;
-}
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 1 line me 4 icons */
+            gap: 12px;
+        }
 
-.icon-box {
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(135deg, #0057ff, #0033cc);
-  border-radius: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 2rem;
-  font-size: 2.5rem;
-  color: white;
-  box-shadow: 0 10px 20px rgba(0, 87, 255, 0.3);
-  animation: float 3s ease-in-out infinite;
-}
+        /* Glassmorphic Style */
+        .icon-item {
+            aspect-ratio: 1 / 1;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 162, 255, 0.1);
+        }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
+        .icon-item:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.6);
+        }
 
-h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 1rem;
-}
+        /* Sky Blue Icon Color */
+        .icon-item i {
+            font-size: 24px;
+            color: #0ea5e9; /* Sky Blue */
+            filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
+        }
 
-p {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 2.5rem;
-}
+        /* Empty/Placeholder Style */
+        .empty-slot {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px dashed rgba(14, 165, 233, 0.2);
+            box-shadow: none;
+        }
 
-.badge {
-  display: inline-block;
-  background: #eff6ff;
-  color: var(--blue);
-  padding: 0.6rem 1.2rem;
-  border-radius: 2rem;
-  font-weight: 800;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  color: var(--blue);
-  font-weight: 700;
-  font-size: 0.9rem;
-  transition: 0.2s;
-}
-
-.back-btn:active {
-  transform: scale(0.95);
-}
-
-/* Background shapes */
-.shape {
-  position: absolute;
-  z-index: -1;
-  filter: blur(50px);
-  border-radius: 50%;
-}
-.shape-1 { top: -10%; left: -10%; width: 200px; height: 200px; background: rgba(0, 87, 255, 0.1); }
-.shape-2 { bottom: -10%; right: -10%; width: 150px; height: 150px; background: rgba(147, 51, 234, 0.1); }
-
-</style>
+        h2 {
+            color: #0369a1;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="shape shape-1"></div>
-<div class="shape shape-2"></div>
+<div class="container">
+    <h2>DASHBOARD</h2>
+    
+    <div class="icon-grid">
+        <a href="keeper.html" class="icon-item">
+            <i class="fa-solid fa-shield-halved"></i>
+        </a>
 
-<div class="card">
-  <div class="badge">Notice</div>
-  <div class="icon-box">
-    <i class="fa-solid fa-rocket"></i>
-  </div>
-  <h1>Coming Soon 🔜</h1>
-  <p>Hum is section par kaam kar rahe hain. Jald hi aapko yahan exciting naye features dekhne ko milenge!</p>
-  
-  <a href="dashboard.html" class="back-btn">
-    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
-  </a>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+        <div class="icon-item empty-slot"></div>
+    </div>
 </div>
 
 </body>
 </html>
-
