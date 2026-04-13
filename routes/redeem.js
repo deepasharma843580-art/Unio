@@ -172,14 +172,22 @@ router.get('/buy', async (req, res) => {
 📅 Date : ${istTime()}`);
 
     // Return code in response
+    const pad = n => String(n).padStart(2, '0');
+    const ist = new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
+    const timestamp = `${pad(ist.getDate())}-${pad(ist.getMonth()+1)}-${ist.getFullYear()} ${pad(ist.getHours())}:${pad(ist.getMinutes())}:${pad(ist.getSeconds())}`;
+
     res.json({
-      status:   'success',
-      product:  codeDoc.label,
-      price:    codeDoc.price,
-      code:     deliveredCode,
-      tx_id:    txId,
-      balance:  updatedUser?.balance ?? null,
-      message:  'Code delivered! DB se delete ho gaya.'
+      status:  'success',
+      message: 'Code delivered successfully',
+      data: {
+        product:   deliveredLabel,
+        price:     deliveredPrice,
+        code:      deliveredCode,
+        tx_id:     txId,
+        balance:   updatedUser?.balance ?? null,
+        timestamp: timestamp
+      },
+      note: '❤️ Thank you for using UNIO Hazel Wallet Gateway'
     });
 
   } catch(e) {
@@ -401,21 +409,34 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
     // Delete all gift codes of this week
     await GiftCode.deleteMany({ created_at: { $gte: range.start, $lte: range.end } });
 
+    // Delete all related transactions (create + claim + refund) for these codes
+    // Remark mein code name hota hai — sab match karke delete karo
+    const codeNames = codes.map(g => g.code);
+    let txDeleted = 0;
+    if (codeNames.length > 0) {
+      const txResult = await Transaction.deleteMany({
+        remark: { $in: codeNames.map(c => new RegExp(c)) }
+      });
+      txDeleted = txResult.deletedCount;
+    }
+
     // Admin TG
     sendTG(ADMIN_TG,
 `🗑️ *Gift Codes Deleted*
 
 📅 Week : ${range.label}
-🗑️ Deleted : ${totalDeleted} codes
+🗑️ Codes Deleted : ${totalDeleted}
+📋 Transactions Deleted : ${txDeleted}
 💸 Total Refunded : ₹${totalRefunded.toFixed(2)}
 📅 Time : ${istTime()}`);
 
     res.json({
-      status:        'success',
-      deleted:       totalDeleted,
-      total_refunded: totalRefunded,
-      week:          range.label,
-      refund_log:    refundLog
+      status:              'success',
+      deleted:             totalDeleted,
+      transactions_deleted: txDeleted,
+      total_refunded:      totalRefunded,
+      week:                range.label,
+      refund_log:          refundLog
     });
 
   } catch(e) {
@@ -424,4 +445,4 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-    
+  
