@@ -61,6 +61,7 @@
             flex-direction: column;
             align-items: center;
             text-decoration: none;
+            position: relative;
         }
 
         .icon-item {
@@ -77,22 +78,38 @@
             box-shadow: 0 4px 15px rgba(0, 162, 255, 0.1);
             margin-bottom: 8px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
-        /* --- Colorful Icon Style --- */
+        /* --- Colorful Icon Style with Coin on Border --- */
         .active-icon {
             background: #ffffff !important;
-            border: 1.5px solid #ffba08 !important;
-            box-shadow: 0 4px 20px rgba(255, 186, 8, 0.2) !important;
+            border: 2px solid #ffba08 !important; /* Gold Border */
+            box-shadow: 0 4px 20px rgba(255, 186, 8, 0.3) !important;
+        }
+
+        /* Coin placement on the border */
+        .active-icon::after {
+            content: "🪙";
+            position: absolute;
+            top: -10px; /* Adjust height */
+            right: -5px;
+            font-size: 16px;
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .active-icon i {
-            /* Colorful Gradient for Icon */
             background: linear-gradient(135deg, #f72585, #7209b7, #3a0ca3, #4361ee, #4cc9f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 28px !important;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
         .icon-wrapper:active .icon-item {
