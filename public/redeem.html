@@ -314,7 +314,7 @@ async function buyCode() {
   const btn = document.getElementById('buy-btn');
   btnLoad(btn, true);
   try {
-    const r = await fetch(`${API}/redeem?key=${encodeURIComponent(apiKey)}&type=${encodeURIComponent(selectedProduct.product)}`);
+    const r = await fetch(`${API}/redeem/buy?key=${encodeURIComponent(apiKey)}&type=${encodeURIComponent(selectedProduct.product)}`);
 
     let d;
     try { d = await r.json(); }
@@ -394,14 +394,14 @@ function renderApiUrl() {
     return;
   }
   el.innerHTML =
-    `<span style="color:var(--gray-400)">${API}/redeem?</span>` +
+    `<span style="color:var(--gray-400)">${API}/redeem/buy?</span>` +
     `<span style="color:var(--blue);font-weight:800">key=${apiKey}</span>` +
     `<span style="color:var(--gray-400)">&</span>` +
     `<span style="color:var(--orange);font-weight:800">type=google_play_10</span>`;
 }
 
 function copyApiUrl() {
-  const url = `${API}/redeem?key=${apiKey}&type=google_play_10`;
+  const url = `${API}/redeem/buy?key=${apiKey}&type=google_play_10`;
   navigator.clipboard.writeText(url)
     .then(() => toast('API URL copied! ✅','green'))
     .catch(() => {
