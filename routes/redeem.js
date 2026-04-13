@@ -117,25 +117,27 @@ router.get('/buy', async (req, res) => {
     if (user.balance < codeDoc.price)
       return res.json({ status: 'error', message: `Insufficient balance. Need ₹${codeDoc.price}, Available: ₹${user.balance}` });
 
-    const txId = 'RC' + Date.now() + Math.floor(Math.random() * 999);
-    const now  = new Date();
+    const txId        = 'RC' + Date.now() + Math.floor(Math.random() * 999);
+    const now         = new Date();
+    const deliveredCode  = codeDoc.code;
+    const deliveredLabel = codeDoc.label;
+    const deliveredPrice = codeDoc.price;
 
     // Deduct balance
-    await User.findByIdAndUpdate(user._id, { $inc: { balance: -codeDoc.price } });
+    await User.findByIdAndUpdate(user._id, { $inc: { balance: -deliveredPrice } });
 
     // Transaction record
     await Transaction.create({
       tx_id:     txId,
       sender_id: user._id,
-      amount:    codeDoc.price,
+      amount:    deliveredPrice,
       type:      'redeem',
       status:    'success',
-      remark:    `🎁 ${codeDoc.label} | Code: ${deliveredCode}`,
+      remark:    `🎁 ${deliveredLabel} | Code: ${deliveredCode}`,
       tx_time:   now
     });
 
-    // Mark sold + DELETE from DB (auto delete)
-    const deliveredCode = codeDoc.code;
+    // DELETE from DB (auto delete)
     await RedeemCode.findByIdAndDelete(codeDoc._id);
 
     const updatedUser = await User.findById(user._id).select('balance tg_id');
@@ -422,4 +424,4 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-  
+    
