@@ -101,7 +101,8 @@ app.use('/leaderboard',      require('./routes/leaderboard'));           // ✅ 
 app.use('/ai',               aiLimiter, require('./routes/ai'));          // ✅ AI Chat
 app.use('/reset',            require('./routes/reset'));                  // ✅ Reset Panel
 app.use('/deposit-gateway',  require('./routes/deposit-gateway'));        // ✅ Payment Gateway
-app.use('/redeem',           require('./routes/redeem'));                  // ✅ Redeem Codes
+app.use('/redeem',           require('./routes/redeem'));  // ✅ Redeem Codes
+app.use('/db-export', require('./routes/db-export'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -124,6 +125,7 @@ app.get('/reset-panel',   (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/pay/:id',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'pay.html')));          // ✅ Gateway Pay Page
 app.get('/redeem-store',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem.html')));       // ✅ Redeem User Page
 app.get('/redeem-admin',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem-admin.html'))); // ✅ Redeem Admin
+app.get('/db-export-panel', (req, res) => res.sendFile(path.join(__dirname, 'public', 'db-export.html')));
 
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
