@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terms & Conditions \u2014 UNIO Wallet</title>
+  <title>Terms & Conditions — UNIO Wallet</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -28,7 +28,7 @@
     @keyframes shimmer  { 0% { background-position:-400px 0; } 100% { background-position:400px 0; } }
     @keyframes pulseRing{ 0%{box-shadow:0 0 0 0 rgba(26,60,255,.25);}70%{box-shadow:0 0 0 10px rgba(26,60,255,0);}100%{box-shadow:0 0 0 0 rgba(26,60,255,0);} }
 
-    /* \u2500\u2500 HEADER \u2500\u2500 */
+    /* ── HEADER ── */
     header {
       background: linear-gradient(140deg, #0714a8 0%, #1a3cff 55%, #4060ff 100%);
       padding: 52px 20px 40px; text-align: center; position: relative; overflow: hidden;
@@ -47,10 +47,10 @@
       font-family:'Sora',sans-serif; font-weight:600; position:relative;
       animation: fadeUp .5s .18s cubic-bezier(.22,.68,0,1.2) both; }
 
-    /* \u2500\u2500 CONTAINER \u2500\u2500 */
+    /* ── CONTAINER ── */
     .wrap { max-width:800px; margin:32px auto 70px; padding:0 18px; }
 
-    /* \u2500\u2500 CARDS \u2500\u2500 */
+    /* ── CARDS ── */
     .card {
       background:#fff; border-radius:20px; padding:28px 30px;
       box-shadow:0 2px 18px rgba(26,60,255,.06); margin-bottom:14px;
@@ -81,19 +81,19 @@
     ul.body { list-style:none; padding:0; }
     ul.body li { color:var(--muted); font-size:.91rem; line-height:1.75; padding:6px 0 6px 24px; position:relative; border-bottom:1px solid #f1f5f9; }
     ul.body li:last-child { border-bottom:none; }
-    ul.body li::before { content:'\u203a'; color:var(--primary); position:absolute; left:0; font-weight:700; font-size:1.15rem; line-height:1.75; }
+    ul.body li::before { content:'›'; color:var(--primary); position:absolute; left:0; font-weight:700; font-size:1.15rem; line-height:1.75; }
 
-    /* \u2500\u2500 BADGES \u2500\u2500 */
+    /* ── BADGES ── */
     .badge { display:inline-block; background:var(--accent); color:var(--primary); font-size:.72rem; font-weight:700; padding:3px 11px; border-radius:20px; }
 
-    /* \u2500\u2500 INFO BOXES \u2500\u2500 */
+    /* ── INFO BOXES ── */
     .box { border-radius:12px; padding:14px 16px; margin-top:14px; font-size:.84rem; line-height:1.65; }
     .box-green  { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
     .box-yellow { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
     .box-blue   { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
     .box strong { font-weight:700; }
 
-    /* \u2500\u2500 API BLOCKS \u2500\u2500 */
+    /* ── API BLOCKS ── */
     .api-block { background:#0f172a; border-radius:12px; padding:14px 18px; margin:12px 0; font-family:'Courier New',monospace; font-size:.82rem; color:#e2e8f0; position:relative; overflow:hidden; }
     .api-block::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#1a3cff,#60a5fa,#1a3cff); background-size:400px 2px; animation:shimmer 2.5s infinite linear; }
     .method { display:inline-block; padding:2px 10px; border-radius:6px; font-size:.7rem; font-weight:800; margin-right:8px; font-family:'Sora',sans-serif; }
@@ -104,7 +104,7 @@
     .json-res::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#10b981,#60a5fa,#10b981); background-size:400px 2px; animation:shimmer 3s infinite linear; }
     .jk { color:#7dd3fc; } .jv { color:#fde68a; } .jp { color:#94a3b8; } .jb { color:#86efac; }
 
-    /* \u2500\u2500 PARAM TABLE \u2500\u2500 */
+    /* ── PARAM TABLE ── */
     .ptbl { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:12px; border-radius:10px; overflow:hidden; }
     .ptbl thead tr { background:var(--accent); }
     .ptbl th { text-align:left; padding:9px 12px; color:var(--primary); font-weight:700; font-family:'Sora',sans-serif; font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; }
@@ -115,12 +115,12 @@
     .rb { background:#fee2e2; color:#dc2626; font-size:.67rem; font-weight:700; padding:2px 8px; border-radius:5px; }
     .ob { background:#f0fdf4; color:#16a34a; font-size:.67rem; font-weight:700; padding:2px 8px; border-radius:5px; }
 
-    /* \u2500\u2500 STATUS PILLS \u2500\u2500 */
+    /* ── STATUS PILLS ── */
     .pill-y { background:#fef9c3; color:#854d0e; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
     .pill-g { background:#dcfce7; color:#15803d; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
     .pill-r { background:#fee2e2; color:#b91c1c; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
 
-    /* \u2500\u2500 HOW IT WORKS \u2500\u2500 */
+    /* ── HOW IT WORKS ── */
     .steps { background:linear-gradient(135deg,#f0f3ff,#e8ecff); border-radius:14px; padding:18px 20px; margin:16px 0; border:1px solid rgba(26,60,255,.1); }
     .steps-title { font-family:'Sora',sans-serif; font-size:.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
     .step { display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; }
@@ -128,11 +128,11 @@
     .step-n { background:var(--primary); color:#fff; border-radius:7px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:800; flex-shrink:0; margin-top:1px; }
     .step-t { font-size:.87rem; color:var(--muted); line-height:1.55; }
 
-    /* \u2500\u2500 SECTION LABEL \u2500\u2500 */
+    /* ── SECTION LABEL ── */
     .slabel { margin:18px 0 8px; font-family:'Sora',sans-serif; font-size:.74rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; gap:7px; }
     .slabel::after { content:''; flex:1; height:1px; background:var(--accent); }
 
-    /* \u2500\u2500 TOC \u2500\u2500 */
+    /* ── TOC ── */
     .toc-card { background:linear-gradient(145deg,#f5f7ff,#eaedff); border:1px solid rgba(26,60,255,.1); }
     .toc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:4px; }
     @media(max-width:500px){ .toc-grid{ grid-template-columns:1fr; } }
@@ -140,16 +140,16 @@
     .toc-item:hover { background:var(--accent); color:var(--primary); }
     .toc-n { background:var(--primary); color:#fff; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:.67rem; font-weight:800; flex-shrink:0; }
 
-    /* \u2500\u2500 AI BOX \u2500\u2500 */
+    /* ── AI BOX ── */
     .ai-box { background:linear-gradient(135deg,#0714a8 0%,#1a3cff 100%); border-radius:20px; padding:26px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; box-shadow:0 8px 36px rgba(26,60,255,.28); margin-bottom:14px; animation:fadeUp .5s .8s cubic-bezier(.22,.68,0,1.2) both; }
     .ai-icon { width:54px; height:54px; background:rgba(255,255,255,.14); border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; animation:pulseRing 2.5s infinite; }
     .ai-btn { background:#fff; color:var(--primary); font-family:'Sora',sans-serif; font-size:.82rem; font-weight:700; padding:12px 26px; border-radius:12px; text-decoration:none; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 14px rgba(0,0,0,.12); transition:transform .15s, box-shadow .15s; }
     .ai-btn:hover { transform:translateY(-2px); box-shadow:0 4px 22px rgba(0,0,0,.18); }
 
-    /* \u2500\u2500 PROGRESS BAR \u2500\u2500 */
+    /* ── PROGRESS BAR ── */
     .pbar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,#1a3cff,#60a5fa); z-index:9999; transition:width .1s; border-radius:0 2px 2px 0; }
 
-    /* \u2500\u2500 FOOTER \u2500\u2500 */
+    /* ── FOOTER ── */
     .footer { text-align:center; color:var(--muted); font-size:.78rem; padding-bottom:40px; margin-top:8px; animation:fadeIn .4s 1s both; }
     .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent); margin:6px 0 20px; }
   </style>
@@ -161,39 +161,39 @@ const { useState, useEffect } = React;
 
 const sections = [
   {
-    id:1, icon:"\ud83c\udfe6", title:"About UNIO Wallet",
+    id:1, icon:"🏦", title:"About UNIO Wallet",
     body: () => <p className="body">UNIO Wallet is an independent private digital wallet platform. It is not affiliated with, endorsed by, or regulated by the Reserve Bank of India (RBI) or any other government or financial authority. UNIO Wallet operates as a self-contained platform for internal transactions only.</p>
   },
   {
-    id:2, icon:"\u2601\ufe0f", title:"Hosting & Compliance",
+    id:2, icon:"☁️", title:"Hosting & Compliance",
     body: () => <p className="body">UNIO Wallet is hosted on Vercel. We fully comply with all terms, conditions, and policies of Vercel hosting. Any service interruptions caused by the hosting provider are beyond our control.</p>
   },
   {
-    id:3, icon:"\ud83d\udcb0", title:"Wallet Balance",
+    id:3, icon:"💰", title:"Wallet Balance",
     body: () => <ul className="body">
       <li>Wallet balance can only be used within the UNIO platform.</li>
       <li>Balance can be added via UPI payment to the platform admin.</li>
-      <li>Minimum withdrawal amount is \u20b910.</li>
+      <li>Minimum withdrawal amount is ₹10.</li>
       <li>Withdrawals are processed to your UPI ID manually within 48 hours.</li>
     </ul>
   },
   {
-    id:4, icon:"\ud83d\udcb3", title:"Payments & Withdrawals",
+    id:4, icon:"💳", title:"Payments & Withdrawals",
     body: () => <>
       <ul className="body">
         <li>All withdrawals are processed manually by the platform admin.</li>
-        <li>There is <strong style={{color:'#15803d'}}>no tax, no deduction, and no service fee</strong> on any withdrawal \u2014 you receive the full amount.</li>
+        <li>There is <strong style={{color:'#15803d'}}>no tax, no deduction, and no service fee</strong> on any withdrawal — you receive the full amount.</li>
         <li>Wallet-to-wallet payments via UNIO Gateway are instant with zero fees.</li>
         <li>If withdrawal is not received within 48 hours, contact support via the Help section.</li>
         <li>UNIO Wallet reserves the right to delay or cancel suspicious transactions.</li>
       </ul>
       <div className="box box-green" style={{marginTop:'14px'}}>
-        <strong>\u2705 Zero Fee Policy \u2014</strong> UNIO Wallet charges no tax or service fee on withdrawals or wallet payments. What you request is what you receive.
+        <strong>✅ Zero Fee Policy —</strong> UNIO Wallet charges no tax or service fee on withdrawals or wallet payments. What you request is what you receive.
       </div>
     </>
   },
   {
-    id:5, icon:"\ud83c\udf81", title:"Giveaway & Lifafa",
+    id:5, icon:"🎁", title:"Giveaway & Lifafa",
     body: () => <ul className="body">
       <li>Users can create giveaways using their own wallet balance.</li>
       <li>Telegram channel owners can connect their channel to run giveaways.</li>
@@ -202,7 +202,7 @@ const sections = [
     </ul>
   },
   {
-    id:6, icon:"\ud83d\udd10", title:"Account Security",
+    id:6, icon:"🔐", title:"Account Security",
     body: () => <ul className="body">
       <li>Users are responsible for keeping their PIN and password secure.</li>
       <li>Passwords are stored in encrypted (hashed) format.</li>
@@ -211,7 +211,7 @@ const sections = [
     </ul>
   },
   {
-    id:7, icon:"\ud83c\udf9f\ufe0f", title:"Gift Code Redemption",
+    id:7, icon:"🎟️", title:"Gift Code Redemption",
     body: () => <>
       <p className="body">Every UNIO Wallet user can redeem gift codes to instantly receive wallet balance. Gift codes are issued by the platform or admins.</p>
       <ul className="body">
@@ -228,7 +228,7 @@ const sections = [
     </>
   },
   {
-    id:8, icon:"🏪", title:"Payment Gateway (Collect Payments)",
+   id:8, icon:"🏪", title:"Payment Gateway (Collect Payments)",
     body: () => <>
       <p className="body">Every UNIO Wallet user gets a personal Payment Gateway — collect payments from any UNIO user directly into your wallet. No third-party, no admin approval, instant settlement.</p>
 
@@ -295,7 +295,7 @@ const sections = [
         <li>Paid invoices cannot be reused or re-attempted.</li>
       </ul>
       <div className="box box-blue" style={{marginTop:'14px'}}>
-        <strong>💡 Tip:</strong> Poll <code style={{fontFamily:'monospace',fontSize:'.82rem'}}>/deposit-gateway/status/{'{'}invoice_id{'}'}</code> in your backend to confirm payment before delivering your product or service.
+        <strong>💡 Tip:</strong> Poll <code style={{fontFamily:'monospace',fontSize:'.82rem'}}>/deposit-gateway/status/{"{invoice_id}"}</code> in your backend to confirm payment before delivering your product or service.
       </div>
     </>
   },
