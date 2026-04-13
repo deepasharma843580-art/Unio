@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keeper — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#e8efff;
+  --green:#16a34a;--green-light:#dcfce7;
+  --red:#dc2626;--red-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#f3f0ff;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 8px 32px rgba(0,87,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#eef2ff;padding:16px;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-10%;left:-10%;width:45%;height:45%;background:radial-gradient(circle,rgba(124,58,237,.09),transparent 65%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-10%;right:-10%;width:40%;height:40%;background:radial-gradient(circle,rgba(0,87,255,.07),transparent 65%);pointer-events:none;z-index:0}
+
+.container{max-width:400px;margin:0 auto;position:relative;z-index:1}
+
+/* Header */
+.header{display:flex;align-items:center;gap:.75rem;padding:.5rem 0 1.25rem}
+.back-btn{width:36px;height:36px;background:var(--white);border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:var(--gray-600);box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer;text-decoration:none;flex-shrink:0;transition:all .2s}
+.back-btn:hover{color:var(--blue)}
+.header-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--gray-900)}
+.header-sub{font-size:.68rem;color:var(--gray-400);font-weight:600}
+
+/* Balance cards */
+.balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
+.bal-card{background:var(--white);border-radius:1.4rem;padding:1.1rem;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden}
+.bal-card::before{content:'';position:absolute;top:-15px;right:-15px;width:55px;height:55px;border-radius:50%;opacity:.07}
+.bal-card.wallet::before{background:var(--blue)}
+.bal-card.keeper::before{background:var(--purple)}
+.bal-icon{width:36px;height:36px;border-radius:.7rem;display:flex;align-items:center;justify-content:center;margin:0 auto .6rem;font-size:.9rem}
+.bal-card.wallet .bal-icon{background:var(--blue-light);color:var(--blue)}
+.bal-card.keeper .bal-icon{background:var(--purple-light);color:var(--purple)}
+.bal-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-400);margin-bottom:.25rem}
+.bal-val{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--gray-900)}
+
+/* Main action card */
+.action-card{background:var(--white);border-radius:1.5rem;padding:1.35rem;box-shadow:var(--shadow);margin-bottom:.85rem}
+.action-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--gray-100);border-radius:.9rem;padding:3px;gap:3px;margin-bottom:1.1rem}
+.atab{padding:.6rem;text-align:center;font-weight:700;font-size:.72rem;border-radius:.75rem;cursor:pointer;transition:all .2s;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.atab.active.deposit{background:var(--white);color:var(--purple);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.atab.active.withdraw{background:var(--white);color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+
+.amount-input-wrap{position:relative;margin-bottom:1rem}
+.amount-prefix{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gray-400)}
+.amount-input{width:100%;padding:.9rem 1rem .9rem 2.2rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:1rem;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;outline:none;color:var(--gray-900);transition:all .2s}
+.amount-input:focus{border-color:var(--blue);background:var(--white)}
+.amount-input::placeholder{color:var(--gray-200)}
+
+/* Quick amount chips */
+.quick-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.chip{padding:.35rem .75rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:2rem;font-size:.7rem;font-weight:700;color:var(--gray-600);cursor:pointer;transition:all .15s}
+.chip:active{transform:scale(.95)}
+.chip.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+
+/* Action button */
+.action-btn{width:100%;padding:.9rem;border:none;border-radius:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;font-family:'DM Sans',sans-serif;font-size:.78rem;transition:all .2s}
+.action-btn:active:not(:disabled){transform:scale(.98)}
+.action-btn:disabled{opacity:.4;cursor:not-allowed}
+.action-btn.deposit-btn{background:linear-gradient(135deg,var(--purple),#9f67ff);color:white;box-shadow:0 6px 20px rgba(124,58,237,.25)}
+.action-btn.withdraw-btn{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 6px 20px rgba(22,163,74,.25)}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.action-btn.loading .spinner{display:block}
+.action-btn.loading .btn-text{display:none}
+
+/* Info card */
+.info-card{background:var(--white);border-radius:1.25rem;padding:1rem 1.1rem;box-shadow:var(--shadow);margin-bottom:.85rem}
+.info-row{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid var(--gray-100);font-size:.73rem;color:var(--gray-600);font-weight:500;line-height:1.4}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.info-row i{color:var(--purple);font-size:.8rem;flex-shrink:0;margin-top:.1rem}
+
+/* Success animation */
+.success-flash{position:fixed;inset:0;background:rgba(22,163,74,.15);z-index:50;display:none;align-items:center;justify-content:center;animation:flashIn .3s ease}
+@keyframes flashIn{from{opacity:0}to{opacity:1}}
+.success-flash.show{display:flex}
+.flash-box{background:white;border-radius:1.5rem;padding:1.75rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.flash-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;font-size:1.6rem}
+.flash-icon.deposit{background:var(--purple-light);color:var(--purple)}
+.flash-icon.withdraw{background:var(--green-light);color:var(--green)}
+.flash-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gray-900);margin-bottom:.3rem}
+.flash-sub{font-size:.78rem;color:var(--gray-400);margin-bottom:.9rem}
+.flash-balances{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem}
+.flash-bal{background:var(--gray-50);border-radius:.75rem;padding:.6rem}
+.flash-bal-label{font-size:.58rem;font-weight:700;text-transform:uppercase;color:var(--gray-400);letter-spacing:.04em}
+.flash-bal-val{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--gray-900);margin-top:.15rem}
+.flash-close{width:100%;padding:.8rem;background:var(--gray-100);border:2px solid var(--gray-200);border-radius:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--gray-600)}
+.flash-close:active{transform:scale(.98)}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.75rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+    <div>
+      <div class="header-title">Balance Keeper</div>
+      <div class="header-sub">Apna balance safely lock karo</div>
+    </div>
+  </div>
+
+  <!-- Balance cards -->
+  <div class="balance-grid">
+    <div class="bal-card wallet">
+      <div class="bal-icon"><i class="fa-solid fa-wallet"></i></div>
+      <div class="bal-label">Wallet</div>
+      <div class="bal-val" id="wallet-bal">—</div>
+    </div>
+    <div class="bal-card keeper">
+      <div class="bal-icon"><i class="fa-solid fa-vault"></i></div>
+      <div class="bal-label">Keeper</div>
+      <div class="bal-val" id="keeper-bal">—</div>
+    </div>
+  </div>
+
+  <!-- Action card -->
+  <div class="action-card">
+    <div class="action-tabs">
+      <div class="atab active deposit" id="tab-deposit" onclick="switchTab('deposit')">
+        <i class="fa-solid fa-lock"></i> Lock
+      </div>
+      <div class="atab withdraw" id="tab-withdraw" onclick="switchTab('withdraw')">
+        <i class="fa-solid fa-lock-open"></i> Withdraw
+      </div>
+    </div>
+
+    <div class="amount-input-wrap">
+      <span class="amount-prefix">₹</span>
+      <input type="number" class="amount-input" id="amount-input" placeholder="0" min="1" oninput="syncChips()">
+    </div>
+
+    <!-- Quick chips -->
+    <div class="quick-chips">
+      <div class="chip" onclick="setAmt(10)">₹10</div>
+      <div class="chip" onclick="setAmt(50)">₹50</div>
+      <div class="chip" onclick="setAmt(100)">₹100</div>
+      <div class="chip" onclick="setAmt(500)">₹500</div>
+      <div class="chip" id="chip-all" onclick="setAll()">All</div>
+    </div>
+
+    <button class="action-btn deposit-btn" id="action-btn" onclick="doAction()">
+      <div class="spinner"></div>
+      <span class="btn-text"><i class="fa-solid fa-lock"></i>&nbsp; Lock Balance</span>
+    </button>
+  </div>
+
+  <!-- Info -->
+  <div class="info-card">
+    <div class="info-row">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>Keeper mein lock kiya balance safe rahega — koi bhi transaction ya API use nahi kar sakti.</span>
+    </div>
+    <div class="info-row">
+      <i class="fa-solid fa-rotate-left"></i>
+      <span>Jab chahe withdraw karke wapas wallet mein le aao — koi charges nahi.</span>
+    </div>
+    <div class="info-row">
+      <i class="fa-solid fa-bell"></i>
+      <span>Har deposit/withdrawal pe Telegram notification milega.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Success Flash -->
+<div class="success-flash" id="success-flash" onclick="closeFlash()">
+  <div class="flash-box" onclick="event.stopPropagation()">
+    <div class="flash-icon" id="flash-icon"><i class="fa-solid fa-check"></i></div>
+    <div class="flash-title" id="flash-title">Done!</div>
+    <div class="flash-sub" id="flash-sub">—</div>
+    <div class="flash-balances">
+      <div class="flash-bal">
+        <div class="flash-bal-label">Wallet</div>
+        <div class="flash-bal-val" id="flash-wallet">—</div>
+      </div>
+      <div class="flash-bal">
+        <div class="flash-bal-label">Keeper</div>
+        <div class="flash-bal-val" id="flash-keeper">—</div>
+      </div>
+    </div>
+    <button class="flash-close" onclick="closeFlash()">
+      <i class="fa-solid fa-check"></i>&nbsp; Done
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API      = 'https://unio-hazel.vercel.app';
+const token    = localStorage.getItem('token');
+const userData = JSON.parse(localStorage.getItem('user') || '{}');
+
+if (!token) window.location.href = 'index.html';
+
+let activeTab       = 'deposit';
+let walletBalance   = 0;
+let keeperBalance   = 0;
+
+// ── Load Balances ─────────────────────────────────────────────────────────────
+async function loadBalances() {
+  try {
+    const r = await fetch(`${API}/keeper/balance`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (d.status === 'success') {
+      walletBalance = d.wallet_balance;
+      keeperBalance = d.keeper_balance;
+      document.getElementById('wallet-bal').textContent = `₹${walletBalance}`;
+      document.getElementById('keeper-bal').textContent = `₹${keeperBalance}`;
+    }
+  } catch(e) {
+    // Fallback to localStorage
+    walletBalance = userData.balance || 0;
+    document.getElementById('wallet-bal').textContent = `₹${walletBalance}`;
+    document.getElementById('keeper-bal').textContent = `₹0`;
+  }
+}
+
+// ── Tab switch ────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-deposit').classList.toggle('active', tab === 'deposit');
+  document.getElementById('tab-deposit').classList.toggle('deposit', tab === 'deposit');
+  document.getElementById('tab-withdraw').classList.toggle('active', tab === 'withdraw');
+  document.getElementById('tab-withdraw').classList.toggle('withdraw', tab === 'withdraw');
+
+  const btn = document.getElementById('action-btn');
+  if (tab === 'deposit') {
+    btn.className = 'action-btn deposit-btn';
+    btn.innerHTML = `<div class="spinner"></div><span class="btn-text"><i class="fa-solid fa-lock"></i>&nbsp; Lock Balance</span>`;
+  } else {
+    btn.className = 'action-btn withdraw-btn';
+    btn.innerHTML = `<div class="spinner"></div><span class="btn-text"><i class="fa-solid fa-lock-open"></i>&nbsp; Withdraw to Wallet</span>`;
+  }
+
+  document.getElementById('amount-input').value = '';
+  syncChips();
+}
+
+// ── Quick amounts ─────────────────────────────────────────────────────────────
+function setAmt(val) {
+  document.getElementById('amount-input').value = val;
+  syncChips();
+}
+
+function setAll() {
+  const max = activeTab === 'deposit' ? walletBalance : keeperBalance;
+  document.getElementById('amount-input').value = max;
+  syncChips();
+}
+
+function syncChips() {
+  const val = parseFloat(document.getElementById('amount-input').value) || 0;
+  document.querySelectorAll('.chip').forEach(c => {
+    const chipVal = parseFloat(c.textContent.replace('₹','').replace('All',''));
+    c.classList.toggle('active', !isNaN(chipVal) && chipVal === val);
+  });
+}
+
+// ── Action ────────────────────────────────────────────────────────────────────
+async function doAction() {
+  const amt = parseFloat(document.getElementById('amount-input').value);
+  if (!amt || amt < 1) return toast('Amount daalo (minimum ₹1)', 'red');
+
+  if (activeTab === 'deposit' && amt > walletBalance)
+    return toast(`Wallet mein sirf ₹${walletBalance} hai`, 'red');
+  if (activeTab === 'withdraw' && amt > keeperBalance)
+    return toast(`Keeper mein sirf ₹${keeperBalance} hai`, 'red');
+
+  const btn = document.getElementById('action-btn');
+  btnLoad(btn, true);
+
+  const endpoint = activeTab === 'deposit' ? '/keeper/deposit' : '/keeper/withdraw';
+
+  try {
+    const r = await fetch(`${API}${endpoint}`, {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+      body:    JSON.stringify({ amount: amt })
+    });
+
+    let d;
+    try { d = await r.json(); } catch(e) { toast('Server error. Try again.', 'red'); return; }
+
+    if (d.status === 'success') {
+      walletBalance = d.wallet_balance;
+      keeperBalance = d.keeper_balance;
+
+      document.getElementById('wallet-bal').textContent = `₹${walletBalance}`;
+      document.getElementById('keeper-bal').textContent = `₹${keeperBalance}`;
+
+      // Update localStorage
+      userData.balance = walletBalance;
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      // Show success flash
+      const isDeposit = activeTab === 'deposit';
+      document.getElementById('flash-icon').className   = `flash-icon ${isDeposit ? 'deposit' : 'withdraw'}`;
+      document.getElementById('flash-icon').innerHTML   = `<i class="fa-solid fa-${isDeposit ? 'lock' : 'lock-open'}"></i>`;
+      document.getElementById('flash-title').textContent = isDeposit ? '₹' + amt + ' Locked!' : '₹' + amt + ' Withdrawn!';
+      document.getElementById('flash-sub').textContent   = d.message;
+      document.getElementById('flash-wallet').textContent = `₹${walletBalance}`;
+      document.getElementById('flash-keeper').textContent = `₹${keeperBalance}`;
+      document.getElementById('success-flash').classList.add('show');
+
+      document.getElementById('amount-input').value = '';
+      syncChips();
+    } else {
+      toast(d.message || 'Failed', 'red');
+    }
+  } catch(e) {
+    toast('Network error. Try again.', 'red');
+  } finally {
+    btnLoad(btn, false);
+  }
+}
+
+function closeFlash() {
+  document.getElementById('success-flash').classList.remove('show');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function btnLoad(btn, on) {
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
+}
+
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadBalances();
+</script>
+</body>
+        </html>
+
