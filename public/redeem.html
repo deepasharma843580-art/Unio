@@ -321,19 +321,19 @@ async function buyCode() {
     catch(e) { toast('Server response error. Try again.','red'); return; }
 
     if (d.status === 'success') {
-      lastCode = d.code;
+      lastCode = d.data.code;
 
       // Update balance
-      if (d.balance !== null && d.balance !== undefined) {
-        document.getElementById('balance-val').textContent = `₹${d.balance}`;
-        userData.balance = d.balance;
+      if (d.data.balance !== null && d.data.balance !== undefined) {
+        document.getElementById('balance-val').textContent = `₹${d.data.balance}`;
+        userData.balance = d.data.balance;
         localStorage.setItem('user', JSON.stringify(userData));
       }
 
       // Show code modal
-      document.getElementById('modal-sub').textContent  = `${d.product || selectedProduct.label} — ₹${d.price || selectedProduct.price}`;
-      document.getElementById('modal-code').textContent = d.code;
-      document.getElementById('modal-meta').textContent = `Txn ID: ${d.tx_id || '—'}`;
+      document.getElementById('modal-sub').textContent  = `${d.data.product} — ₹${d.data.price}`;
+      document.getElementById('modal-code').textContent = d.data.code;
+      document.getElementById('modal-meta').textContent = `Txn ID: ${d.data.tx_id} · ${d.data.timestamp}`;
       document.getElementById('code-overlay').classList.add('open');
 
       // Reset selection
