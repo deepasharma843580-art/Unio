@@ -231,15 +231,18 @@ async function loadStock() {
   // Balance from localStorage first
   document.getElementById('balance-val').textContent = `₹${userData.balance ?? '—'}`;
 
-  // Fetch fresh balance using token
-  try {
-    const r = await fetch(`${API}/wallet/balance`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const d = await r.json();
-    if (d.status === 'success')
-      document.getElementById('balance-val').textContent = `₹${d.balance}`;
-  } catch(e) {}
+  // Fetch fresh balance using api_key
+  if (apiKey) {
+    try {
+      const r = await fetch(`${API}/api/balance?key=${encodeURIComponent(apiKey)}`);
+      const d = await r.json();
+      if (d.status === 'success') {
+        document.getElementById('balance-val').textContent = `₹${d.balance}`;
+        userData.balance = d.balance;
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+    } catch(e) {}
+  }
 
   // Fetch stock
   try {
@@ -306,39 +309,46 @@ function selectProduct(product, label, price, count) {
 // ── Buy Code ──────────────────────────────────────────────────────────────────
 async function buyCode() {
   if (!selectedProduct) return toast('Pehle product select karo','red');
-  if (!apiKey)          return toast('API key nahi mili. Login dobara karo','red');
+  if (!apiKey)          return toast('API key nahi mili. Dashboard se copy karo','red');
 
   const btn = document.getElementById('buy-btn');
   btnLoad(btn, true);
   try {
-    const r = await fetch(`${API}/redeem?key=${apiKey}&type=${encodeURIComponent(selectedProduct.product)}`);
-    const d = await r.json();
+    const r = await fetch(`${API}/redeem?key=${encodeURIComponent(apiKey)}&type=${encodeURIComponent(selectedProduct.product)}`);
+
+    let d;
+    try { d = await r.json(); }
+    catch(e) { toast('Server response error. Try again.','red'); return; }
 
     if (d.status === 'success') {
       lastCode = d.code;
 
-      // Update balance display
-      if (d.balance !== null && d.balance !== undefined)
+      // Update balance
+      if (d.balance !== null && d.balance !== undefined) {
         document.getElementById('balance-val').textContent = `₹${d.balance}`;
+        userData.balance = d.balance;
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
 
       // Show code modal
-      document.getElementById('modal-sub').textContent  = `${d.product} — ₹${d.price}`;
+      document.getElementById('modal-sub').textContent  = `${d.product || selectedProduct.label} — ₹${d.price || selectedProduct.price}`;
       document.getElementById('modal-code').textContent = d.code;
-      document.getElementById('modal-meta').textContent = `Txn ID: ${d.tx_id}`;
+      document.getElementById('modal-meta').textContent = `Txn ID: ${d.tx_id || '—'}`;
       document.getElementById('code-overlay').classList.add('open');
 
-      // Deselect
+      // Reset selection
       selectedProduct = null;
       document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
       document.getElementById('buy-section').style.display = 'none';
 
       // Reload stock
-      loadStock();
+      setTimeout(() => loadStock(), 500);
     } else {
       toast(d.message || 'Purchase failed','red');
     }
   } catch(e) {
-    toast('Network error. Try again.','red');
+    toast('Network error. Check connection.','red');
+    console.error('Buy error:', e);
   } finally {
     btnLoad(btn, false);
   }
