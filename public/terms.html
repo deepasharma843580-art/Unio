@@ -1,183 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions - UNIO Wallet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #1a3cff;
-            --primary-dark: #0a24cc;
-            --bg: #f4f6ff;
-            --card: #ffffff;
-            --text: #1a1a2e;
-            --muted: #6b7280;
-            --border: #e5e7eb;
-            --accent: #e8ecff;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        header { background: linear-gradient(135deg, #0a24cc 0%, #1a3cff 100%); color: white; padding: 40px 20px 20px; text-align: center; position: relative; overflow: hidden; }
-        header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); }
-        header .logo { font-family: 'Sora', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 8px; }
-        header p { font-size: 0.95rem; opacity: 0.8; font-weight: 300; }
-        .lang-bar { background: rgba(0,0,0,0.2); padding: 12px 20px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .lang-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-        .lang-btn:hover, .lang-btn.active { background: white; color: var(--primary); border-color: white; font-weight: 600; }
-        .container { max-width: 800px; margin: 20px auto 40px; padding: 0 20px; }
-        .card { background: var(--card); border-radius: 16px; padding: 30px; box-shadow: 0 4px 24px rgba(26, 60, 255, 0.08); margin-bottom: 16px; }
-        .card h2 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-        .card h2 .num { background: var(--accent); color: var(--primary); width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
-        .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.7; margin-bottom: 10px; }
-        .card ul { list-style: none; padding: 0; }
-        .card ul li { color: var(--muted); font-size: 0.92rem; line-height: 1.7; padding: 5px 0 5px 20px; position: relative; }
-        .card ul li::before { content: '•'; color: var(--primary); position: absolute; left: 0; font-weight: 700; }
-        .last-updated { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 20px; padding-bottom: 40px; }
-        .badge { display: inline-block; background: var(--accent); color: var(--primary); font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 20px; }
-        [data-lang] { display: none; }
-        [data-lang].active { display: block; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms & Conditions \u2014 UNIO Wallet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    :root {
+      --primary: #1a3cff;
+      --primary-dark: #0a24cc;
+      --bg: #f0f3ff;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #e8ecff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    #root { min-height: 100vh; }
+
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+    @keyframes shimmer  { 0% { background-position:-400px 0; } 100% { background-position:400px 0; } }
+    @keyframes pulseRing{ 0%{box-shadow:0 0 0 0 rgba(26,60,255,.25);}70%{box-shadow:0 0 0 10px rgba(26,60,255,0);}100%{box-shadow:0 0 0 0 rgba(26,60,255,0);} }
+
+    /* \u2500\u2500 HEADER \u2500\u2500 */
+    header {
+      background: linear-gradient(140deg, #0714a8 0%, #1a3cff 55%, #4060ff 100%);
+      padding: 52px 20px 40px; text-align: center; position: relative; overflow: hidden;
+    }
+    header::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse at 65% -10%, rgba(255,255,255,.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 10% 90%,  rgba(255,255,255,.04) 0%, transparent 50%);
+    }
+    .h-logo { font-family:'Sora',sans-serif; font-size:2.6rem; font-weight:800; letter-spacing:6px; color:#fff; position:relative;
+      animation: fadeUp .5s cubic-bezier(.22,.68,0,1.2) both; }
+    .h-sub  { font-size:.88rem; opacity:.7; color:#fff; font-weight:300; position:relative; margin-top:6px;
+      animation: fadeUp .5s .1s cubic-bezier(.22,.68,0,1.2) both; }
+    .h-badge { display:inline-flex; align-items:center; gap:6px; margin-top:18px; background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:5px 14px; font-size:.78rem; color:rgba(255,255,255,.85);
+      font-family:'Sora',sans-serif; font-weight:600; position:relative;
+      animation: fadeUp .5s .18s cubic-bezier(.22,.68,0,1.2) both; }
+
+    /* \u2500\u2500 CONTAINER \u2500\u2500 */
+    .wrap { max-width:800px; margin:32px auto 70px; padding:0 18px; }
+
+    /* \u2500\u2500 CARDS \u2500\u2500 */
+    .card {
+      background:#fff; border-radius:20px; padding:28px 30px;
+      box-shadow:0 2px 18px rgba(26,60,255,.06); margin-bottom:14px;
+      border:1px solid rgba(26,60,255,.07);
+      transition: box-shadow .2s, transform .2s;
+      animation: fadeUp .5s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    .card:hover { box-shadow:0 8px 32px rgba(26,60,255,.12); transform:translateY(-2px); }
+
+    .card-title {
+      font-family:'Sora',sans-serif; font-size:1.05rem; font-weight:700;
+      color:var(--primary); margin-bottom:16px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .card-title .num {
+      background:var(--accent); color:var(--primary);
+      width:30px; height:30px; border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.78rem; font-weight:800; flex-shrink:0;
+    }
+    .card-title .icon-wrap {
+      width:36px; height:36px; border-radius:10px;
+      background:var(--accent); display:flex; align-items:center;
+      justify-content:center; font-size:1.1rem; flex-shrink:0;
+    }
+
+    p.body  { color:var(--muted); font-size:.91rem; line-height:1.8; margin-bottom:10px; }
+    ul.body { list-style:none; padding:0; }
+    ul.body li { color:var(--muted); font-size:.91rem; line-height:1.75; padding:6px 0 6px 24px; position:relative; border-bottom:1px solid #f1f5f9; }
+    ul.body li:last-child { border-bottom:none; }
+    ul.body li::before { content:'\u203a'; color:var(--primary); position:absolute; left:0; font-weight:700; font-size:1.15rem; line-height:1.75; }
+
+    /* \u2500\u2500 BADGES \u2500\u2500 */
+    .badge { display:inline-block; background:var(--accent); color:var(--primary); font-size:.72rem; font-weight:700; padding:3px 11px; border-radius:20px; }
+
+    /* \u2500\u2500 INFO BOXES \u2500\u2500 */
+    .box { border-radius:12px; padding:14px 16px; margin-top:14px; font-size:.84rem; line-height:1.65; }
+    .box-green  { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+    .box-yellow { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+    .box-blue   { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
+    .box strong { font-weight:700; }
+
+    /* \u2500\u2500 API BLOCKS \u2500\u2500 */
+    .api-block { background:#0f172a; border-radius:12px; padding:14px 18px; margin:12px 0; font-family:'Courier New',monospace; font-size:.82rem; color:#e2e8f0; position:relative; overflow:hidden; }
+    .api-block::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#1a3cff,#60a5fa,#1a3cff); background-size:400px 2px; animation:shimmer 2.5s infinite linear; }
+    .method { display:inline-block; padding:2px 10px; border-radius:6px; font-size:.7rem; font-weight:800; margin-right:8px; font-family:'Sora',sans-serif; }
+    .m-post { background:rgba(16,185,129,.15); color:#10b981; }
+    .m-get  { background:rgba(96,165,250,.15); color:#60a5fa; }
+
+    .json-res { background:#0f172a; border-radius:12px; padding:16px 18px; margin:10px 0; font-family:'Courier New',monospace; font-size:.81rem; line-height:1.9; position:relative; overflow:hidden; }
+    .json-res::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#10b981,#60a5fa,#10b981); background-size:400px 2px; animation:shimmer 3s infinite linear; }
+    .jk { color:#7dd3fc; } .jv { color:#fde68a; } .jp { color:#94a3b8; } .jb { color:#86efac; }
+
+    /* \u2500\u2500 PARAM TABLE \u2500\u2500 */
+    .ptbl { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:12px; border-radius:10px; overflow:hidden; }
+    .ptbl thead tr { background:var(--accent); }
+    .ptbl th { text-align:left; padding:9px 12px; color:var(--primary); font-weight:700; font-family:'Sora',sans-serif; font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; }
+    .ptbl td { padding:9px 12px; color:var(--muted); border-bottom:1px solid #f1f5f9; vertical-align:top; }
+    .ptbl tbody tr:last-child td { border-bottom:none; }
+    .ptbl tbody tr:hover td { background:#fafbff; }
+    .pk { font-family:'Courier New',monospace; color:var(--primary); font-weight:600; font-size:.85rem; }
+    .rb { background:#fee2e2; color:#dc2626; font-size:.67rem; font-weight:700; padding:2px 8px; border-radius:5px; }
+    .ob { background:#f0fdf4; color:#16a34a; font-size:.67rem; font-weight:700; padding:2px 8px; border-radius:5px; }
+
+    /* \u2500\u2500 STATUS PILLS \u2500\u2500 */
+    .pill-y { background:#fef9c3; color:#854d0e; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
+    .pill-g { background:#dcfce7; color:#15803d; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
+    .pill-r { background:#fee2e2; color:#b91c1c; padding:3px 10px; border-radius:6px; font-size:.77rem; font-weight:700; display:inline-block; }
+
+    /* \u2500\u2500 HOW IT WORKS \u2500\u2500 */
+    .steps { background:linear-gradient(135deg,#f0f3ff,#e8ecff); border-radius:14px; padding:18px 20px; margin:16px 0; border:1px solid rgba(26,60,255,.1); }
+    .steps-title { font-family:'Sora',sans-serif; font-size:.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+    .step { display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; }
+    .step:last-child { margin-bottom:0; }
+    .step-n { background:var(--primary); color:#fff; border-radius:7px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:800; flex-shrink:0; margin-top:1px; }
+    .step-t { font-size:.87rem; color:var(--muted); line-height:1.55; }
+
+    /* \u2500\u2500 SECTION LABEL \u2500\u2500 */
+    .slabel { margin:18px 0 8px; font-family:'Sora',sans-serif; font-size:.74rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; gap:7px; }
+    .slabel::after { content:''; flex:1; height:1px; background:var(--accent); }
+
+    /* \u2500\u2500 TOC \u2500\u2500 */
+    .toc-card { background:linear-gradient(145deg,#f5f7ff,#eaedff); border:1px solid rgba(26,60,255,.1); }
+    .toc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:4px; }
+    @media(max-width:500px){ .toc-grid{ grid-template-columns:1fr; } }
+    .toc-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; color:var(--muted); font-size:.85rem; transition:background .15s, color .15s; }
+    .toc-item:hover { background:var(--accent); color:var(--primary); }
+    .toc-n { background:var(--primary); color:#fff; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:.67rem; font-weight:800; flex-shrink:0; }
+
+    /* \u2500\u2500 AI BOX \u2500\u2500 */
+    .ai-box { background:linear-gradient(135deg,#0714a8 0%,#1a3cff 100%); border-radius:20px; padding:26px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; box-shadow:0 8px 36px rgba(26,60,255,.28); margin-bottom:14px; animation:fadeUp .5s .8s cubic-bezier(.22,.68,0,1.2) both; }
+    .ai-icon { width:54px; height:54px; background:rgba(255,255,255,.14); border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; animation:pulseRing 2.5s infinite; }
+    .ai-btn { background:#fff; color:var(--primary); font-family:'Sora',sans-serif; font-size:.82rem; font-weight:700; padding:12px 26px; border-radius:12px; text-decoration:none; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 14px rgba(0,0,0,.12); transition:transform .15s, box-shadow .15s; }
+    .ai-btn:hover { transform:translateY(-2px); box-shadow:0 4px 22px rgba(0,0,0,.18); }
+
+    /* \u2500\u2500 PROGRESS BAR \u2500\u2500 */
+    .pbar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,#1a3cff,#60a5fa); z-index:9999; transition:width .1s; border-radius:0 2px 2px 0; }
+
+    /* \u2500\u2500 FOOTER \u2500\u2500 */
+    .footer { text-align:center; color:var(--muted); font-size:.78rem; padding-bottom:40px; margin-top:8px; animation:fadeIn .4s 1s both; }
+    .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent); margin:6px 0 20px; }
+  </style>
 </head>
 <body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
 
-<header>
-    <div class="logo">UNIO</div>
-    <p>Secure Digital Wallet</p>
-    <div class="lang-bar">
-        <button class="lang-btn active" onclick="setLang('en', this)">&#127468;&#127463; English</button>
-        <button class="lang-btn" onclick="setLang('hi', this)">&#127470;&#127475; हिंदी</button>
-        <button class="lang-btn" onclick="setLang('bn', this)">বাংলা</button>
-        <button class="lang-btn" onclick="setLang('ta', this)">தமிழ்</button>
-        <button class="lang-btn" onclick="setLang('te', this)">తెలుగు</button>
-        <button class="lang-btn" onclick="setLang('mr', this)">मराठी</button>
-        <button class="lang-btn" onclick="setLang('gu', this)">ગુજરાતી</button>
-    </div>
-</header>
-
-<div class="container">
-
-<!-- ENGLISH -->
-<div data-lang="en" class="active">
-    <div class="card" style="text-align:center; padding: 24px;">
-        <span class="badge">Last Updated: March 2026</span>
-        <h1 style="font-family:'Sora',sans-serif; font-size:1.6rem; margin-bottom:8px;">Terms &amp; Conditions</h1>
-        <p style="margin:0;">Please read these terms carefully before using UNIO Wallet.</p>
-    </div>
-    <div class="card"><h2><span class="num">1</span> About UNIO Wallet</h2><p>UNIO Wallet is an independent private digital wallet platform. It is not affiliated with, endorsed by, or regulated by the Reserve Bank of India (RBI) or any other government or financial authority. UNIO Wallet operates as a self-contained platform for internal transactions only.</p></div>
-    <div class="card"><h2><span class="num">2</span> Hosting &amp; Compliance</h2><p>UNIO Wallet is hosted on Vercel. We fully comply with all terms, conditions, and policies of Vercel hosting. Any service interruptions caused by the hosting provider are beyond our control.</p></div>
-    <div class="card"><h2><span class="num">3</span> Wallet Balance</h2><ul><li>Wallet balance can only be used within the UNIO platform.</li><li>Balance can be added via UPI payment.</li><li>Minimum withdrawal amount is ₹10.</li><li>Withdrawals are processed to your UPI ID manually.</li><li>Withdrawal may take up to 48 hours to process.</li></ul></div>
-    <div class="card"><h2><span class="num">4</span> Payments &amp; Withdrawals</h2><ul><li>All payments are processed manually by the platform admin.</li><li>No third-party payment gateways are used.</li><li>If withdrawal is not received within 48 hours, contact support via the Help section.</li><li>UNIO Wallet reserves the right to delay or cancel suspicious transactions.</li></ul></div>
-    <div class="card"><h2><span class="num">5</span> Tasks &amp; Earnings</h2><ul><li>Users can earn wallet balance by completing tasks provided on the platform.</li><li>Task rewards are credited to your wallet upon verification.</li><li>Fraudulent task completions will result in account suspension.</li></ul></div>
-    <div class="card"><h2><span class="num">6</span> Giveaway &amp; Lifafa</h2><ul><li>Users can create giveaways using their own wallet balance.</li><li>Telegram channel owners can connect their channel to run giveaways.</li><li>UNIO Wallet is not responsible for giveaways created by users.</li><li>All giveaway payouts come from the creator's wallet balance.</li></ul></div>
-    <div class="card"><h2><span class="num">7</span> Account Security</h2><ul><li>Users are responsible for keeping their PIN and password secure.</li><li>Passwords are stored in encrypted (hashed) format.</li><li>UNIO Wallet is not responsible for unauthorized access due to user negligence.</li><li>Do not share your login credentials with anyone.</li></ul></div>
-    <div class="card"><h2><span class="num">8</span> Refer &amp; Earn</h2><ul><li>Users can earn rewards by referring new users to the platform.</li><li>Referral rewards are credited after successful verification.</li><li>Fraudulent referrals will lead to account suspension without notice.</li></ul></div>
-    <div class="card"><h2><span class="num">9</span> Support</h2><ul><li>Support is available via the Help section within the platform.</li><li>For payment issues, wait 48 hours before contacting support.</li><li>UNIO Wallet aims to resolve all issues as quickly as possible.</li></ul></div>
-    <div class="card"><h2><span class="num">10</span> API Usage</h2><p>UNIO Wallet provides its own internal API for wallet operations.</p><ul><li>API is available for authorized users only via API Settings.</li><li>API can be used for wallet-to-wallet transfers within the platform.</li><li>API keys must be kept private and must not be shared with anyone.</li><li>API usage is monitored — any suspicious activity will result in immediate account suspension.</li><li>UNIO Wallet is not responsible for losses caused by misuse or leakage of your API key.</li><li>Unauthorized use of the API to manipulate balances is strictly prohibited.</li></ul></div>
-    <div class="card"><h2><span class="num">11</span> Withdrawal Tax &amp; Fee Policy</h2>
-      <p>A small platform service fee is applied on all withdrawal requests. This fee helps maintain platform operations and is deducted from your withdrawal amount before processing.</p>
-      <div style="background:#f4f6ff;border-radius:12px;padding:16px;margin:14px 0;">
-        <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
-          <thead>
-            <tr>
-              <th style="text-align:left;padding:8px 10px;color:#1a3cff;font-weight:700;border-bottom:2px solid #e8ecff;">Withdrawal Amount</th>
-              <th style="text-align:center;padding:8px 10px;color:#1a3cff;font-weight:700;border-bottom:2px solid #e8ecff;">Service Fee</th>
-              <th style="text-align:right;padding:8px 10px;color:#1a3cff;font-weight:700;border-bottom:2px solid #e8ecff;">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="border-bottom:1px solid #e8ecff;">
-              <td style="padding:10px;color:#374151;font-weight:600;">Below ₹50</td>
-              <td style="padding:10px;text-align:center;color:#374151;font-weight:700;">₹1</td>
-              <td style="padding:10px;text-align:right;"><span style="background:#dcfce7;color:#16a34a;font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:20px;">Fixed</span></td>
-            </tr>
-            <tr style="border-bottom:1px solid #e8ecff;">
-              <td style="padding:10px;color:#374151;font-weight:600;">₹50 — ₹100</td>
-              <td style="padding:10px;text-align:center;color:#374151;font-weight:700;">₹2</td>
-              <td style="padding:10px;text-align:right;"><span style="background:#dcfce7;color:#16a34a;font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:20px;">Fixed</span></td>
-            </tr>
-            <tr>
-              <td style="padding:10px;color:#374151;font-weight:600;">Above ₹100</td>
-              <td style="padding:10px;text-align:center;color:#374151;font-weight:700;">Admin Decision</td>
-              <td style="padding:10px;text-align:right;"><span style="background:#fef3c7;color:#d97706;font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:20px;">Variable</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <ul>
-        <li>The service fee is deducted from the requested withdrawal amount before transfer.</li>
-        <li>For withdrawals above ₹100, the fee is determined by the admin based on the amount and processing requirements.</li>
-        <li>Tax/fee is non-refundable once the withdrawal has been processed.</li>
-        <li>UNIO Wallet reserves the right to revise the fee structure at any time without prior notice.</li>
+const sections = [
+  {
+    id:1, icon:"\ud83c\udfe6", title:"About UNIO Wallet",
+    body: () => <p className="body">UNIO Wallet is an independent private digital wallet platform. It is not affiliated with, endorsed by, or regulated by the Reserve Bank of India (RBI) or any other government or financial authority. UNIO Wallet operates as a self-contained platform for internal transactions only.</p>
+  },
+  {
+    id:2, icon:"\u2601\ufe0f", title:"Hosting & Compliance",
+    body: () => <p className="body">UNIO Wallet is hosted on Vercel. We fully comply with all terms, conditions, and policies of Vercel hosting. Any service interruptions caused by the hosting provider are beyond our control.</p>
+  },
+  {
+    id:3, icon:"\ud83d\udcb0", title:"Wallet Balance",
+    body: () => <ul className="body">
+      <li>Wallet balance can only be used within the UNIO platform.</li>
+      <li>Balance can be added via UPI payment to the platform admin.</li>
+      <li>Minimum withdrawal amount is \u20b910.</li>
+      <li>Withdrawals are processed to your UPI ID manually within 48 hours.</li>
+    </ul>
+  },
+  {
+    id:4, icon:"\ud83d\udcb3", title:"Payments & Withdrawals",
+    body: () => <>
+      <ul className="body">
+        <li>All withdrawals are processed manually by the platform admin.</li>
+        <li>There is <strong style={{color:'#15803d'}}>no tax, no deduction, and no service fee</strong> on any withdrawal \u2014 you receive the full amount.</li>
+        <li>Wallet-to-wallet payments via UNIO Gateway are instant with zero fees.</li>
+        <li>If withdrawal is not received within 48 hours, contact support via the Help section.</li>
+        <li>UNIO Wallet reserves the right to delay or cancel suspicious transactions.</li>
       </ul>
+      <div className="box box-green" style={{marginTop:'14px'}}>
+        <strong>\u2705 Zero Fee Policy \u2014</strong> UNIO Wallet charges no tax or service fee on withdrawals or wallet payments. What you request is what you receive.
+      </div>
+    </>
+  },
+  {
+    id:5, icon:"\ud83c\udf81", title:"Giveaway & Lifafa",
+    body: () => <ul className="body">
+      <li>Users can create giveaways using their own wallet balance.</li>
+      <li>Telegram channel owners can connect their channel to run giveaways.</li>
+      <li>UNIO Wallet is not responsible for giveaways created by users.</li>
+      <li>All giveaway payouts come from the creator's wallet balance.</li>
+    </ul>
+  },
+  {
+    id:6, icon:"\ud83d\udd10", title:"Account Security",
+    body: () => <ul className="body">
+      <li>Users are responsible for keeping their PIN and password secure.</li>
+      <li>Passwords are stored in encrypted (hashed) format.</li>
+      <li>UNIO Wallet is not responsible for unauthorized access due to user negligence.</li>
+      <li>Do not share your login credentials, PIN, or password with anyone.</li>
+    </ul>
+  },
+  {
+    id:7, icon:"\ud83c\udf9f\ufe0f", title:"Gift Code Redemption",
+    body: () => <>
+      <p className="body">Every UNIO Wallet user can redeem gift codes to instantly receive wallet balance. Gift codes are issued by the platform or admins.</p>
+      <ul className="body">
+        <li>Each gift code can only be redeemed once per user.</li>
+        <li>Expired or invalid codes will return an error.</li>
+        <li>Redeemed balance is instantly credited to the wallet.</li>
+        <li>Gift codes cannot be exchanged for cash or transferred.</li>
+        <li>UNIO Wallet reserves the right to invalidate any code at any time.</li>
+        <li>Attempting to brute-force or enumerate codes will result in a permanent ban.</li>
+      </ul>
+      <div className="box box-yellow">
+        <strong>Note:</strong> Bulk redemption abuse or unauthorized code sharing may result in immediate account suspension.
+      </div>
+    </>
+  },
+  {
+    id:8, icon:"🏪", title:"Payment Gateway (Collect Payments)",
+    body: () => <>
+      <p className="body">Every UNIO Wallet user gets a personal Payment Gateway — collect payments from any UNIO user directly into your wallet. No third-party, no admin approval, instant settlement.</p>
+
+      <div className="steps">
+        <div className="steps-title">How It Works</div>
+        {[
+          ['1','Create an invoice via API — get a payment_url instantly'],
+          ['2','Share the payment_url or embed it in your website / Telegram bot'],
+          ['3','Payer opens the link and enters their UNIO mobile number + password + 4-digit PIN'],
+          ['4','Amount is instantly deducted from payer\'s wallet and credited to yours'],
+        ].map(([n,t]) => (
+          <div key={n} className="step">
+            <span className="step-n">{n}</span>
+            <span className="step-t">{t}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="slabel">Create Invoice</div>
+      <div className="api-block">
+        <span className="method m-post">POST</span>
+        <span style={{color:'#94a3b8'}}>/api/</span><span style={{color:'#7dd3fc'}}>create-invoice</span>
+      </div>
+      <table className="ptbl">
+        <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span className="pk">api_key</span></td><td>String</td><td><span className="rb">Required</span></td><td>Your UNIO API key from Settings</td></tr>
+          <tr><td><span className="pk">amount</span></td><td>Number</td><td><span className="rb">Required</span></td><td>Amount to collect in ₹ (min ₹1)</td></tr>
+          <tr><td><span className="pk">order_id</span></td><td>String</td><td><span className="ob">Optional</span></td><td>Your custom order reference ID</td></tr>
+          <tr><td><span className="pk">description</span></td><td>String</td><td><span className="ob">Optional</span></td><td>Payment note shown to payer</td></tr>
+        </tbody>
+      </table>
+
+      <div className="slabel">Response</div>
+      <div className="json-res">
+        <span className="jb">{'{'}</span><br/>
+        &nbsp;&nbsp;<span className="jk">"status"</span><span className="jp">: </span><span className="jv">"success"</span><span className="jp">,</span><br/>
+        &nbsp;&nbsp;<span className="jk">"invoice_id"</span><span className="jp">: </span><span className="jv">"INV-XXXXXXXXXXXXXX"</span><span className="jp">,</span><br/>
+        &nbsp;&nbsp;<span className="jk">"payment_url"</span><span className="jp">: </span><span className="jv">"https://unio-hazel.vercel.app/pay/INV-XXXX"</span><span className="jp">,</span><br/>
+        &nbsp;&nbsp;<span className="jk">"expires_at"</span><span className="jp">: </span><span className="jv">"2026-04-13T12:30:00Z"</span><br/>
+        <span className="jb">{'}'}</span>
+      </div>
+
+      <div className="slabel">Verify Invoice Status</div>
+      <div className="api-block">
+        <span className="method m-get">GET</span>
+        <span style={{color:'#94a3b8'}}>/deposit-gateway/status/</span><span style={{color:'#7dd3fc'}}>{'{'}</span><span style={{color:'#fde68a'}}>invoice_id</span><span style={{color:'#7dd3fc'}}>{'}'}</span><span style={{color:'#94a3b8'}}>?key=</span><span style={{color:'#fde68a'}}>YOUR_API_KEY</span>
+      </div>
+      <table className="ptbl" style={{marginTop:'12px'}}>
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><span className="pill-y">pending</span></td><td>Invoice is valid and awaiting payment</td></tr>
+          <tr><td><span className="pill-g">paid</span></td><td>Payment successful — balance credited to your wallet</td></tr>
+          <tr><td><span className="pill-r">expired</span></td><td>Invoice expired — valid for 30 minutes only</td></tr>
+        </tbody>
+      </table>
+
+      <ul className="body" style={{marginTop:'16px'}}>
+        <li>Payment is instant — no admin approval required.</li>
+        <li>Both payer and receiver must have a UNIO Wallet account.</li>
+        <li>Each invoice is valid for <strong style={{color:'var(--primary)'}}>30 minutes</strong> from creation. After expiry, create a new invoice.</li>
+        <li>Zero fees on any payment collected via UNIO Gateway.</li>
+        <li>Payer authenticates with mobile number, password, and 4-digit PIN.</li>
+        <li>Paid invoices cannot be reused or re-attempted.</li>
+      </ul>
+      <div className="box box-blue" style={{marginTop:'14px'}}>
+        <strong>💡 Tip:</strong> Poll <code style={{fontFamily:'monospace',fontSize:'.82rem'}}>/deposit-gateway/status/{'{'}invoice_id{'}'}</code> in your backend to confirm payment before delivering your product or service.
+      </div>
+    </>
+  },
+  {
+    id:9, icon:"⚙️", title:"General API Usage",
+    body: () => <>
+      <p className="body">UNIO Wallet provides its own internal API for wallet operations. All API access is subject to the following rules:</p>
+      <ul className="body">
+        <li>API is available for all registered users via API Settings in the platform.</li>
+        <li>API can be used for wallet-to-wallet transfers and payment collection.</li>
+        <li>API keys must be kept private and must not be shared with anyone.</li>
+        <li>API usage is monitored — any suspicious activity will result in immediate account suspension.</li>
+        <li>UNIO Wallet is not responsible for losses caused by misuse or leakage of your API key.</li>
+        <li>Unauthorized use of the API to manipulate balances is strictly prohibited.</li>
+      </ul>
+    </>
+  },
+  {
+    id:10, icon:"🛡️", title:"Account Suspension Policy",
+    body: () => <>
+      <p className="body">UNIO Wallet reserves the right to suspend or permanently ban accounts under the following circumstances:</p>
+      <ul className="body">
+        <li>Fraudulent deposits or any attempt to deceive the platform admin.</li>
+        <li>Multiple account creation to abuse bonuses.</li>
+        <li>Misuse of API keys or attempting unauthorized access.</li>
+        <li>Submitting fake gift codes or attempting code enumeration attacks.</li>
+        <li>Any activity deemed harmful to the platform or other users.</li>
+      </ul>
+      <div className="box box-yellow">
+        <strong>Notice:</strong> Suspended accounts are not entitled to any balance refund. All platform decisions are final.
+      </div>
+    </>
+  },
+  {
+    id:11, icon:"🆘", title:"Support",
+    body: () => <ul className="body">
+      <li>Support is available via the Help section within the platform.</li>
+      <li>For payment issues, wait 48 hours before contacting support.</li>
+      <li>UNIO Wallet aims to resolve all issues as quickly as possible.</li>
+      <li>For API-related issues, include your invoice ID and error response when contacting support.</li>
+    </ul>
+  },
+  {
+    id:12, icon:"⚠️", title:"Disclaimer",
+    body: () => <>
+      <p className="body">UNIO Wallet is an independent platform. We are not responsible for:</p>
+      <ul className="body">
+        <li>Any financial loss incurred through use of this platform.</li>
+        <li>Server downtime caused by the hosting provider.</li>
+        <li>Issues arising from misuse of the platform.</li>
+      </ul>
+      <p className="body" style={{marginTop:'12px'}}>By using UNIO Wallet, you agree to use the platform at your own risk and responsibility.</p>
+    </>
+  }
+];
+
+function Section({ s, delay }) {
+  const Body = s.body;
+  return (
+    <div className="card" style={{animationDelay:`${delay}s`}}>
+      <div className="card-title">
+        <span className="num">{s.id}</span>
+        <span className="icon-wrap">{s.icon}</span>
+        {s.title}
+      </div>
+      <Body />
     </div>
+  );
+}
 
-    <div class="card"><h2><span class="num">12</span> Disclaimer</h2><p>UNIO Wallet is an independent platform. We are not responsible for:</p><ul><li>Any financial loss incurred through use of this platform.</li><li>Server downtime caused by the hosting provider.</li><li>Issues arising from misuse of the platform.</li></ul><p style="margin-top:10px;">By using UNIO Wallet, you agree to use the platform at your own risk and responsibility.</p></div>
+function App() {
+  const [prog, setProg] = useState(0);
+  useEffect(() => {
+    const fn = () => {
+      const el = document.documentElement;
+      const tot = el.scrollHeight - el.clientHeight;
+      setProg(tot > 0 ? (el.scrollTop / tot) * 100 : 0);
+    };
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
 
-    <!-- UNIO AI Box -->
-    <div style="background:linear-gradient(135deg,#1a3cff 0%,#0a24cc 100%);border-radius:16px;padding:24px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 8px 32px rgba(26,60,255,0.2);">
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div style="width:52px;height:52px;background:rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🤖</div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;color:#ffffff;margin-bottom:4px;">Have Questions? Ask UNIO AI</div>
-          <div style="font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.5;">Get instant answers about fees, withdrawals, transfers, and more — available 24/7.</div>
+  return <>
+    <div className="pbar" style={{width:`${prog}%`}} />
+
+    <header>
+      <div className="h-logo">UNIO</div>
+      <div className="h-sub">Secure Digital Wallet</div>
+      <div className="h-badge">📄 Terms &amp; Conditions — April 2026</div>
+    </header>
+
+    <div className="wrap">
+
+      {/* Intro card */}
+      <div className="card" style={{textAlign:'center', padding:'32px 28px', animationDelay:'.12s'}}>
+        <h1 style={{fontFamily:"'Sora',sans-serif", fontSize:'1.7rem', fontWeight:800, marginBottom:'10px', color:'var(--text)'}}>
+          Terms &amp; Conditions
+        </h1>
+        <p style={{color:'var(--muted)', fontSize:'.91rem', lineHeight:1.75, maxWidth:'460px', margin:'0 auto'}}>
+          Please read these terms carefully before using UNIO Wallet. By accessing the platform, you agree to be bound by all terms listed below.
+        </p>
+      </div>
+
+      {/* TOC */}
+      <div className="card toc-card" style={{animationDelay:'.2s'}}>
+        <div className="card-title" style={{marginBottom:'14px'}}>
+          <span className="icon-wrap">📋</span> Table of Contents
+        </div>
+        <div className="toc-grid">
+          {sections.map(s => (
+            <div key={s.id} className="toc-item">
+              <span className="toc-n">{s.id}</span>
+              <span>{s.icon} {s.title}</span>
+            </div>
+          ))}
         </div>
       </div>
-      <a href="/ai" style="background:white;color:#1a3cff;font-family:'Sora',sans-serif;font-size:0.82rem;font-weight:700;padding:11px 22px;border-radius:10px;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.1);">Talk to AI →</a>
-    </div>
 
-    <p class="last-updated">&copy; 2026 UNIO Wallet. All rights reserved.</p>
-</div>
+      {/* Sections */}
+      {sections.map((s, i) => (
+        <Section key={s.id} s={s} delay={0.25 + i * 0.05} />
+      ))}
 
-<!-- HINDI -->
-<div data-lang="hi">
-    <div class="card" style="text-align:center; padding: 24px;">
-        <span class="badge">अंतिम अपडेट: मार्च 2026</span>
-        <h1 style="font-family:'Sora',sans-serif; font-size:1.6rem; margin-bottom:8px;">नियम और शर्तें</h1>
-        <p style="margin:0;">UNIO Wallet उपयोग करने से पहले इन शर्तों को ध्यान से पढ़ें।</p>
-    </div>
-    <div class="card"><h2><span class="num">1</span> UNIO Wallet के बारे में</h2><p>UNIO Wallet एक स्वतंत्र निजी डिजिटल वॉलेट प्लेटफ़ॉर्म है। यह RBI या किसी भी सरकारी संस्था से संबद्ध नहीं है। यह केवल आंतरिक लेनदेन के लिए एक स्व-निहित प्लेटफ़ॉर्म है।</p></div>
-    <div class="card"><h2><span class="num">2</span> होस्टिंग और अनुपालन</h2><p>UNIO Wallet Vercel पर होस्ट किया गया है। हम Vercel की सभी नीतियों का पूरी तरह पालन करते हैं।</p></div>
-    <div class="card"><h2><span class="num">3</span> वॉलेट बैलेंस</h2><ul><li>वॉलेट बैलेंस केवल UNIO प्लेटफ़ॉर्म के अंदर उपयोग किया जा सकता है।</li><li>UPI भुगतान के माध्यम से बैलेंस जोड़ा जा सकता है।</li><li>न्यूनतम निकासी राशि ₹10 है।</li><li>निकासी आपके UPI ID पर मैन्युअली प्रोसेस की जाती है।</li><li>निकासी में 48 घंटे तक का समय लग सकता है।</li></ul></div>
-    <div class="card"><h2><span class="num">4</span> भुगतान और निकासी</h2><ul><li>सभी भुगतान प्लेटफ़ॉर्म एडमिन द्वारा मैन्युअली प्रोसेस किए जाते हैं।</li><li>कोई तृतीय-पक्ष पेमेंट गेटवे उपयोग नहीं किया जाता।</li><li>48 घंटे में निकासी न मिले तो Help सेक्शन से संपर्क करें।</li><li>संदिग्ध लेनदेन को रद्द करने का अधिकार हमारे पास सुरक्षित है।</li></ul></div>
-    <div class="card"><h2><span class="num">5</span> टास्क और कमाई</h2><ul><li>उपयोगकर्ता टास्क पूरे करके वॉलेट बैलेंस कमा सकते हैं।</li><li>सत्यापन के बाद टास्क पुरस्कार वॉलेट में जमा किए जाते हैं।</li><li>धोखाधड़ी वाले टास्क से अकाउंट सस्पेंड होगा।</li></ul></div>
-    <div class="card"><h2><span class="num">6</span> गिवअवे और लिफाफा</h2><ul><li>उपयोगकर्ता अपने वॉलेट बैलेंस से गिवअवे बना सकते हैं।</li><li>Telegram चैनल मालिक अपना चैनल कनेक्ट कर सकते हैं।</li><li>उपयोगकर्ताओं द्वारा बनाए गए गिवअवे के लिए UNIO जिम्मेदार नहीं।</li></ul></div>
-    <div class="card"><h2><span class="num">7</span> अकाउंट सुरक्षा</h2><ul><li>उपयोगकर्ता अपना PIN और पासवर्ड सुरक्षित रखने के लिए जिम्मेदार हैं।</li><li>पासवर्ड एन्क्रिप्टेड (hashed) फॉर्मेट में संग्रहीत होते हैं।</li><li>अपनी लॉगिन जानकारी किसी के साथ साझा न करें।</li></ul></div>
-    <div class="card"><h2><span class="num">8</span> रेफर और कमाएं</h2><ul><li>नए उपयोगकर्ताओं को रेफर करके पुरस्कार कमाए जा सकते हैं।</li><li>धोखाधड़ी वाले रेफरल से अकाउंट बिना सूचना के सस्पेंड होगा।</li></ul></div>
-    <div class="card"><h2><span class="num">9</span> सहायता</h2><ul><li>सहायता प्लेटफ़ॉर्म के Help सेक्शन में उपलब्ध है।</li><li>भुगतान समस्या के लिए सहायता से संपर्क करने से पहले 48 घंटे प्रतीक्षा करें।</li></ul></div>
-    <div class="card"><h2><span class="num">10</span> API उपयोग</h2><p>UNIO Wallet वॉलेट संचालन के लिए अपना आंतरिक API प्रदान करता है।</p><ul><li>API केवल अधिकृत उपयोगकर्ताओं के लिए उपलब्ध है।</li><li>API keys निजी रखें और किसी के साथ साझा न करें।</li><li>API के दुरुपयोग पर तुरंत अकाउंट सस्पेंड किया जाएगा।</li></ul></div>
-    <div class="card"><h2><span class="num">11</span> अस्वीकरण</h2><p>UNIO Wallet एक स्वतंत्र प्लेटफ़ॉर्म है। हम किसी भी वित्तीय नुकसान, सर्वर डाउनटाइम, या प्लेटफ़ॉर्म के दुरुपयोग से उत्पन्न समस्याओं के लिए जिम्मेदार नहीं हैं।</p></div>
-    <p class="last-updated">&copy; 2026 UNIO Wallet. सर्वाधिकार सुरक्षित।</p>
-</div>
+      <div className="divider" />
 
-<!-- BENGALI -->
-<div data-lang="bn">
-    <div class="card" style="text-align:center; padding: 24px;">
-        <span class="badge">সর্বশেষ আপডেট: মার্চ 2026</span>
-        <h1 style="font-family:'Sora',sans-serif; font-size:1.6rem; margin-bottom:8px;">নিয়ম ও শর্তাবলী</h1>
-        <p style="margin:0;">UNIO Wallet ব্যবহার করার আগে এই শর্তগুলি মনোযোগ দিয়ে পড়ুন।</p>
-    </div>
-    <div class="card"><h2><span class="num">1</span> UNIO Wallet সম্পর্কে</h2><p>UNIO Wallet একটি স্বাধীন ব্যক্তিগত ডিজিটাল ওয়ালেট প্ল্যাটফর্ম। এটি RBI বা কোনো সরকারি সংস্থার সাথে যুক্ত নয়।</p></div>
-    <div class="card"><h2><span class="num">2</span> হোস্টিং ও সম্মতি</h2><p>UNIO Wallet Vercel-এ হোস্ট করা হয়েছে। আমরা Vercel-এর সমস্ত নিয়ম ও শর্ত সম্পূর্ণরূপে মেনে চলি।</p></div>
-    <div class="card"><h2><span class="num">3</span> ওয়ালেট ব্যালেন্স</h2><ul><li>ওয়ালেট ব্যালেন্স শুধুমাত্র UNIO প্ল্যাটফর্মের মধ্যে ব্যবহার করা যাবে।</li><li>UPI পেমেন্টের মাধ্যমে ব্যালেন্স যোগ করা যাবে।</li><li>সর্বনিম্ন উত্তোলনের পরিমাণ ₹10।</li><li>উত্তোলনে 48 ঘণ্টা পর্যন্ত সময় লাগতে পারে।</li></ul></div>
-    <div class="card"><h2><span class="num">4</span> পেমেন্ট ও উত্তোলন</h2><ul><li>সমস্ত পেমেন্ট ম্যানুয়ালি প্রক্রিয়া করা হয়।</li><li>48 ঘণ্টার মধ্যে উত্তোলন না পেলে Help বিভাগে যোগাযোগ করুন।</li></ul></div>
-    <div class="card"><h2><span class="num">5</span> গিভঅ্যাওয়ে ও লিফাফা</h2><ul><li>নিজের ওয়ালেট ব্যালেন্স দিয়ে গিভঅ্যাওয়ে তৈরি করা যায়।</li><li>Telegram চ্যানেল মালিকরা চ্যানেল সংযুক্ত করতে পারেন।</li></ul></div>
-    <div class="card"><h2><span class="num">6</span> অ্যাকাউন্ট নিরাপত্তা</h2><ul><li>PIN এবং পাসওয়ার্ড সুরক্ষিত রাখা ব্যবহারকারীর দায়িত্ব।</li><li>পাসওয়ার্ড এনক্রিপ্টেড ফরম্যাটে সংরক্ষিত।</li></ul></div>
-    <div class="card"><h2><span class="num">7</span> API ব্যবহার</h2><ul><li>API শুধুমাত্র অনুমোদিত ব্যবহারকারীদের জন্য।</li><li>API keys গোপন রাখুন।</li><li>API-এর অপব্যবহারে অ্যাকাউন্ট তাৎক্ষণিকভাবে স্থগিত হবে।</li></ul></div>
-    <div class="card"><h2><span class="num">8</span> দাবিত্যাগ</h2><p>UNIO Wallet একটি স্বাধীন প্ল্যাটফর্ম। আমরা কোনো আর্থিক ক্ষতি বা সার্ভার ডাউনটাইমের জন্য দায়ী নই।</p></div>
-    <p class="last-updated">&copy; 2026 UNIO Wallet. সর্বস্বত্ব সংরক্ষিত।</p>
-</div>
+      {/* AI Box */}
+      <div className="ai-box">
+        <div style={{display:'flex', alignItems:'center', gap:'16px'}}>
+          <div className="ai-icon">🤖</div>
+          <div>
+            <div style={{fontFamily:"'Sora',sans-serif", fontSize:'1rem', fontWeight:700, color:'#fff', marginBottom:'4px'}}>
+              Have Questions? Ask UNIO AI
+            </div>
+            <div style={{fontSize:'.82rem', color:'rgba(255,255,255,.72)', lineHeight:1.5}}>
+              Get instant answers about payments, API, withdrawals &amp; more — available 24/7.
+            </div>
+          </div>
+        </div>
+        <a href="/ai" className="ai-btn">Talk to AI →</a>
+      </div>
 
-<!-- TAMIL -->
-<div data-lang="ta">
-    <div class="card" style="text-align:center; padding: 24px;">
-        <span class="badge">கடைசியாக புதுப்பிக்கப்பட்டது: மார்ச் 2026</span>
-        <h1 style="font-family:'Sora',sans-serif; font-size:1.6rem; margin-bottom:8px;">விதிமுறைகள் மற்றும் நிபந்தனைகள்</h1>
-        <p style="margin:0;">UNIO Wallet பயன்படுத்துவதற்கு முன் இந்த விதிமுறைகளை கவனமாக படிக்கவும்.</p>
+      <p className="footer">© 2026 UNIO Wallet. All rights reserved.</p>
     </div>
-    <div class="card"><h2><span class="num">1</span> UNIO Wallet பற்றி</h2><p>UNIO Wallet ஒரு சுயாதீன தனியார் டிஜிட்டல் வாலட் தளம். இது RBI அல்லது எந்த அரசு அமைப்புடனும் தொடர்புடையது அல்ல.</p></div>
-    <div class="card"><h2><span class="num">2</span> ஹோஸ்டிங் & இணக்கம்</h2><p>UNIO Wallet Vercel-ல் ஹோஸ்ட் செய்யப்பட்டுள்ளது. நாங்கள் Vercel-இன் அனைத்து விதிமுறைகளையும் முழுமையாக பின்பற்றுகிறோம்.</p></div>
-    <div class="card"><h2><span class="num">3</span> வாலட் இருப்பு</h2><ul><li>வாலட் இருப்பை UNIO தளத்திற்குள் மட்டுமே பயன்படுத்தலாம்.</li><li>UPI மூலம் இருப்பை சேர்க்கலாம்.</li><li>குறைந்தபட்ச திரும்பப் பெறும் தொகை ₹10.</li></ul></div>
-    <div class="card"><h2><span class="num">4</span> கட்டணங்கள் & திரும்பப் பெறுதல்</h2><ul><li>அனைத்து கட்டணங்களும் கையேடாக செயலாக்கப்படுகின்றன.</li><li>48 மணி நேரத்தில் திரும்பப் பெறவில்லை என்றால் Help பிரிவில் தொடர்பு கொள்ளவும்.</li></ul></div>
-    <div class="card"><h2><span class="num">5</span> கணக்கு பாதுகாப்பு</h2><ul><li>PIN மற்றும் கடவுச்சொல்லை பாதுகாப்பாக வைத்திருப்பது பயனரின் பொறுப்பு.</li><li>கடவுச்சொற்கள் மறைகுறியாக்கப்பட்ட வடிவத்தில் சேமிக்கப்படுகின்றன.</li></ul></div>
-    <div class="card"><h2><span
+  </>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
