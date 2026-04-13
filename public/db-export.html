@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB Export — UNIO Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#0057ff; --blue-light:#e8efff;
+  --green:#16a34a; --green-light:#dcfce7;
+  --red:#dc2626; --red-light:#fee2e2;
+  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+  --gray-400:#9ca3af; --gray-600:#4b5563; --gray-900:#111827;
+  --white:#fff; --shadow:0 8px 32px rgba(0,87,255,.10);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; min-height:100vh; background:#eef2ff; padding:16px; }
+body::before { content:''; position:fixed; top:-10%; left:-10%; width:45%; height:45%; background:radial-gradient(circle,rgba(0,87,255,.09),transparent 65%); pointer-events:none; z-index:0; }
+
+.container { max-width:480px; margin:0 auto; position:relative; z-index:1; }
+
+/* Header */
+.header { display:flex; align-items:center; gap:.75rem; padding:.5rem 0 1.25rem; }
+.header-icon { width:42px; height:42px; background:linear-gradient(135deg,var(--blue),#4d8aff); border-radius:.9rem; display:flex; align-items:center; justify-content:center; color:white; font-size:1rem; flex-shrink:0; }
+.header-title { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; color:var(--gray-900); }
+.header-sub { font-size:.68rem; color:var(--gray-400); font-weight:600; }
+
+/* Auth card */
+.auth-card { background:var(--white); border-radius:1.4rem; padding:1.25rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+.auth-label { font-size:.62rem; font-weight:800; color:var(--gray-400); text-transform:uppercase; letter-spacing:.07em; margin-bottom:.5rem; }
+.auth-input-row { display:flex; gap:.5rem; }
+.auth-input { flex:1; padding:.75rem 1rem; border:2px solid var(--gray-200); border-radius:.75rem; font-family:'DM Sans',sans-serif; font-size:.85rem; outline:none; transition:border .2s; }
+.auth-input:focus { border-color:var(--blue); }
+.auth-btn { padding:.75rem 1.25rem; background:var(--blue); color:white; border:none; border-radius:.75rem; font-weight:700; font-family:'DM Sans',sans-serif; font-size:.8rem; cursor:pointer; transition:all .2s; white-space:nowrap; }
+.auth-btn:active { transform:scale(.97); }
+
+/* Section label */
+.section-label { font-size:.62rem; font-weight:800; color:var(--gray-400); text-transform:uppercase; letter-spacing:.07em; margin-bottom:.6rem; margin-left:.25rem; }
+
+/* Download all card */
+.all-card { background:linear-gradient(135deg,var(--blue),#4d8aff); border-radius:1.4rem; padding:1.25rem; box-shadow:0 8px 24px rgba(0,87,255,.3); margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all .2s; }
+.all-card:active { transform:scale(.98); }
+.all-card-left { display:flex; align-items:center; gap:.75rem; }
+.all-card-icon { width:40px; height:40px; background:rgba(255,255,255,.2); border-radius:.75rem; display:flex; align-items:center; justify-content:center; color:white; font-size:.95rem; }
+.all-card-title { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:800; color:white; }
+.all-card-sub { font-size:.65rem; color:rgba(255,255,255,.75); font-weight:600; }
+.all-card-arrow { color:white; font-size:1rem; opacity:.8; }
+
+/* Collections list */
+.collections-wrap { display:flex; flex-direction:column; gap:.6rem; margin-bottom:1.5rem; }
+.col-card { background:var(--white); border-radius:1.1rem; padding:.9rem 1rem; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:space-between; }
+.col-left { display:flex; align-items:center; gap:.65rem; }
+.col-icon { width:34px; height:34px; background:var(--blue-light); border-radius:.6rem; display:flex; align-items:center; justify-content:center; color:var(--blue); font-size:.8rem; flex-shrink:0; }
+.col-name { font-size:.85rem; font-weight:700; color:var(--gray-900); }
+.col-count { font-size:.65rem; color:var(--gray-400); font-weight:600; margin-top:.1rem; }
+.dl-btn { padding:.5rem .85rem; background:var(--blue-light); color:var(--blue); border:none; border-radius:.6rem; font-weight:700; font-family:'DM Sans',sans-serif; font-size:.72rem; cursor:pointer; display:flex; align-items:center; gap:.35rem; transition:all .2s; white-space:nowrap; }
+.dl-btn:active { transform:scale(.96); background:var(--blue); color:white; }
+.dl-btn.loading { opacity:.6; pointer-events:none; }
+
+/* Skeleton */
+.skel { background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:1.1rem; height:58px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* Empty/error state */
+.info-box { background:var(--white); border-radius:1.1rem; padding:1.5rem; text-align:center; color:var(--gray-400); box-shadow:var(--shadow); }
+.info-box i { font-size:2rem; margin-bottom:.5rem; opacity:.4; display:block; }
+.info-box p { font-size:.8rem; font-weight:600; }
+
+/* Toast */
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(20px); background:var(--gray-900); color:white; padding:.6rem 1.2rem; border-radius:2rem; font-size:.75rem; font-weight:600; opacity:0; transition:all .3s; pointer-events:none; z-index:9999; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.green { background:var(--green); }
+.toast.red   { background:var(--red); }
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.col-card { animation:fadeIn .3s ease both; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon"><i class="fa-solid fa-database"></i></div>
+    <div>
+      <div class="header-title">DB Export</div>
+      <div class="header-sub">MongoDB collections download karo</div>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="auth-card">
+    <div class="auth-label">Admin Passcode</div>
+    <div class="auth-input-row">
+      <input type="password" class="auth-input" id="secret-input" placeholder="Passcode daalo..." maxlength="20">
+      <button class="auth-btn" onclick="loadCollections()"><i class="fa-solid fa-unlock"></i> Load</button>
+    </div>
+  </div>
+
+  <!-- Download All -->
+  <div class="all-card" id="all-card" style="display:none" onclick="downloadAll()">
+    <div class="all-card-left">
+      <div class="all-card-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+      <div>
+        <div class="all-card-title">Full Database Download</div>
+        <div class="all-card-sub">Saare collections ek JSON mein</div>
+      </div>
+    </div>
+    <i class="fa-solid fa-chevron-right all-card-arrow"></i>
+  </div>
+
+  <!-- Collections -->
+  <div id="collections-section" style="display:none">
+    <div class="section-label">Collections</div>
+    <div class="collections-wrap" id="collections-wrap">
+      <div class="skel"></div>
+      <div class="skel"></div>
+      <div class="skel"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://unio-hazel.vercel.app';
+
+function getSecret() {
+  return document.getElementById('secret-input').value.trim();
+}
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+async function loadCollections() {
+  const secret = getSecret();
+  if (!secret) return toast('Passcode daalo pehle', 'red');
+
+  document.getElementById('collections-section').style.display = 'block';
+  document.getElementById('all-card').style.display = 'none';
+  document.getElementById('collections-wrap').innerHTML = `
+    <div class="skel"></div>
+    <div class="skel"></div>
+    <div class="skel"></div>
+  `;
+
+  try {
+    const r = await fetch(`${API}/db-export/collections?secret=${secret}`);
+    const d = await r.json();
+
+    if (d.status !== 'success') {
+      document.getElementById('collections-wrap').innerHTML = `
+        <div class="info-box">
+          <i class="fa-solid fa-lock"></i>
+          <p>${d.message || 'Unauthorized'}</p>
+        </div>`;
+      return;
+    }
+
+    if (!d.collections.length) {
+      document.getElementById('collections-wrap').innerHTML = `
+        <div class="info-box">
+          <i class="fa-solid fa-box-open"></i>
+          <p>Koi collection nahi mila</p>
+        </div>`;
+      return;
+    }
+
+    document.getElementById('all-card').style.display = 'flex';
+
+    const icons = {
+      users: 'fa-users', transactions: 'fa-arrow-right-arrow-left',
+      giftcodes: 'fa-gift', lifafas: 'fa-envelope-open-text',
+      redeemcodes: 'fa-ticket', leaderboards: 'fa-trophy',
+    };
+
+    document.getElementById('collections-wrap').innerHTML = d.collections.map((col, i) => {
+      const iconKey = Object.keys(icons).find(k => col.name.toLowerCase().includes(k)) || null;
+      const icon    = iconKey ? icons[iconKey] : 'fa-table';
+      return `
+      <div class="col-card" style="animation-delay:${i * 0.05}s">
+        <div class="col-left">
+          <div class="col-icon"><i class="fa-solid ${icon}"></i></div>
+          <div>
+            <div class="col-name">${col.name}</div>
+            <div class="col-count">${col.count.toLocaleString()} documents</div>
+          </div>
+        </div>
+        <button class="dl-btn" onclick="downloadCollection('${col.name}', this)">
+          <i class="fa-solid fa-download"></i> Download
+        </button>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    document.getElementById('collections-wrap').innerHTML = `
+      <div class="info-box">
+        <i class="fa-solid fa-wifi-slash"></i>
+        <p>Network error. Dobara try karo.</p>
+      </div>`;
+  }
+}
+
+async function downloadCollection(name, btn) {
+  const secret = getSecret();
+  btn.classList.add('loading');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait...';
+
+  try {
+    const r = await fetch(`${API}/db-export/download/${name}?secret=${secret}`);
+    if (!r.ok) { toast('Download failed', 'red'); return; }
+
+    const blob     = await r.blob();
+    const url      = URL.createObjectURL(blob);
+    const a        = document.createElement('a');
+    a.href         = url;
+    a.download     = `${name}_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast(`${name} downloaded ✅`, 'green');
+  } catch(e) {
+    toast('Error: ' + e.message, 'red');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
+  }
+}
+
+async function downloadAll() {
+  const secret = getSecret();
+  const card   = document.getElementById('all-card');
+  card.style.opacity = '.6';
+  card.style.pointerEvents = 'none';
+  card.querySelector('.all-card-sub').textContent = 'Downloading...';
+
+  try {
+    const r = await fetch(`${API}/db-export/all?secret=${secret}`);
+    if (!r.ok) { toast('Download failed', 'red'); return; }
+
+    const blob     = await r.blob();
+    const url      = URL.createObjectURL(blob);
+    const a        = document.createElement('a');
+    a.href         = url;
+    a.download     = `unio_db_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('Full DB downloaded ✅', 'green');
+  } catch(e) {
+    toast('Error: ' + e.message, 'red');
+  } finally {
+    card.style.opacity = '1';
+    card.style.pointerEvents = 'auto';
+    card.querySelector('.all-card-sub').textContent = 'Saare collections ek JSON mein';
+  }
+}
+
+// Enter key se bhi load ho
+document.getElementById('secret-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') loadCollections();
+});
+</script>
+</body>
+</html>
+
