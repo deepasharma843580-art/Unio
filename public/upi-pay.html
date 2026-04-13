@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPI Payment Gateway</title>
+<title>UPI Payment Gateway - UNIO</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -30,41 +30,32 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    overflow-x: hidden;
   }
 
-  /* Animated background */
+  /* Fixed Background Loading Issue */
   body::before {
     content: '';
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: radial-gradient(ellipse at 30% 20%, rgba(108,99,255,0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 70% 80%, rgba(0,212,170,0.06) 0%, transparent 50%);
-    animation: bgPulse 8s ease-in-out infinite alternate;
     pointer-events: none;
-    z-index: 0;
-  }
-
-  @keyframes bgPulse {
-    0% { transform: scale(1) rotate(0deg); }
-    100% { transform: scale(1.1) rotate(3deg); }
+    z-index: -1; /* Make sure background is behind */
   }
 
   .container {
     width: 100%;
     max-width: 420px;
     position: relative;
-    z-index: 1;
+    z-index: 10;
   }
 
-  /* Header */
   .header {
     text-align: center;
     margin-bottom: 28px;
-    animation: slideDown 0.6s ease;
   }
 
   .header .logo-ring {
@@ -78,18 +69,11 @@
     margin: 0 auto 14px;
     font-size: 28px;
     box-shadow: 0 0 30px var(--glow);
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-6px); }
   }
 
   .header h1 {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: -0.5px;
   }
 
   .header p {
@@ -98,43 +82,36 @@
     margin-top: 4px;
   }
 
-  /* Card */
   .card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 24px;
-    padding: 28px;
-    animation: slideUp 0.6s ease;
+    padding: 24px;
     position: relative;
     overflow: hidden;
   }
 
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.6;
+  .upi-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d0d16;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
   }
 
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .upi-info-left { display: flex; align-items: center; gap: 10px; }
+  .upi-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); }
 
-  /* Amount Input */
-  .amount-section {
-    margin-bottom: 24px;
-  }
+  .upi-info-text .label { color: var(--muted); font-size: 10px; text-transform: uppercase; }
+  .upi-info-text .value { color: var(--text); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 
-  .amount-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    display: block;
-  }
+  .secure-badge { font-size: 10px; color: var(--accent2); font-weight: 600; }
+
+  .amount-section { margin-bottom: 24px; }
+  .amount-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; display: block; }
 
   .amount-wrapper {
     display: flex;
@@ -142,171 +119,58 @@
     background: #0d0d16;
     border: 1.5px solid var(--border);
     border-radius: 14px;
-    padding: 14px 18px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    padding: 12px 18px;
   }
 
-  .amount-wrapper:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--glow);
-  }
+  .rupee-symbol { font-size: 24px; color: var(--accent2); margin-right: 10px; font-family: 'JetBrains Mono'; }
+  .amount-input { flex: 1; background: none; border: none; outline: none; font-size: 26px; color: var(--text); font-family: 'JetBrains Mono'; width: 100%; }
 
-  .rupee-symbol {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--accent2);
-    margin-right: 10px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .amount-input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    width: 100%;
-  }
-
-  .amount-input::placeholder { color: #2a2a3e; }
-
-  /* Quick amounts */
-  .quick-amounts {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-
-  .quick-btn {
-    background: #0d0d16;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: 'Sora', sans-serif;
-    transition: all 0.2s;
-  }
-
-  .quick-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  /* Divider */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 20px 0;
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* UPI Apps Grid */
-  .apps-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    display: block;
-  }
+  .quick-amounts { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .quick-btn { background: #0d0d16; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 11px; color: var(--muted); cursor: pointer; }
 
   .apps-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns for Navi */
+    gap: 8px;
     margin-bottom: 20px;
   }
 
   .app-btn {
     background: #0d0d16;
     border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 10px;
+    border-radius: 14px;
+    padding: 12px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
-    transition: all 0.25s;
     text-decoration: none;
-    font-family: 'Sora', sans-serif;
-    position: relative;
-    overflow: hidden;
   }
-
-  .app-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: 14px;
-  }
-
-  .app-btn:hover { transform: translateY(-3px); }
-
-  .app-btn.gpay { border-color: rgba(66,133,244,0.3); }
-  .app-btn.gpay:hover { border-color: #4285f4; box-shadow: 0 8px 24px rgba(66,133,244,0.2); }
-
-  .app-btn.phonepe { border-color: rgba(99,39,177,0.3); }
-  .app-btn.phonepe:hover { border-color: #6327b1; box-shadow: 0 8px 24px rgba(99,39,177,0.2); }
-
-  .app-btn.paytm { border-color: rgba(0,181,234,0.3); }
-  .app-btn.paytm:hover { border-color: #00b5ea; box-shadow: 0 8px 24px rgba(0,181,234,0.2); }
-
-  .app-btn.bhim { border-color: rgba(255,153,0,0.3); }
-  .app-btn.bhim:hover { border-color: #ff9900; box-shadow: 0 8px 24px rgba(255,153,0,0.2); }
-
-  .app-btn.amazonpay { border-color: rgba(255,153,0,0.3); }
-  .app-btn.amazonpay:hover { border-color: #ff9900; box-shadow: 0 8px 24px rgba(255,153,0,0.2); }
-
-  .app-btn.whatsapp { border-color: rgba(37,211,102,0.3); }
-  .app-btn.whatsapp:hover { border-color: #25d366; box-shadow: 0 8px 24px rgba(37,211,102,0.2); }
 
   .app-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
   }
 
-  .app-name {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text);
-    text-align: center;
-  }
+  .app-name { font-size: 9px; font-weight: 600; color: var(--text); text-align: center; }
 
-  /* GPay icon */
-  .icon-gpay { background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc04 75%, #ea4335 100%); }
-  .icon-phonepe { background: linear-gradient(135deg, #6327b1, #9b59b6); }
-  .icon-paytm { background: linear-gradient(135deg, #00b5ea, #0070ba); }
-  .icon-bhim { background: linear-gradient(135deg, #ff9900, #e65c00); }
-  .icon-amazon { background: linear-gradient(135deg, #ff9900, #232f3e); }
-  .icon-whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); }
+  /* App Specific Colors */
+  .icon-gpay { background: #4285f4; }
+  .icon-phonepe { background: #6327b1; }
+  .icon-paytm { background: #00b5ea; }
+  .icon-navi { background: #00d4aa; } /* Navi Brand Color */
+  .icon-bhim { background: #ff9900; }
+  .icon-amazon { background: #232f3e; }
+  .icon-whatsapp { background: #25d366; }
 
-  /* Pay button */
   .pay-btn {
     width: 100%;
     padding: 16px;
@@ -316,22 +180,114 @@
     color: white;
     font-size: 15px;
     font-weight: 700;
-    font-family: 'Sora', sans-serif;
     cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
   }
 
-  .pay-btn::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -60%;
-    width: 40%; height: 200%;
-    background: rgba(255,255,255,0.15);
-    transform: skewX(-20deg);
-    transition: left 0.5s;
+  .error-msg { color: var(--danger); font-size: 11px; margin-top: 8px; display: none; }
+  .footer { text-align: center; margin-top: 16px; font-size: 11px; color: var(--muted); }
+  .footer span { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo-ring">💳</div>
+    <h1>Secure Payment</h1>
+    <p>UNIO Wallet Checkout</p>
+  </div>
+
+  <div class="card">
+    <div class="upi-info">
+      <div class="upi-info-left">
+        <div class="upi-dot"></div>
+        <div class="upi-info-text">
+          <div class="label">Paying To</div>
+          <div class="value">sumit302010@fam</div>
+        </div>
+      </div>
+      <div class="secure-badge">🔒 Secure</div>
+    </div>
+
+    <div class="amount-section">
+      <span class="amount-label">Enter Amount</span>
+      <div class="amount-wrapper">
+        <span class="rupee-symbol">₹</span>
+        <input type="number" class="amount-input" id="amountInput" placeholder="0" />
+      </div>
+      <div class="error-msg" id="errorMsg">⚠️ Please enter a valid amount</div>
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setAmount(10)">₹10</button>
+        <button class="quick-btn" onclick="setAmount(50)">₹50</button>
+        <button class="quick-btn" onclick="setAmount(100)">₹100</button>
+        <button class="quick-btn" onclick="setAmount(500)">₹500</button>
+      </div>
+    </div>
+
+    <div class="apps-grid">
+      <div class="app-btn" onclick="payWithApp('gpay')">
+        <div class="app-icon icon-gpay">G</div>
+        <span class="app-name">GPay</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('phonepe')">
+        <div class="app-icon icon-phonepe">P</div>
+        <span class="app-name">PhonePe</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('paytm')">
+        <div class="app-icon icon-paytm">Py</div>
+        <span class="app-name">Paytm</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('navi')">
+        <div class="app-icon icon-navi">N</div>
+        <span class="app-name">Navi</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('bhim')">
+        <div class="app-icon icon-bhim">B</div>
+        <span class="app-name">BHIM</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('amazon')">
+        <div class="app-icon icon-amazon">A</div>
+        <span class="app-name">Amazon</span>
+      </div>
+      <div class="app-btn" onclick="payWithApp('whatsapp')">
+        <div class="app-icon icon-whatsapp">W</div>
+        <span class="app-name">WhatsApp</span>
+      </div>
+    </div>
+
+    <button class="pay-btn" onclick="payWithApp('any')">⚡ Pay Now</button>
+  </div>
+
+  <div class="footer">Powered by <span>UNIO</span> · Safe & Secure</div>
+</div>
+
+<script>
+  const UPI_ID = 'sumit302010@fam';
+  const MERCHANT_NAME = 'Sumit';
+
+  function setAmount(val) {
+    document.getElementById('amountInput').value = val;
+    document.getElementById('errorMsg').style.display = 'none';
   }
 
-  .pay-btn:hover::
+  function payWithApp(app) {
+    const amt = document.getElementById('amountInput').value;
+    if (!amt || amt <= 0) {
+      document.getElementById('errorMsg').style.display = 'block';
+      return;
+    }
+    
+    // UPI Intent URL
+    const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amt}&cu=INR&tn=UNIO_Payment`;
+    
+    window.location.href = upiUrl;
+
+    // Redirection logic to success/verify page after 3 seconds
+    setTimeout(() => {
+      window.location.href = "verify.html"; 
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
