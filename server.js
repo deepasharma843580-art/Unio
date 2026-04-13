@@ -103,6 +103,9 @@ app.use('/reset',            require('./routes/reset'));                  // ✅
 app.use('/deposit-gateway',  require('./routes/deposit-gateway'));        // ✅ Payment Gateway
 app.use('/redeem',           require('./routes/redeem'));  // ✅ Redeem Codes
 app.use('/db-export', require('./routes/db-export'));
+app.use('/keeper',           require('./routes/keeper'));                  // ✅ Balance Keeper
+
+
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -126,7 +129,7 @@ app.get('/pay/:id',       (req, res) => res.sendFile(path.join(__dirname, 'publi
 app.get('/redeem-store',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem.html')));       // ✅ Redeem User Page
 app.get('/redeem-admin',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'redeem-admin.html'))); // ✅ Redeem Admin
 app.get('/db-export-panel', (req, res) => res.sendFile(path.join(__dirname, 'public', 'db-export.html')));
-
+app.get('/keeper',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'keeper.html')));        // ✅ Keeper
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
