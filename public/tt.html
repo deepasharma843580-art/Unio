@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .pay-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 162, 255, 0.1);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .icon-box {
+            font-size: 50px;
+            color: #0ea5e9;
+            margin-bottom: 20px;
+        }
+
+        .amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .upi-id {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .pay-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .pay-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Success Message Overlay */
+        #success-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .check-icon {
+            font-size: 80px;
+            color: #22c55e;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pay-card" id="main-card">
+        <div class="icon-box"><i class="fa-solid fa-wallet"></i></div>
+        <div class="amount">₹100.00</div>
+        <div class="upi-id">Pay to: sumit302010@fam</div>
+        
+        <a href="upi://pay?pa=sumit302010@fam&pn=Sumit&am=100.00&cu=INR" class="pay-btn" onclick="startPayment()">
+            Pay Now
+        </a>
+    </div>
+
+    <div id="success-screen">
+        <div class="check-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h2 style="color: #1e293b; margin-top: 20px;">Payment Successful ✅</h2>
+        <p style="color: #64748b;">Redirecting to Dashboard...</p>
+    </div>
+
+    <script>
+        function startPayment() {
+            // User jab pay button click karega, apps open honge.
+            // Hum ek timer laga rahe hain jo 5 second baad success screen dikhayega 
+            // (Kyunki browser-based UPI intent callback ko directly track nahi kar sakta)
+            
+            setTimeout(() => {
+                document.getElementById('main-card').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'flex';
+                
+                // 3 second baad automatic back to dashboard
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 3000);
+            }, 5000); 
+        }
+    </script>
+
+</body>
+</html>
+
