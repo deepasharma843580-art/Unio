@@ -96,9 +96,9 @@ router.get('/stock', async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // USER — BUY CODE VIA API
-// GET /redeem?key=API_KEY&type=google_play_10
+// GET /redeem/buy?key=API_KEY&type=google_play_10
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/', async (req, res) => {
+router.get('/buy', async (req, res) => {
   try {
     const { key, type } = req.query;
     if (!key)  return res.json({ status: 'error', message: 'API key required' });
@@ -422,4 +422,3 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-      
