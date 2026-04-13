@@ -22,7 +22,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Back Button Style */
         .back-nav {
             width: 100%;
             max-width: 450px;
@@ -44,16 +43,6 @@
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(0, 162, 255, 0.08);
             transition: all 0.2s ease;
-        }
-
-        .back-btn i {
-            margin-right: 8px;
-            font-size: 16px;
-        }
-
-        .back-btn:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.8);
         }
 
         .container {
@@ -90,21 +79,30 @@
             transition: all 0.3s ease;
         }
 
-        .icon-wrapper:active .icon-item {
-            transform: scale(0.9);
-            background: rgba(255, 255, 255, 0.6);
+        /* --- Colorful Icon Style --- */
+        .active-icon {
+            background: #ffffff !important;
+            border: 1.5px solid #ffba08 !important;
+            box-shadow: 0 4px 20px rgba(255, 186, 8, 0.2) !important;
         }
 
-        .icon-item i {
-            font-size: 24px;
-            color: #0ea5e9;
-            filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
+        .active-icon i {
+            /* Colorful Gradient for Icon */
+            background: linear-gradient(135deg, #f72585, #7209b7, #3a0ca3, #4361ee, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px !important;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+        }
+
+        .icon-wrapper:active .icon-item {
+            transform: scale(0.9);
         }
 
         .icon-label {
             font-size: 10px;
             color: #0369a1;
-            font-weight: 600;
+            font-weight: 700;
             text-align: center;
             white-space: nowrap;
         }
@@ -133,7 +131,7 @@
     <div class="container">
         <div class="icon-grid">
             <a href="keeper.html" class="icon-wrapper">
-                <div class="icon-item">
+                <div class="icon-item active-icon">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <span class="icon-label">Save Balance</span>
@@ -147,17 +145,14 @@
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
-            
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
-
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
-
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
             <div class="icon-wrapper"><div class="icon-item empty-slot"><i class="fa-solid fa-plus"></i></div></div>
