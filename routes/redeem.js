@@ -130,7 +130,7 @@ router.get('/buy', async (req, res) => {
       amount:    codeDoc.price,
       type:      'redeem',
       status:    'success',
-      remark:    `Redeem Code: ${codeDoc.label}`,
+      remark:    `🎁 ${codeDoc.label} | Code: ${deliveredCode}`,
       tx_time:   now
     });
 
@@ -422,3 +422,4 @@ router.delete('/admin/giftcode/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
+  
