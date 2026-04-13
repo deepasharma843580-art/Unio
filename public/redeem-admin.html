@@ -365,7 +365,7 @@ async function addCodes() {
   finally { btnLoad(btn, false); }
 }
 
-  // ── Load Stock ──────────────────────────────────────────────────────────────
+// ── Load Stock ──────────────────────────────────────────────────────────────
 async function loadStock() {
   const btn = document.getElementById('stock-refresh-btn');
   btnLoad(btn, true);
@@ -481,8 +481,8 @@ async function doGCDelete() {
     const data = await res.json();
     closeModal();
     if (data.status==='success') {
-      showResult(`✅ ${data.deleted} codes deleted · ₹${data.total_refunded} refunded`,'success');
-      addLog(`${data.deleted} GC deleted · ₹${data.total_refunded} refunded`,'delete');
+      showResult(`✅ ${data.deleted} codes + ${data.transactions_deleted} transactions deleted · ₹${data.total_refunded} refunded`,'success');
+      addLog(`${data.deleted} GC + ${data.transactions_deleted} txns deleted · ₹${data.total_refunded} refunded`,'delete');
       selectedGCWeek = null;
       document.getElementById('gc-delete-btn').disabled = true;
       loadGiftWeeks();
