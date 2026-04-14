@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envelope Admin — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --red:#dc2626;--red-dark:#b91c1c;--red-light:#fee2e2;
+  --gold:#f59e0b;--gold-light:#fef3c7;
+  --green:#16a34a;--blue:#0057ff;--blue-light:#e8efff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 8px 32px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:#f1f5f9;padding:16px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;background:linear-gradient(135deg,#b91c1c,#dc2626);z-index:0}
+
+.container{max-width:540px;margin:0 auto;position:relative;z-index:1}
+
+.page-header{padding:1.25rem 0 1.5rem;text-align:center}
+.admin-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.2);color:white;font-size:.66rem;font-weight:800;padding:.25rem .7rem;border-radius:2rem;margin-bottom:.6rem;letter-spacing:.06em;text-transform:uppercase}
+.page-header h1{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;color:white;margin-bottom:.2rem}
+.page-header p{font-size:.75rem;color:rgba(255,255,255,.7)}
+
+.card{background:var(--white);border-radius:1.5rem;padding:1.5rem;box-shadow:var(--shadow);margin-bottom:.85rem}
+.card-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gray-900);margin-bottom:.9rem;display:flex;align-items:center;gap:.4rem}
+
+.input-group{margin-bottom:.75rem}
+.input-group label{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.3rem;letter-spacing:.06em}
+.input-group input,.input-group select{width:100%;padding:.78rem .9rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.8rem;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--gray-900)}
+.input-group input:focus,.input-group select:focus{border-color:var(--red);background:white}
+
+.input-wrap{position:relative}
+.input-wrap input{padding-right:2.5rem}
+.eye-btn{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-400);cursor:pointer}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+/* Quick expire chips */
+.expire-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem}
+.echip{padding:.3rem .7rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:2rem;font-size:.68rem;font-weight:700;color:var(--gray-600);cursor:pointer;transition:all .15s}
+.echip.active,.echip:active{background:var(--red-light);border-color:var(--red);color:var(--red)}
+
+.btn{width:100%;padding:.82rem;border:none;border-radius:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.74rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-red{background:var(--red);color:white}
+.btn-green{background:var(--green);color:white}
+.btn-gray{background:var(--gray-100);color:var(--gray-600);border:2px solid var(--gray-200)}
+.btn-sm{padding:.55rem .9rem;width:auto;font-size:.68rem}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.spinner.dark{border-color:rgba(0,0,0,.12);border-top-color:var(--gray-600)}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{display:none}
+
+/* Envelope list */
+.env-items{display:flex;flex-direction:column;gap:.65rem}
+.env-item{background:linear-gradient(135deg,#c00,#e00);border-radius:1.1rem;padding:1rem 1.1rem;position:relative;overflow:hidden}
+.env-item::after{content:'';position:absolute;inset:2px;border-radius:.85rem;border:1px solid rgba(255,215,0,.3);pointer-events:none}
+.env-item-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:white;margin-bottom:.2rem}
+.env-item-meta{font-size:.7rem;color:rgba(255,255,255,.7);font-weight:600;margin-bottom:.65rem}
+.env-item-row{display:flex;align-items:center;justify-content:space-between}
+.env-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.25rem .6rem;border-radius:2rem;font-size:.62rem;font-weight:800;text-transform:uppercase}
+.env-badge.active{background:rgba(22,163,74,.35);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
+.env-badge.expired{background:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+.env-badge.inactive{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}
+.env-actions{display:flex;gap:.4rem}
+.env-action-btn{width:30px;height:30px;border:none;border-radius:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .15s}
+.env-action-btn:active{transform:scale(.92)}
+.env-action-btn.del{background:rgba(255,255,255,.2);color:white}
+.env-action-btn.toggle{background:rgba(255,215,0,.25);color:#fde68a}
+
+.env-stats{display:flex;gap:.75rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid rgba(255,255,255,.15)}
+.env-stat{font-size:.65rem;color:rgba(255,255,255,.6);font-weight:600}
+.env-stat span{color:var(--gold);font-weight:800}
+
+.env-empty{text-align:center;padding:1.5rem;color:var(--gray-400);font-size:.8rem}
+
+.result{border-radius:.8rem;padding:.75rem .9rem;font-size:.76rem;font-weight:600;display:none;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.result.show{display:flex}
+.result.success{background:#dcfce7;color:var(--green);border:2px solid #86efac}
+.result.error{background:var(--red-light);color:var(--red);border:2px solid #fca5a5}
+
+/* Confirm delete modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.modal{background:white;border-radius:2rem 2rem 1.25rem 1.25rem;padding:1.75rem;width:100%;max-width:520px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-icon{width:52px;height:52px;background:var(--red-light);border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;color:var(--red);font-size:1.2rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;text-align:center;color:var(--gray-900);margin-bottom:.3rem}
+.modal-sub{font-size:.76rem;color:var(--gray-400);text-align:center;margin-bottom:1.25rem;line-height:1.5}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+
+.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.55rem 1.1rem;border-radius:2rem;font-size:.72rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+
+#app-locked{display:block}
+#app-main{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Admin</div>
+    <h1>🧧 Envelope Panel</h1>
+    <p>UNIO Wallet — Red Envelopes</p>
+  </div>
+
+  <!-- Auth -->
+  <div id="app-locked">
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-lock" style="color:var(--red)"></i> Admin Authentication</div>
+      <div class="input-group">
+        <label>Admin Secret</label>
+        <div class="input-wrap">
+          <input type="password" id="secret-input" placeholder="Enter secret key" onkeydown="if(event.key==='Enter')unlock()">
+          <button class="eye-btn" onclick="toggleEye()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
+        </div>
+      </div>
+      <button class="btn btn-red" id="unlock-btn" onclick="unlock()">
+        <div class="spinner"></div>
+        <span class="btn-text"><i class="fa-solid fa-unlock"></i>&nbsp; Access Panel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="app-main">
+
+    <div class="result" id="result-alert">
+      <i id="result-icon"></i><span id="result-msg"></span>
+    </div>
+
+    <!-- Create envelope -->
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-plus" style="color:var(--red)"></i> Create Envelope</div>
+
+      <div class="input-group">
+        <label>Event / Title</label>
+        <input type="text" id="env-title" placeholder="e.g. Diwali, Holi, Eid...">
+      </div>
+
+      <div class="grid2">
+        <div class="input-group">
+          <label>Amount per User (₹)</label>
+          <input type="number" id="env-amount" placeholder="10">
+        </div>
+        <div class="input-group">
+          <label>Expires in (hours)</label>
+          <input type="number" id="env-hours" placeholder="24">
+        </div>
+      </div>
+
+      <!-- Quick expire chips -->
+      <div class="expire-chips">
+        <div class="echip" onclick="setHours(1)">1h</div>
+        <div class="echip" onclick="setHours(6)">6h</div>
+        <div class="echip" onclick="setHours(12)">12h</div>
+        <div class="echip active" onclick="setHours(24)">24h</div>
+        <div class="echip" onclick="setHours(48)">48h</div>
+        <div class="echip" onclick="setHours(168)">7d</div>
+      </div>
+
+      <button class="btn btn-red" id="create-btn" onclick="createEnvelope()">
+        <div class="spinner"></div>
+        <span class="btn-text">🧧&nbsp; Create Envelope</span>
+      </button>
+    </div>
+
+    <!-- Active envelopes -->
+    <div class="card">
+      <div class="card-title" style="justify-content:space-between">
+        <span><i class="fa-solid fa-list" style="color:var(--red)"></i> All Envelopes</span>
+        <button class="btn btn-gray btn-sm" onclick="loadEnvelopes()">
+          <div class="spinner dark"></div>
+          <span class="btn-text"><i class="fa-solid fa-rotate"></i></span>
+        </button>
+      </div>
+      <div id="env-list"><div class="env-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+
+    <!-- Logout -->
+    <button class="btn btn-gray" onclick="logout()" style="margin-bottom:1rem">
+      <span class="btn-text"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Logout</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="overlay" id="del-overlay">
+  <div class="modal">
+    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="modal-title">Delete Envelope?</div>
+    <div class="modal-sub" id="del-sub">Ye envelope aur uski sari transactions delete ho jayengi. Claimed amounts wapas nahi honge.</div>
+    <div class="modal-btns">
+      <button class="btn btn-gray" onclick="closeModal()">
+        <span class="btn-text"><i class="fa-solid fa-xmark"></i>&nbsp; Cancel</span>
+      </button>
+      <button class="btn btn-red" id="del-confirm-btn" onclick="confirmDelete()">
+        <div class="spinner"></div>
+        <span class="btn-text"><i class="fa-solid fa-trash-can"></i>&nbsp; Delete</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://unio-hazel.vercel.app';
+let adminSecret  = '';
+let deleteTarget = null;
+const timers = {};
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function unlock() {
+  const secret = document.getElementById('secret-input').value.trim();
+  if (!secret) return toast('Secret daalo', 'red');
+  const btn = document.getElementById('unlock-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/envelope/admin/list`, { headers: {'x-admin-secret': secret} });
+    if (r.status === 403) { toast('Wrong secret!', 'red'); return; }
+    const d = await r.json();
+    if (d.status === 'success') {
+      adminSecret = secret;
+      document.getElementById('app-locked').style.display = 'none';
+      document.getElementById('app-main').style.display   = 'block';
+      renderEnvelopes(d.envelopes);
+      setHours(24);
+    } else toast(d.message || 'Error', 'red');
+  } catch(e) { toast('Network error', 'red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Create ────────────────────────────────────────────────────────────────────
+async function createEnvelope() {
+  const title  = document.getElementById('env-title').value.trim();
+  const amount = document.getElementById('env-amount').value.trim();
+  const hours  = document.getElementById('env-hours').value.trim();
+
+  if (!title)  return toast('Title daalo', 'red');
+  if (!amount) return toast('Amount daalo', 'red');
+  if (!hours)  return toast('Expire time daalo', 'red');
+
+  const btn = document.getElementById('create-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/envelope/admin/create`, {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json', 'x-admin-secret': adminSecret },
+      body:    JSON.stringify({ title, amount: parseFloat(amount), expire_hours: parseFloat(hours) })
+    });
+    const d = await r.json();
+    if (d.status === 'success') {
+      showResult(`✅ "${d.envelope.title}" envelope created!`, 'success');
+      document.getElementById('env-title').value  = '';
+      document.getElementById('env-amount').value = '';
+      toast('Envelope created! 🧧', 'green');
+      loadEnvelopes();
+    } else toast(d.message || 'Error', 'red');
+  } catch(e) { toast('Network error', 'red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────────
+async function loadEnvelopes() {
+  document.getElementById('env-list').innerHTML = '<div class="env-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  Object.values(timers).forEach(clearInterval);
+  try {
+    const r = await fetch(`${API}/envelope/admin/list`, { headers: {'x-admin-secret': adminSecret} });
+    const d = await r.json();
+    if (d.status === 'success') renderEnvelopes(d.envelopes);
+    else toast(d.message || 'Error', 'red');
+  } catch(e) { toast('Network error', 'red'); }
+}
+
+function getEmoji(title) {
+  const t = title.toLowerCase();
+  if (t.includes('diwali'))  return '🪔';
+  if (t.includes('holi'))    return '🎨';
+  if (t.includes('eid'))     return '🌙';
+  if (t.includes('new year') || t.includes('year')) return '🎆';
+  if (t.includes('christmas') || t.includes('xmas')) return '🎄';
+  if (t.includes('birthday')) return '🎂';
+  return '🧧';
+}
+
+function renderEnvelopes(envelopes) {
+  const el = document.getElementById('env-list');
+  if (!envelopes.length) { el.innerHTML = '<div class="env-empty">Koi envelope nahi hai. Banao!</div>'; return; }
+
+  el.innerHTML = `<div class="env-items">${envelopes.map(e => {
+    const now     = Date.now();
+    const isExp   = new Date(e.expire_at) < now || e.expired;
+    const badgeCls= !e.active ? 'inactive' : isExp ? 'expired' : 'active';
+    const badgeTxt= !e.active ? 'Inactive' : isExp ? 'Expired' : 'Active';
+    const expStr  = new Date(e.expire_at).toLocaleString('en-IN', { timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', hour12:true });
+
+    return `
+    <div class="env-item">
+      <div class="env-item-row" style="margin-bottom:.5rem">
+        <div>
+          <div class="env-item-title">${getEmoji(e.title)} ${e.title}</div>
+          <div class="env-item-meta">₹${e.amount} per user · Expires ${expStr}</div>
+        </div>
+        <div class="env-actions">
+          <button class="env-action-btn toggle" onclick="toggleEnv('${e._id}')" title="Toggle">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+          <button class="env-action-btn del" onclick="askDelete('${e._id}','${e.title}')" title="Delete">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+      <div class="env-item-row">
+        <div class="env-badge ${badgeCls}">${badgeTxt}</div>
+        <div class="env-stats">
+          <div class="env-stat">Claimed: <span>${e.total_claimed}</span></div>
+          <div class="env-stat" id="adm-timer-${e._id}">${isExp ? 'Expired' : ''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+
+  // Timers for active ones
+  envelopes.forEach(e => {
+    if (!e.expired && e.active) {
+      const expDate = new Date(e.expire_at);
+      timers[e._id] = setInterval(() => {
+        const el2 = document.getElementById(`adm-timer-${e._id}`);
+        if (!el2) { clearInterval(timers[e._id]); return; }
+        const diff = expDate - Date.now();
+        if (diff <= 0) { el2.textContent = 'Expired'; clearInterval(timers[e._id]); return; }
+        const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+        el2.textContent = h>0 ? `${h}h ${m}m left` : m>0 ? `${m}m ${s}s left` : `${s}s left`;
+      }, 1000);
+    }
+  });
+}
+
+// ── Toggle ────────────────────────────────────────────────────────────────────
+async function toggleEnv(id) {
+  try {
+    const r = await fetch(`${API}/envelope/admin/${id}/toggle`, {
+      method: 'PATCH', headers: {'x-admin-secret': adminSecret}
+    });
+    const d = await r.json();
+    if (d.status === 'success') { toast(d.active ? 'Activated ✅' : 'Deactivated',''); loadEnvelopes(); }
+    else toast(d.message||'Error','red');
+  } catch(e) { toast('Network error','red'); }
+}
+
+// ── Delete ────────────────────────────────────────────────────────────────────
+function askDelete(id, title) {
+  deleteTarget = id;
+  document.getElementById('del-sub').textContent = `"${title}" envelope aur uski sari transactions delete ho jayengi.`;
+  document.getElementById('del-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('del-overlay').classList.remove('open'); deleteTarget = null; }
+
+async function confirmDelete() {
+  if (!deleteTarget) return;
+  const btn = document.getElementById('del-confirm-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/envelope/admin/${deleteTarget}`, {
+      method: 'DELETE', headers: {'x-admin-secret': adminSecret}
+    });
+    const d = await r.json();
+    closeModal();
+    if (d.status === 'success') {
+      showResult(`✅ "${d.deleted}" deleted · ${d.transactions_deleted} transactions removed`, 'success');
+      loadEnvelopes();
+    } else toast(d.message||'Error','red');
+  } catch(e) { closeModal(); toast('Network error','red'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setHours(h) {
+  document.getElementById('env-hours').value = h;
+  document.querySelectorAll('.echip').forEach(c => c.classList.remove('active'));
+  event?.target?.classList.add('active');
+}
+
+function showResult(msg, type) {
+  const el = document.getElementById('result-alert');
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-icon').className  = type==='success'?'fa-solid fa-circle-check':'fa-solid fa-circle-xmark';
+  el.className = `result show ${type}`;
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function toggleEye() {
+  const inp = document.getElementById('secret-input'), ico = document.getElementById('eye-icon');
+  inp.type = inp.type==='password'?'text':'password';
+  ico.className = inp.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+function btnLoad(btn, on) { btn.classList.toggle('loading',on); btn.disabled=on; }
+
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function logout() {
+  adminSecret='';
+  document.getElementById('secret-input').value='';
+  document.getElementById('app-main').style.display='none';
+  document.getElementById('app-locked').style.display='block';
+  toast('Logged out');
+}
+</script>
+</body>
+</html>
