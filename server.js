@@ -105,6 +105,8 @@ app.use('/redeem',           require('./routes/redeem'));  // ✅ Redeem Codes
 app.use('/db-export', require('./routes/db-export'));
 app.use('/keeper',           require('./routes/keeper'));                  // ✅ Balance Keeper
 app.use('/envelope',         require('./routes/envelope'));
+app.use('/card',       require('./routes/card'));
+app.use('/card-admin', require('./routes/card-admin'));
 
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
@@ -132,6 +134,8 @@ app.get('/db-export-panel', (req, res) => res.sendFile(path.join(__dirname, 'pub
 app.get('/keeper',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'keeper.html')));        // ✅ Keeper
 app.get('/envelopes',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'envelopes.html')));
 app.get('/envelope-admin',(req, res) => res.sendFile(path.join(__dirname, 'public', 'envelope-admin.html')));
+app.get('/card',       (req, res) => res.sendFile(...'card.html'));
+app.get('/card-admin', (req, res) => res.sendFile(...'card-admin.html'));
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
