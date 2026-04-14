@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envelopes — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --red:#dc2626;--red-dark:#b91c1c;--red-light:#fee2e2;
+  --gold:#f59e0b;--gold-light:#fef3c7;
+  --green:#16a34a;--blue:#0057ff;--blue-light:#e8efff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 8px 32px rgba(0,0,0,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:linear-gradient(160deg,#1a0000 0%,#3d0000 50%,#1a0000 100%);padding:16px;position:relative;overflow-x:hidden}
+
+/* Floating particles background */
+.particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.particle{position:absolute;font-size:1.2rem;animation:floatUp linear infinite;opacity:0}
+@keyframes floatUp{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:1}
+  100%{transform:translateY(-10vh) rotate(360deg);opacity:0}
+}
+
+.container{max-width:420px;margin:0 auto;position:relative;z-index:1}
+
+/* Header */
+.header{display:flex;align-items:center;gap:.75rem;padding:.5rem 0 1.5rem}
+.back-btn{width:36px;height:36px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border-radius:.75rem;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;text-decoration:none;flex-shrink:0;border:1px solid rgba(255,255,255,.2)}
+.header-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:white}
+.header-sub{font-size:.68rem;color:rgba(255,255,255,.6);font-weight:600}
+
+/* Balance chip */
+.balance-chip{display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:1rem;padding:.7rem 1rem;margin-bottom:1.5rem}
+.balance-icon{width:32px;height:32px;background:var(--gold);border-radius:.6rem;display:flex;align-items:center;justify-content:center;color:white;font-size:.8rem;flex-shrink:0}
+.balance-label{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.04em}
+.balance-val{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:white}
+
+/* Section label */
+.section-label{font-size:.62rem;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.85rem;margin-left:.25rem}
+
+/* Envelope cards */
+.envelopes-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+
+.env-card{position:relative;cursor:pointer;user-select:none}
+.env-card.claimed{cursor:default}
+.env-card.expired{cursor:default;opacity:.6}
+
+/* The envelope itself */
+.envelope{background:linear-gradient(145deg,#c00 0%,#e00 40%,#b00 100%);border-radius:1.5rem;padding:1.5rem;position:relative;overflow:hidden;box-shadow:0 8px 30px rgba(200,0,0,.4);transition:transform .2s}
+.env-card:not(.claimed):not(.expired) .envelope:active{transform:scale(.97)}
+
+/* Gold pattern overlay */
+.envelope::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(circle at 20% 20%, rgba(255,215,0,.15) 0%, transparent 40%),
+  radial-gradient(circle at 80% 80%, rgba(255,215,0,.10) 0%, transparent 40%);
+  pointer-events:none}
+
+/* Gold border */
+.envelope::after{content:'';position:absolute;inset:3px;border-radius:1.2rem;border:1.5px solid rgba(255,215,0,.35);pointer-events:none}
+
+/* Top flap decoration */
+.env-flap{position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(180deg,rgba(255,215,0,.2) 0%,transparent 100%);clip-path:polygon(0 0,100% 0,50% 100%)}
+
+.env-content{position:relative;z-index:1;display:flex;align-items:center;gap:1rem}
+
+/* Center circle with title */
+.env-circle{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#d97706);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 15px rgba(245,158,11,.5);border:2px solid rgba(255,255,255,.3)}
+.env-emoji{font-size:1.5rem;line-height:1}
+.env-circle-title{font-size:.45rem;font-weight:800;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem;text-align:center}
+
+.env-info{flex:1}
+.env-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:white;margin-bottom:.25rem;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.env-amount{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gold);text-shadow:0 2px 6px rgba(0,0,0,.3)}
+.env-amount-label{font-size:.6rem;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.04em}
+
+.env-right{text-align:right;flex-shrink:0}
+.env-tap{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.env-tap i{animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* Status badges */
+.status-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;border-radius:2rem;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.status-badge.claimed{background:rgba(22,163,74,.3);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
+.status-badge.expired{background:rgba(255,255,255,.15);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)}
+
+/* Expire timer */
+.expire-row{display:flex;align-items:center;justify-content:space-between;margin-top:.85rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.15)}
+.expire-label{font-size:.6rem;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em}
+.expire-timer{font-size:.72rem;font-weight:800;color:var(--gold)}
+.expire-timer.urgent{color:#f87171;animation:blink .8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.claimed-count{font-size:.62rem;color:rgba(255,255,255,.45);font-weight:600}
+
+/* Empty state */
+.empty-state{text-align:center;padding:3rem 1rem}
+.empty-state .big-emoji{font-size:4rem;margin-bottom:1rem;opacity:.5}
+.empty-state p{font-size:.88rem;color:rgba(255,255,255,.5);font-weight:600}
+
+/* ══ CLAIM ANIMATION OVERLAY ══ */
+.claim-overlay{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.claim-overlay.open{display:flex}
+
+/* Dark bg */
+.claim-bg{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}
+
+/* Confetti */
+.confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.conf{position:absolute;width:10px;border-radius:2px;animation:confFall linear forwards}
+@keyframes confFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+}
+
+/* Main envelope animation */
+.anim-wrap{position:relative;z-index:1;text-align:center;padding:2rem}
+
+.anim-envelope{width:160px;height:120px;margin:0 auto 1.5rem;position:relative;animation:envShake .4s ease .1s}
+@keyframes envShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+
+.anim-env-body{width:160px;height:120px;background:linear-gradient(145deg,#c00,#e00);border-radius:16px;position:relative;overflow:hidden;box-shadow:0 15px 50px rgba(200,0,0,.6)}
+.anim-env-body::after{content:'';position:absolute;inset:4px;border-radius:12px;border:2px solid rgba(255,215,0,.4)}
+.anim-env-flap{position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(180deg,rgba(255,215,0,.25),transparent);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;animation:flapOpen .5s ease .6s both}
+@keyframes flapOpen{0%{transform:rotateX(0)}100%{transform:rotateX(-140deg)}}
+
+.anim-coins{position:absolute;top:30%;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;animation:coinsUp .6s ease .8s both}
+@keyframes coinsUp{0%{transform:translateX(-50%) translateY(20px);opacity:0}100%{transform:translateX(-50%) translateY(-40px);opacity:1}}
+.coin{font-size:1.8rem;animation:coinSpin .4s ease infinite alternate}
+@keyframes coinSpin{from{transform:rotateY(0)}to{transform:rotateY(30deg)}}
+
+.anim-circle{width:90px;height:90px;background:linear-gradient(135deg,var(--gold),#d97706);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 6px 25px rgba(245,158,11,.6);border:3px solid rgba(255,255,255,.3)}
+.anim-emoji{font-size:2rem}
+.anim-circle-word{font-size:.55rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:.05em}
+
+/* Amount reveal */
+.amount-reveal{animation:amountPop .5s cubic-bezier(.34,1.56,.64,1) 1.1s both}
+@keyframes amountPop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.reveal-label{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+.reveal-amount{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--gold);text-shadow:0 4px 15px rgba(245,158,11,.5);line-height:1}
+.reveal-sub{font-size:.78rem;color:rgba(255,255,255,.6);font-weight:600;margin-top:.35rem}
+
+.anim-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:white;margin-bottom:1.5rem;text-shadow:0 2px 10px rgba(0,0,0,.5);animation:titleIn .4s ease .2s both}
+@keyframes titleIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+.anim-close-btn{margin-top:1.75rem;padding:.85rem 2rem;background:var(--gold);color:#1a0000;border:none;border-radius:2rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;box-shadow:0 6px 20px rgba(245,158,11,.4);animation:btnIn .4s ease 1.4s both;transition:all .2s}
+.anim-close-btn:active{transform:scale(.97)}
+@keyframes btnIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,0,0,.85);color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.75rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.red{background:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<div class="container">
+  <div class="header">
+    <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+    <div>
+      <div class="header-title">🧧 Red Envelopes</div>
+      <div class="header-sub">Festive rewards claim karo</div>
+    </div>
+  </div>
+
+  <div class="balance-chip">
+    <div class="balance-icon"><i class="fa-solid fa-coins"></i></div>
+    <div>
+      <div class="balance-label">Wallet Balance</div>
+      <div class="balance-val" id="balance-val">—</div>
+    </div>
+  </div>
+
+  <div class="section-label">Available Envelopes</div>
+  <div class="envelopes-list" id="env-list">
+    <!-- Loaded dynamically -->
+    <div style="text-align:center;padding:2rem;color:rgba(255,255,255,.4)">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:.5rem;display:block"></i>
+      Loading...
+    </div>
+  </div>
+</div>
+
+<!-- Claim Animation Overlay -->
+<div class="claim-overlay" id="claim-overlay">
+  <div class="claim-bg" onclick="closeAnim()"></div>
+  <div class="confetti-wrap" id="confetti-wrap"></div>
+
+  <div class="anim-wrap">
+    <div class="anim-title" id="anim-title">🎉 Congratulations!</div>
+
+    <div class="anim-envelope">
+      <div class="anim-env-body">
+        <div class="anim-env-flap"></div>
+        <div class="anim-coins">
+          <span class="coin">🪙</span>
+          <span class="coin" style="animation-delay:.1s">🪙</span>
+          <span class="coin" style="animation-delay:.2s">🪙</span>
+        </div>
+      </div>
+      <!-- Center circle -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">
+        <div class="anim-circle">
+          <div class="anim-emoji" id="anim-emoji">🧧</div>
+          <div class="anim-circle-word" id="anim-word">Diwali</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="amount-reveal">
+      <div class="reveal-label">You received</div>
+      <div class="reveal-amount" id="reveal-amount">₹0</div>
+      <div class="reveal-sub" id="reveal-sub">Added to your wallet!</div>
+    </div>
+
+    <button class="anim-close-btn" onclick="closeAnim()">
+      <i class="fa-solid fa-check"></i>&nbsp; Awesome!
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API      = 'https://unio-hazel.vercel.app';
+const token    = localStorage.getItem('token');
+const userData = JSON.parse(localStorage.getItem('user') || '{}');
+
+if (!token) window.location.href = 'index.html';
+
+let envelopesData = [];
+const timers = {};
+
+// ── Floating particles ────────────────────────────────────────────────────────
+function spawnParticles() {
+  const p = document.getElementById('particles');
+  const items = ['🧧','✨','🪙','💰','🎊','🎉','⭐'];
+  for (let i = 0; i < 15; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.textContent = items[Math.floor(Math.random() * items.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (6 + Math.random() * 8) + 's';
+    el.style.animationDelay    = (Math.random() * 8) + 's';
+    el.style.fontSize          = (0.8 + Math.random() * 1.2) + 'rem';
+    p.appendChild(el);
+  }
+}
+spawnParticles();
+
+// ── Load envelopes ────────────────────────────────────────────────────────────
+async function loadEnvelopes() {
+  document.getElementById('balance-val').textContent = `₹${userData.balance ?? '—'}`;
+  try {
+    const r = await fetch(`${API}/envelope/list`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (d.status !== 'success') { renderEmpty(); return; }
+    envelopesData = d.envelopes;
+    renderEnvelopes(d.envelopes);
+  } catch(e) { renderEmpty(); }
+}
+
+function renderEmpty() {
+  document.getElementById('env-list').innerHTML =
+    `<div class="empty-state">
+      <div class="big-emoji">🧧</div>
+      <p>Abhi koi envelope available nahi hai.<br>Dobara check karo!</p>
+    </div>`;
+}
+
+function getEmoji(title) {
+  const t = title.toLowerCase();
+  if (t.includes('diwali'))  return '🪔';
+  if (t.includes('holi'))    return '🎨';
+  if (t.includes('eid'))     return '🌙';
+  if (t.includes('new year') || t.includes('year')) return '🎆';
+  if (t.includes('christmas') || t.includes('xmas')) return '🎄';
+  if (t.includes('birthday')) return '🎂';
+  if (t.includes('rakhi'))   return '🪢';
+  return '🧧';
+}
+
+function renderEnvelopes(envelopes) {
+  if (!envelopes.length) { renderEmpty(); return; }
+  const list = document.getElementById('env-list');
+  list.innerHTML = envelopes.map(e => {
+    const emoji   = getEmoji(e.title);
+    const isClaimed = e.claimed;
+    const isExpired = e.expired;
+    const cls = isClaimed ? 'claimed' : isExpired ? 'expired' : '';
+
+    return `
+    <div class="env-card ${cls}" onclick="${!isClaimed && !isExpired ? `claimEnvelope('${e._id}')` : ''}">
+      <div class="envelope">
+        <div class="env-flap"></div>
+        <div class="env-content">
+          <div class="env-circle">
+            <div style="font-size:1.5rem">${emoji}</div>
+            <div class="env-circle-title">${e.title.substring(0,8)}</div>
+          </div>
+          <div class="env-info">
+            <div class="env-title">${e.title}</div>
+            <div class="env-amount-label">Per User</div>
+            <div class="env-amount">₹${e.amount}</div>
+          </div>
+          <div class="env-right">
+            ${isClaimed
+              ? `<div class="status-badge claimed"><i class="fa-solid fa-check"></i> Claimed</div>`
+              : isExpired
+              ? `<div class="status-badge expired"><i class="fa-regular fa-clock"></i> Expired</div>`
+              : `<div class="env-tap"><i class="fa-solid fa-hand-pointer"></i></div><div style="font-size:.6rem;color:rgba(255,255,255,.5);font-weight:600">Tap to open</div>`
+            }
+          </div>
+        </div>
+        <div class="expire-row">
+          <div>
+            <div class="expire-label">Expires</div>
+            <div class="expire-timer ${isExpired ? 'urgent' : ''}" id="timer-${e._id}">
+              ${isExpired ? 'Expired' : formatTime(new Date(e.expire_at) - Date.now())}
+            </div>
+          </div>
+          <div class="claimed-count">${e.total_claimed} claimed</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Start timers
+  envelopes.forEach(e => {
+    if (!e.expired && !e.claimed) startTimer(e._id, new Date(e.expire_at));
+  });
+}
+
+function formatTime(ms) {
+  if (ms <= 0) return 'Expired';
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
+function startTimer(id, expireDate) {
+  if (timers[id]) clearInterval(timers[id]);
+  timers[id] = setInterval(() => {
+    const el = document.getElementById(`timer-${id}`);
+    if (!el) { clearInterval(timers[id]); return; }
+    const diff = expireDate - Date.now();
+    if (diff <= 0) {
+      el.textContent = 'Expired';
+      el.classList.add('urgent');
+      clearInterval(timers[id]);
+      return;
+    }
+    el.textContent = formatTime(diff);
+    if (diff < 60000) el.classList.add('urgent');
+  }, 1000);
+}
+
+// ── Claim ─────────────────────────────────────────────────────────────────────
+async function claimEnvelope(id) {
+  try {
+    const r = await fetch(`${API}/envelope/claim`, {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+      body:    JSON.stringify({ envelope_id: id })
+    });
+    const d = await r.json();
+    if (d.status === 'success') {
+      // Update balance
+      userData.balance = d.balance;
+      localStorage.setItem('user', JSON.stringify(userData));
+      document.getElementById('balance-val').textContent = `₹${d.balance}`;
+
+      // Show animation
+      showClaimAnim(d.title, d.amount);
+
+      // Reload after close
+      setTimeout(loadEnvelopes, 200);
+    } else {
+      toast(d.message || 'Failed', 'red');
+    }
+  } catch(e) {
+    toast('Network error. Try again.', 'red');
+  }
+}
+
+// ── Claim animation ───────────────────────────────────────────────────────────
+function showClaimAnim(title, amount) {
+  const emoji = getEmoji(title);
+  document.getElementById('anim-title').textContent   = `🎉 ${title}!`;
+  document.getElementById('anim-emoji').textContent   = emoji;
+  document.getElementById('anim-word').textContent    = title.substring(0, 8);
+  document.getElementById('reveal-amount').textContent = `₹${amount}`;
+  document.getElementById('reveal-sub').textContent   = 'Wallet mein add ho gaya! 🎊';
+  document.getElementById('claim-overlay').classList.add('open');
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  const colors = ['#f59e0b','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899','#fff'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.left             = Math.random() * 100 + 'vw';
+    el.style.top              = '-20px';
+    el.style.background       = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width            = (6 + Math.random() * 8) + 'px';
+    el.style.height           = (10 + Math.random() * 14) + 'px';
+    el.style.animationDuration = (2 + Math.random() * 2) + 's';
+    el.style.animationDelay   = (Math.random() * 0.8) + 's';
+    wrap.appendChild(el);
+  }
+}
+
+function closeAnim() {
+  document.getElementById('claim-overlay').classList.remove('open');
+  document.getElementById('confetti-wrap').innerHTML = '';
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+loadEnvelopes();
+</script>
+</body>
+</html>
