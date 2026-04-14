@@ -44,6 +44,7 @@
     font-weight: 800;
     color: var(--white);
     letter-spacing: -0.5px;
+    cursor: pointer;
   }
   header .logo span { color: var(--blue-glow); }
   header .badge {
@@ -56,11 +57,24 @@
     border-radius: 20px;
     letter-spacing: 1px;
   }
+  /* Back to Dashboard Button */
+  .btn-back {
+    margin-left: auto;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-back:hover { background: rgba(255,255,255,0.2); }
 
   /* ── Container ── */
   .container { max-width: 480px; margin: 0 auto; padding: 24px 16px 60px; }
 
-  /* ── Section title ── */
   .section-title {
     font-size: 13px;
     font-weight: 700;
@@ -119,7 +133,6 @@
     margin-bottom: 20px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .card-number-display.masked { color: rgba(255,255,255,0.6); }
   .card-bottom {
     display: flex;
     justify-content: space-between;
@@ -179,7 +192,6 @@
     transition: border-color 0.2s;
   }
   input:focus { border-color: var(--blue-bright); background: white; }
-  input::placeholder { color: var(--text-muted); }
   label { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 5px; display:block; }
 
   /* ── Buttons ── */
@@ -199,14 +211,11 @@
     color: white;
     box-shadow: 0 4px 16px rgba(31,79,199,0.35);
   }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(31,79,199,0.45); }
-  .btn-primary:active { transform: translateY(0); }
   .btn-outline {
     background: transparent;
     border: 1.5px solid var(--blue-bright);
     color: var(--blue-bright);
   }
-  .btn-outline:hover { background: var(--blue-light); }
   .btn-danger {
     background: linear-gradient(135deg, #e63939, #f97070);
     color: white;
@@ -289,24 +298,10 @@
 
   .empty-state { text-align:center; padding: 32px; color: var(--text-muted); font-size:14px; }
 
-  /* ── Section visibility ── */
   .section { display: none; }
   .section.active { display: block; }
 
-  /* Loading spinner */
-  .spinner {
-    display: inline-block;
-    width: 18px; height: 18px;
-    border: 2.5px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Nav bar bottom */
+  /* Bottom Nav */
   .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -323,7 +318,6 @@
     font-size: 11px;
     font-weight: 700;
     color: var(--text-muted);
-    transition: color 0.2s;
   }
   .nav-item .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
   .nav-item.active { color: var(--blue-mid); }
@@ -332,17 +326,16 @@
 <body>
 
 <header>
-  <div class="logo">UNIO <span>●</span></div>
+  <div class="logo" onclick="location.href='dashboard.html'">UNIO <span>●</span></div>
   <div class="badge">CARD</div>
+  <button class="btn-back" onclick="location.href='dashboard.html'">← Dashboard</button>
 </header>
 
 <div class="container">
 
-  <!-- ── CARD Section ── -->
   <div class="section active" id="sec-card">
     <p class="section-title">My Card</p>
 
-    <!-- Card visual (shown when card exists) -->
     <div id="cardVisual" style="display:none">
       <div class="card-visual">
         <div class="card-top">
@@ -366,7 +359,6 @@
       </div>
     </div>
 
-    <!-- No card placeholder -->
     <div id="noCardPlaceholder">
       <div class="card-placeholder">
         <div class="icon">💳</div>
@@ -375,7 +367,6 @@
       </div>
     </div>
 
-    <!-- Create Card -->
     <div class="panel" id="createCardPanel">
       <div class="panel-title">💳 Create Card</div>
       <div class="form-row">
@@ -393,7 +384,6 @@
       <button class="btn btn-primary" onclick="createCard()">✨ Create My Card</button>
     </div>
 
-    <!-- Load & Withdraw (shown when card exists) -->
     <div id="moneyPanel" style="display:none">
       <div class="panel">
         <div class="panel-title">⚡ Transfer Money</div>
@@ -419,7 +409,6 @@
         </div>
       </div>
 
-      <!-- Change PIN -->
       <div class="panel">
         <div class="panel-title">🔑 Change PIN</div>
         <label>OLD PIN</label>
@@ -430,29 +419,26 @@
       </div>
     </div>
 
-    <!-- API key for info fetch -->
     <div class="panel" id="fetchPanel">
-      <div class="panel-title">🔍 Load Card Info</div>
+      <div class="panel-title">🔍 API Key Information</div>
       <label>API KEY</label>
       <input type="text" id="infoKey" placeholder="Your API key" style="margin-bottom:12px"/>
-      <button class="btn btn-outline" onclick="loadCardInfo()">Load My Card</button>
+      <button class="btn btn-outline" onclick="loadCardInfo()">Refresh Card Status</button>
     </div>
   </div>
 
-  <!-- ── TRANSACTIONS Section ── -->
   <div class="section" id="sec-txns">
     <p class="section-title">Card Transactions</p>
     <div class="panel">
       <div class="panel-title">📋 Recent Activity</div>
       <div class="txn-list" id="txnList">
-        <div class="empty-state">Load card info first to see transactions</div>
+        <div class="empty-state">Transactions will appear here</div>
       </div>
     </div>
   </div>
 
-</div><!-- /container -->
+</div>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="showSection('sec-card', this)">
     <span class="nav-icon">💳</span>Card
@@ -462,15 +448,70 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
   const BASE = 'https://unio-hazel.vercel.app';
   let currentApiKey = '';
-  let activeTab = 'load';
 
-  // ── Utils ──────────────────────────────────────────────────────────────────
+  // 1. On Load Logic: Auto-fill and Auto-fetch
+  window.onload = function() {
+    // Dashboard se storage mein save ki gayi key uthayein
+    const savedKey = localStorage.getItem('unio_api_key');
+    
+    if (savedKey) {
+      document.getElementById('infoKey').value = savedKey;
+      document.getElementById('createKey').value = savedKey;
+      currentApiKey = savedKey;
+      // Auto load card if key exists
+      loadCardInfo(savedKey);
+    }
+  };
+
+  async function loadCardInfo(forcedKey = null) {
+    const key = forcedKey || document.getElementById('infoKey').value.trim();
+    if (!key) return;
+    
+    currentApiKey = key;
+    localStorage.setItem('unio_api_key', key); // Save key for next time
+
+    try {
+      const r = await fetch(`${BASE}/card/info?key=${key}`);
+      const d = await r.json();
+      
+      if (d.status === 'success') {
+        renderCard(d.data);
+        document.getElementById('fetchPanel').style.display = 'none';
+        loadTxns(key);
+        if (!forcedKey) showToast('Card data updated!', 'success');
+      } else {
+        // If card not found, show create panel
+        document.getElementById('noCardPlaceholder').style.display = 'block';
+        document.getElementById('createCardPanel').style.display = 'block';
+        document.getElementById('moneyPanel').style.display = 'none';
+      }
+    } catch(e) { 
+      console.error(e);
+      showToast('Network error', 'error'); 
+    }
+  }
+
+  function renderCard(data, name) {
+    document.getElementById('noCardPlaceholder').style.display = 'none';
+    document.getElementById('cardVisual').style.display = 'block';
+    document.getElementById('createCardPanel').style.display = 'none';
+    document.getElementById('moneyPanel').style.display = 'block';
+    
+    document.getElementById('dispCardNum').textContent = data.card_number;
+    document.getElementById('dispCardName').textContent = (data.name || 'USER').toUpperCase();
+    document.getElementById('dispCardBal').textContent = parseFloat(data.balance).toFixed(2);
+    
+    const badge = document.getElementById('cardStatusBadge');
+    badge.textContent = data.is_active ? '🟢 Active' : '🔴 Inactive';
+    badge.style.color = data.is_active ? 'var(--success)' : 'var(--danger)';
+  }
+
+  // ── Other Functions ────────────────────────────────────────────────────────
   function showToast(msg, type='') {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -486,7 +527,6 @@
   }
 
   function switchTab(tab) {
-    activeTab = tab;
     document.querySelectorAll('.tab').forEach((t,i) => {
       t.classList.toggle('active', (i===0 && tab==='load') || (i===1 && tab==='withdraw'));
     });
@@ -494,42 +534,10 @@
     document.getElementById('tabWithdraw').style.display = tab==='withdraw' ? 'block' : 'none';
   }
 
-  function renderCard(data, name) {
-    document.getElementById('noCardPlaceholder').style.display = 'none';
-    document.getElementById('cardVisual').style.display = 'block';
-    document.getElementById('createCardPanel').style.display = 'none';
-    document.getElementById('moneyPanel').style.display = 'block';
-    document.getElementById('dispCardNum').textContent = data.card_number;
-    document.getElementById('dispCardName').textContent = (name || 'CARD HOLDER').toUpperCase();
-    document.getElementById('dispCardBal').textContent = parseFloat(data.balance).toFixed(2);
-    const badge = document.getElementById('cardStatusBadge');
-    badge.textContent = data.is_active ? '🟢 Active' : '🔴 Inactive';
-    badge.style.color = data.is_active ? 'var(--success)' : 'var(--danger)';
-  }
-
-  // ── Load Card Info ─────────────────────────────────────────────────────────
-  async function loadCardInfo() {
-    const key = document.getElementById('infoKey').value.trim();
-    if (!key) return showToast('Enter your API key', 'error');
-    currentApiKey = key;
-    try {
-      const r = await fetch(`${BASE}/card/info?key=${key}`);
-      const d = await r.json();
-      if (d.status !== 'success') return showToast(d.message, 'error');
-      renderCard(d.data);
-      document.getElementById('fetchPanel').style.display = 'none';
-      showToast('Card loaded!', 'success');
-      loadTxns(key);
-    } catch(e) { showToast('Network error', 'error'); }
-  }
-
-  // ── Create Card ────────────────────────────────────────────────────────────
   async function createCard() {
     const key = document.getElementById('createKey').value.trim();
     const pin = document.getElementById('createPin').value.trim();
     if (!key || !pin) return showToast('Fill all fields', 'error');
-    if (pin.length < 4) return showToast('PIN must be 4+ digits', 'error');
-    currentApiKey = key;
     try {
       const r = await fetch(`${BASE}/card/create`, {
         method: 'POST',
@@ -538,17 +546,16 @@
       });
       const d = await r.json();
       if (d.status !== 'success') return showToast(d.message, 'error');
+      localStorage.setItem('unio_api_key', key);
       renderCard(d.data);
-      showToast('🎉 Card created! ' + d.data.card_number, 'success');
+      showToast('🎉 Card created successfully!', 'success');
     } catch(e) { showToast('Network error', 'error'); }
   }
 
-  // ── Load Balance (Wallet → Card) ───────────────────────────────────────────
   async function loadBalance() {
     const amt = document.getElementById('loadAmt').value;
     const pin = document.getElementById('loadPin').value;
-    if (!currentApiKey) return showToast('Load card info first', 'error');
-    if (!amt || !pin) return showToast('Fill amount and PIN', 'error');
+    if (!amt || !pin) return showToast('Fill all fields', 'error');
     try {
       const r = await fetch(`${BASE}/card/add-balance`, {
         method: 'POST',
@@ -558,19 +565,15 @@
       const d = await r.json();
       if (d.status !== 'success') return showToast(d.message, 'error');
       document.getElementById('dispCardBal').textContent = parseFloat(d.data.card_balance).toFixed(2);
-      document.getElementById('loadAmt').value = '';
-      document.getElementById('loadPin').value = '';
       showToast(`✅ ₹${amt} added to card`, 'success');
       loadTxns(currentApiKey);
     } catch(e) { showToast('Network error', 'error'); }
   }
 
-  // ── Withdraw (Card → Wallet) ───────────────────────────────────────────────
   async function withdrawBalance() {
     const amt = document.getElementById('withdrawAmt').value;
     const pin = document.getElementById('withdrawPin').value;
-    if (!currentApiKey) return showToast('Load card info first', 'error');
-    if (!amt || !pin) return showToast('Fill amount and PIN', 'error');
+    if (!amt || !pin) return showToast('Fill all fields', 'error');
     try {
       const r = await fetch(`${BASE}/card/withdraw`, {
         method: 'POST',
@@ -580,20 +583,15 @@
       const d = await r.json();
       if (d.status !== 'success') return showToast(d.message, 'error');
       document.getElementById('dispCardBal').textContent = parseFloat(d.data.card_balance).toFixed(2);
-      document.getElementById('withdrawAmt').value = '';
-      document.getElementById('withdrawPin').value = '';
       showToast(`✅ ₹${amt} withdrawn to wallet`, 'success');
       loadTxns(currentApiKey);
     } catch(e) { showToast('Network error', 'error'); }
   }
 
-  // ── Change PIN ─────────────────────────────────────────────────────────────
   async function changePin() {
     const old_pin = document.getElementById('oldPin').value;
     const new_pin = document.getElementById('newPin').value;
-    if (!currentApiKey) return showToast('Load card info first', 'error');
-    if (!old_pin || !new_pin) return showToast('Fill both PIN fields', 'error');
-    if (new_pin.length < 4) return showToast('New PIN must be 4+ digits', 'error');
+    if (!old_pin || !new_pin) return showToast('Fill all fields', 'error');
     try {
       const r = await fetch(`${BASE}/card/set-pin`, {
         method: 'POST',
@@ -602,20 +600,17 @@
       });
       const d = await r.json();
       if (d.status !== 'success') return showToast(d.message, 'error');
-      document.getElementById('oldPin').value = '';
-      document.getElementById('newPin').value = '';
       showToast('🔑 PIN updated!', 'success');
     } catch(e) { showToast('Network error', 'error'); }
   }
 
-  // ── Load Transactions ──────────────────────────────────────────────────────
   async function loadTxns(key) {
     try {
       const r = await fetch(`${BASE}/card/transactions?key=${key}`);
       const d = await r.json();
       const list = document.getElementById('txnList');
       if (!d.data || !d.data.length) {
-        list.innerHTML = '<div class="empty-state">No card transactions yet</div>';
+        list.innerHTML = '<div class="empty-state">No transactions yet</div>';
         return;
       }
       list.innerHTML = d.data.map(t => {
@@ -629,7 +624,7 @@
             <div class="txn-icon ${isLoad?'load':'withdraw'}">${isLoad?'⬆️':'⬇️'}</div>
             <div class="txn-info">
               <div class="txn-type">${isLoad ? 'Wallet → Card' : 'Card → Wallet'}</div>
-              <div class="txn-date">${date} · ${t.tx_id}</div>
+              <div class="txn-date">${date}</div>
             </div>
           </div>
           <div class="txn-amount ${isLoad?'load':'withdraw'}">${isLoad?'+':'-'}₹${t.amount}</div>
