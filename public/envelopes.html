@@ -290,16 +290,17 @@ function getEmoji(title) {
 }
 
 function renderEnvelopes(envelopes) {
-  if (!envelopes.length) { renderEmpty(); return; }
+  // Claimed envelopes user ki list se hat jayen
+  const visible = envelopes.filter(e => !e.claimed);
+  if (!visible.length) { renderEmpty(); return; }
   const list = document.getElementById('env-list');
-  list.innerHTML = envelopes.map(e => {
-    const emoji   = getEmoji(e.title);
-    const isClaimed = e.claimed;
+  list.innerHTML = visible.map(e => {
+    const emoji     = getEmoji(e.title);
     const isExpired = e.expired;
-    const cls = isClaimed ? 'claimed' : isExpired ? 'expired' : '';
+    const cls       = isExpired ? 'expired' : '';
 
     return `
-    <div class="env-card ${cls}" onclick="${!isClaimed && !isExpired ? `claimEnvelope('${e._id}')` : ''}">
+    <div class="env-card ${cls}" onclick="${!isExpired ? `claimEnvelope('${e._id}')` : ''}">
       <div class="envelope">
         <div class="env-flap"></div>
         <div class="env-content">
@@ -313,9 +314,7 @@ function renderEnvelopes(envelopes) {
             <div class="env-amount">₹${e.amount}</div>
           </div>
           <div class="env-right">
-            ${isClaimed
-              ? `<div class="status-badge claimed"><i class="fa-solid fa-check"></i> Claimed</div>`
-              : isExpired
+            ${isExpired
               ? `<div class="status-badge expired"><i class="fa-regular fa-clock"></i> Expired</div>`
               : `<div class="env-tap"><i class="fa-solid fa-hand-pointer"></i></div><div style="font-size:.6rem;color:rgba(255,255,255,.5);font-weight:600">Tap to open</div>`
             }
@@ -335,8 +334,8 @@ function renderEnvelopes(envelopes) {
   }).join('');
 
   // Start timers
-  envelopes.forEach(e => {
-    if (!e.expired && !e.claimed) startTimer(e._id, new Date(e.expire_at));
+  visible.forEach(e => {
+    if (!e.expired) startTimer(e._id, new Date(e.expire_at));
   });
 }
 
@@ -367,8 +366,12 @@ function startTimer(id, expireDate) {
   }, 1000);
 }
 
+let claimingInProgress = false; // double-claim guard
+
 // ── Claim ─────────────────────────────────────────────────────────────────────
 async function claimEnvelope(id) {
+  if (claimingInProgress) return; // double-tap rok do
+  claimingInProgress = true;
   try {
     const r = await fetch(`${API}/envelope/claim`, {
       method:  'POST',
@@ -382,15 +385,14 @@ async function claimEnvelope(id) {
       localStorage.setItem('user', JSON.stringify(userData));
       document.getElementById('balance-val').textContent = `₹${d.balance}`;
 
-      // Show animation
+      // Show animation — list reload closeAnim ke baad hoga
       showClaimAnim(d.title, d.amount);
-
-      // Reload after close
-      setTimeout(loadEnvelopes, 200);
     } else {
+      claimingInProgress = false; // fail pe reset karo taaki retry ho sake
       toast(d.message || 'Failed', 'red');
     }
   } catch(e) {
+    claimingInProgress = false;
     toast('Network error. Try again.', 'red');
   }
 }
@@ -428,6 +430,8 @@ function spawnConfetti() {
 function closeAnim() {
   document.getElementById('claim-overlay').classList.remove('open');
   document.getElementById('confetti-wrap').innerHTML = '';
+  claimingInProgress = false; // ab next claim allow
+  loadEnvelopes(); // overlay band hone ke baad fresh list load
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
