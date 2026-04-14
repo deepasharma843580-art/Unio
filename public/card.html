@@ -4,634 +4,740 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>UNIO Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-  :root {
-    --blue-deep:  #0A2463;
-    --blue-mid:   #1E4FC7;
-    --blue-bright:#2F80ED;
-    --blue-light: #EAF1FF;
-    --blue-glow:  #4FA3FF;
-    --white:      #FFFFFF;
-    --off-white:  #F5F8FF;
-    --text-dark:  #0A1628;
-    --text-muted: #6B82A8;
-    --success:    #16C784;
-    --danger:     #F63C3C;
-    --border:     #D0DCF0;
-    --card-shadow: 0 20px 60px rgba(10,36,99,0.18);
-  }
+:root{
+  --blue:#0057ff;--blue-mid:#1E4FC7;--blue-deep:#0A2463;--blue-light:#e8efff;--blue-glow:#4FA3FF;
+  --green:#16a34a;--red:#dc2626;--red-light:#fee2e2;
+  --gold:#f59e0b;--gold-light:#fef3c7;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 8px 32px rgba(10,36,99,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+/* ── Header ── */
+header{background:var(--blue-deep);padding:14px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.logo{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:white;cursor:pointer}
+.logo span{color:var(--blue-glow)}
+.header-badge{background:rgba(79,163,255,.2);border:1px solid var(--blue-glow);color:var(--blue-glow);font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:1px}
+.btn-back{margin-left:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:6px 12px;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:.35rem;transition:.2s}
+.btn-back:hover{background:rgba(255,255,255,.2)}
 
-  body {
-    font-family: 'Syne', sans-serif;
-    background: var(--off-white);
-    color: var(--text-dark);
-    min-height: 100vh;
-  }
+/* ── Container ── */
+.container{max-width:480px;margin:0 auto;padding:20px 16px}
 
-  /* ── Header ── */
-  header {
-    background: var(--blue-deep);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  header .logo {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--white);
-    letter-spacing: -0.5px;
-    cursor: pointer;
-  }
-  header .logo span { color: var(--blue-glow); }
-  header .badge {
-    background: rgba(79,163,255,0.2);
-    border: 1px solid var(--blue-glow);
-    color: var(--blue-glow);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    letter-spacing: 1px;
-  }
-  /* Back to Dashboard Button */
-  .btn-back {
-    margin-left: auto;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    padding: 6px 14px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  .btn-back:hover { background: rgba(255,255,255,0.2); }
+/* ── CARD VISUAL ── */
+.card-wrap{perspective:1000px;margin-bottom:1rem;cursor:pointer}
+.card-inner{position:relative;width:100%;height:200px;transition:transform .7s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 
-  /* ── Container ── */
-  .container { max-width: 480px; margin: 0 auto; padding: 24px 16px 60px; }
+/* Front */
+.card-front{
+  background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);
+  padding:24px;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 20px 60px rgba(10,36,99,.3);overflow:hidden;
+}
+.card-front::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
+.card-front::after{content:'';position:absolute;bottom:-60px;left:-20px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04)}
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.card-brand{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:white}
+.card-brand span{color:var(--blue-glow)}
+.card-chip{width:36px;height:28px;background:linear-gradient(135deg,#f5d080,#e5b840);border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 
-  /* ── Credit Card Visual ── */
-  .card-visual {
-    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 60%, var(--blue-bright) 100%);
-    border-radius: 20px;
-    padding: 28px 24px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 8px;
-    min-height: 185px;
-  }
-  .card-visual::before {
-    content:'';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 180px; height: 180px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
-  }
-  .card-visual::after {
-    content:'';
-    position: absolute;
-    bottom: -60px; left: -20px;
-    width: 220px; height: 220px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 32px;
-  }
-  .card-brand { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-  .card-brand span { color: var(--blue-glow); }
-  .card-chip {
-    width: 36px; height: 28px;
-    background: linear-gradient(135deg, #f5d080, #e5b840);
-    border-radius: 6px;
-  }
-  .card-number-display {
-    font-family: 'Space Mono', monospace;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .card-holder-label { font-size: 10px; opacity:0.6; letter-spacing: 1px; margin-bottom: 3px; }
-  .card-holder-name  { font-size: 14px; font-weight: 700; letter-spacing: 1px; }
-  .card-balance-label{ font-size: 10px; opacity:0.6; letter-spacing: 1px; margin-bottom: 3px; text-align:right; }
-  .card-balance-amt  { font-family:'Space Mono',monospace; font-size: 20px; font-weight:700; text-align:right; }
+.card-number-row{position:relative;z-index:1}
+.card-number{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;letter-spacing:3px;color:white;text-shadow:0 2px 8px rgba(0,0,0,.3)}
 
-  /* Create card prompt */
-  .card-placeholder {
-    background: linear-gradient(135deg, #0A2463 0%, #1E4FC7 100%);
-    border-radius: 20px;
-    padding: 48px 24px;
-    text-align: center;
-    color: white;
-    margin-bottom: 8px;
-    box-shadow: var(--card-shadow);
-  }
-  .card-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
-  .card-placeholder h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-  .card-placeholder p  { font-size: 14px; opacity: 0.7; }
+.card-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
+.cl{font-size:.55rem;opacity:.6;letter-spacing:1px;margin-bottom:2px;text-transform:uppercase;color:white}
+.cv{font-size:.82rem;font-weight:700;color:white;letter-spacing:.5px}
+.card-bal{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:white;text-align:right}
+.card-status{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.6rem;font-weight:700;margin-top:2px}
+.card-status.active{background:rgba(22,163,74,.3);color:#4ade80}
+.card-status.inactive{background:rgba(220,38,38,.3);color:#f87171}
 
-  /* ── Panel Box ── */
-  .panel {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 20px rgba(10,36,99,0.07);
-    border: 1px solid var(--border);
-  }
-  .panel-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--blue-deep);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* Flip hint */
+.flip-hint{font-size:.6rem;color:var(--gray-400);text-align:center;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.3rem}
 
-  /* ── Form elements ── */
-  .form-row { display:flex; gap:10px; margin-bottom:12px; }
-  .form-row .input-wrap { flex:1; }
-  input[type=text], input[type=number], input[type=password] {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    color: var(--text-dark);
-    background: var(--off-white);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input:focus { border-color: var(--blue-bright); background: white; }
-  label { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 5px; display:block; }
+/* Back */
+.card-back{
+  background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));
+  border-radius:20px;transform:rotateY(180deg);
+  box-shadow:0 20px 60px rgba(10,36,99,.3);overflow:hidden;
+}
+.card-back-stripe{width:100%;height:42px;background:rgba(0,0,0,.5);margin-top:28px}
+.card-back-body{padding:16px 24px}
+.cvv-row{display:flex;align-items:center;gap:.75rem;margin-top:.5rem}
+.cvv-label{font-size:.6rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
+.cvv-box{flex:1;background:rgba(255,255,255,.15);border-radius:.5rem;padding:.4rem .75rem;font-family:'Space Mono',monospace;font-size:.8rem;color:white;letter-spacing:2px}
+.card-back-note{font-size:.58rem;color:rgba(255,255,255,.5);margin-top:1rem;line-height:1.5}
 
-  /* ── Buttons ── */
-  .btn {
-    width: 100%;
-    padding: 13px;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--blue-mid), var(--blue-bright));
-    color: white;
-    box-shadow: 0 4px 16px rgba(31,79,199,0.35);
-  }
-  .btn-outline {
-    background: transparent;
-    border: 1.5px solid var(--blue-bright);
-    color: var(--blue-bright);
-  }
-  .btn-danger {
-    background: linear-gradient(135deg, #e63939, #f97070);
-    color: white;
-  }
+/* ── Create card prompt ── */
+.create-prompt{background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));border-radius:20px;padding:40px 24px;text-align:center;color:white;margin-bottom:1rem;box-shadow:0 20px 60px rgba(10,36,99,.3)}
+.create-prompt .big-icon{font-size:3rem;margin-bottom:.75rem}
+.create-prompt h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:.35rem}
+.create-prompt p{font-size:.78rem;opacity:.7;margin-bottom:1.25rem}
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    background: var(--blue-light);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 16px;
-  }
-  .tab {
-    flex: 1;
-    padding: 9px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 700;
-    border-radius: 9px;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: all 0.2s;
-  }
-  .tab.active {
-    background: var(--white);
-    color: var(--blue-deep);
-    box-shadow: 0 2px 8px rgba(10,36,99,0.1);
-  }
+/* ── Spin animation for card creation ── */
+.spin-overlay{position:fixed;inset:0;background:rgba(10,36,99,.9);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
+.spin-overlay.show{display:flex}
+.spin-card-anim{width:280px;height:170px;perspective:800px;margin-bottom:2rem}
+.spin-card-inner{width:100%;height:100%;transform-style:preserve-3d;animation:cardSpin 2s ease-in-out forwards}
+@keyframes cardSpin{
+  0%  {transform:rotateY(0) scale(.6);opacity:0}
+  20% {transform:rotateY(360deg) scale(1);opacity:1}
+  40% {transform:rotateY(720deg) scale(1)}
+  60% {transform:rotateY(720deg) rotateX(20deg) scale(1.05)}
+  80% {transform:rotateY(720deg) rotateX(0) scale(1)}
+  100%{transform:rotateY(720deg) scale(1);opacity:1}
+}
+.spin-card-face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid),var(--blue-glow));padding:20px;box-shadow:0 20px 60px rgba(0,87,255,.5)}
+.spin-particles{position:absolute;inset:0;pointer-events:none}
+.sp{position:absolute;font-size:1.2rem;animation:spFloat linear forwards}
+@keyframes spFloat{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-120px) rotate(360deg);opacity:0}}
+.spin-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:white;text-align:center;margin-bottom:.35rem;animation:fadeIn .5s .5s both}
+.spin-sub{font-size:.78rem;color:rgba(255,255,255,.7);text-align:center;animation:fadeIn .5s .8s both}
+.spin-number{font-family:'Space Mono',monospace;font-size:1rem;color:var(--blue-glow);margin-top:.5rem;letter-spacing:2px;animation:fadeIn .5s 1.2s both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  /* ── Toast ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--blue-deep);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 999;
-    white-space: nowrap;
-    box-shadow: 0 8px 30px rgba(10,36,99,0.3);
-  }
-  .toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
-  .toast.success { background: #0d7a4c; }
-  .toast.error   { background: #c0392b; }
+/* ── Panels ── */
+.panel{background:var(--white);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--gray-200)}
+.panel-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--blue-deep);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 
-  /* ── Transaction list ── */
-  .txn-list { display:flex; flex-direction:column; gap:10px; }
-  .txn-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    background: var(--off-white);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-  .txn-left { display:flex; gap:10px; align-items:center; }
-  .txn-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-  .txn-icon.load     { background: #e8faf3; }
-  .txn-icon.withdraw { background: #fef0f0; }
-  .txn-info .txn-type  { font-size: 13px; font-weight: 700; color: var(--text-dark); }
-  .txn-info .txn-date  { font-size: 11px; color: var(--text-muted); margin-top:2px; }
-  .txn-amount { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; }
-  .txn-amount.load     { color: var(--success); }
-  .txn-amount.withdraw { color: var(--danger); }
+/* Tabs */
+.tabs{display:grid;background:var(--gray-100);border-radius:.9rem;padding:3px;gap:3px;margin-bottom:1rem}
+.tabs.t2{grid-template-columns:1fr 1fr}
+.tabs.t3{grid-template-columns:1fr 1fr 1fr}
+.tab{padding:.6rem;text-align:center;font-size:.72rem;font-weight:700;border-radius:.75rem;cursor:pointer;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
+.tab.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
 
-  .empty-state { text-align:center; padding: 32px; color: var(--text-muted); font-size:14px; }
+/* Form */
+.input-group{margin-bottom:.75rem}
+.input-group label{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.3rem;letter-spacing:.05em}
+.input-group input{width:100%;padding:.78rem .9rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.8rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--gray-900);outline:none;transition:all .2s}
+.input-group input:focus{border-color:var(--blue);background:white}
+.name-chip{display:none;align-items:center;gap:.4rem;background:var(--blue-light);border-radius:.5rem;padding:.3rem .7rem;font-size:.72rem;font-weight:700;color:var(--blue);margin-top:.35rem}
+.name-chip.show{display:flex}
 
-  .section { display: none; }
-  .section.active { display: block; }
+/* Buttons */
+.btn{width:100%;padding:.85rem;border:none;border-radius:.85rem;font-family:'DM Sans',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.76rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 4px 16px rgba(31,79,199,.3)}
+.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 4px 16px rgba(22,163,74,.25)}
+.btn-red{background:linear-gradient(135deg,#e63939,#f97070);color:white}
+.btn-outline{background:transparent;border:2px solid var(--blue);color:var(--blue)}
+.spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{display:none}
 
-  /* Bottom Nav */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: white;
-    border-top: 1px solid var(--border);
-    display: flex;
-    z-index: 10;
-  }
-  .nav-item {
-    flex: 1;
-    padding: 10px 0 8px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-  }
-  .nav-item .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
-  .nav-item.active { color: var(--blue-mid); }
+/* Txn list */
+.txn-list{display:flex;flex-direction:column;gap:.5rem}
+.txn-item{display:flex;align-items:center;gap:.75rem;padding:.75rem .9rem;background:var(--gray-50);border-radius:.9rem;border:1px solid var(--gray-200)}
+.txn-icon{width:36px;height:36px;border-radius:.7rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.txn-icon.load{background:#dcfce7;color:var(--green)}
+.txn-icon.withdraw{background:#fee2e2;color:var(--red)}
+.txn-icon.pay{background:var(--blue-light);color:var(--blue)}
+.txn-info{flex:1}
+.txn-type{font-size:.78rem;font-weight:700;color:var(--gray-900)}
+.txn-remark{font-size:.65rem;color:var(--gray-400);margin-top:.08rem}
+.txn-date{font-size:.62rem;color:var(--gray-400)}
+.txn-amt{font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700}
+.txn-amt.pos{color:var(--green)}
+.txn-amt.neg{color:var(--red)}
+.txn-empty{text-align:center;padding:1.5rem;color:var(--gray-400);font-size:.8rem}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--gray-200);display:flex;z-index:40;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.nav-item{flex:1;padding:.75rem .5rem .6rem;text-align:center;cursor:pointer;color:var(--gray-400);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;transition:color .2s}
+.nav-item .nav-icon{display:block;font-size:1.1rem;margin-bottom:.2rem}
+.nav-item.active{color:var(--blue)}
+
+/* Section visibility */
+.section{display:none}
+.section.active{display:block}
+
+/* ── RECEIPT OVERLAY ── */
+.receipt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.receipt-overlay.open{display:flex}
+.receipt{background:white;border-radius:2rem 2rem 1.25rem 1.25rem;padding:1.75rem;width:100%;max-width:440px;animation:slideUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.receipt-header{text-align:center;margin-bottom:1.25rem}
+.receipt-icon{width:60px;height:60px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:var(--green);font-size:1.4rem}
+.receipt-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gray-900)}
+.receipt-amount{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--blue);margin-top:.2rem}
+
+.receipt-rows{background:var(--gray-50);border-radius:1rem;padding:.75rem;margin-bottom:1rem}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--gray-200);font-size:.75rem}
+.receipt-row:last-child{border-bottom:none}
+.receipt-row .rl{color:var(--gray-400);font-weight:600}
+.receipt-row .rv{font-weight:700;color:var(--gray-900);text-align:right;max-width:60%;word-break:break-all}
+.receipt-row .rv.mono{font-family:'Space Mono',monospace;font-size:.68rem}
+
+.receipt-close{width:100%;padding:.85rem;background:var(--blue);color:white;border:none;border-radius:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.76rem}
+
+/* PIN setup banner */
+.pin-banner{background:var(--gold-light);border:2px solid var(--gold);border-radius:1rem;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;font-weight:600;color:#92400e;display:flex;align-items:center;gap:.5rem}
+
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.75rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo" onclick="location.href='dashboard.html'">UNIO <span>●</span></div>
-  <div class="badge">CARD</div>
-  <button class="btn-back" onclick="location.href='dashboard.html'">← Dashboard</button>
+  <div class="logo">UNI<span>O</span></div>
+  <div class="header-badge">CARD</div>
+  <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-chevron-left"></i> Dashboard</a>
 </header>
 
 <div class="container">
 
+  <!-- ── SECTION: CARD ── -->
   <div class="section active" id="sec-card">
-    <p class="section-title">My Card</p>
 
-    <div id="cardVisual" style="display:none">
-      <div class="card-visual">
-        <div class="card-top">
-          <div class="card-brand">UNIO <span>●</span></div>
-          <div class="card-chip"></div>
-        </div>
-        <div class="card-number-display" id="dispCardNum">UW----- ----</div>
-        <div class="card-bottom">
-          <div>
-            <div class="card-holder-label">CARD HOLDER</div>
-            <div class="card-holder-name" id="dispCardName">—</div>
+    <!-- Card visual or create prompt -->
+    <div id="card-show" style="display:none">
+      <div class="card-wrap" onclick="flipCard()" title="Tap to flip">
+        <div class="card-inner" id="card-inner">
+          <!-- Front -->
+          <div class="card-face card-front">
+            <div class="card-top">
+              <div class="card-brand">UNI<span>O</span></div>
+              <div class="card-chip"></div>
+            </div>
+            <div class="card-number-row">
+              <div class="card-number" id="disp-number">UW-0000-000</div>
+            </div>
+            <div class="card-bottom">
+              <div>
+                <div class="cl">Card Holder</div>
+                <div class="cv" id="disp-name">USER NAME</div>
+              </div>
+              <div>
+                <div class="cl">Balance</div>
+                <div class="card-bal">₹<span id="disp-bal">0.00</span></div>
+                <div class="card-status active" id="disp-status">Active</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div class="card-balance-label">BALANCE</div>
-            <div class="card-balance-amt">₹<span id="dispCardBal">0.00</span></div>
+          <!-- Back -->
+          <div class="card-face card-back">
+            <div class="card-back-stripe"></div>
+            <div class="card-back-body">
+              <div class="cvv-row">
+                <div class="cvv-label">CVV</div>
+                <div class="cvv-box">•••</div>
+              </div>
+              <div class="card-back-note">
+                UNIO Digital Wallet Card<br>
+                Valid for UNIO network transactions only.<br>
+                Do not share your PIN with anyone.
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div style="text-align:center;margin:6px 0 20px;font-size:12px;color:var(--text-muted);">
-        <span id="cardStatusBadge"></span>
+      <div class="flip-hint"><i class="fa-solid fa-rotate"></i> Tap card to flip</div>
+    </div>
+
+    <!-- Create prompt -->
+    <div id="card-create-prompt" style="display:none">
+      <div class="create-prompt">
+        <div class="big-icon">💳</div>
+        <h3>Get Your UNIO Card</h3>
+        <p>Dashboard se auto-generate hoga. Ek second ruko!</p>
       </div>
     </div>
 
-    <div id="noCardPlaceholder">
-      <div class="card-placeholder">
-        <div class="icon">💳</div>
-        <h3>No Card Yet</h3>
-        <p>Create your UNIO Card below</p>
+    <!-- Loading -->
+    <div id="card-loading" style="text-align:center;padding:3rem;color:var(--gray-400)">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:.5rem;display:block"></i>
+      Loading card...
+    </div>
+
+    <!-- PIN banner (shown if default PIN) -->
+    <div class="pin-banner" id="pin-banner" style="display:none">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      Card create hua! Default PIN <b>0000</b> hai — Settings tab se change karo.
+    </div>
+
+    <!-- Actions panel -->
+    <div class="panel" id="actions-panel" style="display:none">
+      <div class="tabs t3">
+        <div class="tab active" onclick="switchMainTab('load')">Load</div>
+        <div class="tab" onclick="switchMainTab('withdraw')">Withdraw</div>
+        <div class="tab" onclick="switchMainTab('pay')">Pay</div>
+      </div>
+
+      <!-- Load tab -->
+      <div id="tab-load">
+        <div class="input-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="load-amt" placeholder="Enter amount">
+        </div>
+        <div class="input-group">
+          <label>Card PIN</label>
+          <input type="password" id="load-pin" placeholder="4-digit PIN" maxlength="4">
+        </div>
+        <button class="btn btn-green" id="load-btn" onclick="doLoad()">
+          <div class="spinner"></div>
+          <span class="btn-text"><i class="fa-solid fa-plus"></i>&nbsp; Load to Card</span>
+        </button>
+      </div>
+
+      <!-- Withdraw tab -->
+      <div id="tab-withdraw" style="display:none">
+        <div class="input-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="wd-amt" placeholder="Enter amount">
+        </div>
+        <div class="input-group">
+          <label>Card PIN</label>
+          <input type="password" id="wd-pin" placeholder="4-digit PIN" maxlength="4">
+        </div>
+        <button class="btn btn-red" id="wd-btn" onclick="doWithdraw()">
+          <div class="spinner"></div>
+          <span class="btn-text"><i class="fa-solid fa-minus"></i>&nbsp; Withdraw to Wallet</span>
+        </button>
+      </div>
+
+      <!-- Pay tab -->
+      <div id="tab-pay" style="display:none">
+        <div class="input-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="pay-mobile" placeholder="Receiver ka mobile" maxlength="10"
+            oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);fetchName()">
+          <div class="name-chip" id="pay-name-chip">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="pay-name-text">—</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="pay-amt" placeholder="Enter amount">
+        </div>
+        <div class="input-group">
+          <label>Remark (optional)</label>
+          <input type="text" id="pay-remark" placeholder="Payment through UNIO Card">
+        </div>
+        <div class="input-group">
+          <label>Card PIN</label>
+          <input type="password" id="pay-pin" placeholder="4-digit PIN" maxlength="4">
+        </div>
+        <button class="btn btn-primary" id="pay-btn" onclick="doPay()">
+          <div class="spinner"></div>
+          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i>&nbsp; Pay Now</span>
+        </button>
       </div>
     </div>
 
-    <div class="panel" id="createCardPanel">
-      <div class="panel-title">💳 Create Card</div>
-      <div class="form-row">
-        <div class="input-wrap">
-          <label>API KEY</label>
-          <input type="text" id="createKey" placeholder="Your API key"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="input-wrap">
-          <label>SET PIN (4+ digits)</label>
-          <input type="password" id="createPin" placeholder="e.g. 1234" maxlength="8"/>
-        </div>
-      </div>
-      <button class="btn btn-primary" onclick="createCard()">✨ Create My Card</button>
-    </div>
+  </div><!-- /sec-card -->
 
-    <div id="moneyPanel" style="display:none">
-      <div class="panel">
-        <div class="panel-title">⚡ Transfer Money</div>
-        <div class="tabs">
-          <div class="tab active" onclick="switchTab('load')">Wallet → Card</div>
-          <div class="tab" onclick="switchTab('withdraw')">Card → Wallet</div>
-        </div>
-
-        <div id="tabLoad">
-          <label>AMOUNT (₹)</label>
-          <input type="number" id="loadAmt" placeholder="Enter amount" style="margin-bottom:10px"/>
-          <label>CARD PIN</label>
-          <input type="password" id="loadPin" placeholder="Your card PIN" style="margin-bottom:12px"/>
-          <button class="btn btn-primary" onclick="loadBalance()">➕ Add to Card</button>
-        </div>
-
-        <div id="tabWithdraw" style="display:none">
-          <label>AMOUNT (₹)</label>
-          <input type="number" id="withdrawAmt" placeholder="Enter amount" style="margin-bottom:10px"/>
-          <label>CARD PIN</label>
-          <input type="password" id="withdrawPin" placeholder="Your card PIN" style="margin-bottom:12px"/>
-          <button class="btn btn-danger" onclick="withdrawBalance()">➖ Withdraw to Wallet</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">🔑 Change PIN</div>
-        <label>OLD PIN</label>
-        <input type="password" id="oldPin" placeholder="Current PIN" style="margin-bottom:10px"/>
-        <label>NEW PIN</label>
-        <input type="password" id="newPin" placeholder="New PIN" style="margin-bottom:12px"/>
-        <button class="btn btn-outline" onclick="changePin()">Update PIN</button>
-      </div>
-    </div>
-
-    <div class="panel" id="fetchPanel">
-      <div class="panel-title">🔍 API Key Information</div>
-      <label>API KEY</label>
-      <input type="text" id="infoKey" placeholder="Your API key" style="margin-bottom:12px"/>
-      <button class="btn btn-outline" onclick="loadCardInfo()">Refresh Card Status</button>
+  <!-- ── SECTION: HISTORY ── -->
+  <div class="section" id="sec-txns">
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--blue)"></i> Card Transactions</div>
+      <div id="txn-list"><div class="txn-empty">Loading...</div></div>
     </div>
   </div>
 
-  <div class="section" id="sec-txns">
-    <p class="section-title">Card Transactions</p>
+<!-- ── SECTION: SETTINGS ── -->
+  <div class="section" id="sec-settings">
     <div class="panel">
-      <div class="panel-title">📋 Recent Activity</div>
-      <div class="txn-list" id="txnList">
-        <div class="empty-state">Transactions will appear here</div>
+      <div class="panel-title"><i class="fa-solid fa-key" style="color:var(--gold)"></i> Change Card PIN</div>
+      <div class="input-group">
+        <label>Current PIN</label>
+        <input type="password" id="old-pin" placeholder="Current PIN" maxlength="4">
+      </div>
+      <div class="input-group">
+        <label>New PIN</label>
+        <input type="password" id="new-pin" placeholder="New PIN (4+ digits)" maxlength="6">
+      </div>
+      <button class="btn btn-outline" id="pin-btn" onclick="changePin()">
+        <div class="spinner" style="border-color:rgba(0,87,255,.2);border-top-color:var(--blue)"></div>
+        <span class="btn-text"><i class="fa-solid fa-key"></i>&nbsp; Update PIN</span>
+      </button>
+    </div>
+    <div class="panel" style="background:var(--gray-50)">
+      <div class="panel-title"><i class="fa-solid fa-circle-info" style="color:var(--gray-400)"></i> Card Info</div>
+      <div style="font-size:.75rem;color:var(--gray-600);line-height:1.7">
+        <div>Card Number: <b id="info-num">—</b></div>
+        <div>Created: <b id="info-date">—</b></div>
+        <div>Status: <b id="info-status">—</b></div>
       </div>
     </div>
   </div>
 
 </div>
 
+<!-- Bottom nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="showSection('sec-card', this)">
+  <div class="nav-item active" onclick="showSection('sec-card',this)">
     <span class="nav-icon">💳</span>Card
   </div>
-  <div class="nav-item" onclick="showSection('sec-txns', this)">
+  <div class="nav-item" onclick="showSection('sec-txns',this);loadTxns()">
     <span class="nav-icon">📋</span>History
+  </div>
+  <div class="nav-item" onclick="showSection('sec-settings',this)">
+    <span class="nav-icon">⚙️</span>Settings
+  </div>
+</div>
+
+<!-- Spin overlay -->
+<div class="spin-overlay" id="spin-overlay">
+  <div style="position:relative">
+    <div class="spin-particles" id="spin-particles"></div>
+    <div class="spin-card-anim">
+      <div class="spin-card-inner">
+        <div class="spin-card-face">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:white">UNI<span style="color:var(--blue-glow)">O</span></div>
+            <div style="width:30px;height:22px;background:linear-gradient(135deg,#f5d080,#e5b840);border-radius:4px"></div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:.9rem;color:white;letter-spacing:2px;margin-bottom:20px" id="spin-num">UW-????-???</div>
+          <div style="display:flex;justify-content:space-between">
+            <div>
+              <div style="font-size:.5rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px">Card Holder</div>
+              <div style="font-size:.75rem;font-weight:700;color:white" id="spin-name">—</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:.5rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px">Balance</div>
+              <div style="font-family:'Space Mono',monospace;font-size:.9rem;color:white">₹0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spin-title">🎉 Card Ready!</div>
+  <div class="spin-sub">Aapka UNIO Card generate ho gaya</div>
+  <div class="spin-number" id="spin-display-num">—</div>
+</div>
+
+<!-- Receipt overlay -->
+<div class="receipt-overlay" id="receipt-overlay">
+  <div class="receipt">
+    <div class="receipt-header">
+      <div class="receipt-icon"><i class="fa-solid fa-check"></i></div>
+      <div class="receipt-title">Payment Successful!</div>
+      <div class="receipt-amount" id="r-amount">₹0</div>
+    </div>
+    <div class="receipt-rows">
+      <div class="receipt-row"><span class="rl">To</span><span class="rv" id="r-to">—</span></div>
+      <div class="receipt-row"><span class="rl">Mobile</span><span class="rv" id="r-mobile">—</span></div>
+      <div class="receipt-row"><span class="rl">Remark</span><span class="rv" id="r-remark">—</span></div>
+      <div class="receipt-row"><span class="rl">Txn ID</span><span class="rv mono" id="r-txid">—</span></div>
+      <div class="receipt-row"><span class="rl">Card</span><span class="rv mono" id="r-card">—</span></div>
+      <div class="receipt-row"><span class="rl">Card Balance</span><span class="rv" id="r-cardbal">—</span></div>
+      <div class="receipt-row"><span class="rl">Date</span><span class="rv" id="r-date">—</span></div>
+    </div>
+    <button class="receipt-close" onclick="closeReceipt()">
+      <i class="fa-solid fa-check"></i>&nbsp; Done
+    </button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const BASE = 'https://unio-hazel.vercel.app';
-  let currentApiKey = '';
+const API      = 'https://unio-hazel.vercel.app';
+const token    = localStorage.getItem('token');
+const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
-  // 1. On Load Logic: Auto-fill and Auto-fetch
-  window.onload = function() {
-    // Dashboard se storage mein save ki gayi key uthayein
-    const savedKey = localStorage.getItem('unio_api_key');
-    
-    if (savedKey) {
-      document.getElementById('infoKey').value = savedKey;
-      document.getElementById('createKey').value = savedKey;
-      currentApiKey = savedKey;
-      // Auto load card if key exists
-      loadCardInfo(savedKey);
-    }
-  };
+if (!token) window.location.href = 'index.html';
 
-  async function loadCardInfo(forcedKey = null) {
-    const key = forcedKey || document.getElementById('infoKey').value.trim();
-    if (!key) return;
-    
-    currentApiKey = key;
-    localStorage.setItem('unio_api_key', key); // Save key for next time
+let cardData     = null;
+let isNewCard    = false;
+let fetchTimeout = null;
 
-    try {
-      const r = await fetch(`${BASE}/card/info?key=${key}`);
-      const d = await r.json();
-      
-      if (d.status === 'success') {
-        renderCard(d.data);
-        document.getElementById('fetchPanel').style.display = 'none';
-        loadTxns(key);
-        if (!forcedKey) showToast('Card data updated!', 'success');
-      } else {
-        // If card not found, show create panel
-        document.getElementById('noCardPlaceholder').style.display = 'block';
-        document.getElementById('createCardPanel').style.display = 'block';
-        document.getElementById('moneyPanel').style.display = 'none';
-      }
-    } catch(e) { 
-      console.error(e);
-      showToast('Network error', 'error'); 
-    }
-  }
-
-  function renderCard(data, name) {
-    document.getElementById('noCardPlaceholder').style.display = 'none';
-    document.getElementById('cardVisual').style.display = 'block';
-    document.getElementById('createCardPanel').style.display = 'none';
-    document.getElementById('moneyPanel').style.display = 'block';
-    
-    document.getElementById('dispCardNum').textContent = data.card_number;
-    document.getElementById('dispCardName').textContent = (data.name || 'USER').toUpperCase();
-    document.getElementById('dispCardBal').textContent = parseFloat(data.balance).toFixed(2);
-    
-    const badge = document.getElementById('cardStatusBadge');
-    badge.textContent = data.is_active ? '🟢 Active' : '🔴 Inactive';
-    badge.style.color = data.is_active ? 'var(--success)' : 'var(--danger)';
-  }
-
-  // ── Other Functions ────────────────────────────────────────────────────────
-  function showToast(msg, type='') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show ' + type;
-    setTimeout(() => t.className = 'toast', 3000);
-  }
-
-  function showSection(id, el) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach((t,i) => {
-      t.classList.toggle('active', (i===0 && tab==='load') || (i===1 && tab==='withdraw'));
+// ── Load card on page open ────────────────────────────────────────────────────
+async function initCard() {
+  try {
+    const r = await fetch(`${API}/card/me`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     });
-    document.getElementById('tabLoad').style.display     = tab==='load'     ? 'block' : 'none';
-    document.getElementById('tabWithdraw').style.display = tab==='withdraw' ? 'block' : 'none';
-  }
+    const d = await r.json();
+    if (d.status === 'success') {
+      const wasNew = !localStorage.getItem('card_created_' + d.data.card_number);
+      cardData = d.data;
+      document.getElementById('card-loading').style.display = 'none';
 
-  async function createCard() {
-    const key = document.getElementById('createKey').value.trim();
-    const pin = document.getElementById('createPin').value.trim();
-    if (!key || !pin) return showToast('Fill all fields', 'error');
-    try {
-      const r = await fetch(`${BASE}/card/create`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ key, pin })
-      });
-      const d = await r.json();
-      if (d.status !== 'success') return showToast(d.message, 'error');
-      localStorage.setItem('unio_api_key', key);
-      renderCard(d.data);
-      showToast('🎉 Card created successfully!', 'success');
-    } catch(e) { showToast('Network error', 'error'); }
-  }
-
-  async function loadBalance() {
-    const amt = document.getElementById('loadAmt').value;
-    const pin = document.getElementById('loadPin').value;
-    if (!amt || !pin) return showToast('Fill all fields', 'error');
-    try {
-      const r = await fetch(`${BASE}/card/add-balance`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ key: currentApiKey, pin, amount: amt })
-      });
-      const d = await r.json();
-      if (d.status !== 'success') return showToast(d.message, 'error');
-      document.getElementById('dispCardBal').textContent = parseFloat(d.data.card_balance).toFixed(2);
-      showToast(`✅ ₹${amt} added to card`, 'success');
-      loadTxns(currentApiKey);
-    } catch(e) { showToast('Network error', 'error'); }
-  }
-
-  async function withdrawBalance() {
-    const amt = document.getElementById('withdrawAmt').value;
-    const pin = document.getElementById('withdrawPin').value;
-    if (!amt || !pin) return showToast('Fill all fields', 'error');
-    try {
-      const r = await fetch(`${BASE}/card/withdraw`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ key: currentApiKey, pin, amount: amt })
-      });
-      const d = await r.json();
-      if (d.status !== 'success') return showToast(d.message, 'error');
-      document.getElementById('dispCardBal').textContent = parseFloat(d.data.card_balance).toFixed(2);
-      showToast(`✅ ₹${amt} withdrawn to wallet`, 'success');
-      loadTxns(currentApiKey);
-    } catch(e) { showToast('Network error', 'error'); }
-  }
-
-  async function changePin() {
-    const old_pin = document.getElementById('oldPin').value;
-    const new_pin = document.getElementById('newPin').value;
-    if (!old_pin || !new_pin) return showToast('Fill all fields', 'error');
-    try {
-      const r = await fetch(`${BASE}/card/set-pin`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ key: currentApiKey, old_pin, new_pin })
-      });
-      const d = await r.json();
-      if (d.status !== 'success') return showToast(d.message, 'error');
-      showToast('🔑 PIN updated!', 'success');
-    } catch(e) { showToast('Network error', 'error'); }
-  }
-
-  async function loadTxns(key) {
-    try {
-      const r = await fetch(`${BASE}/card/transactions?key=${key}`);
-      const d = await r.json();
-      const list = document.getElementById('txnList');
-      if (!d.data || !d.data.length) {
-        list.innerHTML = '<div class="empty-state">No transactions yet</div>';
-        return;
+      if (wasNew) {
+        // First time — show spin animation
+        isNewCard = true;
+        localStorage.setItem('card_created_' + d.data.card_number, '1');
+        showSpinAnim(d.data);
+        setTimeout(() => {
+          document.getElementById('spin-overlay').classList.remove('show');
+          renderCard(d.data, true);
+        }, 3000);
+      } else {
+        renderCard(d.data, false);
       }
-      list.innerHTML = d.data.map(t => {
-        const isLoad = t.type === 'card_load';
-        const date = new Date(t.tx_time).toLocaleString('en-IN',{
-          day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
-        });
-        return `
-        <div class="txn-item">
-          <div class="txn-left">
-            <div class="txn-icon ${isLoad?'load':'withdraw'}">${isLoad?'⬆️':'⬇️'}</div>
-            <div class="txn-info">
-              <div class="txn-type">${isLoad ? 'Wallet → Card' : 'Card → Wallet'}</div>
-              <div class="txn-date">${date}</div>
-            </div>
-          </div>
-          <div class="txn-amount ${isLoad?'load':'withdraw'}">${isLoad?'+':'-'}₹${t.amount}</div>
-        </div>`;
-      }).join('');
-    } catch(e) {}
+    } else {
+      document.getElementById('card-loading').style.display = 'none';
+      document.getElementById('card-create-prompt').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('card-loading').style.display = 'none';
+    toast('Network error', 'error');
   }
+}
+
+function showSpinAnim(data) {
+  document.getElementById('spin-num').textContent         = data.card_number;
+  document.getElementById('spin-name').textContent        = (data.holder_name || 'USER').toUpperCase();
+  document.getElementById('spin-display-num').textContent = data.card_number;
+
+  // Particles
+  const p = document.getElementById('spin-particles');
+  const items = ['✨','💳','⭐','🎉','💙'];
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div');
+    el.className = 'sp';
+    el.textContent = items[i % items.length];
+    el.style.left = (20 + Math.random() * 240) + 'px';
+    el.style.bottom = '0';
+    el.style.animationDuration = (1 + Math.random()) + 's';
+    el.style.animationDelay    = (Math.random() * .8) + 's';
+    p.appendChild(el);
+  }
+
+  document.getElementById('spin-overlay').classList.add('show');
+}
+
+function renderCard(data, showBanner) {
+  cardData = data;
+  document.getElementById('card-show').style.display = 'block';
+  document.getElementById('actions-panel').style.display = 'block';
+  document.getElementById('card-create-prompt').style.display = 'none';
+
+  document.getElementById('disp-number').textContent = data.card_number;
+  document.getElementById('disp-name').textContent   = (data.holder_name || 'USER').toUpperCase();
+  document.getElementById('disp-bal').textContent    = parseFloat(data.balance).toFixed(2);
+
+  const statusEl = document.getElementById('disp-status');
+  statusEl.textContent  = data.is_active ? 'Active' : 'Inactive';
+  statusEl.className    = 'card-status ' + (data.is_active ? 'active' : 'inactive');
+
+  document.getElementById('info-num').textContent    = data.card_number;
+  document.getElementById('info-date').textContent   = new Date(data.created_at).toLocaleDateString('en-IN');
+  document.getElementById('info-status').textContent = data.is_active ? '🟢 Active' : '🔴 Inactive';
+
+  if (showBanner) {
+    document.getElementById('pin-banner').style.display = 'flex';
+    setTimeout(() => document.getElementById('pin-banner').style.display = 'none', 8000);
+  }
+}
+
+// ── Card flip ─────────────────────────────────────────────────────────────────
+function flipCard() {
+  document.getElementById('card-inner').classList.toggle('flipped');
+}
+
+// ── Tab switcher ──────────────────────────────────────────────────────────────
+function switchMainTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0&&tab==='load')||(i===1&&tab==='withdraw')||(i===2&&tab==='pay'));
+  });
+  ['tab-load','tab-withdraw','tab-pay'].forEach(id => {
+    document.getElementById(id).style.display = id === 'tab-'+tab ? 'block' : 'none';
+  });
+}
+
+// ── Load to card ──────────────────────────────────────────────────────────────
+async function doLoad() {
+  const amt = document.getElementById('load-amt').value;
+  const pin = document.getElementById('load-pin').value;
+  if (!amt || !pin) return toast('Amount aur PIN daalo','error');
+  const btn = document.getElementById('load-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/card/load`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ amount: amt, pin })
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      document.getElementById('disp-bal').textContent = parseFloat(d.data.card_balance).toFixed(2);
+      toast(`✅ ₹${amt} card mein add!`, 'success');
+      document.getElementById('load-amt').value = '';
+      document.getElementById('load-pin').value = '';
+    } else toast(d.message||'Error','error');
+  } catch(e) { toast('Network error','error'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Withdraw to wallet ────────────────────────────────────────────────────────
+async function doWithdraw() {
+  const amt = document.getElementById('wd-amt').value;
+  const pin = document.getElementById('wd-pin').value;
+  if (!amt || !pin) return toast('Amount aur PIN daalo','error');
+  const btn = document.getElementById('wd-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/card/withdraw`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ amount: amt, pin })
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      document.getElementById('disp-bal').textContent = parseFloat(d.data.card_balance).toFixed(2);
+      toast(`✅ ₹${amt} wallet mein wapas!`, 'success');
+      document.getElementById('wd-amt').value = '';
+      document.getElementById('wd-pin').value = '';
+    } else toast(d.message||'Error','error');
+  } catch(e) { toast('Network error','error'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Auto name fetch ───────────────────────────────────────────────────────────
+function fetchName() {
+  const mobile = document.getElementById('pay-mobile').value.trim();
+  const chip   = document.getElementById('pay-name-chip');
+  if (mobile.length < 10) { chip.classList.remove('show'); return; }
+  clearTimeout(fetchTimeout);
+  fetchTimeout = setTimeout(async () => {
+    try {
+      const r = await fetch(`${API}/card/lookup/${mobile}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const d = await r.json();
+      if (d.status === 'success') {
+        document.getElementById('pay-name-text').textContent = d.name;
+        chip.classList.add('show');
+      } else { chip.classList.remove('show'); }
+    } catch(e) { chip.classList.remove('show'); }
+  }, 500);
+}
+
+// ── Pay via card ──────────────────────────────────────────────────────────────
+async function doPay() {
+  const mobile = document.getElementById('pay-mobile').value.trim();
+  const amt    = document.getElementById('pay-amt').value.trim();
+  const remark = document.getElementById('pay-remark').value.trim();
+  const pin    = document.getElementById('pay-pin').value.trim();
+
+  if (!mobile || mobile.length !== 10) return toast('10-digit mobile daalo','error');
+  if (!amt)    return toast('Amount daalo','error');
+  if (!pin)    return toast('Card PIN daalo','error');
+
+  const btn = document.getElementById('pay-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/card/pay`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ to_mobile: mobile, amount: amt, remark: remark||'', pin })
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      const rec = d.receipt;
+      document.getElementById('disp-bal').textContent = parseFloat(rec.card_balance).toFixed(2);
+
+      // Show receipt
+      document.getElementById('r-amount').textContent  = `₹${rec.amount}`;
+      document.getElementById('r-to').textContent      = rec.receiver_name;
+      document.getElementById('r-mobile').textContent  = rec.receiver_mobile;
+      document.getElementById('r-remark').textContent  = rec.remark;
+      document.getElementById('r-txid').textContent    = rec.tx_id;
+      document.getElementById('r-card').textContent    = rec.sender_card;
+      document.getElementById('r-cardbal').textContent = `₹${parseFloat(rec.card_balance).toFixed(2)}`;
+      document.getElementById('r-date').textContent    = rec.timestamp;
+      document.getElementById('receipt-overlay').classList.add('open');
+
+      // Clear fields
+      ['pay-mobile','pay-amt','pay-remark','pay-pin'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('pay-name-chip').classList.remove('show');
+    } else toast(d.message||'Payment failed','error');
+  } catch(e) { toast('Network error','error'); }
+  finally { btnLoad(btn, false); }
+}
+
+function closeReceipt() { document.getElementById('receipt-overlay').classList.remove('open'); }
+
+// ── Change PIN ────────────────────────────────────────────────────────────────
+async function changePin() {
+  const old_pin = document.getElementById('old-pin').value;
+  const new_pin = document.getElementById('new-pin').value;
+  if (!old_pin || !new_pin) return toast('Dono PIN daalo','error');
+  if (new_pin.length < 4)   return toast('Minimum 4 digit PIN','error');
+  const btn = document.getElementById('pin-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(`${API}/card/set-pin`, {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body: JSON.stringify({ old_pin, new_pin })
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      toast('🔑 PIN updated!','success');
+      document.getElementById('old-pin').value = '';
+      document.getElementById('new-pin').value = '';
+      document.getElementById('pin-banner').style.display = 'none';
+    } else toast(d.message||'Error','error');
+  } catch(e) { toast('Network error','error'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Transactions ──────────────────────────────────────────────────────────────
+async function loadTxns() {
+  const list = document.getElementById('txn-list');
+  list.innerHTML = '<div class="txn-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const r = await fetch(`${API}/card/transactions`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (!d.data || !d.data.length) { list.innerHTML='<div class="txn-empty">Koi transactions nahi hain abhi.</div>'; return; }
+    list.innerHTML = `<div class="txn-list">${d.data.map(t => {
+      const isLoad = t.type==='card_load', isPay = t.type==='card_pay';
+      const isRecv = t.type==='card_pay' && t.receiver_id?.toString() === (userData._id||'').toString();
+      const iconCls = isLoad ? 'load' : isPay ? 'pay' : 'withdraw';
+      const icon    = isLoad ? '⬆️' : isPay ? '💳' : '⬇️';
+      const sign    = isLoad||isRecv ? '+' : '-';
+      const amtCls  = isLoad||isRecv ? 'pos' : 'neg';
+      const date    = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true});
+      return `
+      <div class="txn-item">
+        <div class="txn-icon ${iconCls}">${icon}</div>
+        <div class="txn-info">
+          <div class="txn-type">${t.remark||t.type}</div>
+          <div class="txn-date">${date}</div>
+        </div>
+        <div class="txn-amt ${amtCls}">${sign}₹${t.amount}</div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) { list.innerHTML='<div class="txn-empty">Load failed.</div>'; }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function btnLoad(btn, on) { btn.classList.toggle('loading',on); btn.disabled=on; }
+
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.className='toast',3000);
+}
+
+// Init
+initCard();
 </script>
 </body>
 </html>
