@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>UNIO Card Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --blue-deep:   #0A2463;
+    --blue-mid:    #1E4FC7;
+    --blue-bright: #2F80ED;
+    --blue-light:  #EAF1FF;
+    --blue-glow:   #4FA3FF;
+    --white:       #FFFFFF;
+    --off-white:   #F5F8FF;
+    --text-dark:   #0A1628;
+    --text-muted:  #6B82A8;
+    --success:     #16C784;
+    --danger:      #F63C3C;
+    --border:      #D0DCF0;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Syne',sans-serif; background:var(--off-white); color:var(--text-dark); min-height:100vh; }
+
+  /* Login Screen */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%);
+  }
+  .login-box {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 32px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(10,36,99,0.35);
+  }
+  .login-box .icon { font-size: 44px; margin-bottom: 12px; }
+  .login-box h2 { font-size: 22px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+  .login-box p  { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Syne',sans-serif;
+    font-size: 16px;
+    letter-spacing: 8px;
+    text-align: center;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .login-box input:focus { border-color: var(--blue-bright); }
+  .login-error { color: var(--danger); font-size: 13px; margin-bottom: 10px; display:none; }
+
+  /* Header */
+  .admin-header {
+    background: var(--blue-deep);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-header .logo { font-size: 20px; font-weight: 800; color: white; }
+  .admin-header .logo span { color: var(--blue-glow); }
+  .admin-header .logout-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Syne',sans-serif;
+  }
+
+  /* Admin panel */
+  .admin-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 40px; }
+
+  /* Stats row */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(min-width:600px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 4px 16px rgba(10,36,99,0.07);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-card .num { font-family:'Space Mono',monospace; font-size: 22px; font-weight: 700; color: var(--blue-deep); }
+  .stat-card .lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; margin-top: 4px; }
+
+  /* Panel */
+  .panel {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(10,36,99,0.07);
+    border: 1px solid var(--border);
+  }
+  .panel-title {
+    font-size: 15px; font-weight: 700; color: var(--blue-deep);
+    margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 18px;
+    border: none; border-radius: 10px;
+    font-family: 'Syne',sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--blue-mid), var(--blue-bright)); color:white; }
+  .btn-danger  { background: linear-gradient(135deg, #e63939, #f97070); color:white; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-muted); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* Action row */
+  .action-row { display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* Table */
+  .tbl-wrap { overflow-x: auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th {
+    text-align:left; padding: 10px 12px;
+    background: var(--blue-light);
+    color: var(--blue-deep); font-weight: 700; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  th:first-child { border-radius: 8px 0 0 8px; }
+  th:last-child  { border-radius: 0 8px 8px 0; }
+  td { padding: 11px 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--off-white); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .badge-active   { background: #e8faf3; color: #0d7a4c; }
+  .badge-inactive { background: #fef0f0; color: #c0392b; }
+  .badge-load     { background: #e8faf3; color: #0d7a4c; }
+  .badge-withdraw { background: #fef0f0; color: #c0392b; }
+
+  .mono { font-family: 'Space Mono', monospace; font-size: 12px; }
+
+  /* Tabs */
+  .tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .tab-btn {
+    padding: 8px 16px; border: none; border-radius: 8px;
+    font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+    cursor:pointer; transition: all 0.2s;
+    background: var(--blue-light); color: var(--text-muted);
+  }
+  .tab-btn.active { background: var(--blue-mid); color: white; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom:24px; left:50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--blue-deep); color:white;
+    padding: 12px 24px; border-radius:30px;
+    font-size:14px; font-weight:600;
+    opacity:0; transition: all 0.3s; z-index:999;
+    white-space:nowrap; box-shadow: 0 8px 30px rgba(10,36,99,0.3);
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.success { background: #0d7a4c; }
+  .toast.error   { background: #c0392b; }
+
+  .confirm-box {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    display:flex; align-items:center; justify-content:center; z-index:998;
+  }
+  .confirm-inner {
+    background:white; border-radius:16px; padding:28px 24px;
+    width:300px; text-align:center;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.2);
+  }
+  .confirm-inner h4 { font-size:17px; margin-bottom:8px; color:var(--text-dark); }
+  .confirm-inner p  { font-size:13px; color:var(--text-muted); margin-bottom:20px; }
+  .confirm-btns { display:flex; gap:10px; }
+  .confirm-btns .btn { flex:1; }
+
+  .section { display:none; }
+  .section.active { display:block; }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="icon">🔐</div>
+    <h2>Card Admin</h2>
+    <p>Enter admin password to continue</p>
+    <div class="login-error" id="loginError">Wrong password. Try again.</div>
+    <input type="password" id="passInput" placeholder="••••" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn btn-primary" style="width:100%;padding:13px" onclick="doLogin()">Login →</button>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel" style="display:none">
+  <div class="admin-header">
+    <div class="logo">UNIO <span>●</span> Card Admin</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="admin-wrap">
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="num" id="st-total">—</div><div class="lbl">Total Cards</div></div>
+      <div class="stat-card"><div class="num" id="st-active">—</div><div class="lbl">Active</div></div>
+      <div class="stat-card"><div class="num" id="st-loaded">—</div><div class="lbl">Total Loaded ₹</div></div>
+      <div class="stat-card"><div class="num" id="st-withdrawn">—</div><div class="lbl">Total Withdrawn ₹</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('cards', this)">💳 All Cards</button>
+      <button class="tab-btn" onclick="showTab('txns', this)">📋 Transactions</button>
+    </div>
+
+    <!-- Cards section -->
+    <div class="section active" id="tab-cards">
+      <div class="panel">
+        <div class="panel-title">
+          💳 All Cards
+          <button class="btn btn-primary btn-sm" onclick="loadCards()">↻ Refresh</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Card Number</th>
+                <th>User</th>
+                <th>Mobile</th>
+                <th>Card Balance</th>
+                <th>Wallet Bal</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="cardsBody">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions section -->
+    <div class="section" id="tab-txns">
+      <div class="panel">
+        <div class="panel-title">
+          📋 Card Transactions
+          <div class="action-row">
+            <button class="btn btn-outline btn-sm" onclick="loadTxns()">↻ Refresh</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmClear('weekly')">🗑️ Clear Weekly</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmClear('all')">⚠️ Clear All</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Txn ID</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Remark</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="txnsBody">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="confirm-box" id="confirmBox" style="display:none">
+  <div class="confirm-inner">
+    <h4 id="confirmTitle">Confirm Action</h4>
+    <p id="confirmMsg">Are you sure?</p>
+    <div class="confirm-btns">
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" onclick="doConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const BASE = 'https://unio-hazel.vercel.app';
+  const PASS = '8435';
+  let pendingAction = null;
+
+  function showToast(msg, type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.className='toast', 3000);
+  }
+
+  function doLogin() {
+    const val = document.getElementById('passInput').value;
+    if (val === PASS) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadStats(); loadCards();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('passInput').value = '';
+    }
+  }
+
+  function logout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('passInput').value = '';
+    document.getElementById('loginError').style.display = 'none';
+  }
+
+  function showTab(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    if (id === 'txns') loadTxns();
+  }
+
+  async function loadStats() {
+    try {
+      const r = await fetch(`${BASE}/card-admin/stats?pass=${PASS}`);
+      const d = await r.json();
+      if (d.status !== 'success') return;
+      document.getElementById('st-total').textContent     = d.data.total_cards;
+      document.getElementById('st-active').textContent    = d.data.active_cards;
+      document.getElementById('st-loaded').textContent    = '₹' + d.data.total_loaded.toFixed(0);
+      document.getElementById('st-withdrawn').textContent = '₹' + d.data.total_withdrawn.toFixed(0);
+    } catch(e) {}
+  }
+
+  async function loadCards() {
+    try {
+      const r = await fetch(`${BASE}/card-admin/cards?pass=${PASS}`);
+      const d = await r.json();
+      const tbody = document.getElementById('cardsBody');
+      if (!d.data || !d.data.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">No cards yet</td></tr>';
+        return;
+      }
+      tbody.innerHTML = d.data.map(c => {
+        const u = c.user_id || {};
+        const created = new Date(c.created_at).toLocaleDateString('en-IN');
+        return `<tr>
+          <td class="mono">${c.card_number}</td>
+          <td>${u.name || '—'}</td>
+          <td class="mono">${u.mobile || '—'}</td>
+          <td class="mono">₹${(c.balance||0).toFixed(2)}</td>
+          <td class="mono">₹${(u.balance||0).toFixed(2)}</td>
+          <td><span class="badge ${c.is_active ? 'badge-active' : 'badge-inactive'}">${c.is_active ? 'Active' : 'Inactive'}</span></td>
+          <td>
+            <button class="btn btn-sm ${c.is_active ? 'btn-danger' : 'btn-primary'}" onclick="toggleCard('${c._id}')">
+              ${c.is_active ? 'Deactivate' : 'Activate'}
+            </button>
+          </td>
+        </tr>`;
+      }).join('');
+    } catch(e) { showToast('Failed to load cards', 'error'); }
+  }
+
+  async function loadTxns() {
+    try {
+      const r = await fetch(`${BASE}/card-admin/transactions?pass=${PASS}`);
+      const d = await r.json();
+      const tbody = document.getElementById('txnsBody');
+      if (!d.data || !d.data.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted)">No transactions</td></tr>';
+        return;
+      }
+      tbody.innerHTML = d.data.map(t => {
+        const u = t.sender_id || {};
+        const dt = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+        const isLoad = t.type === 'card_load';
+        return `<tr>
+          <td class="mono">${t.tx_id}</td>
+          <td>${u.name || '—'} <span style="color:var(--text-muted);font-size:11px">${u.mobile||''}</span></td>
+          <td><span class="badge ${isLoad ? 'badge-load' : 'badge-withdraw'}">${isLoad ? 'Wallet→Card' : 'Card→Wallet'}</span></td>
+          <td class="mono" style="color:${isLoad ? 'var(--success)' : 'var(--danger)'}">${isLoad?'+':'-'}₹${t.amount}</td>
+          <td>${t.remark || '—'}</td>
+          <td style="font-size:12px;color:var(--text-muted)">${dt}</td>
+        </tr>`;
+      }).join('');
+    } catch(e) { showToast('Failed to load transactions', 'error'); }
+  }
+
+  async function toggleCard(cardId) {
+    try {
+      const r = await fetch(`${BASE}/card-admin/toggle/${cardId}?pass=${PASS}`, { method:'PATCH' });
+      const d = await r.json();
+      if (d.status !== 'success') return showToast(d.message, 'error');
+      showToast(`Card ${d.is_active ? 'activated' : 'deactivated'}`, 'success');
+      loadCards();
+    } catch(e) { showToast('Error', 'error'); }
+  }
+
+  function confirmClear(type) {
+    pendingAction = type;
+    document.getElementById('confirmTitle').textContent = type === 'weekly' ? '🗑️ Clear Weekly Transactions' : '⚠️ Clear ALL Transactions';
+    document.getElementById('confirmMsg').textContent = type === 'weekly'
+      ? 'This will delete all card transactions older than 7 days. Cannot be undone.'
+      : 'This will delete ALL card transactions permanently. Are you absolutely sure?';
+    document.getElementById('confirmBox').style.display = 'flex';
+  }
+  function closeConfirm() { document.getElementById('confirmBox').style.display = 'none'; pendingAction = null; }
+
+  async function doConfirm() {
+    closeConfirm();
+    const endpoint = pendingAction === 'weekly' ? 'clear-weekly' : 'clear-all';
+    try {
+      const r = await fetch(`${BASE}/card-admin/${endpoint}?pass=${PASS}`, { method:'DELETE' });
+      const d = await r.json();
+      showToast(d.message, d.status === 'success' ? 'success' : 'error');
+      loadTxns(); loadStats();
+    } catch(e) { showToast('Error', 'error'); }
+  }
+</script>
+</body>
+</html>
+
