@@ -19,7 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
 
-/* \u2500\u2500 Header \u2500\u2500 */
+/* ── Header ── */
 .header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
 .btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
@@ -28,7 +28,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 .container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
 
-/* \u2500\u2500 Tab Bar \u2500\u2500 */
+/* ── Tab Bar ── */
 .tab-bar{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--white);border-radius:1.25rem;padding:4px;gap:3px;margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--border)}
 .tab{padding:.65rem .5rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:1rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;transition:all .2s;position:relative}
 .tab.active{background:var(--blue);color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
@@ -37,7 +37,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .section{display:none}
 .section.active{display:block}
 
-/* \u2500\u2500 Circle Banner \u2500\u2500 */
+/* ── Circle Banner ── */
 .circle-banner{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
 .circle-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:rgba(255,255,255,.06);border-radius:50%}
 .banner-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;position:relative;z-index:1}
@@ -49,14 +49,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .b-stat-val{font-size:1.4rem;font-weight:900;letter-spacing:-1px}
 .b-stat-lbl{font-size:.58rem;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.06em}
 
-/* \u2500\u2500 Card \u2500\u2500 */
+/* ── Card ── */
 .card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
 .card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
 .card-header-icon{width:32px;height:32px;border-radius:.65rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
 .card-header-title{font-size:.8rem;font-weight:800;color:var(--text)}
 .card-body{padding:1.25rem}
 
-/* \u2500\u2500 Form \u2500\u2500 */
+/* ── Form ── */
 .input-wrap{margin-bottom:.85rem}
 .input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
 .input-row{position:relative}
@@ -65,13 +65,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .name-chip{display:none;align-items:center;gap:.4rem;background:var(--blue-light);border-radius:.5rem;padding:.35rem .75rem;font-size:.72rem;font-weight:700;color:var(--blue);margin-top:.4rem}
 .name-chip.show{display:flex}
 
-/* \u2500\u2500 Mode Toggle \u2500\u2500 */
+/* ── Mode Toggle ── */
 .mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:.85rem;padding:3px;gap:3px;margin-bottom:.85rem}
 .mode-opt{padding:.65rem;text-align:center;font-size:.65rem;font-weight:800;border-radius:.75rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
 .mode-opt.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .mode-desc{font-size:.65rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:.85rem;padding:0 .5rem;line-height:1.5}
 
-/* \u2500\u2500 Buttons \u2500\u2500 */
+/* ── Buttons ── */
 .btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
 .btn:active:not(:disabled){transform:scale(.97)}
 .btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
@@ -84,7 +84,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .btn:disabled{opacity:.6;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* \u2500\u2500 Member / Payer Items \u2500\u2500 */
+/* ── Member / Payer Items ── */
 .member-item{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--border-soft)}
 .member-item:last-child{border-bottom:none}
 .member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
@@ -98,18 +98,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .s-pending{background:var(--orange-light);color:var(--orange)}
 .s-rejected{background:var(--red-light);color:var(--red)}
 
-/* \u2500\u2500 Pay Tab \u2500\u2500 */
+/* ── Pay Tab ── */
 .payer-select-item{padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border-soft);cursor:pointer;transition:background .15s}
 .payer-select-item:hover{background:var(--blue-light)}
 .payer-select-item.selected{background:var(--blue-light);border-left:3px solid var(--blue)}
 .payer-select-item:last-child{border-bottom:none}
 
-/* \u2500\u2500 Empty State \u2500\u2500 */
+/* ── Empty State ── */
 .empty-state{text-align:center;padding:2.5rem 1.5rem;color:var(--muted)}
 .empty-state i{font-size:2.2rem;opacity:.3;margin-bottom:.75rem;display:block}
 .empty-state p{font-size:.78rem;font-weight:700}
 
-/* \u2500\u2500 Receipt \u2500\u2500 */
+/* ── Receipt ── */
 .receipt-overlay{position:fixed;inset:0;background:rgba(10,36,99,.6);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem}
 .receipt-overlay.open{display:flex}
 .receipt-box{background:var(--white);border-radius:2rem;padding:1.75rem 1.5rem;width:100%;max-width:380px}
@@ -119,7 +119,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .r-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase}
 .r-val{font-size:.82rem;font-weight:800;color:var(--text)}
 
-/* \u2500\u2500 Pending Approvals \u2500\u2500 */
+/* ── Pending Approvals ── */
 .approval-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border-soft)}
 .approval-item:last-child{border-bottom:none}
 .approval-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
@@ -154,9 +154,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
       <div><div class="banner-title">My Circle</div><div class="banner-desc">Manage your trusted payers</div></div>
     </div>
     <div class="banner-stats">
-      <div class="b-stat"><div class="b-stat-val" id="stat-members">\u2013</div><div class="b-stat-lbl">Members</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-payers">\u2013</div><div class="b-stat-lbl">My Payers</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-pending">\u2013</div><div class="b-stat-lbl">Pending</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-members">0</div><div class="b-stat-lbl">Members</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-payers">0</div><div class="b-stat-lbl">My Payers</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-pending">0</div><div class="b-stat-lbl">Pending</div></div>
     </div>
   </div>
 
@@ -166,10 +166,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     <div class="tab" id="tab-pay" onclick="switchTab('pay')"><i class="fa-solid fa-paper-plane"></i><br>Pay Now</div>
   </div>
 
-  <!-- \u2500\u2500 MY CIRCLE TAB \u2500\u2500 -->
+  <!-- ── MY CIRCLE TAB ── -->
   <div class="section active" id="sec-circle">
     <div class="card">
-      <div class="card-header"><div class="card-header-title">\u2795 Add to My Circle</div></div>
+      <div class="card-header"><div class="card-header-title">&#10133; Add to My Circle</div></div>
       <div class="card-body">
         <div class="input-wrap">
           <label class="input-label">Mobile Number</label>
@@ -179,8 +179,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
           <div class="name-chip" id="name-chip"><i class="fa-solid fa-circle-check"></i> <span id="chip-name"></span></div>
         </div>
         <div class="mode-toggle">
-          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">\u2705 Approve</div>
-          <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">\u26a1 Auto</div>
+          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">&#9989; Approve</div>
+          <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">&#9889; Auto</div>
         </div>
         <p class="mode-desc" id="mode-desc">Member ko har payment pe approve karna hoga</p>
         <button class="btn btn-blue" id="invite-btn" onclick="sendInvite()">
@@ -195,7 +195,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </div>
   </div>
 
-  <!-- \u2500\u2500 MY PAYERS TAB \u2500\u2500 -->
+  <!-- ── MY PAYERS TAB ── -->
   <div class="section" id="sec-payers">
     <div class="card">
       <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-hand-holding-dollar"></i> Circles I'm Part Of</div></div>
@@ -207,7 +207,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </div>
   </div>
 
-  <!-- \u2500\u2500 PAY NOW TAB \u2500\u2500 -->
+  <!-- ── PAY NOW TAB ── -->
   <div class="section" id="sec-pay">
     <div class="card">
       <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-paper-plane"></i> Pay From Circle Member</div></div>
@@ -217,8 +217,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
           <div id="payer-picker"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading members...</div></div>
         </div>
         <div class="input-wrap">
-          <label class="input-label">Amount (\u20b9)</label>
-          <input class="inp" id="pay-amount" type="number" placeholder="\u20b9 0.00" min="1">
+          <label class="input-label">Amount (&#8377;)</label>
+          <input class="inp" id="pay-amount" type="number" placeholder="&#8377; 0.00" min="1">
         </div>
         <div class="input-wrap">
           <label class="input-label">Remark (Optional)</label>
@@ -236,12 +236,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 <!-- Receipt Modal -->
 <div class="receipt-overlay" id="receipt-overlay">
   <div class="receipt-box">
-    <div class="receipt-title">🧾 Payment Receipt</div>
-    <div class="receipt-row"><span class="r-label">Status</span><span class="r-val" id="r-status">–</span></div>
+    <div class="receipt-title">&#129534; Payment Receipt</div>
+    <div class="receipt-row"><span class="r-label">Status</span><span class="r-val" id="r-status">-</span></div>
     <div class="receipt-row"><span class="r-label">Txn ID</span><span class="r-val" id="r-txid" style="font-size:.7rem;font-family:monospace">–</span></div>
-    <div class="receipt-row"><span class="r-label">Amount</span><span class="r-val" id="r-amount">–</span></div>
-    <div class="receipt-row"><span class="r-label">From</span><span class="r-val" id="r-from">–</span></div>
-    <div class="receipt-row"><span class="r-label">Mode</span><span class="r-val" id="r-mode">–</span></div>
+    <div class="receipt-row"><span class="r-label">Amount</span><span class="r-val" id="r-amount">-</span></div>
+    <div class="receipt-row"><span class="r-label">From</span><span class="r-val" id="r-from">-</span></div>
+    <div class="receipt-row"><span class="r-label">Mode</span><span class="r-val" id="r-mode">-</span></div>
     <div class="receipt-row"><span class="r-label">Time</span><span class="r-val" id="r-time" style="font-size:.7rem">–</span></div>
     <button class="btn btn-blue" onclick="closeReceipt()" style="margin-top:1.25rem">
       <i class="fa-solid fa-check"></i> Done
@@ -373,7 +373,7 @@ async function loadMyCircle() {
         </div>
       </div>`).join('');
   } catch(e) {
-    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua. Retry karo.</p></div>';
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadMyCircle()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
   }
 }
 
@@ -456,7 +456,7 @@ async function loadMyPayers() {
       approvalCard.style.display = 'none';
     }
   } catch(e) {
-    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua. Retry karo.</p></div>';
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadMyPayers()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
   }
 }
 
@@ -520,7 +520,7 @@ async function loadPayerPicker() {
         </div>
       </div>`).join('');
   } catch(e) {
-    picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p></div>';
+    picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadPayerPicker()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
   }
 }
 
@@ -551,7 +551,7 @@ async function doQuickPay() {
     if (d.status === 'success') {
       const rec = d.receipt || {};
       document.getElementById('r-status').textContent = rec.status === 'pending' ? '⏳ Pending Approval' : '✅ Success';
-      document.getElementById('r-txid').textContent   = rec.tx_id || '–';
+      document.getElementById('r-txid').textContent   = rec.tx_id || '-';
       document.getElementById('r-amount').textContent = '₹' + (rec.amount || amount);
       document.getElementById('r-from').textContent   = rec.from_name + ' (' + rec.from_mobile + ')';
       document.getElementById('r-mode').textContent   = rec.mode === 'auto' ? '⚡ Auto Deduct' : '✅ Approval Required';
@@ -584,6 +584,9 @@ function toast(msg, type = '') {
 // ── Init ──────────────────────────────────────────
 (function init() {
   if (!token) {
+    document.getElementById('circle-list').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle. Token nahi mila.</p></div>';
+    document.getElementById('payers-list').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle.</p></div>';
+    document.getElementById('payer-picker').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle.</p></div>';
     toast('Token nahi mila. Login karo.', 'error');
     return;
   }
