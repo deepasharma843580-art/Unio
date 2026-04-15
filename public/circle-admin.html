@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIO Admin — Circle Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;--blue-light:#eff6ff;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --red:#dc2626;--red-light:#fee2e2;
+  --orange:#ea580c;
+  --bg:#f0f4ff;--white:#fff;
+  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;
+  --shadow:0 4px 24px rgba(0,87,255,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh}
+
+/* ── Lock screen ── */
+.lock-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid),var(--blue));display:flex;align-items:center;justify-content:center;z-index:1000;padding:1.5rem}
+.lock-box{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:2rem;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;animation:fadeUp .5s cubic-bezier(.34,1.2,.64,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.lock-icon{width:72px;height:72px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.8rem;color:white}
+.lock-title{font-size:1.2rem;font-weight:900;color:white;margin-bottom:.35rem;letter-spacing:-.02em}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.6);font-weight:500;margin-bottom:1.5rem}
+.lock-input{width:100%;padding:1rem;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:1rem;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:1.2rem;font-weight:700;text-align:center;letter-spacing:.3em;outline:none;margin-bottom:1rem;transition:.2s}
+.lock-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:.1em}
+.lock-input:focus{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.15)}
+.lock-btn{width:100%;padding:.9rem;background:white;color:var(--blue-deep);border:none;border-radius:1rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:.2s}
+.lock-btn:active{transform:scale(.97)}
+.lock-error{font-size:.75rem;color:#fca5a5;font-weight:700;margin-top:.75rem;display:none}
+
+/* ── App ── */
+.app{display:none}
+.app.visible{display:block}
+
+/* ── Header ── */
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:50}
+.header-left{display:flex;align-items:center;gap:.85rem}
+.logo{font-size:1.3rem;font-weight:900;color:var(--blue);font-style:italic}
+.header-badge{background:var(--red-light);color:var(--red);font-size:.6rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.logout-btn{background:var(--red-light);color:var(--red);border:none;padding:.5rem .85rem;border-radius:.65rem;font-size:.7rem;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
+
+/* ── Container ── */
+.container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
+
+/* ── Stats Grid ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat-card{background:white;border-radius:1.25rem;padding:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+.stat-num{font-size:1.8rem;font-weight:900;letter-spacing:-1px}
+.stat-lbl{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem}
+.stat-sub{font-size:.62rem;color:var(--muted);margin-top:.15rem}
+
+/* ── Card ── */
+.card{background:white;border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:1rem;overflow:hidden}
+.card-header{padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid #f1f5f9}
+.card-icon{width:36px;height:36px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.card-title{font-size:.88rem;font-weight:900;color:var(--text)}
+.card-sub{font-size:.62rem;color:var(--muted);font-weight:600}
+.card-body{padding:1.25rem}
+
+/* ── Delete Zone ── */
+.delete-zone{background:linear-gradient(135deg,#fff5f5,#fee2e2);border:2px dashed #fca5a5;border-radius:1.25rem;padding:1.5rem;text-align:center;margin-bottom:1rem}
+.delete-zone-icon{font-size:2.5rem;margin-bottom:.75rem;display:block}
+.delete-zone-title{font-size:.95rem;font-weight:900;color:var(--red);margin-bottom:.35rem}
+.delete-zone-desc{font-size:.72rem;color:#b91c1c;font-weight:500;line-height:1.5;margin-bottom:1.25rem}
+.days-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1rem}
+.day-opt{padding:.55rem .25rem;background:white;border:2px solid var(--border);border-radius:.65rem;font-size:.65rem;font-weight:800;color:var(--muted);cursor:pointer;text-align:center;transition:.2s}
+.day-opt.active{background:var(--red);border-color:var(--red);color:white}
+
+/* ── Btn ── */
+.btn{padding:.9rem 1.25rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;transition:.2s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-full{width:100%}
+.btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white;box-shadow:0 4px 16px rgba(220,38,38,.25)}
+.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 4px 16px rgba(0,87,255,.2)}
+.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spin{display:block}
+.btn.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Txn Log ── */
+.txn-item{padding:.9rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid #f8fafc}
+.txn-item:last-child{border-bottom:none}
+.txn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.txn-name{font-size:.78rem;font-weight:700;color:var(--text)}
+.txn-meta{font-size:.62rem;color:var(--muted);font-weight:600;margin-top:1px}
+.txn-amt{margin-left:auto;font-size:.85rem;font-weight:900}
+.txn-amt.cr{color:var(--green)}
+.txn-amt.dr{color:var(--red)}
+.type-badge{font-size:.55rem;font-weight:800;padding:.15rem .45rem;border-radius:20px;text-align:right;margin-top:2px;display:inline-block}
+.type-circle{background:#eff6ff;color:var(--blue)}
+.type-transfer{background:#f0fdf4;color:var(--green)}
+.type-card{background:#fdf4ff;color:#9333ea}
+
+/* ── Result bar ── */
+.result-bar{background:var(--green-light);border:1px solid #bbf7d0;border-radius:1rem;padding:.85rem 1.25rem;font-size:.78rem;font-weight:700;color:var(--green);display:none;margin-bottom:1rem;align-items:center;gap:.5rem}
+.result-bar.show{display:flex}
+.result-bar.error{background:var(--red-light);border-color:#fca5a5;color:var(--red)}
+
+/* ── Confirm Modal ── */
+.confirm-overlay{position:fixed;inset:0;background:rgba(10,36,99,.5);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:white;border-radius:2rem;padding:2rem 1.5rem;width:100%;max-width:380px;text-align:center;animation:fadeUp .3s cubic-bezier(.34,1.2,.64,1)}
+.confirm-icon{width:60px;height:60px;background:var(--red-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;font-size:1.5rem;color:var(--red)}
+.confirm-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:.35rem}
+.confirm-desc{font-size:.75rem;color:var(--muted);font-weight:500;margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:600;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+
+.empty{text-align:center;padding:2rem 1rem;color:var(--muted)}
+.empty i{font-size:2rem;margin-bottom:.5rem;display:block;opacity:.3}
+.empty p{font-size:.75rem;font-weight:600}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeUp .35s ease forwards}
+</style>
+</head>
+<body>
+
+<!-- ── Lock Screen ── -->
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <div class="lock-title">UNIO Admin Panel</div>
+    <div class="lock-sub">Enter 4-digit admin password to continue</div>
+    <input class="lock-input" type="password" id="lock-input" maxlength="4" placeholder="••••" inputmode="numeric"
+      onkeydown="if(event.key==='Enter')unlockAdmin()"/>
+    <button class="lock-btn" onclick="unlockAdmin()">
+      <i class="fa-solid fa-unlock"></i> &nbsp;Unlock
+    </button>
+    <div class="lock-error" id="lock-error">❌ Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ── Main App ── -->
+<div class="app" id="app">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">UNIO</div>
+      <div class="header-badge"><i class="fa-solid fa-shield"></i> Admin</div>
+    </div>
+    <button class="logout-btn" onclick="lockPanel()"><i class="fa-solid fa-lock"></i> Lock</button>
+  </div>
+
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats-grid fade-in">
+      <div class="stat-card">
+        <div class="stat-num" id="st-total" style="color:var(--blue)">—</div>
+        <div class="stat-lbl">Total Txns</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="st-7d" style="color:var(--orange)">—</div>
+        <div class="stat-lbl">Last 7 Days</div>
+        <div class="stat-sub">Deletable</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="st-circle" style="color:var(--blue)">—</div>
+        <div class="stat-lbl">Circle Txns</div>
+        <div class="stat-sub">7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="st-users" style="color:var(--green)">—</div>
+        <div class="stat-lbl">Circle Members</div>
+        <div class="stat-sub">Active</div>
+      </div>
+    </div>
+
+    <!-- Result bar -->
+    <div class="result-bar" id="result-bar">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="result-text">Done</span>
+    </div>
+
+    <!-- Delete Zone -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--red-light)"><i class="fa-solid fa-trash" style="color:var(--red)"></i></div>
+        <div>
+          <div class="card-title">Delete Transactions</div>
+          <div class="card-sub">Irreversible — choose carefully</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="delete-zone">
+          <span class="delete-zone-icon">🗑️</span>
+          <div class="delete-zone-title">Delete Old Transactions</div>
+          <div class="delete-zone-desc">Select the time range and transaction type to permanently delete records from the database. This action cannot be undone.</div>
+
+          <label style="font-size:.62rem;font-weight:800;color:#b91c1c;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.5rem">Select Days Range</label>
+          <div class="days-selector">
+            <div class="day-opt active" id="d-7"  onclick="setDays(7)">7 Days</div>
+            <div class="day-opt"        id="d-3"  onclick="setDays(3)">3 Days</div>
+            <div class="day-opt"        id="d-1"  onclick="setDays(1)">Today</div>
+            <div class="day-opt"        id="d-30" onclick="setDays(30)">30 Days</div>
+          </div>
+
+          <label style="font-size:.62rem;font-weight:800;color:#b91c1c;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.5rem;margin-top:.75rem">Select Type</label>
+          <div class="days-selector" style="grid-template-columns:1fr 1fr 1fr">
+            <div class="day-opt active" id="t-all"    onclick="setType('all')">All</div>
+            <div class="day-opt"        id="t-circle" onclick="setType('circle_pay')">Circle</div>
+            <div class="day-opt"        id="t-card"   onclick="setType('card_pay')">Card</div>
+          </div>
+        </div>
+
+        <button class="btn btn-red btn-full" id="delete-btn" onclick="confirmDelete()">
+          <div class="spin"></div>
+          <span class="btn-text"><i class="fa-solid fa-trash"></i> &nbsp;Delete <span id="delete-label">Last 7 Days — All Types</span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent Transactions Log -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--blue-light)"><i class="fa-solid fa-receipt" style="color:var(--blue)"></i></div>
+        <div>
+          <div class="card-title">Recent Transactions</div>
+          <div class="card-sub">Last 20 circle/card transactions</div>
+        </div>
+      </div>
+      <div id="txn-log">
+        <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      </div>
+    </div>
+
+    <!-- Circle Members Log -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--blue-light)"><i class="fa-solid fa-circle-nodes" style="color:var(--blue)"></i></div>
+        <div>
+          <div class="card-title">Active Circle Members</div>
+          <div class="card-sub">All active circle relationships</div>
+        </div>
+      </div>
+      <div id="circle-log">
+        <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="confirm-title">Are you sure?</div>
+    <div class="confirm-desc" id="confirm-desc">Yeh transactions permanently delete ho jayenge. Undo nahi hoga.</div>
+    <div class="confirm-btns">
+      <button class="btn btn-red btn-full" id="confirm-yes" onclick="doDelete()">
+        <div class="spin"></div>
+        <span class="btn-text"><i class="fa-solid fa-trash"></i> Delete</span>
+      </button>
+      <button class="btn btn-full" style="background:#f1f5f9;color:var(--muted)" onclick="document.getElementById('confirm-overlay').classList.remove('open')">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASS = '8435';
+const API   = '';
+const token = localStorage.getItem('token');
+
+let selectedDays = 7;
+let selectedType = 'all';
+
+// ── Lock / Unlock ────────────────────────────────────────────────
+function unlockAdmin() {
+  const val = document.getElementById('lock-input').value;
+  if (val === ADMIN_PASS) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    loadStats();
+    loadTxnLog();
+    loadCircleLog();
+  } else {
+    const err = document.getElementById('lock-error');
+    err.style.display = 'block';
+    document.getElementById('lock-input').value = '';
+    setTimeout(() => err.style.display = 'none', 2500);
+  }
+}
+
+function lockPanel() {
+  document.getElementById('lock-screen').style.display = 'flex';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('lock-input').value = '';
+}
+
+document.getElementById('lock-input').addEventListener('keyup', e => {
+  if (e.key === 'Enter') unlockAdmin();
+});
+
+// ── Days / Type selectors ────────────────────────────────────────
+function setDays(d) {
+  selectedDays = d;
+  ['7','3','1','30'].forEach(v => document.getElementById('d-'+v).classList.toggle('active', v == d));
+  updateDeleteLabel();
+}
+
+function setType(t) {
+  selectedType = t;
+  ['all','circle_pay','card_pay'].forEach(v => document.getElementById('t-'+v).classList.toggle('active', v === t));
+  updateDeleteLabel();
+}
+
+function updateDeleteLabel() {
+  const typeLabel = selectedType === 'all' ? 'All Types' : selectedType === 'circle_pay' ? 'Circle' : 'Card';
+  document.getElementById('delete-label').textContent = `Last ${selectedDays} Days — ${typeLabel}`;
+}
+
+// ── Load Stats ───────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/admin/circle-stats`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (d.status === 'success') {
+      document.getElementById('st-total').textContent  = d.total   ?? '—';
+      document.getElementById('st-7d').textContent     = d.last7d  ?? '—';
+      document.getElementById('st-circle').textContent = d.circle  ?? '—';
+      document.getElementById('st-users').textContent  = d.members ?? '—';
+    }
+  } catch(e) {}
+}
+
+// ── Load Txn Log ─────────────────────────────────────────────────
+async function loadTxnLog() {
+  const el = document.getElementById('txn-log');
+  try {
+    const r = await fetch(`${API}/admin/circle-txns`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (!d.data || !d.data.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-receipt"></i><p>No transactions</p></div>';
+      return;
+    }
+    el.innerHTML = d.data.map(t => {
+      const time = new Date(t.tx_time).toLocaleString('en-IN', {
+        day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Asia/Kolkata'
+      });
+      const isCircle = t.type?.includes('circle');
+      const isCard   = t.type?.includes('card');
+      const dotColor = isCircle ? 'var(--blue)' : isCard ? '#9333ea' : 'var(--green)';
+      const typeClass= isCircle ? 'type-circle' : isCard ? 'type-card' : 'type-transfer';
+      const typeLabel= t.type?.replace(/_/g,' ') || '—';
+      return `
+      <div class="txn-item">
+        <div class="txn-dot" style="background:${dotColor}"></div>
+        <div>
+          <div class="txn-name">${t.sender_id?.name||'?'} → ${t.receiver_id?.name||'?'}</div>
+          <div class="txn-meta">${time} &bull; ${t.tx_id}</div>
+          <span class="type-badge ${typeClass}">${typeLabel}</span>
+        </div>
+        <div style="text-align:right">
+          <div class="txn-amt dr">₹${parseFloat(t.amount).toFixed(2)}</div>
+          <div style="font-size:.6rem;color:var(--muted);font-weight:600;margin-top:2px">${t.status}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><p>Load failed</p></div>';
+  }
+}
+
+// ── Load Circle Log ──────────────────────────────────────────────
+async function loadCircleLog() {
+  const el = document.getElementById('circle-log');
+  try {
+    const r = await fetch(`${API}/admin/circle-members`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const d = await r.json();
+    if (!d.data || !d.data.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-circle-nodes"></i><p>No circle members</p></div>';
+      return;
+    }
+    document.getElementById('st-users').textContent = d.data.length;
+    el.innerHTML = d.data.map(c => {
+      const oname = c.owner_id?.name   || '?';
+      const mname = c.member_id?.name  || '?';
+      const omob  = c.owner_id?.mobile || '';
+      const mmob  = c.member_id?.mobile|| '';
+      const mClass= c.payment_mode === 'auto' ? 'type-card' : 'type-circle';
+      const mLabel= c.payment_mode === 'auto' ? '⚡ Auto' : '✅ Approve';
+      return `
+      <div class="txn-item">
+        <div class="txn-dot" style="background:var(--blue)"></div>
+        <div>
+          <div class="txn-name">${oname} → ${mname}</div>
+          <div class="txn-meta">${omob} → ${mmob}</div>
+          <span class="type-badge ${mClass}">${mLabel}</span>
+        </div>
+        <div style="text-align:right">
+          <span style="font-size:.62rem;font-weight:800;padding:.2rem .5rem;border-radius:20px;background:var(--green-light);color:var(--green)">Active</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><p>Load failed</p></div>';
+  }
+}
+
+// ── Confirm Delete ───────────────────────────────────────────────
+function confirmDelete() {
+  const typeLabel = selectedType === 'all' ? 'all types' : selectedType.replace(/_/g,' ');
+  document.getElementById('confirm-desc').textContent =
+    `Last ${selectedDays} day(s) ke "${typeLabel}" transactions permanently delete ho jayenge. Undo nahi hoga.`;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+// ── Do Delete ────────────────────────────────────────────────────
+async function doDelete() {
+  const btn = document.getElementById('confirm-yes');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  try {
+    const body = { days: selectedDays };
+    if (selectedType !== 'all') body.type = selectedType;
+
+    const r = await fetch(`${API}/admin/circle-delete-txns`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    document.getElementById('confirm-overlay').classList.remove('open');
+
+    if (d.status === 'success') {
+      const bar = document.getElementById('result-bar');
+      bar.className = 'result-bar show';
+      document.getElementById('result-text').textContent = `✅ ${d.deleted} transactions deleted successfully!`;
+      setTimeout(() => bar.classList.remove('show'), 5000);
+      loadStats();
+      loadTxnLog();
+    } else toast(d.message || 'Delete failed', 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 3200);
+}
+</script>
+</body>
+</html>
