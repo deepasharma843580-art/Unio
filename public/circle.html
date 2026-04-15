@@ -4,593 +4,694 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>UNIO Circle</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 :root{
-  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;--blue-light:#eff6ff;--blue-glow:#4fa3ff;
+  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;
+  --blue-light:#eff6ff;--blue-glow:#4fa3ff;
   --green:#16a34a;--green-light:#f0fdf4;
   --red:#dc2626;--red-light:#fee2e2;
   --orange:#ea580c;--orange-light:#fff7ed;
-  --bg:#f0f4ff;--white:#ffffff;
-  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;--border-soft:#f1f5f9;
+  --purple:#7c3aed;--purple-light:#f3f0ff;
+  --bg:#f0f4ff;--white:#fff;
+  --text:#0f172a;--muted:#64748b;
+  --border:#e2e8f0;--border-soft:#f1f5f9;
   --shadow:0 4px 24px rgba(0,87,255,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px}
 
 /* ── Header ── */
-.header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
-.btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
-.header-sub{font-size:.62rem;font-weight:600;color:var(--muted)}
-.header-logo{font-size:1.3rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em;margin-left:auto}
+.header{background:var(--white);padding:.85rem 1.1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
+.back-btn{width:34px;height:34px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none}
+.h-title{font-size:.95rem;font-weight:900;color:var(--text)}
+.h-sub{font-size:.58rem;font-weight:600;color:var(--muted)}
+.h-logo{font-size:1.2rem;font-weight:900;color:var(--blue);font-style:italic;margin-left:auto;letter-spacing:-.03em}
 
-.container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
+.container{max-width:480px;margin:0 auto;padding:1.1rem .9rem}
 
 /* ── Tab Bar ── */
-.tab-bar{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--white);border-radius:1.25rem;padding:4px;gap:3px;margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--border)}
-.tab{padding:.65rem .5rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:1rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;transition:all .2s;position:relative}
+.tab-bar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--white);border-radius:1.1rem;padding:3px;gap:2px;margin-bottom:1.1rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.tab{padding:.6rem .3rem;text-align:center;font-size:.55rem;font-weight:800;border-radius:.85rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s;position:relative;line-height:1.3}
+.tab .tab-icon{display:block;font-size:.95rem;margin-bottom:.15rem}
 .tab.active{background:var(--blue);color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
-.tab-badge{position:absolute;top:4px;right:6px;background:var(--red);color:white;font-size:.5rem;font-weight:900;padding:1px 5px;border-radius:20px;min-width:14px}
+.tab-badge{position:absolute;top:3px;right:5px;background:var(--red);color:white;font-size:.45rem;font-weight:900;padding:1px 4px;border-radius:20px;min-width:13px}
 
 .section{display:none}
 .section.active{display:block}
 
-/* ── Circle Banner ── */
-.circle-banner{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
-.circle-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:rgba(255,255,255,.06);border-radius:50%}
-.banner-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;position:relative;z-index:1}
-.banner-icon{width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
-.banner-title{font-size:1.1rem;font-weight:900;letter-spacing:-.02em}
-.banner-desc{font-size:.7rem;opacity:.75;font-weight:500;margin-top:.15rem}
-.banner-stats{display:flex;gap:1.25rem;position:relative;z-index:1}
-.b-stat{text-align:center}
-.b-stat-val{font-size:1.4rem;font-weight:900;letter-spacing:-1px}
-.b-stat-lbl{font-size:.58rem;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.06em}
+/* ── Banner ── */
+.banner{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);border-radius:1.5rem;padding:1.25rem;color:white;margin-bottom:1rem;position:relative;overflow:hidden}
+.banner::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.banner::after{content:'';position:absolute;bottom:-50px;left:-20px;width:160px;height:160px;background:rgba(255,255,255,.04);border-radius:50%}
+.banner-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem;position:relative;z-index:1}
+.banner-icon{width:42px;height:42px;background:rgba(255,255,255,.15);border-radius:.85rem;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.banner-title{font-size:.95rem;font-weight:900}
+.banner-desc{font-size:.62rem;opacity:.7;font-weight:500;margin-top:.1rem}
+.banner-stats{display:flex;gap:1rem;position:relative;z-index:1}
+.bs{text-align:center}
+.bs-val{font-size:1.3rem;font-weight:900}
+.bs-lbl{font-size:.52rem;opacity:.65;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
 
 /* ── Card ── */
-.card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
-.card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
-.card-header-icon{width:32px;height:32px;border-radius:.65rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
-.card-header-title{font-size:.8rem;font-weight:800;color:var(--text)}
-.card-body{padding:1.25rem}
+.card{background:var(--white);border-radius:1.1rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.75rem;overflow:hidden}
+.card-hd{padding:.85rem 1rem .65rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border-soft)}
+.card-hd-icon{width:28px;height:28px;border-radius:.55rem;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0}
+.card-hd-title{font-size:.75rem;font-weight:800;color:var(--text)}
+.card-body{padding:1rem}
 
 /* ── Form ── */
-.input-wrap{margin-bottom:.85rem}
-.input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
-.input-row{position:relative}
-.inp{width:100%;padding:.8rem 1rem;background:#f8faff;border:2px solid var(--border);border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--text);outline:none;transition:all .2s}
-.inp:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,255,.08)}
-.name-chip{display:none;align-items:center;gap:.4rem;background:var(--blue-light);border-radius:.5rem;padding:.35rem .75rem;font-size:.72rem;font-weight:700;color:var(--blue);margin-top:.4rem}
+.iw{margin-bottom:.75rem}
+.il{font-size:.58rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.28rem;display:block}
+.inp{width:100%;padding:.75rem .9rem;background:#f8faff;border:2px solid var(--border);border-radius:.8rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--text);outline:none;transition:all .2s}
+.inp:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,255,.07)}
+.inp::placeholder{color:#cbd5e1}
+
+/* Name chip */
+.name-chip{display:none;align-items:center;gap:.35rem;background:var(--blue-light);border-radius:.45rem;padding:.3rem .65rem;font-size:.68rem;font-weight:700;color:var(--blue);margin-top:.35rem}
 .name-chip.show{display:flex}
+.name-chip.error{background:var(--red-light);color:var(--red)}
 
-/* ── Mode Toggle ── */
-.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:.85rem;padding:3px;gap:3px;margin-bottom:.85rem}
-.mode-opt{padding:.65rem;text-align:center;font-size:.65rem;font-weight:800;border-radius:.75rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
+/* Mode toggle */
+.mode-tgl{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:.8rem;padding:3px;gap:2px;margin-bottom:.75rem}
+.mode-opt{padding:.6rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:.7rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
 .mode-opt.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
-.mode-desc{font-size:.65rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:.85rem;padding:0 .5rem;line-height:1.5}
+.mode-desc{font-size:.62rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:.75rem;line-height:1.5;padding:0 .25rem}
 
-/* ── Buttons ── */
-.btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
+/* Buttons */
+.btn{width:100%;padding:.82rem;border:none;border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:all .2s}
 .btn:active:not(:disabled){transform:scale(.97)}
-.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
-.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 5px 18px rgba(0,87,255,.28)}
+.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 4px 14px rgba(22,163,74,.25)}
 .btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white}
-.btn-sm{width:auto;padding:.4rem .9rem;font-size:.6rem;border-radius:.6rem}
-.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
-.btn.loading .spin{display:block}
+.btn-sm{width:auto;padding:.38rem .8rem;font-size:.58rem;border-radius:.6rem}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--muted)}
+.spi{width:14px;height:14px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spi{display:block}
 .btn.loading .btn-text{display:none}
-.btn:disabled{opacity:.6;cursor:not-allowed}
-@keyframes spin{to{transform:rotate(360deg)}}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 
-/* ── Member / Payer Items ── */
-.member-item{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--border-soft)}
-.member-item:last-child{border-bottom:none}
-.member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
-.member-info{flex:1;min-width:0}
-.member-name{font-size:.82rem;font-weight:800;color:var(--text)}
-.member-mobile{font-size:.65rem;color:var(--muted);font-weight:600;margin-top:.1rem}
-.member-mode{font-size:.58rem;font-weight:700;color:var(--blue);background:var(--blue-light);padding:.15rem .5rem;border-radius:20px;display:inline-block;margin-top:.2rem}
-.member-actions{display:flex;gap:.4rem;flex-shrink:0}
-.status-badge{font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;white-space:nowrap}
+/* Member items */
+.mi{padding:.85rem 1rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--border-soft);transition:background .15s}
+.mi:last-child{border-bottom:none}
+.mi:active{background:var(--border-soft)}
+.mav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;flex-shrink:0}
+.minfo{flex:1;min-width:0}
+.mname{font-size:.78rem;font-weight:800;color:var(--text)}
+.mmob{font-size:.62rem;color:var(--muted);font-weight:600;margin-top:.08rem}
+.mmode{font-size:.52rem;font-weight:700;color:var(--blue);background:var(--blue-light);padding:.12rem .45rem;border-radius:20px;display:inline-block;margin-top:.15rem}
+.mactions{display:flex;gap:.35rem;flex-shrink:0}
+.sbadge{font-size:.52rem;font-weight:800;padding:.18rem .55rem;border-radius:20px;text-transform:uppercase;white-space:nowrap}
 .s-active{background:var(--green-light);color:var(--green)}
 .s-pending{background:var(--orange-light);color:var(--orange)}
 .s-rejected{background:var(--red-light);color:var(--red)}
 
-/* ── Pay Tab ── */
-.payer-select-item{padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border-soft);cursor:pointer;transition:background .15s}
-.payer-select-item:hover{background:var(--blue-light)}
-.payer-select-item.selected{background:var(--blue-light);border-left:3px solid var(--blue)}
-.payer-select-item:last-child{border-bottom:none}
+/* Pay — payer picker */
+.payer-mobile-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:end;margin-bottom:.75rem}
+.payer-mobile-row .iw{margin-bottom:0}
+.fetch-btn{padding:.75rem .9rem;background:var(--blue-light);color:var(--blue);border:2px solid var(--blue-light);border-radius:.8rem;font-size:.7rem;font-weight:800;cursor:pointer;height:46px;display:flex;align-items:center;gap:.3rem;white-space:nowrap;transition:all .2s}
+.fetch-btn:active{transform:scale(.96)}
 
-/* ── Empty State ── */
-.empty-state{text-align:center;padding:2.5rem 1.5rem;color:var(--muted)}
-.empty-state i{font-size:2.2rem;opacity:.3;margin-bottom:.75rem;display:block}
-.empty-state p{font-size:.78rem;font-weight:700}
+/* Approval items */
+.appr-item{padding:.85rem 1rem;border-bottom:1px solid var(--border-soft)}
+.appr-item:last-child{border-bottom:none}
+.appr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.appr-amt{font-size:1rem;font-weight:900;color:var(--text)}
+.appr-from{font-size:.65rem;color:var(--muted);font-weight:600}
+.appr-remark{font-size:.62rem;color:var(--muted);margin-top:.2rem;font-weight:600}
+.appr-txid{font-size:.58rem;color:var(--muted);font-family:monospace;margin-top:.15rem}
+.appr-acts{display:flex;gap:.45rem;margin-top:.6rem}
 
-/* ── Receipt ── */
-.receipt-overlay{position:fixed;inset:0;background:rgba(10,36,99,.6);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem}
-.receipt-overlay.open{display:flex}
-.receipt-box{background:var(--white);border-radius:2rem;padding:1.75rem 1.5rem;width:100%;max-width:380px}
-.receipt-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:1rem;text-align:center}
-.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;border-bottom:1px solid var(--border-soft)}
-.receipt-row:last-of-type{border-bottom:none}
-.r-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase}
-.r-val{font-size:.82rem;font-weight:800;color:var(--text)}
+/* Empty */
+.empty{text-align:center;padding:2.25rem 1.25rem;color:var(--muted)}
+.empty i{font-size:2rem;opacity:.25;margin-bottom:.65rem;display:block}
+.empty p{font-size:.74rem;font-weight:700}
 
-/* ── Pending Approvals ── */
-.approval-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border-soft)}
-.approval-item:last-child{border-bottom:none}
-.approval-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
-.approval-amount{font-size:1.1rem;font-weight:900;color:var(--text)}
-.approval-from{font-size:.7rem;color:var(--muted);font-weight:600}
-.approval-txn{font-size:.6rem;color:var(--muted);font-weight:600;margin-top:.2rem;font-family:monospace}
-.approval-actions{display:flex;gap:.5rem;margin-top:.6rem}
+/* Receipt overlay */
+.overlay{position:fixed;inset:0;background:rgba(10,36,99,.6);backdrop-filter:blur(8px);z-index:300;display:none;align-items:flex-end;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.receipt{background:var(--white);border-radius:2rem 2rem 1.25rem 1.25rem;padding:1.75rem 1.4rem;width:100%;max-width:420px;animation:slideUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.rec-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.3rem}
+.rec-icon.success{background:var(--green-light);color:var(--green)}
+.rec-icon.pending{background:var(--orange-light);color:var(--orange)}
+.rec-title{font-size:1rem;font-weight:900;color:var(--text);text-align:center;margin-bottom:.25rem}
+.rec-amt{font-size:1.75rem;font-weight:900;color:var(--blue);text-align:center;margin-bottom:1rem}
+.rec-rows{background:var(--border-soft);border-radius:.85rem;padding:.35rem .75rem;margin-bottom:1rem}
+.rec-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.72rem}
+.rec-row:last-child{border-bottom:none}
+.rl{font-weight:600;color:var(--muted)}
+.rv{font-weight:800;color:var(--text);text-align:right;max-width:58%;word-break:break-word}
+.rv.mono{font-family:monospace;font-size:.65rem}
+.rec-close{width:100%;padding:.82rem;background:var(--blue);color:white;border:none;border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
 
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;max-width:90vw;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
-.toast.error{background:var(--red)}
-.toast.success-t{background:var(--green)}
+/* Loader */
+.loader{text-align:center;padding:1.75rem;color:var(--muted);font-size:.72rem;font-weight:700}
 
-.loader-wrap{text-align:center;padding:2rem;color:var(--muted);font-size:.75rem;font-weight:700}
+/* Toast */
+.toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.65rem 1.2rem;border-radius:2rem;font-size:.75rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;max-width:88vw;text-align:center;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-8px)}
+.toast.err{background:var(--red)}
+.toast.ok{background:var(--green)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <button class="btn-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+  <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
   <div>
-    <div class="header-title">UNIO Circle</div>
-    <div class="header-sub">Trusted payment group</div>
+    <div class="h-title">UNIO Circle</div>
+    <div class="h-sub">Trusted payer network</div>
   </div>
-  <div class="header-logo">UNIO</div>
+  <div class="h-logo">UNIO</div>
 </div>
 
 <div class="container">
-  <div class="circle-banner">
-    <div class="banner-top">
-      <div class="banner-icon"><i class="fa-solid fa-circle-nodes"></i></div>
-      <div><div class="banner-title">My Circle</div><div class="banner-desc">Manage your trusted payers</div></div>
-    </div>
-    <div class="banner-stats">
-      <div class="b-stat"><div class="b-stat-val" id="stat-members">0</div><div class="b-stat-lbl">Members</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-payers">0</div><div class="b-stat-lbl">My Payers</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-pending">0</div><div class="b-stat-lbl">Pending</div></div>
-    </div>
-  </div>
 
+  <!-- Tab bar -->
   <div class="tab-bar">
-    <div class="tab active" id="tab-circle" onclick="switchTab('circle')"><i class="fa-solid fa-users"></i><br>My Circle</div>
-    <div class="tab" id="tab-payers" onclick="switchTab('payers')"><i class="fa-solid fa-hand-holding-dollar"></i><br>My Payers</div>
-    <div class="tab" id="tab-pay" onclick="switchTab('pay')"><i class="fa-solid fa-paper-plane"></i><br>Pay Now</div>
+    <div class="tab active" onclick="switchTab('circle')">
+      <span class="tab-icon">🔵</span>My Circle
+    </div>
+    <div class="tab" onclick="switchTab('pay')">
+      <span class="tab-icon">💸</span>Pay
+    </div>
+    <div class="tab" id="tab-invites" onclick="switchTab('invites')">
+      <span class="tab-icon">📬</span>Invites
+      <span class="tab-badge" id="invites-badge" style="display:none">0</span>
+    </div>
+    <div class="tab" id="tab-approvals" onclick="switchTab('approvals')">
+      <span class="tab-icon">✅</span>Approve
+      <span class="tab-badge" id="approvals-badge" style="display:none">0</span>
+    </div>
   </div>
 
-  <!-- ── MY CIRCLE TAB ── -->
+  <!-- ══════════ CIRCLE TAB ══════════ -->
   <div class="section active" id="sec-circle">
+
+    <div class="banner">
+      <div class="banner-row">
+        <div class="banner-icon">🔵</div>
+        <div>
+          <div class="banner-title">My Circle</div>
+          <div class="banner-desc">Trusted logo ko invite karo — unke wallet se pay lage</div>
+        </div>
+      </div>
+      <div class="banner-stats">
+        <div class="bs"><div class="bs-val" id="stat-active">0</div><div class="bs-lbl">Active</div></div>
+        <div class="bs"><div class="bs-val" id="stat-pending">0</div><div class="bs-lbl">Pending</div></div>
+        <div class="bs"><div class="bs-val" id="stat-total">0</div><div class="bs-lbl">Total</div></div>
+      </div>
+    </div>
+
+    <!-- Invite form -->
     <div class="card">
-      <div class="card-header"><div class="card-header-title">&#10133; Add to My Circle</div></div>
+      <div class="card-hd">
+        <div class="card-hd-icon" style="background:var(--blue-light);color:var(--blue)"><i class="fa-solid fa-user-plus"></i></div>
+        <div class="card-hd-title">Invite to Circle</div>
+      </div>
       <div class="card-body">
-        <div class="input-wrap">
-          <label class="input-label">Mobile Number</label>
-          <div class="input-row">
-            <input class="inp" type="tel" id="invite-mobile" maxlength="10" placeholder="10-digit number" oninput="onMobileInput()">
+        <div class="iw">
+          <span class="il">Mobile Number</span>
+          <input type="tel" class="inp" id="invite-mobile" placeholder="10-digit mobile"
+            maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);fetchInviteName()">
+          <div class="name-chip" id="invite-name-chip">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="invite-name-text">—</span>
           </div>
-          <div class="name-chip" id="name-chip"><i class="fa-solid fa-circle-check"></i> <span id="chip-name"></span></div>
         </div>
-        <div class="mode-toggle">
-          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">&#9989; Approve</div>
-          <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">&#9889; Auto</div>
+        <div class="mode-tgl">
+          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">✅ Approve Each</div>
+          <div class="mode-opt" id="mode-auto"    onclick="setMode('auto')">⚡ Auto Deduct</div>
         </div>
-        <p class="mode-desc" id="mode-desc">Member ko har payment pe approve karna hoga</p>
+        <div class="mode-desc" id="mode-desc">Member har payment pe approve karega — safe aur controlled.</div>
         <button class="btn btn-blue" id="invite-btn" onclick="sendInvite()">
-          <div class="spin"></div>
-          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Send Invite</span>
+          <div class="spi"></div>
+          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i>&nbsp; Send Invite</span>
         </button>
       </div>
     </div>
+
+    <!-- Members list -->
     <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-users"></i> Circle Members</div></div>
-      <div id="circle-list"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+      <div class="card-hd">
+        <div class="card-hd-icon" style="background:var(--purple-light);color:var(--purple)"><i class="fa-solid fa-users"></i></div>
+        <div class="card-hd-title">Circle Members</div>
+        <button class="btn btn-outline btn-sm" onclick="loadMyCircle()" style="margin-left:auto;padding:.3rem .7rem;font-size:.55rem;border-radius:.5rem">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+      </div>
+      <div id="circle-list"><div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
     </div>
   </div>
 
-  <!-- ── MY PAYERS TAB ── -->
-  <div class="section" id="sec-payers">
-    <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-hand-holding-dollar"></i> Circles I'm Part Of</div></div>
-      <div id="payers-list"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
-    </div>
-    <div class="card" id="pending-approvals-card" style="display:none">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-clock"></i> Pending Payment Approvals</div></div>
-      <div id="pending-approvals-list"></div>
-    </div>
-  </div>
-
-  <!-- ── PAY NOW TAB ── -->
+  <!-- ══════════ PAY TAB ══════════ -->
   <div class="section" id="sec-pay">
     <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-paper-plane"></i> Pay From Circle Member</div></div>
+      <div class="card-hd">
+        <div class="card-hd-icon" style="background:var(--green-light);color:var(--green)"><i class="fa-solid fa-bolt"></i></div>
+        <div class="card-hd-title">Pay from Circle Member</div>
+      </div>
       <div class="card-body">
-        <div class="input-wrap">
-          <label class="input-label">Select Member</label>
-          <div id="payer-picker"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading members...</div></div>
+
+        <!-- Mobile + name fetch -->
+        <div class="payer-mobile-row">
+          <div class="iw">
+            <span class="il">Payer Mobile Number</span>
+            <input type="tel" class="inp" id="pay-mobile" placeholder="10-digit mobile"
+              maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);onPayMobileInput()">
+          </div>
+          <button class="fetch-btn" onclick="fetchPayerName()">
+            <i class="fa-solid fa-magnifying-glass"></i> Find
+          </button>
         </div>
-        <div class="input-wrap">
-          <label class="input-label">Amount (&#8377;)</label>
-          <input class="inp" id="pay-amount" type="number" placeholder="&#8377; 0.00" min="1">
+        <div class="name-chip" id="pay-name-chip" style="margin-bottom:.75rem">
+          <i class="fa-solid fa-circle-check"></i>
+          <span id="pay-name-text">—</span>
         </div>
-        <div class="input-wrap">
-          <label class="input-label">Remark (Optional)</label>
-          <input class="inp" id="pay-remark" placeholder="e.g. Grocery, Bill...">
+
+        <div class="iw">
+          <span class="il">Amount (₹)</span>
+          <input type="number" class="inp" id="pay-amount" placeholder="Enter amount">
         </div>
-        <button class="btn btn-green" id="quick-pay-btn" onclick="doQuickPay()">
-          <div class="spin"></div>
-          <span class="btn-text"><i class="fa-solid fa-bolt"></i> Pay Now</span>
+        <div class="iw">
+          <span class="il">Remark (optional)</span>
+          <input type="text" class="inp" id="pay-remark" placeholder="e.g. Dinner, Petrol...">
+        </div>
+
+        <button class="btn btn-green" id="pay-btn" onclick="doCirclePay()">
+          <div class="spi"></div>
+          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i>&nbsp; Request Payment</span>
         </button>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Receipt Modal -->
-<div class="receipt-overlay" id="receipt-overlay">
-  <div class="receipt-box">
-    <div class="receipt-title">&#129534; Payment Receipt</div>
-    <div class="receipt-row"><span class="r-label">Status</span><span class="r-val" id="r-status">-</span></div>
-    <div class="receipt-row"><span class="r-label">Txn ID</span><span class="r-val" id="r-txid" style="font-size:.7rem;font-family:monospace">–</span></div>
-    <div class="receipt-row"><span class="r-label">Amount</span><span class="r-val" id="r-amount">-</span></div>
-    <div class="receipt-row"><span class="r-label">From</span><span class="r-val" id="r-from">-</span></div>
-    <div class="receipt-row"><span class="r-label">Mode</span><span class="r-val" id="r-mode">-</span></div>
-    <div class="receipt-row"><span class="r-label">Time</span><span class="r-val" id="r-time" style="font-size:.7rem">–</span></div>
-    <button class="btn btn-blue" onclick="closeReceipt()" style="margin-top:1.25rem">
-      <i class="fa-solid fa-check"></i> Done
-    </button>
+    <!-- Info -->
+    <div style="background:var(--orange-light);border:1px solid #fed7aa;border-radius:.85rem;padding:.75rem 1rem;font-size:.68rem;color:#92400e;font-weight:600;line-height:1.6">
+      <i class="fa-solid fa-circle-info"></i>&nbsp;
+      Sirf aapke <b>active circle members</b> ke mobile se payment ho sakti hai. Auto mode mein instantly deduct hoga, Approve mode mein unhe confirm karna padega.
+    </div>
+  </div>
+
+  <!-- ══════════ INVITES TAB ══════════ -->
+  <div class="section" id="sec-invites">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-icon" style="background:var(--orange-light);color:var(--orange)"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <div class="card-hd-title">Circle Invites (Tumhare liye)</div>
+        <button class="btn btn-outline btn-sm" onclick="loadMyInvites()" style="margin-left:auto;padding:.3rem .7rem;font-size:.55rem;border-radius:.5rem">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+      </div>
+      <div id="invites-list"><div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════ APPROVALS TAB ══════════ -->
+  <div class="section" id="sec-approvals">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-icon" style="background:var(--green-light);color:var(--green)"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div class="card-hd-title">Pending Approvals (Aapke liye)</div>
+        <button class="btn btn-outline btn-sm" onclick="loadPendingApprovals()" style="margin-left:auto;padding:.3rem .7rem;font-size:.55rem;border-radius:.5rem">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+      </div>
+      <div id="approvals-list"><div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Receipt overlay -->
+<div class="overlay" id="receipt-overlay">
+  <div class="receipt">
+    <div class="rec-icon success" id="rec-icon"><i class="fa-solid fa-check"></i></div>
+    <div class="rec-title" id="rec-title">Payment Done!</div>
+    <div class="rec-amt" id="rec-amt">₹0</div>
+    <div class="rec-rows">
+      <div class="rec-row"><span class="rl">Status</span><span class="rv" id="rec-status">—</span></div>
+      <div class="rec-row"><span class="rl">From</span><span class="rv" id="rec-from">—</span></div>
+      <div class="rec-row"><span class="rl">Mode</span><span class="rv" id="rec-mode">—</span></div>
+      <div class="rec-row"><span class="rl">Remark</span><span class="rv" id="rec-remark">—</span></div>
+      <div class="rec-row"><span class="rl">Txn ID</span><span class="rv mono" id="rec-txid">—</span></div>
+      <div class="rec-row"><span class="rl">Time</span><span class="rv" id="rec-time">—</span></div>
+    </div>
+    <button class="rec-close" onclick="closeReceipt()"><i class="fa-solid fa-check"></i>&nbsp; Done</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const API   = 'https://unio-hazel.vercel.app';
+const API  = 'https://unio-hazel.vercel.app';
 const token = localStorage.getItem('token');
-let currentMode    = 'approve';
-let selectedCircle = null;   // { circle_id, name, mobile, mode }
-let lookupTimer    = null;
-let circleMembers  = [];     // cache for pay tab
+if (!token) window.location.href = 'index.html';
 
-// ── Auth Header ─────────────────────────────────
-function headers() {
-  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
-}
+const headers = () => ({
+  'Content-Type':  'application/json',
+  'Authorization': `Bearer ${token}`
+});
 
-// ── Tab Switch ───────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+let inviteMode     = 'approve';
+let inviteNmTimer  = null;
+let payNmTimer     = null;
+let payerVerified  = false; // true after name successfully fetched
+
+// ── Tab switch ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['circle','pay','invites','approvals'];
+    t.classList.toggle('active', names[i] === name);
+  });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('sec-' + tab).classList.add('active');
+  document.getElementById('sec-'+name).classList.add('active');
 
-  if (tab === 'circle')  loadMyCircle();
-  if (tab === 'payers')  loadMyPayers();
-  if (tab === 'pay')     loadPayerPicker();
+  if (name === 'invites')   loadMyInvites();
+  if (name === 'approvals') loadPendingApprovals();
 }
 
-// ── Mode Toggle ──────────────────────────────────
+// ── Mode ────────────────────────────────────────────────────────────────────
 function setMode(mode) {
-  currentMode = mode;
+  inviteMode = mode;
   document.getElementById('mode-approve').classList.toggle('active', mode === 'approve');
-  document.getElementById('mode-auto').classList.toggle('active', mode === 'auto');
-  document.getElementById('mode-desc').textContent =
-    mode === 'approve'
-      ? 'Member ko har payment pe approve karna hoga'
-      : 'Balance automatically deduct hoga bina approval ke';
+  document.getElementById('mode-auto').classList.toggle('active',    mode === 'auto');
+  document.getElementById('mode-desc').textContent = mode === 'auto'
+    ? '⚡ Member ke wallet se bina confirmation ke deduct hoga — fast!'
+    : '✅ Member har payment pe approve karega — safe aur controlled.';
 }
 
-// ── Mobile Lookup (debounced) ────────────────────
-function onMobileInput() {
-  const val = document.getElementById('invite-mobile').value;
-  const chip = document.getElementById('name-chip');
-  chip.classList.remove('show');
-  clearTimeout(lookupTimer);
-  if (val.length === 10) {
-    lookupTimer = setTimeout(() => lookupMobile(val), 500);
-  }
+// ── Name fetch (invite tab) ─────────────────────────────────────────────────
+function fetchInviteName() {
+  const mob = document.getElementById('invite-mobile').value.trim();
+  const chip = document.getElementById('invite-name-chip');
+  if (mob.length < 10) { chip.classList.remove('show'); return; }
+  clearTimeout(inviteNmTimer);
+  inviteNmTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(`${API}/circle/lookup/${mob}`, { headers: headers() });
+      const d = await r.json();
+      if (d.status === 'success') {
+        document.getElementById('invite-name-text').textContent = `${d.name}`;
+        chip.className = 'name-chip show';
+      } else {
+        document.getElementById('invite-name-text').textContent = 'User nahi mila';
+        chip.className = 'name-chip show error';
+      }
+    } catch(e) { chip.classList.remove('show'); }
+  }, 500);
 }
 
-async function lookupMobile(mobile) {
-  try {
-    const r = await fetch(`${API}/circle/lookup/${mobile}`, { headers: headers() });
-    const d = await r.json();
-    if (d.status === 'success') {
-      document.getElementById('chip-name').textContent = d.name;
-      document.getElementById('name-chip').classList.add('show');
-    }
-  } catch(e) {}
-}
-
-// ── Send Invite ──────────────────────────────────
+// ── Send invite ─────────────────────────────────────────────────────────────
 async function sendInvite() {
   const mobile = document.getElementById('invite-mobile').value.trim();
-  if (mobile.length !== 10) return toast('Valid 10-digit mobile dalo', 'error');
-  if (!token) return toast('Login karo pehle', 'error');
-
+  if (mobile.length !== 10) return toast('10-digit mobile daalo','err');
   const btn = document.getElementById('invite-btn');
-  btn.classList.add('loading'); btn.disabled = true;
-
+  btnLoad(btn, true);
   try {
     const r = await fetch(`${API}/circle/invite`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ mobile, payment_mode: currentMode })
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ mobile, payment_mode: inviteMode })
     });
     const d = await r.json();
-
     if (d.status === 'success') {
-      toast(d.message || 'Invite bhej diya!', 'success');
+      toast(`Invite bheja ${d.member_name} ko! 🎉`,'ok');
       document.getElementById('invite-mobile').value = '';
-      document.getElementById('name-chip').classList.remove('show');
+      document.getElementById('invite-name-chip').classList.remove('show');
       loadMyCircle();
-    } else {
-      toast(d.message || 'Error aa gaya', 'error');
-    }
-  } catch(e) {
-    toast('Network error: ' + e.message, 'error');
-  } finally {
-    btn.classList.remove('loading'); btn.disabled = false;
-  }
+    } else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn, false); }
 }
 
-// ── Load My Circle ───────────────────────────────
+// ── Load my circle ──────────────────────────────────────────────────────────
 async function loadMyCircle() {
-  const list = document.getElementById('circle-list');
-  list.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
-  if (!token) return;
-
+  const el = document.getElementById('circle-list');
+  el.innerHTML = '<div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
   try {
     const r = await fetch(`${API}/circle/my-circle`, { headers: headers() });
     const d = await r.json();
-    circleMembers = d.data || [];
+    const data = d.data || [];
+    const active  = data.filter(c => c.status==='active').length;
+    const pending = data.filter(c => c.status==='pending').length;
+    document.getElementById('stat-active').textContent  = active;
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-total').textContent   = data.length;
 
-    document.getElementById('stat-members').textContent = circleMembers.length;
-
-    if (!circleMembers.length) {
-      list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>Abhi koi member nahi. Invite karo!</p></div>';
+    if (!data.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-users-slash"></i><p>Abhi koi member nahi. Invite bhejo!</p></div>';
       return;
     }
-
-    list.innerHTML = circleMembers.map(c => `
-      <div class="member-item">
-        <div class="member-avatar">${(c.member_id?.name || '?')[0].toUpperCase()}</div>
-        <div class="member-info">
-          <div class="member-name">${c.member_id?.name || 'Unknown'}</div>
-          <div class="member-mobile">${c.member_mobile}</div>
-          <span class="member-mode">${c.payment_mode === 'auto' ? '⚡ Auto' : '✅ Approve'}</span>
+    el.innerHTML = data.map(c => {
+      const name   = c.member_id?.name || 'Unknown';
+      const mobile = c.member_mobile;
+      const av     = name[0].toUpperCase();
+      const sClass = c.status==='active' ? 's-active' : c.status==='pending' ? 's-pending' : 's-rejected';
+      const sTxt   = c.status==='active' ? '🟢 Active' : c.status==='pending' ? '🟡 Pending' : '🔴 Rejected';
+      return `
+      <div class="mi">
+        <div class="mav">${av}</div>
+        <div class="minfo">
+          <div class="mname">${name}</div>
+          <div class="mmob">${mobile}</div>
+          <div class="mmode">${c.payment_mode==='auto'?'⚡ Auto':'✅ Approve'}</div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
-          <span class="status-badge ${c.status === 'active' ? 's-active' : c.status === 'pending' ? 's-pending' : 's-rejected'}">${c.status}</span>
-          <button class="btn btn-red btn-sm" onclick="removeMember('${c._id}')"><i class="fa-solid fa-trash"></i></button>
+        <div class="mactions">
+          <span class="sbadge ${sClass}">${sTxt}</span>
+          <button class="btn btn-red btn-sm" onclick="removeMember('${c._id}')" style="padding:.3rem .6rem">
+            <i class="fa-solid fa-trash"></i>
+          </button>
         </div>
-      </div>`).join('');
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadMyCircle()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
-  }
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p></div>'; }
 }
 
-// ── Remove Member ────────────────────────────────
 async function removeMember(circle_id) {
   if (!confirm('Is member ko circle se remove karo?')) return;
   try {
-    const r = await fetch(`${API}/circle/remove/${circle_id}`, { method: 'DELETE', headers: headers() });
+    const r = await fetch(`${API}/circle/remove/${circle_id}`, { method:'DELETE', headers: headers() });
     const d = await r.json();
-    toast(d.message || 'Remove ho gaya', d.status === 'success' ? 'success' : 'error');
-    if (d.status === 'success') loadMyCircle();
-  } catch(e) {
-    toast('Error: ' + e.message, 'error');
-  }
+    toast(d.message||'Done!', d.status==='success'?'ok':'err');
+    if (d.status==='success') loadMyCircle();
+  } catch(e) { toast('Network error','err'); }
 }
 
-// ── Load My Payers ───────────────────────────────
-async function loadMyPayers() {
-  const list = document.getElementById('payers-list');
-  list.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
-  if (!token) return;
+// ── Pay tab — mobile input & name fetch ────────────────────────────────────
+function onPayMobileInput() {
+  payerVerified = false;
+  document.getElementById('pay-name-chip').classList.remove('show');
+  const mob = document.getElementById('pay-mobile').value.trim();
+  if (mob.length < 10) return;
+  clearTimeout(payNmTimer);
+  payNmTimer = setTimeout(fetchPayerName, 500);
+}
 
+async function fetchPayerName() {
+  const mob = document.getElementById('pay-mobile').value.trim();
+  if (mob.length !== 10) return toast('10-digit mobile daalo','err');
+  const chip = document.getElementById('pay-name-chip');
   try {
-    const [payersRes, pendingRes] = await Promise.all([
-      fetch(`${API}/circle/my-payers`,          { headers: headers() }),
-      fetch(`${API}/circle/pending-approvals`,   { headers: headers() })
-    ]);
-    const payersData  = await payersRes.json();
-    const pendingData = await pendingRes.json();
-
-    const payers  = payersData.data  || [];
-    const pending = pendingData.data || [];
-
-    // Update stats
-    document.getElementById('stat-payers').textContent  = payers.length;
-    document.getElementById('stat-pending').textContent = pending.length;
-
-    // Payers list
-    if (!payers.length) {
-      list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>Kisi ne tumhe abhi circle mein add nahi kiya.</p></div>';
+    const r = await fetch(`${API}/circle/lookup/${mob}`, { headers: headers() });
+    const d = await r.json();
+    if (d.status === 'success') {
+      document.getElementById('pay-name-text').textContent = `${d.name} — circle member check hoga`;
+      chip.className = 'name-chip show';
+      chip.style.color = 'var(--blue)';
+      payerVerified = true;
     } else {
-      list.innerHTML = payers.map(p => `
-        <div class="member-item">
-          <div class="member-avatar">${(p.owner_id?.name || '?')[0].toUpperCase()}</div>
-          <div class="member-info">
-            <div class="member-name">${p.owner_id?.name || 'Unknown'}</div>
-            <div class="member-mobile">${p.owner_id?.mobile || ''}</div>
-            <span class="member-mode">${p.payment_mode === 'auto' ? '⚡ Auto Deduct' : '✅ Approve Each Time'}</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
-            <span class="status-badge ${p.status === 'active' ? 's-active' : p.status === 'pending' ? 's-pending' : 's-rejected'}">${p.status}</span>
-            ${p.status === 'pending' ? `
-              <div style="display:flex;gap:.35rem;margin-top:.25rem">
-                <button class="btn btn-green btn-sm" onclick="respondInvite('${p._id}','accept')">Accept</button>
-                <button class="btn btn-red btn-sm" onclick="respondInvite('${p._id}','reject')">Reject</button>
-              </div>` : ''}
-          </div>
-        </div>`).join('');
+      document.getElementById('pay-name-text').textContent = 'User nahi mila';
+      chip.className = 'name-chip show error';
+      payerVerified = false;
     }
-
-    // Pending payment approvals
-    const approvalCard = document.getElementById('pending-approvals-card');
-    if (pending.length) {
-      approvalCard.style.display = 'block';
-      document.getElementById('pending-approvals-list').innerHTML = pending.map(t => `
-        <div class="approval-item">
-          <div class="approval-top">
-            <div>
-              <div class="approval-amount">₹${t.amount}</div>
-              <div class="approval-from">From: ${t.receiver_id?.name || '?'} (${t.receiver_id?.mobile || ''})</div>
-              <div class="approval-txn">${t.tx_id}</div>
-            </div>
-          </div>
-          <div class="approval-actions">
-            <button class="btn btn-green btn-sm" onclick="approvePay('${t.tx_id}','approve')">✅ Approve</button>
-            <button class="btn btn-red btn-sm"   onclick="approvePay('${t.tx_id}','reject')">❌ Reject</button>
-          </div>
-        </div>`).join('');
-    } else {
-      approvalCard.style.display = 'none';
-    }
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadMyPayers()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
-  }
+  } catch(e) { chip.classList.remove('show'); payerVerified = false; }
 }
 
-// ── Respond to Invite ────────────────────────────
-async function respondInvite(circle_id, action) {
-  try {
-    const r = await fetch(`${API}/circle/respond`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ circle_id, action })
-    });
-    const d = await r.json();
-    toast(d.message || 'Done!', d.status === 'success' ? 'success' : 'error');
-    if (d.status === 'success') loadMyPayers();
-  } catch(e) {
-    toast('Error: ' + e.message, 'error');
-  }
-}
-
-// ── Approve / Reject Pending Pay ─────────────────
-async function approvePay(tx_id, action) {
-  try {
-    const r = await fetch(`${API}/circle/approve-pay`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ tx_id, action })
-    });
-    const d = await r.json();
-    toast(d.message || 'Done!', d.status === 'success' ? 'success' : 'error');
-    if (d.status === 'success') loadMyPayers();
-  } catch(e) {
-    toast('Error: ' + e.message, 'error');
-  }
-}
-
-// ── Load Payer Picker (Pay Tab) ──────────────────
-async function loadPayerPicker() {
-  const picker = document.getElementById('payer-picker');
-  picker.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
-  selectedCircle = null;
-
-  try {
-    if (!circleMembers.length) {
-      const r = await fetch(`${API}/circle/my-circle`, { headers: headers() });
-      const d = await r.json();
-      circleMembers = d.data || [];
-    }
-
-    const active = circleMembers.filter(c => c.status === 'active');
-    if (!active.length) {
-      picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>Koi active member nahi hai. Pehle invite karo aur accept karwao.</p></div>';
-      return;
-    }
-
-    picker.innerHTML = active.map(c => `
-      <div class="payer-select-item" id="pick-${c._id}" onclick="selectPayer('${c._id}','${c.member_id?.name}','${c.member_mobile}','${c.payment_mode}')">
-        <div class="member-avatar" style="width:36px;height:36px;font-size:.8rem">${(c.member_id?.name || '?')[0].toUpperCase()}</div>
-        <div>
-          <div class="member-name">${c.member_id?.name || 'Unknown'}</div>
-          <div class="member-mobile">${c.member_mobile} · <span style="color:var(--blue)">${c.payment_mode === 'auto' ? '⚡ Auto' : '✅ Approve'}</span></div>
-        </div>
-      </div>`).join('');
-  } catch(e) {
-    picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p><button class="btn btn-blue btn-sm" onclick="loadPayerPicker()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button></div>';
-  }
-}
-
-function selectPayer(circle_id, name, mobile, mode) {
-  selectedCircle = { circle_id, name, mobile, mode };
-  document.querySelectorAll('.payer-select-item').forEach(el => el.classList.remove('selected'));
-  document.getElementById('pick-' + circle_id)?.classList.add('selected');
-}
-
-// ── Do Quick Pay ─────────────────────────────────
-async function doQuickPay() {
-  if (!selectedCircle) return toast('Pehle member select karo', 'error');
-  const amount = parseFloat(document.getElementById('pay-amount').value);
-  if (!amount || amount <= 0) return toast('Valid amount dalo', 'error');
+// ── Do circle pay ───────────────────────────────────────────────────────────
+async function doCirclePay() {
+  const mobile = document.getElementById('pay-mobile').value.trim();
+  const amount = document.getElementById('pay-amount').value.trim();
   const remark = document.getElementById('pay-remark').value.trim();
+  if (mobile.length !== 10) return toast('10-digit mobile daalo','err');
+  if (!amount || parseFloat(amount) < 1) return toast('Valid amount daalo','err');
 
-  const btn = document.getElementById('quick-pay-btn');
-  btn.classList.add('loading'); btn.disabled = true;
-
+  const btn = document.getElementById('pay-btn');
+  btnLoad(btn, true);
   try {
     const r = await fetch(`${API}/circle/pay`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ circle_id: selectedCircle.circle_id, amount, remark })
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ mobile, amount: parseFloat(amount), remark })
     });
     const d = await r.json();
-
     if (d.status === 'success') {
       const rec = d.receipt || {};
-      document.getElementById('r-status').textContent = rec.status === 'pending' ? '⏳ Pending Approval' : '✅ Success';
-      document.getElementById('r-txid').textContent   = rec.tx_id || '-';
-      document.getElementById('r-amount').textContent = '₹' + (rec.amount || amount);
-      document.getElementById('r-from').textContent   = rec.from_name + ' (' + rec.from_mobile + ')';
-      document.getElementById('r-mode').textContent   = rec.mode === 'auto' ? '⚡ Auto Deduct' : '✅ Approval Required';
-      document.getElementById('r-time').textContent   = rec.timestamp || new Date().toLocaleString('en-IN');
+      const isPending = rec.status === 'pending';
+
+      document.getElementById('rec-icon').className = `rec-icon ${isPending?'pending':'success'}`;
+      document.getElementById('rec-icon').innerHTML = `<i class="fa-solid fa-${isPending?'clock':'check'}"></i>`;
+      document.getElementById('rec-title').textContent  = isPending ? 'Approval Sent!' : 'Payment Done!';
+      document.getElementById('rec-amt').textContent    = `₹${rec.amount||amount}`;
+      document.getElementById('rec-status').textContent = isPending ? '⏳ Awaiting Approval' : '✅ Success';
+      document.getElementById('rec-from').textContent   = `${rec.from_name} (${rec.from_mobile})`;
+      document.getElementById('rec-mode').textContent   = rec.mode==='auto' ? '⚡ Auto Deduct' : '✅ Approval Mode';
+      document.getElementById('rec-remark').textContent = rec.remark||'—';
+      document.getElementById('rec-txid').textContent   = rec.tx_id||'—';
+      document.getElementById('rec-time').textContent   = rec.timestamp||'—';
       document.getElementById('receipt-overlay').classList.add('open');
 
+      document.getElementById('pay-mobile').value = '';
       document.getElementById('pay-amount').value = '';
       document.getElementById('pay-remark').value = '';
+      document.getElementById('pay-name-chip').classList.remove('show');
+      payerVerified = false;
     } else {
-      toast(d.message || 'Payment fail ho gayi', 'error');
+      toast(d.message||'Failed','err');
     }
-  } catch(e) {
-    toast('Network error: ' + e.message, 'error');
-  } finally {
-    btn.classList.remove('loading'); btn.disabled = false;
-  }
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn, false); }
 }
 
 function closeReceipt() { document.getElementById('receipt-overlay').classList.remove('open'); }
 
-// ── Toast ─────────────────────────────────────────
-function toast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success-t' : '');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+// ── My Invites (member side) ────────────────────────────────────────────────
+async function loadMyInvites() {
+  const el = document.getElementById('invites-list');
+  el.innerHTML = '<div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const r = await fetch(`${API}/circle/my-invites`, { headers: headers() });
+    const d = await r.json();
+    const data = d.data || [];
+
+    const pending = data.filter(c => c.status==='pending').length;
+    const badge = document.getElementById('invites-badge');
+    if (pending > 0) { badge.textContent = pending; badge.style.display = 'block'; }
+    else badge.style.display = 'none';
+
+    if (!data.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-envelope-open"></i><p>Koi invite nahi aaya abhi.</p></div>';
+      return;
+    }
+    el.innerHTML = data.map(c => {
+      const ownerName = c.owner_id?.name || 'Unknown';
+      const ownerMob  = c.owner_id?.mobile || '';
+      const av        = ownerName[0].toUpperCase();
+      const isPending = c.status === 'pending';
+      const sClass    = c.status==='active'?'s-active':c.status==='pending'?'s-pending':'s-rejected';
+      const sTxt      = c.status==='active'?'🟢 Active':c.status==='pending'?'🟡 Pending':'🔴 Rejected';
+      return `
+      <div class="mi">
+        <div class="mav" style="background:linear-gradient(135deg,var(--purple),#9f67ff)">${av}</div>
+        <div class="minfo">
+          <div class="mname">${ownerName}</div>
+          <div class="mmob">${ownerMob}</div>
+          <div class="mmode">${c.payment_mode==='auto'?'⚡ Auto':'✅ Approve'}</div>
+        </div>
+        <div class="mactions">
+          ${isPending
+            ? `<button class="btn btn-green btn-sm" onclick="respondInvite('${c._id}','accept')" style="padding:.3rem .7rem">Accept</button>
+               <button class="btn btn-red btn-sm"   onclick="respondInvite('${c._id}','reject')" style="padding:.3rem .7rem">Reject</button>`
+            : `<span class="sbadge ${sClass}">${sTxt}</span>`}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p></div>'; }
 }
 
-// ── Init ──────────────────────────────────────────
-(function init() {
-  if (!token) {
-    document.getElementById('circle-list').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle. Token nahi mila.</p></div>';
-    document.getElementById('payers-list').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle.</p></div>';
-    document.getElementById('payer-picker').innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Login karo pehle.</p></div>';
-    toast('Token nahi mila. Login karo.', 'error');
-    return;
-  }
-  loadMyCircle();
+async function respondInvite(circle_id, action) {
+  try {
+    const r = await fetch(`${API}/circle/respond`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ circle_id, action })
+    });
+    const d = await r.json();
+    toast(d.message||'Done!', d.status==='success'?'ok':'err');
+    if (d.status==='success') loadMyInvites();
+  } catch(e) { toast('Network error','err'); }
+}
+
+// ── Pending Approvals ───────────────────────────────────────────────────────
+async function loadPendingApprovals() {
+  const el = document.getElementById('approvals-list');
+  el.innerHTML = '<div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const r = await fetch(`${API}/circle/pending-approvals`, { headers: headers() });
+    const d = await r.json();
+    const data = d.data || [];
+
+    const badge = document.getElementById('approvals-badge');
+    if (data.length > 0) { badge.textContent = data.length; badge.style.display = 'block'; }
+    else badge.style.display = 'none';
+
+    if (!data.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-circle-check"></i><p>Koi pending approval nahi hai.</p></div>';
+      return;
+    }
+    el.innerHTML = data.map(t => {
+      const fromName = t.receiver_id?.name || 'Unknown';
+      const fromMob  = t.receiver_id?.mobile || '';
+      const date     = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true});
+      return `
+      <div class="appr-item">
+        <div class="appr-top">
+          <div>
+            <div class="appr-amt">₹${t.amount}</div>
+            <div class="appr-from">From: ${fromName} (${fromMob})</div>
+            <div class="appr-remark">${t.remark||''}</div>
+            <div class="appr-txid">${t.tx_id}</div>
+          </div>
+          <div style="font-size:.65rem;color:var(--muted);text-align:right">${date}</div>
+        </div>
+        <div class="appr-acts">
+          <button class="btn btn-green btn-sm" onclick="approvePay('${t.tx_id}','approve')" style="padding:.42rem 1rem">
+            <i class="fa-solid fa-check"></i>&nbsp; Approve
+          </button>
+          <button class="btn btn-red btn-sm" onclick="approvePay('${t.tx_id}','reject')" style="padding:.42rem 1rem">
+            <i class="fa-solid fa-xmark"></i>&nbsp; Reject
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p></div>'; }
+}
+
+async function approvePay(tx_id, action) {
+  try {
+    const r = await fetch(`${API}/circle/approve-pay`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ tx_id, action })
+    });
+    const d = await r.json();
+    toast(d.message||'Done!', d.status==='success'?'ok':'err');
+    if (d.status==='success') loadPendingApprovals();
+  } catch(e) { toast('Network error','err'); }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function btnLoad(btn, on) { btn.classList.toggle('loading',on); btn.disabled=on; }
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show${type==='err'?' err':type==='ok'?' ok':''}`;
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+loadMyCircle();
+// Load badges
+(async()=>{
+  try {
+    const [inv,apr] = await Promise.all([
+      fetch(`${API}/circle/my-invites`,       {headers:headers()}).then(r=>r.json()),
+      fetch(`${API}/circle/pending-approvals`, {headers:headers()}).then(r=>r.json())
+    ]);
+    const invPend = (inv.data||[]).filter(c=>c.status==='pending').length;
+    const aprPend = (apr.data||[]).length;
+    if(invPend>0){document.getElementById('invites-badge').textContent=invPend;document.getElementById('invites-badge').style.display='block';}
+    if(aprPend>0){document.getElementById('approvals-badge').textContent=aprPend;document.getElementById('approvals-badge').style.display='block';}
+  }catch(e){}
 })();
 </script>
 </body>
