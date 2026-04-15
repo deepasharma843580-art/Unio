@@ -84,6 +84,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .action-icon{width:44px;height:44px;border-radius:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:1.1rem}
 .action-label{font-size:.58rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
 
+/* ── See More Blue Bar ── */
+.see-more-bar {background:var(--blue);border-radius:1.25rem;padding:0.85rem;text-align:center;display:block;text-decoration:none;margin-top:0.6rem;margin-bottom:1.25rem;box-shadow:0 4px 12px rgba(0, 87, 255, 0.2);transition:transform 0.2s;}
+.see-more-bar:active {transform: scale(0.97);}
+.see-more-text {color: white;font-weight: 800;font-size: 0.75rem;text-transform: uppercase;letter-spacing: 0.05em;display: flex;align-items: center;justify-content: center;gap: 0.5rem;}
+
 /* ── Recent Txns ── */
 .txn-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .txn-section-header span{font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
@@ -236,7 +241,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
     </a>
   </div>
 
-  <div class="actions-grid fade-up" style="margin-bottom:1.25rem">
+  <div class="actions-grid fade-up">
     <a href="ai.html" class="action">
       <div class="action-icon" style="background:#f0f9ff"><i class="fa-solid fa-robot" style="color:#0ea5e9"></i></div>
       <div class="action-label">AI Talk</div>
@@ -254,6 +259,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
       <div class="action-label">Keeper</div>
     </a>
   </div>
+
+  <a href="extra.html" class="see-more-bar fade-up">
+    <div class="see-more-text">See More Options 🧧👉</div>
+  </a>
 
   <div class="txn-section-header fade-up">
     <span>Recent Transactions</span>
