@@ -19,7 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
 
-/* ── Header ── */
+/* \u2500\u2500 Header \u2500\u2500 */
 .header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
 .btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
@@ -28,7 +28,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 
 .container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
 
-/* ── Tab Bar ── */
+/* \u2500\u2500 Tab Bar \u2500\u2500 */
 .tab-bar{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--white);border-radius:1.25rem;padding:4px;gap:3px;margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--border)}
 .tab{padding:.65rem .5rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:1rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;transition:all .2s;position:relative}
 .tab.active{background:var(--blue);color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
@@ -37,7 +37,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .section{display:none}
 .section.active{display:block}
 
-/* ── Circle Banner ── */
+/* \u2500\u2500 Circle Banner \u2500\u2500 */
 .circle-banner{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
 .circle-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:rgba(255,255,255,.06);border-radius:50%}
 .banner-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;position:relative;z-index:1}
@@ -49,14 +49,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .b-stat-val{font-size:1.4rem;font-weight:900;letter-spacing:-1px}
 .b-stat-lbl{font-size:.58rem;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.06em}
 
-/* ── Card ── */
+/* \u2500\u2500 Card \u2500\u2500 */
 .card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
 .card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
 .card-header-icon{width:32px;height:32px;border-radius:.65rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
 .card-header-title{font-size:.8rem;font-weight:800;color:var(--text)}
 .card-body{padding:1.25rem}
 
-/* ── Form ── */
+/* \u2500\u2500 Form \u2500\u2500 */
 .input-wrap{margin-bottom:.85rem}
 .input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
 .input-row{position:relative}
@@ -65,39 +65,75 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
 .name-chip{display:none;align-items:center;gap:.4rem;background:var(--blue-light);border-radius:.5rem;padding:.35rem .75rem;font-size:.72rem;font-weight:700;color:var(--blue);margin-top:.4rem}
 .name-chip.show{display:flex}
 
-/* ── Mode Toggle ── */
+/* \u2500\u2500 Mode Toggle \u2500\u2500 */
 .mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:.85rem;padding:3px;gap:3px;margin-bottom:.85rem}
 .mode-opt{padding:.65rem;text-align:center;font-size:.65rem;font-weight:800;border-radius:.75rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
 .mode-opt.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .mode-desc{font-size:.65rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:.85rem;padding:0 .5rem;line-height:1.5}
 
-/* ── Buttons ── */
+/* \u2500\u2500 Buttons \u2500\u2500 */
 .btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
 .btn:active:not(:disabled){transform:scale(.97)}
 .btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
 .btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white}
 .btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white}
+.btn-sm{width:auto;padding:.4rem .9rem;font-size:.6rem;border-radius:.6rem}
 .spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
 .btn.loading .spin{display:block}
 .btn.loading .btn-text{display:none}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── List Styles ── */
+/* \u2500\u2500 Member / Payer Items \u2500\u2500 */
 .member-item{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--border-soft)}
-.member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800}
-.member-name{font-size:.82rem;font-weight:800}
-.member-actions{margin-left:auto;display:flex;gap:.5rem}
-.status-badge{font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase}
+.member-item:last-child{border-bottom:none}
+.member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:.82rem;font-weight:800;color:var(--text)}
+.member-mobile{font-size:.65rem;color:var(--muted);font-weight:600;margin-top:.1rem}
+.member-mode{font-size:.58rem;font-weight:700;color:var(--blue);background:var(--blue-light);padding:.15rem .5rem;border-radius:20px;display:inline-block;margin-top:.2rem}
+.member-actions{display:flex;gap:.4rem;flex-shrink:0}
+.status-badge{font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;white-space:nowrap}
 .s-active{background:var(--green-light);color:var(--green)}
+.s-pending{background:var(--orange-light);color:var(--orange)}
+.s-rejected{background:var(--red-light);color:var(--red)}
 
-/* ── Receipt ── */
+/* \u2500\u2500 Pay Tab \u2500\u2500 */
+.payer-select-item{padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border-soft);cursor:pointer;transition:background .15s}
+.payer-select-item:hover{background:var(--blue-light)}
+.payer-select-item.selected{background:var(--blue-light);border-left:3px solid var(--blue)}
+.payer-select-item:last-child{border-bottom:none}
+
+/* \u2500\u2500 Empty State \u2500\u2500 */
+.empty-state{text-align:center;padding:2.5rem 1.5rem;color:var(--muted)}
+.empty-state i{font-size:2.2rem;opacity:.3;margin-bottom:.75rem;display:block}
+.empty-state p{font-size:.78rem;font-weight:700}
+
+/* \u2500\u2500 Receipt \u2500\u2500 */
 .receipt-overlay{position:fixed;inset:0;background:rgba(10,36,99,.6);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem}
 .receipt-overlay.open{display:flex}
 .receipt-box{background:var(--white);border-radius:2rem;padding:1.75rem 1.5rem;width:100%;max-width:380px}
-.receipt-row{display:flex;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border-soft)}
+.receipt-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:1rem;text-align:center}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;border-bottom:1px solid var(--border-soft)}
+.receipt-row:last-of-type{border-bottom:none}
+.r-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.r-val{font-size:.82rem;font-weight:800;color:var(--text)}
 
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500}
+/* \u2500\u2500 Pending Approvals \u2500\u2500 */
+.approval-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border-soft)}
+.approval-item:last-child{border-bottom:none}
+.approval-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.approval-amount{font-size:1.1rem;font-weight:900;color:var(--text)}
+.approval-from{font-size:.7rem;color:var(--muted);font-weight:600}
+.approval-txn{font-size:.6rem;color:var(--muted);font-weight:600;margin-top:.2rem;font-family:monospace}
+.approval-actions{display:flex;gap:.5rem;margin-top:.6rem}
+
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
+.toast.error{background:var(--red)}
+.toast.success-t{background:var(--green)}
+
+.loader-wrap{text-align:center;padding:2rem;color:var(--muted);font-size:.75rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -118,104 +154,441 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:
       <div><div class="banner-title">My Circle</div><div class="banner-desc">Manage your trusted payers</div></div>
     </div>
     <div class="banner-stats">
-      <div class="b-stat"><div class="b-stat-val" id="stat-members">0</div><div class="b-stat-lbl">Members</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-payers">0</div><div class="b-stat-lbl">My Payers</div></div>
-      <div class="b-stat"><div class="b-stat-val" id="stat-pending">0</div><div class="b-stat-lbl">Pending</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-members">\u2013</div><div class="b-stat-lbl">Members</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-payers">\u2013</div><div class="b-stat-lbl">My Payers</div></div>
+      <div class="b-stat"><div class="b-stat-val" id="stat-pending">\u2013</div><div class="b-stat-lbl">Pending</div></div>
     </div>
   </div>
 
   <div class="tab-bar">
-    <div class="tab active" onclick="switchTab('circle',this)"><i class="fa-solid fa-users"></i><br>My Circle</div>
-    <div class="tab" onclick="switchTab('payers',this)"><i class="fa-solid fa-hand-holding-dollar"></i><br>My Payers</div>
-    <div class="tab" onclick="switchTab('pay',this)"><i class="fa-solid fa-paper-plane"></i><br>Pay Now</div>
+    <div class="tab active" id="tab-circle" onclick="switchTab('circle')"><i class="fa-solid fa-users"></i><br>My Circle</div>
+    <div class="tab" id="tab-payers" onclick="switchTab('payers')"><i class="fa-solid fa-hand-holding-dollar"></i><br>My Payers</div>
+    <div class="tab" id="tab-pay" onclick="switchTab('pay')"><i class="fa-solid fa-paper-plane"></i><br>Pay Now</div>
   </div>
 
+  <!-- \u2500\u2500 MY CIRCLE TAB \u2500\u2500 -->
   <div class="section active" id="sec-circle">
     <div class="card">
-      <div class="card-header"><div class="card-header-title">Add to Circle</div></div>
+      <div class="card-header"><div class="card-header-title">\u2795 Add to My Circle</div></div>
       <div class="card-body">
         <div class="input-wrap">
           <label class="input-label">Mobile Number</label>
-          <input class="inp" type="tel" id="invite-mobile" maxlength="10" placeholder="10-digit number">
+          <div class="input-row">
+            <input class="inp" type="tel" id="invite-mobile" maxlength="10" placeholder="10-digit number" oninput="onMobileInput()">
+          </div>
+          <div class="name-chip" id="name-chip"><i class="fa-solid fa-circle-check"></i> <span id="chip-name"></span></div>
         </div>
         <div class="mode-toggle">
-          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">Approve</div>
-          <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">Auto</div>
+          <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">\u2705 Approve</div>
+          <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">\u26a1 Auto</div>
         </div>
-        <button class="btn btn-blue" id="invite-btn" onclick="sendInvite()">Send Invite</button>
+        <p class="mode-desc" id="mode-desc">Member ko har payment pe approve karna hoga</p>
+        <button class="btn btn-blue" id="invite-btn" onclick="sendInvite()">
+          <div class="spin"></div>
+          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Send Invite</span>
+        </button>
       </div>
     </div>
-    <div id="circle-list"></div>
+    <div class="card">
+      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-users"></i> Circle Members</div></div>
+      <div id="circle-list"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
   </div>
 
+  <!-- \u2500\u2500 MY PAYERS TAB \u2500\u2500 -->
   <div class="section" id="sec-payers">
-    <div id="payers-list"></div>
+    <div class="card">
+      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-hand-holding-dollar"></i> Circles I'm Part Of</div></div>
+      <div id="payers-list"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+    <div class="card" id="pending-approvals-card" style="display:none">
+      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-clock"></i> Pending Payment Approvals</div></div>
+      <div id="pending-approvals-list"></div>
+    </div>
   </div>
 
+  <!-- \u2500\u2500 PAY NOW TAB \u2500\u2500 -->
   <div class="section" id="sec-pay">
     <div class="card">
+      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-paper-plane"></i> Pay From Circle Member</div></div>
       <div class="card-body">
-        <div class="input-wrap"><label class="input-label">Pay From (Mobile)</label><input class="inp" id="pay-mobile" placeholder="Payer Mobile"></div>
-        <div class="input-wrap"><label class="input-label">Amount</label><input class="inp" id="pay-amount" type="number" placeholder="₹ 0.00"></div>
-        <button class="btn btn-green" id="quick-pay-btn" onclick="doQuickPay()">Pay Now</button>
+        <div class="input-wrap">
+          <label class="input-label">Select Member</label>
+          <div id="payer-picker"><div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading members...</div></div>
+        </div>
+        <div class="input-wrap">
+          <label class="input-label">Amount (\u20b9)</label>
+          <input class="inp" id="pay-amount" type="number" placeholder="\u20b9 0.00" min="1">
+        </div>
+        <div class="input-wrap">
+          <label class="input-label">Remark (Optional)</label>
+          <input class="inp" id="pay-remark" placeholder="e.g. Grocery, Bill...">
+        </div>
+        <button class="btn btn-green" id="quick-pay-btn" onclick="doQuickPay()">
+          <div class="spin"></div>
+          <span class="btn-text"><i class="fa-solid fa-bolt"></i> Pay Now</span>
+        </button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Receipt Modal -->
 <div class="receipt-overlay" id="receipt-overlay">
   <div class="receipt-box">
-    <div class="receipt-row"><span class="r-label">Status</span><span id="r-status">Success</span></div>
-    <div class="receipt-row"><span class="r-label">Amount</span><span id="r-amount">₹0</span></div>
-    <button class="btn btn-blue" onclick="closeReceipt()" style="margin-top:1rem">Close</button>
+    <div class="receipt-title">🧾 Payment Receipt</div>
+    <div class="receipt-row"><span class="r-label">Status</span><span class="r-val" id="r-status">–</span></div>
+    <div class="receipt-row"><span class="r-label">Txn ID</span><span class="r-val" id="r-txid" style="font-size:.7rem;font-family:monospace">–</span></div>
+    <div class="receipt-row"><span class="r-label">Amount</span><span class="r-val" id="r-amount">–</span></div>
+    <div class="receipt-row"><span class="r-label">From</span><span class="r-val" id="r-from">–</span></div>
+    <div class="receipt-row"><span class="r-label">Mode</span><span class="r-val" id="r-mode">–</span></div>
+    <div class="receipt-row"><span class="r-label">Time</span><span class="r-val" id="r-time" style="font-size:.7rem">–</span></div>
+    <button class="btn btn-blue" onclick="closeReceipt()" style="margin-top:1.25rem">
+      <i class="fa-solid fa-check"></i> Done
+    </button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'https://unio-hazel.vercel.app/api'; // Replace with your actual API endpoint
+const API   = 'https://unio-hazel.vercel.app/api';
 const token = localStorage.getItem('token');
-let currentMode = 'approve';
+let currentMode    = 'approve';
+let selectedCircle = null;   // { circle_id, name, mobile, mode }
+let lookupTimer    = null;
+let circleMembers  = [];     // cache for pay tab
 
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(`sec-${tab}`).classList.add('active');
+// ── Auth Header ─────────────────────────────────
+function headers() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
 }
 
+// ── Tab Switch ───────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('sec-' + tab).classList.add('active');
+
+  if (tab === 'circle')  loadMyCircle();
+  if (tab === 'payers')  loadMyPayers();
+  if (tab === 'pay')     loadPayerPicker();
+}
+
+// ── Mode Toggle ──────────────────────────────────
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('mode-approve').classList.toggle('active', mode === 'approve');
   document.getElementById('mode-auto').classList.toggle('active', mode === 'auto');
+  document.getElementById('mode-desc').textContent =
+    mode === 'approve'
+      ? 'Member ko har payment pe approve karna hoga'
+      : 'Balance automatically deduct hoga bina approval ke';
 }
 
+// ── Mobile Lookup (debounced) ────────────────────
+function onMobileInput() {
+  const val = document.getElementById('invite-mobile').value;
+  const chip = document.getElementById('name-chip');
+  chip.classList.remove('show');
+  clearTimeout(lookupTimer);
+  if (val.length === 10) {
+    lookupTimer = setTimeout(() => lookupMobile(val), 500);
+  }
+}
+
+async function lookupMobile(mobile) {
+  try {
+    const r = await fetch(`${API}/circle/lookup/${mobile}`, { headers: headers() });
+    const d = await r.json();
+    if (d.status === 'success') {
+      document.getElementById('chip-name').textContent = d.name;
+      document.getElementById('name-chip').classList.add('show');
+    }
+  } catch(e) {}
+}
+
+// ── Send Invite ──────────────────────────────────
 async function sendInvite() {
-  const mobile = document.getElementById('invite-mobile').value;
-  if(mobile.length !== 10) return toast("Invalid Mobile", "error");
-  
-  toast("Sending Invite...");
-  // Logic for API call /circle/invite would go here
+  const mobile = document.getElementById('invite-mobile').value.trim();
+  if (mobile.length !== 10) return toast('Valid 10-digit mobile dalo', 'error');
+  if (!token) return toast('Login karo pehle', 'error');
+
+  const btn = document.getElementById('invite-btn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const r = await fetch(`${API}/circle/invite`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ mobile, payment_mode: currentMode })
+    });
+    const d = await r.json();
+
+    if (d.status === 'success') {
+      toast(d.message || 'Invite bhej diya!', 'success');
+      document.getElementById('invite-mobile').value = '';
+      document.getElementById('name-chip').classList.remove('show');
+      loadMyCircle();
+    } else {
+      toast(d.message || 'Error aa gaya', 'error');
+    }
+  } catch(e) {
+    toast('Network error: ' + e.message, 'error');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
 }
 
-async function doQuickPay() {
-  const mobile = document.getElementById('pay-mobile').value;
-  const amount = document.getElementById('pay-amount').value;
-  if(!mobile || !amount) return toast("Fill all fields", "error");
+// ── Load My Circle ───────────────────────────────
+async function loadMyCircle() {
+  const list = document.getElementById('circle-list');
+  list.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  if (!token) return;
 
-  document.getElementById('r-amount').innerText = "₹" + amount;
-  document.getElementById('receipt-overlay').classList.add('open');
+  try {
+    const r = await fetch(`${API}/circle/my-circle`, { headers: headers() });
+    const d = await r.json();
+    circleMembers = d.data || [];
+
+    document.getElementById('stat-members').textContent = circleMembers.length;
+
+    if (!circleMembers.length) {
+      list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>Abhi koi member nahi. Invite karo!</p></div>';
+      return;
+    }
+
+    list.innerHTML = circleMembers.map(c => `
+      <div class="member-item">
+        <div class="member-avatar">${(c.member_id?.name || '?')[0].toUpperCase()}</div>
+        <div class="member-info">
+          <div class="member-name">${c.member_id?.name || 'Unknown'}</div>
+          <div class="member-mobile">${c.member_mobile}</div>
+          <span class="member-mode">${c.payment_mode === 'auto' ? '⚡ Auto' : '✅ Approve'}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
+          <span class="status-badge ${c.status === 'active' ? 's-active' : c.status === 'pending' ? 's-pending' : 's-rejected'}">${c.status}</span>
+          <button class="btn btn-red btn-sm" onclick="removeMember('${c._id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua. Retry karo.</p></div>';
+  }
+}
+
+// ── Remove Member ────────────────────────────────
+async function removeMember(circle_id) {
+  if (!confirm('Is member ko circle se remove karo?')) return;
+  try {
+    const r = await fetch(`${API}/circle/remove/${circle_id}`, { method: 'DELETE', headers: headers() });
+    const d = await r.json();
+    toast(d.message || 'Remove ho gaya', d.status === 'success' ? 'success' : 'error');
+    if (d.status === 'success') loadMyCircle();
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── Load My Payers ───────────────────────────────
+async function loadMyPayers() {
+  const list = document.getElementById('payers-list');
+  list.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  if (!token) return;
+
+  try {
+    const [payersRes, pendingRes] = await Promise.all([
+      fetch(`${API}/circle/my-payers`,          { headers: headers() }),
+      fetch(`${API}/circle/pending-approvals`,   { headers: headers() })
+    ]);
+    const payersData  = await payersRes.json();
+    const pendingData = await pendingRes.json();
+
+    const payers  = payersData.data  || [];
+    const pending = pendingData.data || [];
+
+    // Update stats
+    document.getElementById('stat-payers').textContent  = payers.length;
+    document.getElementById('stat-pending').textContent = pending.length;
+
+    // Payers list
+    if (!payers.length) {
+      list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>Kisi ne tumhe abhi circle mein add nahi kiya.</p></div>';
+    } else {
+      list.innerHTML = payers.map(p => `
+        <div class="member-item">
+          <div class="member-avatar">${(p.owner_id?.name || '?')[0].toUpperCase()}</div>
+          <div class="member-info">
+            <div class="member-name">${p.owner_id?.name || 'Unknown'}</div>
+            <div class="member-mobile">${p.owner_id?.mobile || ''}</div>
+            <span class="member-mode">${p.payment_mode === 'auto' ? '⚡ Auto Deduct' : '✅ Approve Each Time'}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
+            <span class="status-badge ${p.status === 'active' ? 's-active' : p.status === 'pending' ? 's-pending' : 's-rejected'}">${p.status}</span>
+            ${p.status === 'pending' ? `
+              <div style="display:flex;gap:.35rem;margin-top:.25rem">
+                <button class="btn btn-green btn-sm" onclick="respondInvite('${p._id}','accept')">Accept</button>
+                <button class="btn btn-red btn-sm" onclick="respondInvite('${p._id}','reject')">Reject</button>
+              </div>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    // Pending payment approvals
+    const approvalCard = document.getElementById('pending-approvals-card');
+    if (pending.length) {
+      approvalCard.style.display = 'block';
+      document.getElementById('pending-approvals-list').innerHTML = pending.map(t => `
+        <div class="approval-item">
+          <div class="approval-top">
+            <div>
+              <div class="approval-amount">₹${t.amount}</div>
+              <div class="approval-from">From: ${t.receiver_id?.name || '?'} (${t.receiver_id?.mobile || ''})</div>
+              <div class="approval-txn">${t.tx_id}</div>
+            </div>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approvePay('${t.tx_id}','approve')">✅ Approve</button>
+            <button class="btn btn-red btn-sm"   onclick="approvePay('${t.tx_id}','reject')">❌ Reject</button>
+          </div>
+        </div>`).join('');
+    } else {
+      approvalCard.style.display = 'none';
+    }
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua. Retry karo.</p></div>';
+  }
+}
+
+// ── Respond to Invite ────────────────────────────
+async function respondInvite(circle_id, action) {
+  try {
+    const r = await fetch(`${API}/circle/respond`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ circle_id, action })
+    });
+    const d = await r.json();
+    toast(d.message || 'Done!', d.status === 'success' ? 'success' : 'error');
+    if (d.status === 'success') loadMyPayers();
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── Approve / Reject Pending Pay ─────────────────
+async function approvePay(tx_id, action) {
+  try {
+    const r = await fetch(`${API}/circle/approve-pay`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ tx_id, action })
+    });
+    const d = await r.json();
+    toast(d.message || 'Done!', d.status === 'success' ? 'success' : 'error');
+    if (d.status === 'success') loadMyPayers();
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── Load Payer Picker (Pay Tab) ──────────────────
+async function loadPayerPicker() {
+  const picker = document.getElementById('payer-picker');
+  picker.innerHTML = '<div class="loader-wrap"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  selectedCircle = null;
+
+  try {
+    if (!circleMembers.length) {
+      const r = await fetch(`${API}/circle/my-circle`, { headers: headers() });
+      const d = await r.json();
+      circleMembers = d.data || [];
+    }
+
+    const active = circleMembers.filter(c => c.status === 'active');
+    if (!active.length) {
+      picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>Koi active member nahi hai. Pehle invite karo aur accept karwao.</p></div>';
+      return;
+    }
+
+    picker.innerHTML = active.map(c => `
+      <div class="payer-select-item" id="pick-${c._id}" onclick="selectPayer('${c._id}','${c.member_id?.name}','${c.member_mobile}','${c.payment_mode}')">
+        <div class="member-avatar" style="width:36px;height:36px;font-size:.8rem">${(c.member_id?.name || '?')[0].toUpperCase()}</div>
+        <div>
+          <div class="member-name">${c.member_id?.name || 'Unknown'}</div>
+          <div class="member-mobile">${c.member_mobile} · <span style="color:var(--blue)">${c.payment_mode === 'auto' ? '⚡ Auto' : '✅ Approve'}</span></div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    picker.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Load nahi hua.</p></div>';
+  }
+}
+
+function selectPayer(circle_id, name, mobile, mode) {
+  selectedCircle = { circle_id, name, mobile, mode };
+  document.querySelectorAll('.payer-select-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('pick-' + circle_id)?.classList.add('selected');
+}
+
+// ── Do Quick Pay ─────────────────────────────────
+async function doQuickPay() {
+  if (!selectedCircle) return toast('Pehle member select karo', 'error');
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  if (!amount || amount <= 0) return toast('Valid amount dalo', 'error');
+  const remark = document.getElementById('pay-remark').value.trim();
+
+  const btn = document.getElementById('quick-pay-btn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const r = await fetch(`${API}/circle/pay`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ circle_id: selectedCircle.circle_id, amount, remark })
+    });
+    const d = await r.json();
+
+    if (d.status === 'success') {
+      const rec = d.receipt || {};
+      document.getElementById('r-status').textContent = rec.status === 'pending' ? '⏳ Pending Approval' : '✅ Success';
+      document.getElementById('r-txid').textContent   = rec.tx_id || '–';
+      document.getElementById('r-amount').textContent = '₹' + (rec.amount || amount);
+      document.getElementById('r-from').textContent   = rec.from_name + ' (' + rec.from_mobile + ')';
+      document.getElementById('r-mode').textContent   = rec.mode === 'auto' ? '⚡ Auto Deduct' : '✅ Approval Required';
+      document.getElementById('r-time').textContent   = rec.timestamp || new Date().toLocaleString('en-IN');
+      document.getElementById('receipt-overlay').classList.add('open');
+
+      document.getElementById('pay-amount').value = '';
+      document.getElementById('pay-remark').value = '';
+    } else {
+      toast(d.message || 'Payment fail ho gayi', 'error');
+    }
+  } catch(e) {
+    toast('Network error: ' + e.message, 'error');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
 }
 
 function closeReceipt() { document.getElementById('receipt-overlay').classList.remove('open'); }
 
-function toast(msg) {
+// ── Toast ─────────────────────────────────────────
+function toast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success-t' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// ── Init ──────────────────────────────────────────
+(function init() {
+  if (!token) {
+    toast('Token nahi mila. Login karo.', 'error');
+    return;
+  }
+  loadMyCircle();
+})();
 </script>
 </body>
 </html>
