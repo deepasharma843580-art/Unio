@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIO Circle</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;--blue-light:#eff6ff;--blue-glow:#4fa3ff;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --red:#dc2626;--red-light:#fee2e2;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --bg:#f0f4ff;--white:#ffffff;
+  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;--border-soft:#f1f5f9;
+  --shadow:0 4px 24px rgba(0,87,255,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:90px;overflow-x:hidden}
+
+/* ── Header ── */
+.header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
+.btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
+.header-sub{font-size:.62rem;font-weight:600;color:var(--muted)}
+.header-logo{font-size:1.3rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em;margin-left:auto}
+
+/* ── Container ── */
+.container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
+
+/* ── Tab Bar ── */
+.tab-bar{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--white);border-radius:1.25rem;padding:4px;gap:3px;margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.tab{padding:.65rem .5rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:1rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;transition:all .2s;position:relative}
+.tab.active{background:var(--blue);color:white;box-shadow:0 4px 12px rgba(0,87,255,.3)}
+.tab-badge{position:absolute;top:4px;right:6px;background:var(--red);color:white;font-size:.5rem;font-weight:900;padding:1px 5px;border-radius:20px;min-width:14px}
+
+/* ── Section ── */
+.section{display:none}
+.section.active{display:block}
+
+/* ── Circle Banner ── */
+.circle-banner{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-mid) 55%,var(--blue-glow) 100%);border-radius:1.75rem;padding:1.5rem;color:white;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.circle-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:rgba(255,255,255,.06);border-radius:50%}
+.circle-banner::after{content:'';position:absolute;bottom:-40px;left:-20px;width:120px;height:120px;background:rgba(255,255,255,.04);border-radius:50%}
+.banner-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;position:relative;z-index:1}
+.banner-icon{width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.banner-title{font-size:1.1rem;font-weight:900;letter-spacing:-.02em}
+.banner-desc{font-size:.7rem;opacity:.75;font-weight:500;margin-top:.15rem}
+.banner-stats{display:flex;gap:1.25rem;position:relative;z-index:1}
+.b-stat{text-align:center}
+.b-stat-val{font-size:1.4rem;font-weight:900;letter-spacing:-1px}
+.b-stat-lbl{font-size:.58rem;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Card ── */
+.card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
+.card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
+.card-header-icon{width:32px;height:32px;border-radius:.65rem;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.card-header-title{font-size:.8rem;font-weight:800;color:var(--text)}
+.card-body{padding:1.25rem}
+
+/* ── Form ── */
+.input-wrap{margin-bottom:.85rem}
+.input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
+.input-row{position:relative}
+.inp{width:100%;padding:.8rem 1rem;background:#f8faff;border:2px solid var(--border);border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--text);outline:none;transition:all .2s}
+.inp:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,255,.08)}
+.inp-suffix{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);font-size:.7rem;font-weight:700;color:var(--muted)}
+.name-chip{display:none;align-items:center;gap:.4rem;background:var(--blue-light);border-radius:.5rem;padding:.35rem .75rem;font-size:.72rem;font-weight:700;color:var(--blue);margin-top:.4rem}
+.name-chip.show{display:flex}
+.name-chip i{font-size:.7rem}
+
+/* ── Mode Toggle ── */
+.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:.85rem;padding:3px;gap:3px;margin-bottom:.85rem}
+.mode-opt{padding:.65rem;text-align:center;font-size:.65rem;font-weight:800;border-radius:.75rem;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
+.mode-opt.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.mode-desc{font-size:.65rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:.85rem;padding:0 .5rem;line-height:1.5}
+
+/* ── Btn ── */
+.btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
+.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 4px 16px rgba(22,163,74,.25)}
+.btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white}
+.btn-sm{padding:.6rem .9rem;font-size:.65rem;width:auto;border-radius:.65rem}
+.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.loading .spin{display:block}
+.btn.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Member List ── */
+.member-item{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--border-soft)}
+.member-item:last-child{border-bottom:none}
+.member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0}
+.member-name{font-size:.82rem;font-weight:800;color:var(--text)}
+.member-mobile{font-size:.62rem;color:var(--muted);font-weight:600;margin-top:1px}
+.member-mode{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:.15rem .5rem;border-radius:20px;margin-top:3px;display:inline-flex;align-items:center;gap:.25rem}
+.mode-auto{background:#fff7ed;color:var(--orange)}
+.mode-approve{background:var(--blue-light);color:var(--blue)}
+.member-actions{margin-left:auto;display:flex;gap:.5rem;align-items:center}
+.status-badge{font-size:.58rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.s-active{background:var(--green-light);color:var(--green)}
+.s-pending{background:var(--orange-light);color:var(--orange)}
+.s-rejected{background:var(--red-light);color:var(--red)}
+.icon-btn{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:.2s}
+.icon-btn.del{background:var(--red-light);color:var(--red)}
+.icon-btn.pay{background:var(--blue-light);color:var(--blue)}
+
+/* ── Payer / Pending Cards ── */
+.invite-card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.75rem;overflow:hidden}
+.invite-top{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem}
+.invite-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue-deep),var(--blue));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0}
+.invite-name{font-size:.85rem;font-weight:800;color:var(--text)}
+.invite-mobile{font-size:.65rem;color:var(--muted);font-weight:600}
+.invite-actions{padding:.75rem 1.25rem;background:#f8faff;display:flex;gap:.6rem;border-top:1px solid var(--border-soft)}
+
+/* ── Pay Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,36,99,.5);backdrop-filter:blur(6px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:2rem 2rem 0 0;padding:1.75rem 1.25rem;width:100%;max-width:480px;animation:slideUp .3s cubic-bezier(.34,1.2,.64,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1.25rem}
+.modal-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:1.25rem;text-align:center}
+.modal-user-info{background:var(--blue-light);border-radius:1rem;padding:.85rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.modal-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
+.modal-uname{font-size:.82rem;font-weight:800;color:var(--blue-deep)}
+.modal-umobile{font-size:.65rem;color:var(--blue);font-weight:600}
+
+/* ── Receipt Overlay ── */
+.receipt-overlay{position:fixed;inset:0;background:rgba(10,36,99,.6);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem}
+.receipt-overlay.open{display:flex}
+.receipt-box{background:var(--white);border-radius:2rem;padding:1.75rem 1.5rem;width:100%;max-width:380px;animation:popIn .4s cubic-bezier(.34,1.2,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.receipt-check{width:64px;height:64px;background:linear-gradient(135deg,var(--green),#22c55e);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.6rem;color:white;box-shadow:0 8px 24px rgba(22,163,74,.3)}
+.receipt-title{font-size:1rem;font-weight:900;color:var(--text);text-align:center;margin-bottom:.25rem}
+.receipt-amount{font-size:2rem;font-weight:900;color:var(--blue);text-align:center;margin-bottom:1.25rem;letter-spacing:-1px}
+.receipt-rows{border:1.5px solid var(--border);border-radius:1rem;overflow:hidden;margin-bottom:1.25rem}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--border-soft)}
+.receipt-row:last-child{border-bottom:none}
+.r-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.r-value{font-size:.78rem;font-weight:800;color:var(--text);text-align:right;max-width:55%}
+.r-pending{background:var(--orange-light)!important}
+.r-pending .r-value{color:var(--orange)}
+.receipt-close-btn{width:100%;padding:.85rem;background:var(--blue-light);color:var(--blue);border:none;border-radius:1rem;font-weight:800;font-size:.78rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Empty State ── */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
+.empty i{font-size:2.5rem;margin-bottom:.75rem;display:block;opacity:.3}
+.empty p{font-size:.78rem;font-weight:600}
+.empty small{font-size:.65rem;opacity:.7;margin-top:.25rem;display:block}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+
+/* ── Pending approval banner ── */
+.approval-item{background:var(--white);border-radius:1.25rem;border:2px solid var(--orange);box-shadow:0 4px 16px rgba(234,88,12,.1);margin-bottom:.75rem;overflow:hidden}
+.approval-top{padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem}
+.approval-badge{background:var(--orange-light);color:var(--orange);font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;margin-left:auto}
+.approval-actions{padding:.75rem 1.25rem;background:#fffbf5;display:flex;gap:.6rem;border-top:1px dashed #fed7aa}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .35s cubic-bezier(.34,1.2,.64,1) forwards}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="btn-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+  <div>
+    <div class="header-title">UNIO Circle</div>
+    <div class="header-sub">Trusted payment group</div>
+  </div>
+  <div class="header-logo">UNIO</div>
+</div>
+
+<div class="container">
+
+  <!-- Banner -->
+  <div class="circle-banner fade-in">
+    <div class="banner-top">
+      <div class="banner-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+      <div>
+        <div class="banner-title">My Circle</div>
+        <div class="banner-desc">Add trusted people, pay from their wallet</div>
+      </div>
+    </div>
+    <div class="banner-stats">
+      <div class="b-stat">
+        <div class="b-stat-val" id="stat-members">0</div>
+        <div class="b-stat-lbl">Members</div>
+      </div>
+      <div class="b-stat">
+        <div class="b-stat-val" id="stat-payers">0</div>
+        <div class="b-stat-lbl">My Payers</div>
+      </div>
+      <div class="b-stat">
+        <div class="b-stat-val" id="stat-pending">0</div>
+        <div class="b-stat-lbl">Pending</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab active" id="tab-circle" onclick="switchTab('circle',this)">
+      <i class="fa-solid fa-users"></i><br>My Circle
+    </div>
+    <div class="tab" id="tab-payers" onclick="switchTab('payers',this)">
+      <i class="fa-solid fa-hand-holding-dollar"></i><br>My Payers
+      <div class="tab-badge" id="payers-badge" style="display:none">0</div>
+    </div>
+    <div class="tab" id="tab-pay" onclick="switchTab('pay',this)">
+      <i class="fa-solid fa-paper-plane"></i><br>Pay Now
+    </div>
+  </div>
+
+  <!-- ── TAB 1: My Circle ── -->
+  <div class="section active" id="sec-circle">
+
+    <!-- Add member -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:var(--blue-light)"><i class="fa-solid fa-user-plus" style="color:var(--blue)"></i></div>
+        <div class="card-header-title">Add to Circle</div>
+      </div>
+      <div class="card-body">
+        <div class="input-wrap">
+          <label class="input-label">Mobile Number</label>
+          <div class="input-row">
+            <input class="inp" type="tel" id="invite-mobile" maxlength="10" placeholder="10-digit number" oninput="lookupInvite(this.value)"/>
+          </div>
+          <div class="name-chip" id="invite-chip">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="invite-name-text">—</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:.5rem">
+          <label class="input-label">Payment Mode</label>
+          <div class="mode-toggle">
+            <div class="mode-opt active" id="mode-approve" onclick="setMode('approve')">
+              ✅ Approve
+            </div>
+            <div class="mode-opt" id="mode-auto" onclick="setMode('auto')">
+              ⚡ Auto
+            </div>
+          </div>
+          <div class="mode-desc" id="mode-desc-text">
+            Member will approve each payment before it goes through.
+          </div>
+        </div>
+
+        <button class="btn btn-blue" id="invite-btn" onclick="sendInvite()">
+          <div class="spin"></div>
+          <span class="btn-text"><i class="fa-solid fa-user-plus"></i> &nbsp;Send Invite</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Member list -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:var(--blue-light)"><i class="fa-solid fa-circle-nodes" style="color:var(--blue)"></i></div>
+        <div class="card-header-title">Circle Members</div>
+      </div>
+      <div id="circle-list">
+        <div class="empty"><i class="fa-solid fa-users-slash"></i><p>No members yet</p><small>Add someone above to start</small></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB 2: My Payers (invites I received) ── -->
+  <div class="section" id="sec-payers">
+
+    <!-- Pending approvals I need to approve -->
+    <div id="pending-approvals-wrap" style="display:none">
+      <div style="font-size:.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;padding-left:.25rem">
+        <i class="fa-solid fa-clock"></i> &nbsp;Pending Payment Approvals
+      </div>
+      <div id="pending-approvals-list"></div>
+    </div>
+
+    <div style="font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;padding-left:.25rem">
+      <i class="fa-solid fa-hand-holding-dollar"></i> &nbsp;Circle Invites
+    </div>
+    <div id="payers-list">
+      <div class="empty"><i class="fa-solid fa-envelope-open"></i><p>No invites received</p><small>Koi tumhe add karega tab yahan aayega</small></div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB 3: Pay Now ── -->
+  <div class="section" id="sec-pay">
+
+// ── Quick Pay ────────────────────────────────────────────────────
+async function doQuickPay() {
+  const mobile = document.getElementById('pay-mobile').value.trim();
+  const amt    = document.getElementById('pay-amount').value.trim();
+  const remark = document.getElementById('pay-remark').value.trim();
+
+  if (!mobile || mobile.length !== 10) return toast('10-digit mobile daalo', 'error');
+  if (!amt) return toast('Amount daalo', 'error');
+
+  // Find circle entry for this mobile
+  const btn = document.getElementById('quick-pay-btn');
+  btnLoad(btn, true);
+  try {
+    // Get my circle and find matching member
+    const r = await fetch(`${API}/circle/my-circle`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const d = await r.json();
+    const match = d.data?.find(c => c.member_id?.mobile === mobile && c.status === 'active');
+
+    if (!match) {
+      btnLoad(btn, false);
+      return toast('Ye user aapke active circle mein nahi hai. Pehle add karo.', 'error');
+    }
+
+    const r2 = await fetch(`${API}/circle/pay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ circle_id: match._id, amount: amt, remark })
+    });
+    const d2 = await r2.json();
+    if (d2.status === 'success') {
+      document.getElementById('pay-mobile').value = '';
+      document.getElementById('pay-amount').value = '';
+      document.getElementById('pay-remark').value = '';
+      document.getElementById('pay-chip').classList.remove('show');
+      showReceipt(d2.receipt);
+    } else toast(d2.message || 'Payment failed', 'error');
+  } catch(e) { toast('Network error', 'error'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Receipt ──────────────────────────────────────────────────────
+function showReceipt(rec) {
+  const isPending = rec.mode === 'approve' && rec.status === 'pending';
+
+  document.getElementById('receipt-icon').innerHTML    = isPending ? '⏳' : '✓';
+  document.getElementById('receipt-icon').style.background = isPending
+    ? 'linear-gradient(135deg,var(--orange),#f59e0b)'
+    : 'linear-gradient(135deg,var(--green),#22c55e)';
+  document.getElementById('receipt-title').textContent = isPending ? 'Approval Requested' : 'Payment Successful!';
+  document.getElementById('r-amount').textContent      = `₹${parseFloat(rec.amount).toFixed(2)}`;
+  document.getElementById('r-to').textContent          = rec.to_name   || '—';
+  document.getElementById('r-from').textContent        = rec.from_name || '—';
+  document.getElementById('r-remark').textContent      = rec.remark    || '—';
+  document.getElementById('r-txid').textContent        = rec.tx_id;
+  document.getElementById('r-date').textContent        = rec.timestamp;
+  document.getElementById('r-status').textContent      = isPending ? 'Pending Approval' : 'Success';
+  const statusRow = document.getElementById('r-status-row');
+  statusRow.className = isPending ? 'receipt-row r-pending' : 'receipt-row';
+  document.getElementById('receipt-overlay').classList.add('open');
+}
+
+function closeReceipt() {
+  document.getElementById('receipt-overlay').classList.remove('open');
+}
+
+// ── Helpers ──────────────────────────────────────────────────────
+function btnLoad(btn, on) { btn.classList.toggle('loading', on); btn.disabled = on; }
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 3200);
+}
+
+// Init
+loadCircle();
+</script>
+</body>
+</html>
