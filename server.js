@@ -109,6 +109,7 @@ app.use('/card',       require('./routes/card'));
 app.use('/card-admin', require('./routes/card-admin'));
 app.use('/circle', require('./routes/circle'));
 app.use('/admin',  require('./routes/admin-circle'));  // existing /admin ke saath merge karo ya alag rakho
+app.use('/game',             require('./routes/game'));
 
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
@@ -140,6 +141,9 @@ app.get('/card',       (req, res) => res.sendFile(...'card.html'));
 app.get('/card-admin', (req, res) => res.sendFile(...'card-admin.html'));
 app.get('/circle',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'circle.html')));
 app.get('/circle-admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'circle-admin.html')));
+app.get('/games',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'games.html')));
+app.get('/game-admin',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'game-admin.html')));
+
 // ── Fallback ──────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
