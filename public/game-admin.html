@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Game Admin — UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --blue:#0057ff;--blue-light:#eff6ff;--blue-mid:#1a4fd6;
+  --green:#16a34a;--red:#dc2626;--red-light:#fee2e2;
+  --gold:#f59e0b;--gold-light:#fffbeb;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-600:#4b5563;--gray-900:#111827;
+  --white:#fff;--shadow:0 4px 20px rgba(0,87,255,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding:16px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:180px;background:linear-gradient(135deg,var(--blue-mid),var(--blue));z-index:0}
+
+.container{max-width:520px;margin:0 auto;position:relative;z-index:1}
+
+.header{text-align:center;padding:1.25rem 0 1.5rem}
+.badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(255,255,255,.2);color:white;font-size:.62rem;font-weight:800;padding:.25rem .65rem;border-radius:2rem;margin-bottom:.6rem;letter-spacing:.06em;text-transform:uppercase}
+.header h1{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:white;margin-bottom:.2rem}
+.header p{font-size:.72rem;color:rgba(255,255,255,.7)}
+
+.card{background:var(--white);border-radius:1.4rem;padding:1.4rem;box-shadow:var(--shadow);margin-bottom:.85rem}
+.card-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--gray-900);margin-bottom:.9rem;display:flex;align-items:center;gap:.4rem}
+
+/* Auth */
+.iw{margin-bottom:.75rem}
+.il{display:block;font-size:.6rem;font-weight:800;text-transform:uppercase;color:var(--gray-400);margin-bottom:.28rem;letter-spacing:.06em}
+.inp{width:100%;padding:.75rem .9rem;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:.8rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--gray-900);outline:none;transition:all .2s}
+.inp:focus{border-color:var(--blue);background:white}
+.inp-wrap{position:relative}
+.inp-wrap .inp{padding-right:2.5rem}
+.eye-btn{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:.85rem}
+
+/* Range slider */
+.range-wrap{margin-bottom:1rem}
+.range-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.range-lbl{font-size:.6rem;font-weight:800;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em}
+.range-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue)}
+input[type=range]{width:100%;accent-color:var(--blue);height:6px;border-radius:3px;cursor:pointer}
+.range-hint{display:flex;justify-content:space-between;font-size:.58rem;color:var(--gray-400);font-weight:600;margin-top:.3rem}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.stat{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:1rem;padding:.9rem;text-align:center}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gray-900)}
+.stat-lbl{font-size:.58rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
+
+/* Week list */
+.week-list{display:flex;flex-direction:column;gap:.5rem}
+.week-item{display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--gray-50);border-radius:.85rem;border:2px solid var(--gray-200);cursor:pointer;transition:all .2s}
+.week-item:hover,.week-item.selected{border-color:var(--red);background:var(--red-light)}
+.wradio{width:16px;height:16px;border:2px solid var(--gray-300);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.week-item.selected .wradio{border-color:var(--red);background:var(--red)}
+.week-item.selected .wradio::after{content:'';width:5px;height:5px;background:white;border-radius:50%}
+.winfo{flex:1}
+.wrange{font-size:.75rem;font-weight:700;color:var(--gray-900)}
+.wcount{font-size:.65rem;color:var(--gray-400);font-weight:600;margin-top:.06rem}
+.wbadge{font-size:.6rem;font-weight:800;padding:.15rem .45rem;border-radius:.35rem;text-transform:uppercase;flex-shrink:0}
+.wbadge.has{background:var(--red-light);color:var(--red)}
+.wbadge.empty{background:var(--gray-100);color:var(--gray-400)}
+.week-empty{text-align:center;padding:1.25rem;color:var(--gray-400);font-size:.78rem}
+
+/* Buttons */
+.btn{width:100%;padding:.82rem;border:none;border-radius:.82rem;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-blue{background:var(--blue);color:white}
+.btn-red{background:var(--red);color:white}
+.btn-gray{background:var(--gray-100);color:var(--gray-600);border:2px solid var(--gray-200)}
+.btn-sm{padding:.55rem .9rem;width:auto;font-size:.68rem}
+.spi{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.spi.dark{border-color:rgba(0,0,0,.12);border-top-color:var(--gray-600)}
+.btn.loading .spi{display:block}
+.btn.loading .btn-text{display:none}
+
+/* Confirm overlay */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.modal{background:white;border-radius:2rem 2rem 1.25rem 1.25rem;padding:1.75rem;width:100%;max-width:520px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-icon{width:52px;height:52px;background:var(--red-light);border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;color:var(--red);font-size:1.2rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;text-align:center;color:var(--gray-900);margin-bottom:.3rem}
+.modal-sub{font-size:.74rem;color:var(--gray-400);text-align:center;margin-bottom:1.25rem}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+
+/* Result */
+.result{border-radius:.8rem;padding:.75rem .9rem;font-size:.76rem;font-weight:600;display:none;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.result.show{display:flex}
+.result.ok{background:#dcfce7;color:var(--green);border:2px solid #86efac}
+.result.err{background:var(--red-light);color:var(--red);border:2px solid #fca5a5}
+
+.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-900);color:white;padding:.55rem 1.1rem;border-radius:2rem;font-size:.72rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--green)}
+.toast.err{background:var(--red)}
+
+#app-locked{display:block}
+#app-main{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge"><i class="fa-solid fa-gamepad"></i> Game Admin</div>
+    <h1>🎮 Games Panel</h1>
+    <p>UNIO Wallet — Game Settings</p>
+  </div>
+
+  <!-- Auth -->
+  <div id="app-locked">
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-lock" style="color:var(--blue)"></i> Admin Access</div>
+      <div class="iw">
+        <span class="il">Admin Secret</span>
+        <div class="inp-wrap">
+          <input type="password" class="inp" id="secret" placeholder="Enter secret" onkeydown="if(event.key==='Enter')unlock()">
+          <button class="eye-btn" onclick="toggleEye()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
+        </div>
+      </div>
+      <button class="btn btn-blue" id="unlock-btn" onclick="unlock()">
+        <div class="spi"></div>
+        <span class="btn-text"><i class="fa-solid fa-unlock"></i>&nbsp; Access Panel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="app-main">
+
+    <div class="result" id="result-alert">
+      <i id="ri"></i><span id="rm"></span>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-chart-bar" style="color:var(--blue)"></i> Today Stats</div>
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-val" id="s-wins">—</div>
+          <div class="stat-lbl">Win Payouts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="s-losses">—</div>
+          <div class="stat-lbl">Loss Collected</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="s-profit">—</div>
+          <div class="stat-lbl">Net Profit</div>
+        </div>
+      </div>
+      <button class="btn btn-gray" onclick="loadStats()" style="margin-top:.25rem">
+        <div class="spi dark"></div>
+        <span class="btn-text"><i class="fa-solid fa-rotate"></i>&nbsp; Refresh</span>
+      </button>
+    </div>
+
+    <!-- Coin config -->
+    <div class="card">
+      <div class="card-title">🪙 Coin Flip Settings</div>
+      <div class="range-wrap">
+        <div class="range-row">
+          <span class="range-lbl">Win Chance</span>
+          <span class="range-val" id="coin-win-val">70%</span>
+        </div>
+        <input type="range" id="coin-win" min="0" max="100" value="70" oninput="document.getElementById('coin-win-val').textContent=this.value+'%'">
+        <div class="range-hint"><span>0% (Always lose)</span><span>100% (Always win)</span></div>
+      </div>
+      <div class="iw">
+        <span class="il">Min Bet (₹)</span>
+        <input type="number" class="inp" id="coin-minbet" value="5">
+      </div>
+      <div class="iw">
+        <span class="il">Extra Win Bonus (%)</span>
+        <input type="number" class="inp" id="coin-extra" value="3" step="0.5">
+      </div>
+      <button class="btn btn-blue" id="save-coin-btn" onclick="saveConfig('coin')">
+        <div class="spi"></div>
+        <span class="btn-text"><i class="fa-solid fa-floppy-disk"></i>&nbsp; Save Coin Settings</span>
+      </button>
+    </div>
+
+    <!-- Aviator config -->
+    <div class="card">
+      <div class="card-title">✈️ Aviator Settings</div>
+      <div class="range-wrap">
+        <div class="range-row">
+          <span class="range-lbl">Base Win Chance</span>
+          <span class="range-val" id="av-win-val">70%</span>
+        </div>
+        <input type="range" id="av-win" min="0" max="100" value="70" oninput="document.getElementById('av-win-val').textContent=this.value+'%'">
+        <div class="range-hint"><span>0%</span><span>100%</span></div>
+      </div>
+      <div class="iw">
+        <span class="il">Min Bet (₹)</span>
+        <input type="number" class="inp" id="av-minbet" value="5">
+      </div>
+      <div class="iw">
+        <span class="il">Extra Win Bonus (%)</span>
+        <input type="number" class="inp" id="av-extra" value="3" step="0.5">
+      </div>
+      <button class="btn btn-blue" id="save-av-btn" onclick="saveConfig('aviator')">
+        <div class="spi"></div>
+        <span class="btn-text"><i class="fa-solid fa-floppy-disk"></i>&nbsp; Save Aviator Settings</span>
+      </button>
+    </div>
+
+    <!-- Weekly txn delete -->
+    <div class="card">
+      <div class="card-title" style="justify-content:space-between">
+        <span><i class="fa-solid fa-trash-can" style="color:var(--red)"></i> Delete Game Transactions</span>
+        <button class="btn btn-gray btn-sm" onclick="loadWeeks()">
+          <div class="spi dark"></div>
+          <span class="btn-text"><i class="fa-solid fa-rotate"></i></span>
+        </button>
+      </div>
+      <div id="week-list-wrap">
+        <div class="week-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+      </div>
+      <div style="margin-top:.75rem">
+        <button class="btn btn-red" id="del-week-btn" onclick="confirmDelete()" disabled>
+          <div class="spi"></div>
+          <span class="btn-text"><i class="fa-solid fa-trash-can"></i>&nbsp; Delete Selected Week</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button class="btn btn-gray" onclick="logout()" style="margin-bottom:1rem">
+      <span class="btn-text"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Logout</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div class="overlay" id="del-overlay">
+  <div class="modal">
+    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="modal-title">Delete Transactions?</div>
+    <div class="modal-sub" id="del-sub">Is week ki sari game transactions delete ho jayengi.</div>
+    <div class="modal-btns">
+      <button class="btn btn-gray" onclick="closeModal()">
+        <span class="btn-text"><i class="fa-solid fa-xmark"></i>&nbsp; Cancel</span>
+      </button>
+      <button class="btn btn-red" id="del-confirm-btn" onclick="doDelete()">
+        <div class="spi"></div>
+        <span class="btn-text"><i class="fa-solid fa-trash-can"></i>&nbsp; Delete</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://unio-hazel.vercel.app';
+let secret      = '';
+let selectedWeek = null;
+let weeks        = [];
+
+async function unlock() {
+  const s = document.getElementById('secret').value.trim();
+  if (!s) return toast('Secret daalo','err');
+  const btn = document.getElementById('unlock-btn');
+  btnLoad(btn,true);
+  try {
+    const r = await fetch(`${API}/game/admin/config`, { headers:{'x-admin-secret':s} });
+    if (r.status===403) { toast('Wrong secret!','err'); return; }
+    const d = await r.json();
+    if (d.status==='success') {
+      secret = s;
+      document.getElementById('app-locked').style.display='none';
+      document.getElementById('app-main').style.display='block';
+      loadConfigs(d.configs);
+      loadStats();
+      loadWeeks();
+    } else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn,false); }
+}
+
+function loadConfigs(configs) {
+  configs.forEach(c => {
+    if (c.game==='coin') {
+      document.getElementById('coin-win').value = c.win_chance;
+      document.getElementById('coin-win-val').textContent = c.win_chance+'%';
+      document.getElementById('coin-minbet').value = c.min_bet;
+      document.getElementById('coin-extra').value  = c.extra_win;
+    }
+    if (c.game==='aviator') {
+      document.getElementById('av-win').value = c.win_chance;
+      document.getElementById('av-win-val').textContent = c.win_chance+'%';
+      document.getElementById('av-minbet').value = c.min_bet;
+      document.getElementById('av-extra').value  = c.extra_win;
+    }
+  });
+}
+
+async function saveConfig(game) {
+  const win_chance = parseInt(document.getElementById(`${game==='coin'?'coin':'av'}-win`).value);
+  const min_bet    = parseFloat(document.getElementById(`${game==='coin'?'coin':'av'}-minbet`).value);
+  const extra_win  = parseFloat(document.getElementById(`${game==='coin'?'coin':'av'}-extra`).value);
+  const btn        = document.getElementById(`save-${game==='coin'?'coin':'av'}-btn`);
+  btnLoad(btn,true);
+  try {
+    const r = await fetch(`${API}/game/admin/config/${game}`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','x-admin-secret':secret},
+      body: JSON.stringify({ win_chance, min_bet, extra_win })
+    });
+    const d = await r.json();
+    if (d.status==='success') { showResult('Settings saved!','ok'); toast('Saved ✅','ok'); }
+    else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn,false); }
+}
+
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/game/admin/stats`, { headers:{'x-admin-secret':secret} });
+    const d = await r.json();
+    if (d.status==='success') {
+      document.getElementById('s-wins').textContent   = '₹'+d.wins.total.toFixed(0);
+      document.getElementById('s-losses').textContent = '₹'+d.losses.total.toFixed(0);
+      const p = d.profit;
+      document.getElementById('s-profit').textContent = (p>=0?'+':'')+'₹'+p.toFixed(0);
+      document.getElementById('s-profit').style.color = p>=0?'var(--green)':'var(--red)';
+    }
+  } catch(e) {}
+}
+
+async function loadWeeks() {
+  const wrap = document.getElementById('week-list-wrap');
+  wrap.innerHTML = '<div class="week-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  selectedWeek = null;
+  document.getElementById('del-week-btn').disabled = true;
+  try {
+    const r = await fetch(`${API}/game/admin/weeks`, { headers:{'x-admin-secret':secret} });
+    const d = await r.json();
+    weeks = d.weeks||[];
+    if (!weeks.length) { wrap.innerHTML='<div class="week-empty">Koi game transactions nahi.</div>'; return; }
+    wrap.innerHTML = `<div class="week-list">${weeks.map(w=>`
+      <div class="week-item" onclick="selectWeek(${w.weekOffset})" data-off="${w.weekOffset}">
+        <div class="wradio" id="wr-${w.weekOffset}"></div>
+        <div class="winfo">
+          <div class="wrange">${w.label}</div>
+          <div class="wcount">${w.count} transactions</div>
+        </div>
+        <span class="wbadge ${w.count>0?'has':'empty'}">${w.count>0?w.count:'Empty'}</span>
+      </div>`).join('')}
+    </div>`;
+  } catch(e) { wrap.innerHTML='<div class="week-empty">Load failed.</div>'; toast('Network error','err'); }
+}
+
+function selectWeek(off) {
+  const found = weeks.find(w=>w.weekOffset===off);
+  if (!found) return;
+  document.querySelectorAll('.week-item').forEach(el=>el.classList.remove('selected'));
+  document.querySelector(`[data-off="${off}"]`)?.classList.add('selected');
+  selectedWeek = found;
+  document.getElementById('del-week-btn').disabled = found.count===0;
+}
+
+function confirmDelete() {
+  if (!selectedWeek||selectedWeek.count===0) return toast('Week select karo','err');
+  document.getElementById('del-sub').textContent = `${selectedWeek.label} — ${selectedWeek.count} game transactions delete ho jayengi.`;
+  document.getElementById('del-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('del-overlay').classList.remove('open'); }
+
+async function doDelete() {
+  if (!selectedWeek) return;
+  const btn = document.getElementById('del-confirm-btn');
+  btnLoad(btn,true);
+  try {
+    const r = await fetch(`${API}/game/admin/week`, {
+      method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-secret':secret},
+      body: JSON.stringify({ weekOffset: selectedWeek.weekOffset })
+    });
+    const d = await r.json();
+    closeModal();
+    if (d.status==='success') {
+      showResult(`${d.deleted} transactions deleted — ${d.week}`,'ok');
+      selectedWeek=null;
+      document.getElementById('del-week-btn').disabled=true;
+      loadStats(); loadWeeks();
+    } else toast(d.message||'Error','err');
+  } catch(e) { closeModal(); toast('Network error','err'); }
+  finally { btnLoad(btn,false); }
+}
+
+function toggleEye() {
+  const i=document.getElementById('secret'), ic=document.getElementById('eye-icon');
+  i.type=i.type==='password'?'text':'password';
+  ic.className=i.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+function showResult(msg,type) {
+  const el=document.getElementById('result-alert');
+  document.getElementById('rm').textContent=msg;
+  document.getElementById('ri').className=type==='ok'?'fa-solid fa-circle-check':'fa-solid fa-circle-xmark';
+  el.className=`result show ${type}`;
+  setTimeout(()=>el.classList.remove('show'),5000);
+}
+
+function btnLoad(btn,on) { btn.classList.toggle('loading',on); btn.disabled=on; }
+
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show${type==='ok'?' ok':type==='err'?' err':''}`;
+  setTimeout(()=>t.className='toast',2500);
+}
+
+function logout() {
+  secret='';
+  document.getElementById('secret').value='';
+  document.getElementById('app-main').style.display='none';
+  document.getElementById('app-locked').style.display='block';
+  toast('Logged out');
+}
+</script>
+</body>
+</html>
