@@ -271,4 +271,4 @@ router.delete('/admin/week', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-  
+    
