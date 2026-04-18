@@ -2,8 +2,25 @@ const router      = require('express').Router();
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
 const tg          = require('../helpers/telegram');
+const axios       = require('axios');
 
 const ADMIN_KEY = process.env.ADMIN_KEY || '8435';
+const BOT_TOKEN = '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_TG_ID = '8509393869';
+
+// Telegram function for custom messages
+async function sendTgMessage(chatId, message) {
+  try {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    await axios.post(url, {
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'HTML'
+    });
+  } catch (error) {
+    console.error('Telegram notification error:', error.message);
+  }
+}
 
 function adminCheck(req, res, next) {
   const key = req.headers['x-admin-key'] || req.query.admin_key;
@@ -72,81 +89,41 @@ router.get('/withdrawals', async (req, res) => {
   res.json({ status:'success', withdrawals:list });
 });
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
-const ADMIN_TG  = process.env.ADMIN_TG_ID || '8509393869';
-
-async function sendTG(chat_id, text) {
-  if (!chat_id) return;
-  try {
-    const axios = require('axios');
-    await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
-      { chat_id, text, parse_mode: 'Markdown' }, { timeout: 8000 });
-  } catch(e) {}
-}
-
-function istTime() {
-  return new Date().toLocaleString('en-IN', {
-    timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short',
-    year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-  });
-}
-
 router.post('/approve-withdraw/:txn_id', async (req, res) => {
   try {
-    const txn = await Transaction.findOne({ tx_id: req.params.txn_id, type: 'withdraw' })
-      .populate('sender_id', 'name mobile tg_id');
-
-    if (!txn) return res.status(404).json({ status: 'error', message: 'Transaction not found' });
-    if (txn.status !== 'pending') return res.json({ status: 'error', message: 'Already processed' });
-
-    await Transaction.findOneAndUpdate({ tx_id: req.params.txn_id }, { status: 'success' });
-
-    const dt   = istTime();
-    const user = txn.sender_id;
-    const amt  = txn.amount;
-
-    // TG to user
-    if (user?.tg_id) {
-      sendTG(user.tg_id,
-`✅ *Your Withdraw is Paid Successfully!* 🎉
-
-━━━━━━━━━━━━━━━━━
-💰 Amount : ₹${amt}
-📅 Time : ${dt}
-━━━━━━━━━━━━━━━━━
-
-Check your UPI app or bank statement ✅
-
-🔐 Secured by UNIO System`);
+    const txn = await Transaction.findOneAndUpdate({ tx_id: req.params.txn_id }, { status:'success' }).populate('sender_id');
+    if(txn && txn.sender_id && txn.sender_id.tg_id) {
+        const time = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        const msg = `Your withdraw paid successfully 🎉\n\n<b>Amount:</b> ₹${txn.amount}\n<b>Time:</b> ${time}\n\nCheck your UPI app or bank statement ✅\n\n🔐 Secured by unio system`;
+        
+        // User ko message
+        await sendTgMessage(txn.sender_id.tg_id, msg);
+        // Admin ko alert
+        await sendTgMessage(ADMIN_TG_ID, `<b>Withdraw Approved!</b>\nUser: ${txn.sender_id.name}\nAmount: ₹${txn.amount}`);
     }
-
-    // TG to admin
-    sendTG(ADMIN_TG,
-`✅ *Withdraw Approved*
-
-👤 User : ${user?.name || 'Unknown'} (${user?.mobile || '—'})
-💰 Amount : ₹${amt}
-🆔 Txn ID : \`${txn.tx_id}\`
-📅 Time : ${dt}`);
-
-    res.json({ status: 'success', message: 'Withdraw approved, user notified' });
-  } catch(e) {
-    res.status(500).json({ status: 'error', message: e.message });
-  }
+    res.json({ status:'success' });
+  } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
 });
 
 router.post('/reject-withdraw/:txn_id', async (req, res) => {
-  const txn = await Transaction.findOne({ tx_id: req.params.txn_id, type:'withdraw', status:'pending' });
+  const txn = await Transaction.findOne({ tx_id: req.params.txn_id, type:'withdraw', status:'pending' }).populate('sender_id');
   if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
-  await User.findByIdAndUpdate(txn.sender_id, { $inc:{ balance: txn.amount } });
+  
+  await User.findByIdAndUpdate(txn.sender_id._id, { $inc:{ balance: txn.amount } });
   await Transaction.findByIdAndUpdate(txn._id, { status:'rejected' });
+  
+  if(txn.sender_id && txn.sender_id.tg_id) {
+      const msg = `❌ <b>Withdraw Rejected</b>\n\nYour withdraw request of ₹${txn.amount} has been rejected and amount is refunded to your wallet.\n\nContact support if you have queries.`;
+      await sendTgMessage(txn.sender_id.tg_id, msg);
+  }
+  
   res.json({ status:'success' });
 });
 
 router.post('/approve-deposit/:id', async (req, res) => {
   try {
     const txn = await Transaction.findById(req.params.id)
-      .populate('receiver_id', 'name mobile balance');
+      .populate('receiver_id', 'name mobile balance tg_id');
     if(!txn) return res.status(404).json({ status:'error', message:'Not found' });
     if(txn.status !== 'pending')
       return res.json({ status:'error', message:'Already processed' });
@@ -189,7 +166,6 @@ router.post('/notify-txn/:id', async (req, res) => {
   res.json({ status:'success' });
 });
 
-// ── Reset Password ────────────────────────────────────────────────────────────
 router.post('/reset-password', async (req, res) => {
   try {
     const { mobile, new_password } = req.body;
@@ -197,11 +173,11 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ status:'error', message:'Mobile and new_password required' });
     const user = await User.findOne({ mobile });
     if(!user) return res.status(404).json({ status:'error', message:'User not found' });
-    user.password = new_password; // pre('save') hash kar dega
+    user.password = new_password; 
     await user.save();
     res.json({ status:'success', message:'Password reset successfully' });
   } catch(e) { res.status(500).json({ status:'error', message:e.message }); }
 });
 
 module.exports = router;
-
+    
