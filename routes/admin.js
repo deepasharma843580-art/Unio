@@ -72,9 +72,67 @@ router.get('/withdrawals', async (req, res) => {
   res.json({ status:'success', withdrawals:list });
 });
 
+const BOT_TOKEN = process.env.BOT_TOKEN || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
+const ADMIN_TG  = process.env.ADMIN_TG_ID || '8509393869';
+
+async function sendTG(chat_id, text) {
+  if (!chat_id) return;
+  try {
+    const axios = require('axios');
+    await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+      { chat_id, text, parse_mode: 'Markdown' }, { timeout: 8000 });
+  } catch(e) {}
+}
+
+function istTime() {
+  return new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short',
+    year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+  });
+}
+
 router.post('/approve-withdraw/:txn_id', async (req, res) => {
-  await Transaction.findOneAndUpdate({ tx_id: req.params.txn_id }, { status:'success' });
-  res.json({ status:'success' });
+  try {
+    const txn = await Transaction.findOne({ tx_id: req.params.txn_id, type: 'withdraw' })
+      .populate('sender_id', 'name mobile tg_id');
+
+    if (!txn) return res.status(404).json({ status: 'error', message: 'Transaction not found' });
+    if (txn.status !== 'pending') return res.json({ status: 'error', message: 'Already processed' });
+
+    await Transaction.findOneAndUpdate({ tx_id: req.params.txn_id }, { status: 'success' });
+
+    const dt   = istTime();
+    const user = txn.sender_id;
+    const amt  = txn.amount;
+
+    // TG to user
+    if (user?.tg_id) {
+      sendTG(user.tg_id,
+`✅ *Your Withdraw is Paid Successfully!* 🎉
+
+━━━━━━━━━━━━━━━━━
+💰 Amount : ₹${amt}
+📅 Time : ${dt}
+━━━━━━━━━━━━━━━━━
+
+Check your UPI app or bank statement ✅
+
+🔐 Secured by UNIO System`);
+    }
+
+    // TG to admin
+    sendTG(ADMIN_TG,
+`✅ *Withdraw Approved*
+
+👤 User : ${user?.name || 'Unknown'} (${user?.mobile || '—'})
+💰 Amount : ₹${amt}
+🆔 Txn ID : \`${txn.tx_id}\`
+📅 Time : ${dt}`);
+
+    res.json({ status: 'success', message: 'Withdraw approved, user notified' });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
 });
 
 router.post('/reject-withdraw/:txn_id', async (req, res) => {
@@ -146,4 +204,4 @@ router.post('/reset-password', async (req, res) => {
 });
 
 module.exports = router;
-  
+
