@@ -137,7 +137,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </div>
 
     <div class="stats-row">
-      <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="stat-total">0</div></div>
+      <div class="stat"><div class="stat-label">Fund</div><div class="stat-val" id="stat-fund" style="color:#7c3aed">₹0</div></div>
       <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a">0</div></div>
       <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">0</div></div>
     </div>
@@ -355,7 +355,12 @@ async function loadLifafa() {
     document.getElementById('banner-claimed-text').textContent  =
       currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
 
-    document.getElementById('stat-total').textContent   = currentLifafa.max_users;
+    document.getElementById('stat-total')?.remove?.();
+    // Fund = total_fund se claimed amount minus (approximate from lifafa data)
+    const perAmt = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
+    const referReserve = (currentLifafa.refer_bonus || 0) * currentLifafa.max_users;
+    const totalFund = (perAmt * currentLifafa.max_users) + referReserve;
+    document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
     document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
     document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
 
@@ -600,4 +605,4 @@ function shareTG() {
 }
 </script>
 </body>
-</html>
+</html> 
