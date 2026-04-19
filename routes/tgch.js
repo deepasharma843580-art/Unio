@@ -7,6 +7,15 @@ const token        = localStorage.getItem('token');
 let currentUser    = null;   // fetched user object
 let authed         = false;
 
+// ── Page Loader ───────────────────────────────────────────────────
+function showLoader(text = 'Loading...') {
+  document.getElementById('page-loader-text').textContent = text;
+  document.getElementById('page-loader').classList.add('show');
+}
+function hideLoader() {
+  document.getElementById('page-loader').classList.remove('show');
+}
+
 // ── Auth Header ──────────────────────────────────────────────────
 function headers() {
   return {
@@ -33,22 +42,27 @@ function checkAuth() {
   const pass = document.getElementById('admin-pass').value.trim();
   if (!pass) return toast('Password dalo', 'error');
 
-  const btn = document.getElementById('auth-btn');
+  const btn  = document.getElementById('auth-btn');
+  const icon = document.getElementById('auth-icon');
   btn.classList.add('loading'); btn.disabled = true;
+  icon.classList.add('pulse');
 
+  // Spin for at least 900ms so user can see it clearly
   setTimeout(() => {
-    btn.classList.remove('loading'); btn.disabled = false;
-
+    icon.classList.remove('pulse');
     if (pass === ADMIN_PASS) {
       authed = true;
+      btn.classList.remove('loading'); btn.disabled = false;
       document.getElementById('auth-section').style.display = 'none';
       document.getElementById('main-section').style.display = 'block';
       toast('Access mil gaya!', 'success');
     } else {
+      btn.classList.remove('loading'); btn.disabled = false;
       toast('Wrong password!', 'error');
       document.getElementById('admin-pass').value = '';
+      document.getElementById('admin-pass').focus();
     }
-  }, 500);
+  }, 900);
 }
 
 // ── Search Input Handler ─────────────────────────────────────────
@@ -79,6 +93,7 @@ async function searchUser() {
 
   const btn = document.getElementById('search-btn');
   btn.classList.add('loading'); btn.disabled = true;
+  showLoader('Dhoondh raha hoon...');
 
   document.getElementById('result-area').innerHTML = `
     <div class="empty-hint">
@@ -109,10 +124,9 @@ async function searchUser() {
       </div>`;
   } finally {
     btn.classList.remove('loading'); btn.disabled = false;
+    hideLoader();
   }
-}
-
-// ── Render User Detail Card ──────────────────────────────────────
+} ──────────────────────────────────────
 function renderUserCard(u) {
   const initials = (u.name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
   const statusClass = u.status === 'active' ? 's-active' : u.status === 'blocked' ? 's-blocked' : 's-pending';
@@ -231,6 +245,7 @@ async function updateTgId(userId) {
 
   const btn = document.getElementById('update-tg-btn');
   btn.classList.add('loading'); btn.disabled = true;
+  showLoader('TG ID save ho raha hai...');
 
   try {
     const r = await fetch(`${API}/admin/update-tg`, {
@@ -254,6 +269,7 @@ async function updateTgId(userId) {
     toast('Network error: ' + e.message, 'error');
   } finally {
     btn.classList.remove('loading'); btn.disabled = false;
+    hideLoader();
   }
 }
 
@@ -299,5 +315,4 @@ function toast(msg, type = '') {
   t.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success-t' : '');
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 3000);
-          }
-  
+}
