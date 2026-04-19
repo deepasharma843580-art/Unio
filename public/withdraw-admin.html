@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>UNIO — Withdraw Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:     #07090f;
+  --s1:     #0d1117;
+  --s2:     #111823;
+  --bdr:    #1c2638;
+  --text:   #e2e8f0;
+  --muted:  #4b607a;
+  --green:  #10b981;
+  --red:    #f43f5e;
+  --amber:  #f59e0b;
+  --blue:   #3b82f6;
+  --teal:   #2dd4bf;
+  --purple: #8b5cf6;
+  --font:   'Figtree', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:var(--font); min-height:100vh; }
+
+/* LOGIN */
+#login {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(ellipse 500px 300px at 50% 0%, rgba(45,212,191,0.07), transparent 70%), var(--bg);
+}
+.lbox {
+  width:340px; background:var(--s1); border:1px solid var(--bdr);
+  border-radius:18px; padding:38px 28px; text-align:center;
+  animation: up .4s ease both;
+}
+@keyframes up { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+.licon { font-size:28px; margin-bottom:14px; }
+.lbox h2 { font-size:19px; font-weight:800; margin-bottom:4px; }
+.lbox p  { color:var(--muted); font-size:12px; margin-bottom:24px; }
+.pin-row { display:flex; gap:10px; justify-content:center; margin-bottom:16px; }
+.pdig {
+  width:52px; height:56px; background:var(--s2); border:1.5px solid var(--bdr);
+  border-radius:11px; text-align:center; font-size:22px; font-family:var(--mono);
+  color:var(--teal); outline:none; transition:border-color .2s; caret-color:var(--teal);
+}
+.pdig:focus { border-color:var(--teal); }
+.btn-main {
+  width:100%; padding:12px; border:none; border-radius:11px;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  color:#fff; font-family:var(--font); font-size:14px; font-weight:700;
+  cursor:pointer; transition:opacity .2s;
+}
+.btn-main:hover { opacity:.88; }
+.lerr { color:var(--red); font-size:12px; margin-top:10px; display:none; }
+
+/* HEADER */
+#app { display:none; }
+header {
+  background:var(--s1); border-bottom:1px solid var(--bdr);
+  height:56px; display:flex; align-items:center;
+  padding:0 24px; justify-content:space-between; position:sticky; top:0; z-index:50;
+}
+.brand { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800; }
+.bdot { width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 7px var(--green); animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hright { display:flex; align-items:center; gap:10px; }
+.tag { font-family:var(--mono); font-size:10px; letter-spacing:1px; padding:3px 9px; border-radius:20px; background:rgba(45,212,191,.1); border:1px solid rgba(45,212,191,.2); color:var(--teal); }
+.logout { background:transparent; border:1px solid var(--bdr); color:var(--muted); padding:5px 14px; border-radius:8px; font-family:var(--font); font-size:12px; cursor:pointer; transition:all .2s; }
+.logout:hover { border-color:var(--red); color:var(--red); }
+
+/* MAIN */
+.main { max-width:1100px; margin:32px auto; padding:0 20px 60px; }
+.ptitle { font-size:23px; font-weight:800; letter-spacing:-.4px; margin-bottom:3px; }
+.psub   { color:var(--muted); font-size:13px; margin-bottom:28px; }
+
+/* TABS */
+.tabs { display:flex; gap:3px; background:var(--s1); border:1px solid var(--bdr); border-radius:11px; padding:4px; width:fit-content; margin-bottom:28px; }
+.tab { padding:8px 18px; border:none; background:transparent; color:var(--muted); font-family:var(--font); font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; transition:all .2s; }
+.tab.on { background:var(--s2); color:var(--text); border:1px solid var(--bdr); }
+.panel { display:none; animation:up .3s ease both; }
+.panel.on { display:block; }
+
+/* STATS */
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:26px; }
+.sc {
+  background:var(--s1); border:1px solid var(--bdr); border-radius:14px;
+  padding:18px 20px; position:relative; overflow:hidden;
+}
+.sc::after { content:''; position:absolute; bottom:0; right:0; width:70px; height:70px; border-radius:50%; background:var(--gc,rgba(45,212,191,.06)); transform:translate(18px,18px); }
+.sl { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.9px; margin-bottom:7px; }
+.sv { font-family:var(--mono); font-size:24px; font-weight:700; }
+
+/* TABLE */
+.tcard { background:var(--s1); border:1px solid var(--bdr); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+.thead { padding:16px 20px; border-bottom:1px solid var(--bdr); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.ttitle { font-size:14px; font-weight:700; }
+.tactions { display:flex; gap:8px; align-items:center; }
+.sinp {
+  background:var(--s2); border:1px solid var(--bdr); border-radius:8px;
+  padding:7px 12px; color:var(--text); font-family:var(--font); font-size:12px;
+  outline:none; width:190px; transition:border-color .2s;
+}
+.sinp:focus { border-color:var(--teal); }
+.sinp::placeholder { color:var(--muted); }
+.btn-ref { padding:7px 14px; border:1px solid var(--bdr); background:transparent; color:var(--text); border-radius:8px; font-family:var(--font); font-size:12px; cursor:pointer; transition:all .2s; }
+.btn-ref:hover { border-color:var(--teal); color:var(--teal); }
+
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { text-align:left; padding:10px 16px; background:var(--s2); color:var(--muted); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.7px; border-bottom:1px solid var(--bdr); }
+td { padding:12px 16px; border-bottom:1px solid rgba(28,38,56,.55); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(255,255,255,.012); }
+.mono { font-family:var(--mono); }
+.dim  { color:var(--muted); }
+
+.badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:10px; font-family:var(--mono); font-weight:700; letter-spacing:.4px; }
+.b-pending  { background:rgba(245,158,11,.12);  border:1px solid rgba(245,158,11,.25); color:var(--amber); }
+.b-success  { background:rgba(16,185,129,.12);  border:1px solid rgba(16,185,129,.25); color:var(--green); }
+.b-rejected { background:rgba(244,63,94,.12);   border:1px solid rgba(244,63,94,.25);  color:var(--red);   }
+
+/* DANGER ZONE */
+.dzone { background:var(--s1); border:1px solid rgba(244,63,94,.22); border-radius:14px; padding:22px; margin-bottom:24px; }
+.dzone h3 { color:var(--red); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+.dzone p  { color:var(--muted); font-size:12px; margin-bottom:18px; line-height:1.6; }
+.dbtns { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-week {
+  padding:10px 18px; border:1px solid rgba(245,158,11,.3); background:rgba(245,158,11,.08);
+  color:var(--amber); border-radius:9px; font-family:var(--font); font-size:12px; font-weight:700;
+  cursor:pointer; transition:all .2s;
+}
+.btn-week:hover { background:rgba(245,158,11,.18); }
+.btn-all {
+  padding:10px 18px; border:1px solid rgba(244,63,94,.3); background:rgba(244,63,94,.08);
+  color:var(--red); border-radius:9px; font-family:var(--font); font-size:12px; font-weight:700;
+  cursor:pointer; transition:all .2s;
+}
+.btn-all:hover { background:rgba(244,63,94,.18); }
+
+/* LOG */
+.logbox { font-family:var(--mono); font-size:11px; max-height:200px; overflow-y:auto; }
+.lline { padding:9px 18px; border-bottom:1px solid rgba(28,38,56,.5); display:flex; gap:10px; color:var(--muted); }
+.lline:last-child { border-bottom:none; }
+.lt { flex-shrink:0; }
+.lm.ok  { color:var(--green); }
+.lm.err { color:var(--red);   }
+.lm.inf { color:var(--teal);  }
+.lempty { padding:20px; text-align:center; color:var(--muted); font-size:11px; }
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--s2); border:1px solid var(--bdr); border-radius:11px;
+  padding:11px 16px; font-size:12px; display:flex; align-items:center; gap:9px;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+  transform:translateY(60px); opacity:0; transition:all .3s ease;
+  z-index:999; max-width:280px;
+}
+#toast.show { transform:translateY(0); opacity:1; }
+.tdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+.empty { padding:32px; text-align:center; color:var(--muted); font-size:12px; }
+.spin { display:inline-block; width:12px; height:12px; border:2px solid rgba(255,255,255,.2); border-top-color:#fff; border-radius:50%; animation:sp .7s linear infinite; vertical-align:middle; }
+@keyframes sp { to{transform:rotate(360deg)} }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lbox">
+    <div class="licon">💸</div>
+    <h2>Withdraw Admin</h2>
+    <p>UNIO — Enter 4-digit PIN</p>
+    <div class="pin-row" id="pins">
+      <input class="pdig" type="password" maxlength="1" inputmode="numeric"/>
+      <input class="pdig" type="password" maxlength="1" inputmode="numeric"/>
+      <input class="pdig" type="password" maxlength="1" inputmode="numeric"/>
+      <input class="pdig" type="password" maxlength="1" inputmode="numeric"/>
+    </div>
+    <button class="btn-main" onclick="doLogin()">Enter</button>
+    <div class="lerr" id="lerr">❌ Wrong PIN</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="brand"><div class="bdot"></div>Withdraw Admin</div>
+    <div class="hright">
+      <span class="tag">ADMIN</span>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="ptitle">Withdrawal Manager</div>
+    <div class="psub">Aaj aur is hafte ki saari withdrawals dekho — delete bhi karo</div>
+
+    <div class="tabs">
+      <button class="tab on"  onclick="switchTab('today',this)">📅 Today</button>
+      <button class="tab"     onclick="switchTab('week',this)">📆 This Week</button>
+      <button class="tab"     onclick="switchTab('manage',this)">🗑 Manage</button>
+    </div>
+
+    <!-- TODAY -->
+    <div class="panel on" id="panel-today">
+      <div class="stats" id="today-stats">
+        <div class="sc" style="--gc:rgba(45,212,191,.07)"><div class="sl">Total</div><div class="sv" id="td-total">—</div></div>
+        <div class="sc" style="--gc:rgba(16,185,129,.07)"><div class="sl">Success ₹</div><div class="sv" style="color:var(--green)" id="td-amt">—</div></div>
+        <div class="sc" style="--gc:rgba(245,158,11,.07)"><div class="sl">Pending</div><div class="sv" style="color:var(--amber)" id="td-pend">—</div></div>
+        <div class="sc" style="--gc:rgba(244,63,94,.07)"><div class="sl">Rejected</div><div class="sv" style="color:var(--red)" id="td-rej">—</div></div>
+      </div>
+      <div class="tcard">
+        <div class="thead">
+          <span class="ttitle" id="today-label">Today's Withdrawals</span>
+          <div class="tactions">
+            <input class="sinp" id="tsearch" placeholder="Search name / UPI..." oninput="filterToday()"/>
+            <button class="btn-ref" onclick="loadToday()">⟳</button>
+          </div>
+        </div>
+        <div id="today-body"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- WEEK -->
+    <div class="panel" id="panel-week">
+      <div class="stats">
+        <div class="sc" style="--gc:rgba(45,212,191,.07)"><div class="sl">Total</div><div class="sv" id="wk-total">—</div></div>
+        <div class="sc" style="--gc:rgba(16,185,129,.07)"><div class="sl">Success ₹</div><div class="sv" style="color:var(--green)" id="wk-amt">—</div></div>
+        <div class="sc" style="--gc:rgba(245,158,11,.07)"><div class="sl">Pending</div><div class="sv" style="color:var(--amber)" id="wk-pend">—</div></div>
+        <div class="sc" style="--gc:rgba(244,63,94,.07)"><div class="sl">Rejected</div><div class="sv" style="color:var(--red)" id="wk-rej">—</div></div>
+      </div>
+      <div class="tcard">
+        <div class="thead">
+          <span class="ttitle" id="week-label">This Week's Withdrawals</span>
+          <div class="tactions">
+            <input class="sinp" id="wsearch" placeholder="Search name / UPI..." oninput="filterWeek()"/>
+            <button class="btn-ref" onclick="loadWeek()">⟳</button>
+          </div>
+        </div>
+        <div id="week-body"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- MANAGE -->
+    <div class="panel" id="panel-manage">
+      <div class="dzone">
+        <h3>⚠ Danger Zone</h3>
+        <p>Withdrawal transactions permanently delete ho jayengi. Ye action undo nahi ho sakta.</p>
+        <div class="dbtns">
+          <button class="btn-week" onclick="doDelete('week')">🗓 Delete This Week's Transactions</button>
+          <button class="btn-all"  onclick="doDelete('all')">🗑 Delete ALL Withdrawal Transactions</button>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="thead"><span class="ttitle">Action Log</span></div>
+        <div class="logbox" id="alog"><div class="lempty">Koi action nahi abhi tak...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><div class="tdot" id="tdot"></div><span id="tmsg"></span></div>
+
+<script>
+const BASE = '';   // same origin; change if API is on different domain
+const PASS = '8435';
+
+// ── PIN Login ──
+const PINS = document.querySelectorAll('.pdig');
+PINS.forEach((p, i) => {
+  p.addEventListener('input', () => {
+    if (p.value && i < PINS.length - 1) PINS[i+1].focus();
+    if (i === PINS.length - 1 && p.value) doLogin();
+  });
+  p.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !p.value && i > 0) PINS[i-1].focus();
+  });
+});
+
+function doLogin() {
+  const pin = [...PINS].map(p => p.value).join('');
+  if (pin === PASS) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display   = 'block';
+    loadToday(); loadWeek();
+  } else {
+    const err = document.getElementById('lerr');
+    err.style.display = 'block';
+    PINS.forEach(p => { p.value = ''; p.style.borderColor = 'var(--red)'; });
+    PINS[0].focus();
+    setTimeout(() => { PINS.forEach(p => p.style.borderColor = ''); err.style.display = 'none'; }, 2000);
+  }
+}
+
+function logout() {
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('app').style.display   = 'none';
+  PINS.forEach(p => p.value = '');
+}
+
+// ── Tabs ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('panel-' + name).classList.add('on');
+}
+
+// ── Toast ──
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  const colors = { ok:'var(--green)', err:'var(--red)', info:'var(--teal)', warn:'var(--amber)' };
+  document.getElementById('tdot').style.background = colors[type] || colors.ok;
+  document.getElementById('tmsg').textContent = msg;
+  el.className = 'show';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => el.className = '', 3500);
+}
+
+// ── Log ──
+function addLog(msg, type = 'inf') {
+  const box = document.getElementById('alog');
+  const emp = box.querySelector('.lempty');
+  if (emp) emp.remove();
+  const d = document.createElement('div');
+  d.className = 'lline';
+  d.innerHTML = `<span class="lt">[${new Date().toLocaleTimeString('en-IN')}]</span><span class="lm ${type}">${msg}</span>`;
+  box.prepend(d);
+}
+
+// ── API ──
+async function api(path, method = 'GET', body = null) {
+  const opts = { method, headers: { 'Content-Type':'application/json', 'x-admin-pass': PASS } };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(BASE + path, opts);
+  return r.json();
+}
+
+// ── Table render ──
+function renderTable(list, bodyId) {
+  if (!list.length) {
+    document.getElementById(bodyId).innerHTML = '<div class="empty">Koi transaction nahi mili</div>';
+    return;
+  }
+  let html = `<table><thead><tr>
+    <th>#</th><th>Name</th><th>Mobile</th><th>UPI</th>
+    <th>Amount</th><th>Status</th><th>Time</th>
+  </tr></thead><tbody>`;
+  list.forEach((t, i) => {
+    const sc = t.status === 'success' ? 'b-success' : t.status === 'pending' ? 'b-pending' : 'b-rejected';
+    const sl = t.status === 'success' ? '✅ SUCCESS' : t.status === 'pending' ? '⏳ PENDING' : '❌ REJECTED';
+    const tm = t.time ? new Date(t.time).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : '—';
+    const dt = t.time ? new Date(t.time).toLocaleDateString('en-IN', { day:'2-digit', month:'short' }) : '';
+    html += `<tr>
+      <td class="dim">${i+1}</td>
+      <td>${t.name}</td>
+      <td class="mono">${t.mobile_masked}</td>
+      <td class="mono">${t.upi_masked || '—'}</td>
+      <td class="mono" style="color:var(--green)">₹${(t.amount||0).toLocaleString('en-IN')}</td>
+      <td><span class="badge ${sc}">${sl}</span></td>
+      <td class="dim mono" style="font-size:11px">${dt} ${tm}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById(bodyId).innerHTML = html;
+}
+
+// ── Today ──
+let todayData = [];
+async function loadToday() {
+  document.getElementById('today-body').innerHTML = '<div class="empty"><span class="spin"></span> Loading...</div>';
+  try {
+    const d = await api('/todaywithdraws');
+    if (d.status !== 'success') throw new Error(d.message);
+    document.getElementById('today-label').textContent = `Today — ${d.date}`;
+    document.getElementById('td-total').textContent = d.summary.total_requests;
+    document.getElementById('td-amt').textContent   = '₹' + (d.summary.total_success_amount||0).toLocaleString('en-IN');
+    document.getElementById('td-pend').textContent  = d.summary.pending;
+    document.getElementById('td-rej').textContent   = d.summary.rejected;
+    todayData = [...d.pending, ...d.success, ...d.rejected];
+    renderTable(todayData, 'today-body');
+  } catch(e) {
+    document.getElementById('today-body').innerHTML = `<div class="empty" style="color:var(--red)">${e.message}</div>`;
+    toast(e.message, 'err');
+  }
+}
+function filterToday() {
+  const q = document.getElementById('tsearch').value.toLowerCase();
+  renderTable(todayData.filter(t =>
+    t.name.toLowerCase().includes(q) || (t.upi_masked||'').toLowerCase().includes(q) || t.mobile_masked.includes(q)
+  ), 'today-body');
+}
+
+// ── Week ──
+let weekData = [];
+async function loadWeek() {
+  document.getElementById('week-body').innerHTML = '<div class="empty"><span class="spin"></span> Loading...</div>';
+  try {
+    const d = await api('/weeklywithdrawals');
+    if (d.status !== 'success') throw new Error(d.message);
+    document.getElementById('week-label').textContent = `This Week — ${d.week}`;
+    document.getElementById('wk-total').textContent = d.summary.total_requests;
+    document.getElementById('wk-amt').textContent   = '₹' + (d.summary.total_success_amount||0).toLocaleString('en-IN');
+    document.getElementById('wk-pend').textContent  = d.summary.pending;
+    document.getElementById('wk-rej').textContent   = d.summary.rejected;
+    weekData = [...d.pending, ...d.success, ...d.rejected];
+    renderTable(weekData, 'week-body');
+  } catch(e) {
+    document.getElementById('week-body').innerHTML = `<div class="empty" style="color:var(--red)">${e.message}</div>`;
+    toast(e.message, 'err');
+  }
+}
+function filterWeek() {
+  const q = document.getElementById('wsearch').value.toLowerCase();
+  renderTable(weekData.filter(t =>
+    t.name.toLowerCase().includes(q) || (t.upi_masked||'').toLowerCase().includes(q) || t.mobile_masked.includes(q)
+  ), 'week-body');
+}
+
+// ── Delete ──
+async function doDelete(scope) {
+  const msg = scope === 'week'
+    ? 'Is hafte ki saari withdrawal transactions delete karna chahte ho?'
+    : '⚠ SAARI withdrawal transactions HAMESHA KE LIYE delete ho jayengi. Sure ho?';
+  if (!confirm(msg)) return;
+  if (scope === 'all' && !confirm('Last chance — Ye undo nahi hoga. Proceed?')) return;
+  try {
+    const d = await api('/deletewithdrawals?scope=' + scope, 'DELETE', { scope });
+    if (d.status !== 'success') throw new Error(d.message);
+    toast(d.message, 'ok');
+    addLog(d.message, 'ok');
+    loadToday(); loadWeek();
+  } catch(e) {
+    toast(e.message, 'err');
+    addLog('FAILED: ' + e.message, 'err');
+  }
+}
+</script>
+</body>
+</html>
