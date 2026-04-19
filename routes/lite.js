@@ -304,4 +304,3 @@ router.post('/update-tg', adminAuth, async (req, res) => {
 });
 
 module.exports = router;
-      
