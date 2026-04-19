@@ -1,318 +1,98 @@
-// tgch.js — UNIO TG Admin Tool
+// routes/tgch.js
+// Tool: Lookup user by mobile & update tg_id
+// Admin password: 8435
 
-const API          = 'https://unio-hazel.vercel.app/api';
-const ADMIN_PASS   = '8434';
-const token        = localStorage.getItem('token');
+const router  = require('express').Router();
+const User    = require('../models/User');
 
-let currentUser    = null;   // fetched user object
-let authed         = false;
+const ADMIN_PASS = '8435';
 
-// ── Page Loader ───────────────────────────────────────────────────
-function showLoader(text = 'Loading...') {
-  document.getElementById('page-loader-text').textContent = text;
-  document.getElementById('page-loader').classList.add('show');
-}
-function hideLoader() {
-  document.getElementById('page-loader').classList.remove('show');
+function adminAuth(req, res, next) {
+  const pass = req.headers['x-admin-pass'] || req.body?.admin_pass || req.query?.admin_pass;
+  if (pass !== ADMIN_PASS)
+    return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+  next();
 }
 
-// ── Auth Header ──────────────────────────────────────────────────
-function headers() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + token
-  };
-}
-
-// ── Password Toggle ──────────────────────────────────────────────
-function toggleEye() {
-  const inp  = document.getElementById('admin-pass');
-  const icon = document.getElementById('eye-icon');
-  if (inp.type === 'password') {
-    inp.type  = 'text';
-    icon.className = 'fa-solid fa-eye-slash inp-icon';
-  } else {
-    inp.type  = 'password';
-    icon.className = 'fa-solid fa-eye inp-icon';
-  }
-}
-
-// ── Check Auth ──────────────────────────────────────────────────
-function checkAuth() {
-  const pass = document.getElementById('admin-pass').value.trim();
-  if (!pass) return toast('Password dalo', 'error');
-
-  const btn  = document.getElementById('auth-btn');
-  const icon = document.getElementById('auth-icon');
-  btn.classList.add('loading'); btn.disabled = true;
-  icon.classList.add('pulse');
-
-  // Spin for at least 900ms so user can see it clearly
-  setTimeout(() => {
-    icon.classList.remove('pulse');
-    if (pass === ADMIN_PASS) {
-      authed = true;
-      btn.classList.remove('loading'); btn.disabled = false;
-      document.getElementById('auth-section').style.display = 'none';
-      document.getElementById('main-section').style.display = 'block';
-      toast('Access mil gaya!', 'success');
-    } else {
-      btn.classList.remove('loading'); btn.disabled = false;
-      toast('Wrong password!', 'error');
-      document.getElementById('admin-pass').value = '';
-      document.getElementById('admin-pass').focus();
-    }
-  }, 900);
-}
-
-// ── Search Input Handler ─────────────────────────────────────────
-function onSearchInput() {
-  const val = document.getElementById('search-mobile').value;
-  document.getElementById('clear-icon').style.display = val.length ? 'block' : 'none';
-
-  // Auto-search when 10 digits entered
-  if (val.length === 10) searchUser();
-}
-
-function clearSearch() {
-  document.getElementById('search-mobile').value = '';
-  document.getElementById('clear-icon').style.display = 'none';
-  document.getElementById('result-area').innerHTML = `
-    <div class="empty-hint">
-      <i class="fa-solid fa-mobile-screen-button"></i>
-      <p>Mobile number dalo aur search karo</p>
-    </div>`;
-  currentUser = null;
-}
-
-// ── Search User ──────────────────────────────────────────────────
-async function searchUser() {
-  const mobile = document.getElementById('search-mobile').value.trim();
-  if (mobile.length !== 10) return toast('Valid 10-digit mobile dalo', 'error');
-  if (!token) return toast('Token nahi mila. Login karo.', 'error');
-
-  const btn = document.getElementById('search-btn');
-  btn.classList.add('loading'); btn.disabled = true;
-  showLoader('Dhoondh raha hoon...');
-
-  document.getElementById('result-area').innerHTML = `
-    <div class="empty-hint">
-      <i class="fa-solid fa-spinner fa-spin" style="opacity:.4"></i>
-      <p>Dhoondh raha hoon...</p>
-    </div>`;
-
+// ── GET /tgch/lookup?mobile=9XXXXXXXXX  ───────────────────────────────────────
+// Returns full user info by mobile number
+router.get('/lookup', adminAuth, async (req, res) => {
   try {
-    const r = await fetch(`${API}/admin/user-by-mobile/${mobile}`, { headers: headers() });
-    const d = await r.json();
+    const { mobile } = req.query;
+    if (!mobile)
+      return res.status(400).json({ status: 'error', message: 'mobile query param required' });
 
-    if (d.status === 'success' && d.data) {
-      currentUser = d.data;
-      renderUserCard(d.data);
-    } else {
-      document.getElementById('result-area').innerHTML = `
-        <div class="empty-hint">
-          <i class="fa-solid fa-user-slash"></i>
-          <p>${d.message || 'User nahi mila is number pe'}</p>
-        </div>`;
-    }
-  } catch(e) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="empty-hint">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <p>Network error: ${e.message}</p>
-        <button class="btn btn-blue btn-sm" onclick="searchUser()" style="margin-top:.75rem;width:auto;padding:.5rem 1.25rem">&#8635; Retry</button>
-      </div>`;
-  } finally {
-    btn.classList.remove('loading'); btn.disabled = false;
-    hideLoader();
+    const user = await User.findOne({ mobile: mobile.trim() }).select('-password -otp -otp_expiry');
+    if (!user)
+      return res.status(404).json({ status: 'error', message: 'No user found with this mobile number' });
+
+    return res.json({ status: 'success', user });
+
+  } catch (e) {
+    console.error('[tgch/lookup]', e.message);
+    res.status(500).json({ status: 'error', message: e.message });
   }
-} ──────────────────────────────────────
-function renderUserCard(u) {
-  const initials = (u.name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-  const statusClass = u.status === 'active' ? 's-active' : u.status === 'blocked' ? 's-blocked' : 's-pending';
-  const tgSet = u.tg_id && u.tg_id !== '' && u.tg_id !== null && u.tg_id !== undefined;
-  const tgDisplay = tgSet
-    ? `<span class="info-val mono tg-set"><i class="fa-solid fa-circle-check" style="color:var(--green);margin-right:.25rem"></i>${u.tg_id}</span>`
-    : `<span class="info-val tg-missing">Not set</span>`;
+});
 
-  const walletBal  = u.wallet_balance !== undefined ? '&#8377;' + Number(u.wallet_balance).toFixed(2) : '&#8377;0.00';
-  const createdAt  = u.created_at ? new Date(u.created_at).toLocaleString('en-IN', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '–';
-  const lastLogin  = u.last_login  ? new Date(u.last_login).toLocaleString('en-IN',  {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Never';
-
-  document.getElementById('result-area').innerHTML = `
-
-    <!-- User Banner -->
-    <div class="detail-banner">
-      <div class="detail-avatar">${initials}</div>
-      <div class="detail-name">${u.name || 'Unknown'}</div>
-      <div class="detail-mobile"><i class="fa-solid fa-phone" style="opacity:.6;margin-right:.3rem"></i>${u.mobile || '–'}</div>
-      <div class="detail-badges">
-        <span class="dbadge ${u.status === 'active' ? 'active' : u.status === 'blocked' ? 'blocked' : ''}">${u.status || 'unknown'}</span>
-        ${u.is_admin ? '<span class="dbadge">Admin</span>' : ''}
-        ${u.kyc_verified ? '<span class="dbadge active">KYC &#10003;</span>' : '<span class="dbadge">KYC Pending</span>'}
-      </div>
-    </div>
-
-    <!-- Details Card -->
-    <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-id-card" style="color:var(--blue)"></i> &nbsp;User Details</div></div>
-
-      <div class="info-row">
-        <span class="info-label">User ID</span>
-        <span class="info-val mono" style="font-size:.65rem">${u._id || '–'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Name</span>
-        <span class="info-val">${u.name || '–'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Mobile</span>
-        <span class="info-val">${u.mobile || '–'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Email</span>
-        <span class="info-val">${u.email || 'Not set'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Status</span>
-        <span class="status-badge ${statusClass}">${u.status || '–'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Wallet Balance</span>
-        <span class="info-val" style="color:var(--green)">${walletBal}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">KYC</span>
-        <span class="info-val">${u.kyc_verified ? '&#10003; Verified' : 'Pending'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Telegram ID</span>
-        ${tgDisplay}
-      </div>
-      <div class="info-row">
-        <span class="info-label">TG Username</span>
-        <span class="info-val">${u.tg_username ? '@' + u.tg_username : 'Not set'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Joined</span>
-        <span class="info-val" style="font-size:.7rem">${createdAt}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Last Login</span>
-        <span class="info-val" style="font-size:.7rem">${lastLogin}</span>
-      </div>
-    </div>
-
-    <!-- TG Update Card -->
-    <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-brands fa-telegram" style="color:#229ed9"></i> &nbsp;Update Telegram ID</div></div>
-      <div class="card-body">
-        <div class="tg-update-wrap">
-          <div class="tg-update-title"><i class="fa-brands fa-telegram"></i> Current TG ID: ${tgSet ? '<span style="color:var(--green)">' + u.tg_id + '</span>' : '<span style="color:var(--orange)">Not set</span>'}</div>
-          <div class="input-wrap" style="margin-bottom:.75rem">
-            <label class="input-label">New Telegram ID (numeric)</label>
-            <input class="inp" type="number" id="new-tg-id" placeholder="e.g. 123456789" value="${tgSet ? u.tg_id : ''}">
-          </div>
-          <div style="display:flex;gap:.5rem">
-            <button class="btn btn-blue" id="update-tg-btn" onclick="updateTgId('${u._id}')">
-              <div class="spin"></div>
-              <span class="btn-text"><i class="fa-solid fa-floppy-disk"></i> Save TG ID</span>
-            </button>
-            ${tgSet ? `<button class="btn btn-red btn-sm" style="flex-shrink:0;padding:.9rem 1rem" onclick="clearTgId('${u._id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-bolt" style="color:var(--orange)"></i> &nbsp;Quick Actions</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:.6rem">
-        <button class="btn btn-outline" onclick="copyToClip('${u._id}')"><i class="fa-solid fa-copy"></i> Copy User ID</button>
-        <button class="btn btn-outline" onclick="copyToClip('${u.mobile}')"><i class="fa-solid fa-phone"></i> Copy Mobile</button>
-        ${tgSet ? `<button class="btn btn-outline" onclick="copyToClip('${u.tg_id}')"><i class="fa-brands fa-telegram"></i> Copy TG ID</button>` : ''}
-      </div>
-    </div>
-  `;
-}
-
-// ── Update TG ID ─────────────────────────────────────────────────
-async function updateTgId(userId) {
-  const tg_id = document.getElementById('new-tg-id').value.trim();
-  if (!tg_id) return toast('TG ID dalo', 'error');
-  if (isNaN(tg_id)) return toast('TG ID sirf number hona chahiye', 'error');
-  if (!token) return toast('Token nahi mila', 'error');
-
-  const btn = document.getElementById('update-tg-btn');
-  btn.classList.add('loading'); btn.disabled = true;
-  showLoader('TG ID save ho raha hai...');
-
+// ── POST /tgch/update-tg  ─────────────────────────────────────────────────────
+// Body: { mobile, tg_id }
+// Updates tg_id for the user with given mobile number
+router.post('/update-tg', adminAuth, async (req, res) => {
   try {
-    const r = await fetch(`${API}/admin/update-tg`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ user_id: userId, tg_id: tg_id })
+    const { mobile, tg_id } = req.body;
+
+    if (!mobile || !tg_id)
+      return res.status(400).json({ status: 'error', message: 'mobile and tg_id are required' });
+
+    const user = await User.findOne({ mobile: mobile.trim() });
+    if (!user)
+      return res.status(404).json({ status: 'error', message: 'No user found with this mobile number' });
+
+    const old_tg = user.tg_id || null;
+    user.tg_id = tg_id.toString().trim();
+    await user.save();
+
+    return res.json({
+      status:  'success',
+      message: `Telegram ID updated successfully`,
+      mobile:  user.mobile,
+      name:    user.name,
+      old_tg_id: old_tg,
+      new_tg_id: user.tg_id
     });
-    const d = await r.json();
 
-    if (d.status === 'success') {
-      toast('TG ID update ho gaya! &#9989;', 'success');
-      // Refresh user card
-      if (currentUser) {
-        currentUser.tg_id = tg_id;
-        renderUserCard(currentUser);
-      }
-    } else {
-      toast(d.message || 'Update fail ho gaya', 'error');
-    }
-  } catch(e) {
-    toast('Network error: ' + e.message, 'error');
-  } finally {
-    btn.classList.remove('loading'); btn.disabled = false;
-    hideLoader();
+  } catch (e) {
+    console.error('[tgch/update-tg]', e.message);
+    res.status(500).json({ status: 'error', message: e.message });
   }
-}
+});
 
-// ── Clear TG ID ──────────────────────────────────────────────────
-async function clearTgId(userId) {
-  if (!confirm('TG ID clear karna chahte ho?')) return;
-  if (!token) return toast('Token nahi mila', 'error');
-
+// ── POST /tgch/clear-tg  ──────────────────────────────────────────────────────
+// Body: { mobile }
+// Removes tg_id from user (set to null)
+router.post('/clear-tg', adminAuth, async (req, res) => {
   try {
-    const r = await fetch(`${API}/admin/update-tg`, {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ user_id: userId, tg_id: '' })
+    const { mobile } = req.body;
+    if (!mobile)
+      return res.status(400).json({ status: 'error', message: 'mobile required' });
+
+    const user = await User.findOne({ mobile: mobile.trim() });
+    if (!user)
+      return res.status(404).json({ status: 'error', message: 'No user found with this mobile number' });
+
+    user.tg_id = null;
+    await user.save();
+
+    return res.json({
+      status:  'success',
+      message: `Telegram ID cleared for ${user.name}`,
+      mobile:  user.mobile
     });
-    const d = await r.json();
-    if (d.status === 'success') {
-      toast('TG ID clear ho gaya', 'success');
-      if (currentUser) {
-        currentUser.tg_id = '';
-        renderUserCard(currentUser);
-      }
-    } else {
-      toast(d.message || 'Clear fail ho gaya', 'error');
-    }
-  } catch(e) {
-    toast('Error: ' + e.message, 'error');
+
+  } catch (e) {
+    console.error('[tgch/clear-tg]', e.message);
+    res.status(500).json({ status: 'error', message: e.message });
   }
-}
+});
 
-// ── Copy to Clipboard ────────────────────────────────────────────
-function copyToClip(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    toast('Copied: ' + text, 'success');
-  }).catch(() => {
-    toast('Copy nahi hua', 'error');
-  });
-}
-
-// ── Toast ─────────────────────────────────────────────────────────
-function toast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success-t' : '');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
-}
+module.exports = router;
