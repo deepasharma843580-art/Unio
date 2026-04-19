@@ -378,8 +378,7 @@ async function loadLifafa() {
       currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
 
     document.getElementById('stat-total')?.remove?.();
-    // Fund = sirf base amount jitne se lifafa generate hua — refer usi me se milega
-    const perAmt      = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
+    const perAmt      = currentLifafa.per_user_amount > 0 ? currentLifafa.per_user_amount : (currentLifafa.max_range || 0);
     const totalFund   = perAmt * currentLifafa.max_users;
     const claimedFund = currentLifafa.claimed_fund || 0;
     const leftFund    = Math.max(0, totalFund - claimedFund);
