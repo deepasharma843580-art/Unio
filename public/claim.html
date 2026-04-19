@@ -204,6 +204,28 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </button>
     </div>
 
+    <!-- EARLY REFER CARD — mobile verify ke baad, claim se pehle bhi dikhega -->
+    <div class="re-card" id="early-re-card" style="display:none;margin-bottom:1.25rem">
+      <div class="re-tag">💰 Refer &amp; Earn</div>
+      <div class="re-title">Dosto ko bhejo, paise kamao!</div>
+      <div class="re-desc" id="early-re-desc">Har claim pe bonus milega</div>
+      <div class="re-pill" id="early-re-pill"><i class="fa-solid fa-gift"></i> ₹0 per Refer</div>
+      <div class="link-box">
+        <div class="link-text" id="early-re-link">…</div>
+        <button class="copy-btn" onclick="copyEarlyLink()">
+          <i class="fa-solid fa-copy"></i> Copy
+        </button>
+      </div>
+      <div class="share-row">
+        <button class="share-btn wa" onclick="shareEarlyWA()">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </button>
+        <button class="share-btn tg" onclick="shareEarlyTG()">
+          <i class="fa-brands fa-telegram"></i> Telegram
+        </button>
+      </div>
+    </div>
+
     <!-- SUCCESS CARD -->
     <div id="step-success" class="card" style="display:none">
       <div class="won-emoji">🏆</div>
@@ -356,10 +378,9 @@ async function loadLifafa() {
       currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
 
     document.getElementById('stat-total')?.remove?.();
-    // Fund = total_fund se claimed amount minus (approximate from lifafa data)
-    const perAmt = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
-    const referReserve = (currentLifafa.refer_bonus || 0) * currentLifafa.max_users;
-    const totalFund = (perAmt * currentLifafa.max_users) + referReserve;
+    // Fund = sirf base amount jitne se lifafa generate hua — refer usi me se milega
+    const perAmt    = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
+    const totalFund = perAmt * currentLifafa.max_users;
     document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
     document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
     document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
@@ -459,6 +480,20 @@ function goToClaimStep() {
     document.getElementById('verify-all-wrap').style.display = 'block';
   } else {
     showClaimButton();
+  }
+
+  // Refer link seedha dikhao — claim se pehle bhi
+  if (currentLifafa.refer_bonus > 0 && userMobile) {
+    myReferLink = window.location.origin
+      + '/claim.html?code=' + currentCode
+      + '&ref=' + userMobile;
+    document.getElementById('early-re-pill').innerHTML =
+      '<i class="fa-solid fa-gift"></i> ₹' + currentLifafa.refer_bonus + ' per Refer';
+    document.getElementById('early-re-desc').textContent =
+      'Jab koi tumhare link se "' + currentCode + '" claim kare, tumhe ₹'
+      + currentLifafa.refer_bonus + ' milega!';
+    document.getElementById('early-re-link').textContent = myReferLink;
+    document.getElementById('early-re-card').style.display = 'block';
   }
 }
 
@@ -579,6 +614,28 @@ function showReferCard() {
   }
 }
 
+// ── EARLY REFER SHARE ────────────────────────────────────────────────────────
+function copyEarlyLink() {
+  navigator.clipboard.writeText(myReferLink).then(() => {
+    const btns = document.querySelectorAll('#early-re-card .copy-btn');
+    btns.forEach(btn => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy'; }, 2200);
+    });
+  });
+}
+function shareEarlyWA() {
+  const txt = '🎁 *UNIO Lifafa!*\n\nIs link se claim karo aur reward pao:\n' + myReferLink;
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+}
+function shareEarlyTG() {
+  window.open(
+    'https://t.me/share/url?url=' + encodeURIComponent(myReferLink)
+    + '&text=' + encodeURIComponent('🎁 UNIO Lifafa! Is link se claim karo:'),
+    '_blank'
+  );
+}
+
 // ── SHARE ─────────────────────────────────────────────────────────────────────
 function copyLink() {
   navigator.clipboard.writeText(myReferLink).then(() => {
@@ -605,4 +662,4 @@ function shareTG() {
 }
 </script>
 </body>
-</html> 
+</html>
