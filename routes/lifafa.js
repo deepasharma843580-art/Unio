@@ -181,10 +181,11 @@ router.post('/claim', async (req, res) => {
     if (lifafa.claimed_users >= lifafa.max_users)
       return res.status(400).json({ status: 'error', message: 'Lifafa is full!' });
 
-    // ── Total fund lifafa mein se kitna bacha hai check karo ──────────────────
-    const totalFund    = (lifafa.per_user_amount || lifafa.max_range) * lifafa.max_users;
-    const usedFund     = lifafa.claimed_fund || 0;
-    const remainingFund = totalFund - usedFund;
+    // ── Total fund — exactly jitna create time pe deduct hua ─────────────────
+    const perAmt       = lifafa.per_user_amount > 0 ? lifafa.per_user_amount : lifafa.max_range;
+    const totalFund    = parseFloat((perAmt * lifafa.max_users).toFixed(2));
+    const usedFund     = parseFloat((lifafa.claimed_fund || 0).toFixed(2));
+    const remainingFund = parseFloat((totalFund - usedFund).toFixed(2));
 
     // Amount decide
     let amt = lifafa.per_user_amount;
@@ -244,9 +245,10 @@ router.post('/claim', async (req, res) => {
       const referrer = await User.findOne({ mobile: ref_code.toString() });
 
       if (referrer && referrer.mobile !== mobile) {
-        const fundAfterClaim = totalFund - (usedFund + amt);
+        // Remaining fund AFTER is claim ke baad
+        const remainingAfterClaim = parseFloat((remainingFund - amt).toFixed(2));
 
-        if (fundAfterClaim >= lifafa.refer_bonus) {
+        if (remainingAfterClaim >= lifafa.refer_bonus) {
           // ✅ Fund hai — refer bonus do
           referBonus = lifafa.refer_bonus;
 
@@ -385,4 +387,4 @@ Agali baar pehle claim karo! 🙏`
 
 module.exports = router;
 
-                  
+           
