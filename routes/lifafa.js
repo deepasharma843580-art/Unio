@@ -220,6 +220,7 @@ router.post('/claim', async (req, res) => {
     // ─────────────────────────────────────────────────────────────────────────
     // REFER BONUS LOGIC
     // ref_code = referrer ka mobile number (URL ?ref=XXXXXXXXXX)
+    // Refer bonus lifafa ke reserved fund se aata hai (pehle se deduct ho chuka)
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
@@ -231,7 +232,10 @@ router.post('/claim', async (req, res) => {
       if (referrer && referrer.mobile !== mobile) {
         referBonus = lifafa.refer_bonus;
 
-        // Referrer ka balance badhao
+        // Lifafa ke refer_fund_used track karo
+        await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { refer_fund_used: referBonus } });
+
+        // Referrer ka balance badhao (fund lifafa create time pe hi reserve ho chuka tha)
         await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
 
         // Transaction log
@@ -342,4 +346,4 @@ ${newClaimed >= lifafa.max_users
 });
 
 module.exports = router;
-      
+
