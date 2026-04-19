@@ -181,6 +181,11 @@ router.post('/claim', async (req, res) => {
     if (lifafa.claimed_users >= lifafa.max_users)
       return res.status(400).json({ status: 'error', message: 'Lifafa is full!' });
 
+    // ── Total fund lifafa mein se kitna bacha hai check karo ──────────────────
+    const totalFund    = (lifafa.per_user_amount || lifafa.max_range) * lifafa.max_users;
+    const usedFund     = lifafa.claimed_fund || 0;
+    const remainingFund = totalFund - usedFund;
+
     // Amount decide
     let amt = lifafa.per_user_amount;
     if (lifafa.type === 'scratch') {
@@ -188,6 +193,14 @@ router.post('/claim', async (req, res) => {
         Math.random() * (lifafa.max_range * 100 - lifafa.min_range * 100 + 1)
         + lifafa.min_range * 100
       ) / 100;
+      // Scratch mein bhi remaining fund se zyada na mile
+      amt = Math.min(amt, remainingFund);
+    }
+
+    // Fund khatam ho gaya check
+    if (remainingFund <= 0 || amt <= 0) {
+      await Lifafa.findByIdAndDelete(lifafa._id);
+      return res.status(400).json({ status: 'error', message: 'Lifafa fund khatam ho gaya!' });
     }
 
     // Toss check
@@ -202,11 +215,15 @@ router.post('/claim', async (req, res) => {
     const now = new Date();
     const dt  = istTime();
 
-    // Credit claimer
+    // ── Credit claimer ────────────────────────────────────────────────────────
     await User.findByIdAndUpdate(user._id, { $inc: { balance: +amt } });
 
     const newClaimed = lifafa.claimed_users + 1;
-    await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_users: 1 } });
+
+    // claimed_fund mein claimer ka amount add karo (lifafa fund se deduct)
+    await Lifafa.findByIdAndUpdate(lifafa._id, {
+      $inc: { claimed_users: 1, claimed_fund: amt }
+    });
 
     await Transaction.create({
       receiver_id: user._id,
@@ -218,39 +235,36 @@ router.post('/claim', async (req, res) => {
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // REFER BONUS LOGIC
-    // ref_code = referrer ka mobile number (URL ?ref=XXXXXXXXXX)
-    // Refer bonus lifafa ke reserved fund se aata hai (pehle se deduct ho chuka)
+    // REFER BONUS — LIFAFA KE SAME FUND SE DEDUCT HOGA
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
 
-      // Referrer dhundo — mobile se
       const referrer = await User.findOne({ mobile: ref_code.toString() });
 
-      // Self-refer aur null check
       if (referrer && referrer.mobile !== mobile) {
-        referBonus = lifafa.refer_bonus;
+        // Check karo fund mein refer bonus ke liye jagah hai ya nahi
+        const fundAfterClaim = totalFund - (usedFund + amt);
+        if (fundAfterClaim >= lifafa.refer_bonus) {
+          referBonus = lifafa.refer_bonus;
 
-        // Lifafa ke refer_fund_used track karo
-        await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { refer_fund_used: referBonus } });
+          // Refer bonus bhi lifafa ke claimed_fund mein add karo (same fund se)
+          await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_fund: referBonus } });
 
-        // Referrer ka balance badhao (fund lifafa create time pe hi reserve ho chuka tha)
-        await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
+          // Referrer ko credit karo
+          await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
 
-        // Transaction log
-        await Transaction.create({
-          receiver_id: referrer._id,
-          amount:      referBonus,
-          remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
-          type:        'transfer',
-          status:      'success',
-          tx_time:     now
-        });
+          await Transaction.create({
+            receiver_id: referrer._id,
+            amount:      referBonus,
+            remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
+            type:        'transfer',
+            status:      'success',
+            tx_time:     now
+          });
 
-        // TG to referrer
-        if (referrer.tg_id) {
-          sendTG(referrer.tg_id,
+          if (referrer.tg_id) {
+            sendTG(referrer.tg_id,
 `💰 *Refer Bonus Mila!*
 
 ━━━━━━━━━━━━━━
@@ -263,12 +277,13 @@ router.post('/claim', async (req, res) => {
 📅 Time : ${dt}
 
 ✅ Balance mein add ho gaya!`
-          );
+            );
+          }
         }
       }
     }
 
-    // TG to claimer
+    // ── TG to claimer ─────────────────────────────────────────────────────────
     if (user.tg_id) {
       sendTG(user.tg_id,
 `🎉 *Lifafa Claimed!*
@@ -286,37 +301,25 @@ router.post('/claim', async (req, res) => {
       );
     }
 
-    // TG to creator
     const creator = await User.findById(lifafa.creator_id).select('tg_id name');
-    if (creator?.tg_id) {
-      sendTG(creator.tg_id,
-`👋 *Someone Claimed Your Lifafa!*
 
-🔑 Code : \`${code}\`
-👤 By : ${user.name} (${mobile})
-💰 Amount : ₹${amt}
-👥 ${newClaimed}/${lifafa.max_users} Claimed
-📅 Time : ${dt}
+    // ── Auto delete — jab claimed_fund >= totalFund ya max_users poore ────────
+    const newClaimedFund = (usedFund + amt + referBonus);
+    const shouldDelete   = newClaimed >= lifafa.max_users || newClaimedFund >= totalFund;
 
-${newClaimed >= lifafa.max_users
-  ? '🔴 Lifafa Full Ho Gaya!'
-  : `⏳ ${lifafa.max_users - newClaimed} slots bache hain`}`
-      );
-    }
-
-    // Auto delete when full
-    if (newClaimed >= lifafa.max_users) {
+    if (shouldDelete) {
       await Lifafa.findByIdAndDelete(lifafa._id);
 
       sendTG(ADMIN_TG_ID,
-`🔴 *Lifafa Full & Deleted!*
+`🔴 *Lifafa Complete & Deleted!*
 
 🔑 Code : \`${code}\`
 👤 Creator : ${creator?.name || '—'}
 👥 Total Claimed : ${newClaimed}
+💸 Fund Used : ₹${newClaimedFund.toFixed(2)} / ₹${totalFund.toFixed(2)}
 📅 Time : ${dt}
 
-🗑️ Database se auto delete ho gaya!`
+🗑️ Auto delete ho gaya!`
       );
 
       if (creator?.tg_id) {
@@ -324,10 +327,26 @@ ${newClaimed >= lifafa.max_users
 `🎊 *Lifafa Complete Ho Gaya!*
 
 🔑 Code : \`${code}\`
-👥 Sabne Claim Kar Liya : ${newClaimed}/${lifafa.max_users}
+👥 Claimed : ${newClaimed}/${lifafa.max_users}
+💸 Fund Used : ₹${newClaimedFund.toFixed(2)} / ₹${totalFund.toFixed(2)}
 📅 Time : ${dt}
 
 ✅ Lifafa successfully completed!`
+        );
+      }
+    } else {
+      // Creator ko update deto
+      if (creator?.tg_id) {
+        sendTG(creator.tg_id,
+`👋 *Someone Claimed Your Lifafa!*
+
+🔑 Code : \`${code}\`
+👤 By : ${user.name} (${mobile})
+💰 Amount : ₹${amt}
+💸 Fund : ₹${newClaimedFund.toFixed(2)} / ₹${totalFund.toFixed(2)} used
+📅 Time : ${dt}
+
+⏳ ${lifafa.max_users - newClaimed} slots bache hain`
         );
       }
     }
