@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG Checker — UNIO Admin</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0f0f0f; color:#eee; font-family:'Segoe UI',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+
+  /* ── Lock Screen ── */
+  #lock-screen {
+    background:#1a1a1a; border:1px solid #333; border-radius:16px;
+    padding:40px 32px; width:320px; text-align:center;
+  }
+  #lock-screen h2 { font-size:20px; margin-bottom:6px; }
+  #lock-screen p  { color:#888; font-size:13px; margin-bottom:24px; }
+  #lock-screen input {
+    width:100%; padding:12px 14px; border-radius:10px;
+    border:1px solid #333; background:#111; color:#fff;
+    font-size:15px; text-align:center; letter-spacing:4px;
+    margin-bottom:14px; outline:none;
+  }
+  #lock-screen input:focus { border-color:#5b8dee; }
+  #lock-screen button {
+    width:100%; padding:12px; border-radius:10px;
+    background:#5b8dee; color:#fff; font-size:15px;
+    border:none; cursor:pointer; font-weight:600;
+  }
+  #lock-screen button:hover { background:#4a7adc; }
+  #lock-err { color:#ff5555; font-size:13px; margin-top:10px; display:none; }
+
+  /* ── Main Panel ── */
+  #main { display:none; width:100%; max-width:520px; padding:20px; }
+
+  .card {
+    background:#1a1a1a; border:1px solid #2a2a2a; border-radius:16px;
+    padding:24px; margin-bottom:16px;
+  }
+  .card h3 { font-size:15px; color:#888; margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; }
+
+  .inp-row { display:flex; gap:10px; }
+  .inp-row input {
+    flex:1; padding:12px 14px; border-radius:10px;
+    border:1px solid #333; background:#111; color:#fff;
+    font-size:15px; outline:none;
+  }
+  .inp-row input:focus { border-color:#5b8dee; }
+  .inp-row button {
+    padding:12px 20px; border-radius:10px;
+    background:#5b8dee; color:#fff; font-size:14px;
+    border:none; cursor:pointer; font-weight:600; white-space:nowrap;
+  }
+  .inp-row button:hover { background:#4a7adc; }
+
+  /* ── User Card ── */
+  #user-card { display:none; }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .info-item { background:#111; border-radius:10px; padding:12px 14px; }
+  .info-item .label { font-size:11px; color:#666; margin-bottom:4px; text-transform:uppercase; }
+  .info-item .val   { font-size:15px; font-weight:600; color:#eee; word-break:break-all; }
+  .info-item.full   { grid-column:1/-1; }
+
+  .tg-id-val { color:#5b8dee; }
+  .bal-val   { color:#2ecc71; }
+  .status-active   { color:#2ecc71; }
+  .status-inactive { color:#ff5555; }
+
+  /* ── TG Update ── */
+  .tg-update-box { margin-top:16px; border-top:1px solid #2a2a2a; padding-top:16px; }
+  .tg-update-box label { font-size:13px; color:#888; display:block; margin-bottom:8px; }
+  .tg-update-box input {
+    width:100%; padding:11px 14px; border-radius:10px;
+    border:1px solid #333; background:#111; color:#fff;
+    font-size:14px; outline:none; margin-bottom:10px;
+  }
+  .tg-update-box input:focus { border-color:#5b8dee; }
+  .tg-update-box button {
+    width:100%; padding:11px; border-radius:10px;
+    background:#2ecc71; color:#000; font-size:14px;
+    border:none; cursor:pointer; font-weight:700;
+  }
+  .tg-update-box button:hover { background:#27ae60; }
+
+  #msg { margin-top:10px; font-size:13px; text-align:center; }
+  .msg-ok  { color:#2ecc71; }
+  .msg-err { color:#ff5555; }
+
+  #search-err { color:#ff5555; font-size:13px; margin-top:8px; display:none; }
+
+  .spinner { display:inline-block; width:16px; height:16px; border:2px solid #fff3; border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .top-bar h2 { font-size:18px; }
+  .top-bar button { background:none; border:1px solid #333; color:#888; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; }
+  .top-bar button:hover { border-color:#ff5555; color:#ff5555; }
+</style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lock-screen">
+  <h2>🔐 Admin Access</h2>
+  <p>UNIO TG Checker Panel</p>
+  <input type="password" id="pass-input" placeholder="Password" onkeydown="if(event.key==='Enter')unlock()">
+  <button onclick="unlock()">Unlock</button>
+  <div id="lock-err">❌ Wrong password!</div>
+</div>
+
+<!-- ── MAIN PANEL ── -->
+<div id="main">
+  <div class="top-bar">
+    <h2>📱 TG Checker</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="card">
+    <h3>Search User</h3>
+    <div class="inp-row">
+      <input type="tel" id="mobile-inp" placeholder="Mobile number..." maxlength="10"
+        onkeydown="if(event.key==='Enter')searchUser()">
+      <button onclick="searchUser()" id="search-btn">Search</button>
+    </div>
+    <div id="search-err"></div>
+  </div>
+
+  <div class="card" id="user-card">
+    <h3>User Details</h3>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">Name</div>
+        <div class="val" id="u-name">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Mobile</div>
+        <div class="val" id="u-mobile">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Balance</div>
+        <div class="val bal-val" id="u-balance">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Status</div>
+        <div class="val" id="u-status">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Wallet ID</div>
+        <div class="val" id="u-wallet">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Joined</div>
+        <div class="val" id="u-joined">—</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">Telegram ID</div>
+        <div class="val tg-id-val" id="u-tgid">—</div>
+      </div>
+    </div>
+
+    <!-- TG Update -->
+    <div class="tg-update-box">
+      <label>✏️ Update Telegram ID</label>
+      <input type="text" id="new-tgid" placeholder="New TG ID dalो...">
+      <button onclick="updateTgId()" id="update-btn">Update TG ID</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API      = '';
+const PASS_KEY = 'tgch_unlocked';
+let currentMobile = '';
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function unlock() {
+  const pass = document.getElementById('pass-input').value.trim();
+  fetch(API + '/admin/tgch-auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pass })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.status === 'success') {
+      sessionStorage.setItem(PASS_KEY, '1');
+      sessionStorage.setItem('tgch_pass', pass);
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('main').style.display        = 'block';
+    } else {
+      document.getElementById('lock-err').style.display = 'block';
+    }
+  })
+  .catch(() => {
+    document.getElementById('lock-err').style.display = 'block';
+  });
+}
+
+function logout() {
+  sessionStorage.removeItem(PASS_KEY);
+  sessionStorage.removeItem('tgch_pass');
+  location.reload();
+}
+
+// Auto-unlock agar session hai
+if (sessionStorage.getItem(PASS_KEY)) {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('main').style.display        = 'block';
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+function getAuthHeader() {
+  return { 'Content-Type': 'application/json',
+           'x-tgch-pass': sessionStorage.getItem('tgch_pass') || '' };
+}
+
+async function searchUser() {
+  const mobile = document.getElementById('mobile-inp').value.trim();
+  const errEl  = document.getElementById('search-err');
+  errEl.style.display = 'none';
+
+  if (!mobile || mobile.length < 10)
+    return showSearchErr('❌ Valid 10 digit mobile daalo!');
+
+  const btn = document.getElementById('search-btn');
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled  = true;
+
+  try {
+    const r = await fetch(API + '/admin/tgch-user/' + mobile, {
+      headers: getAuthHeader()
+    });
+    const d = await r.json();
+
+    if (d.status === 'success') {
+      currentMobile = mobile;
+      fillUser(d.user);
+      document.getElementById('user-card').style.display = 'block';
+      document.getElementById('msg').innerHTML = '';
+      document.getElementById('new-tgid').value = '';
+    } else {
+      showSearchErr('❌ ' + (d.message || 'User not found'));
+      document.getElementById('user-card').style.display = 'none';
+    }
+  } catch(e) {
+    showSearchErr('❌ Server error!');
+  }
+
+  btn.innerHTML = 'Search';
+  btn.disabled  = false;
+}
+
+function fillUser(u) {
+  document.getElementById('u-name').textContent    = u.name    || '—';
+  document.getElementById('u-mobile').textContent  = u.mobile  || '—';
+  document.getElementById('u-balance').textContent = '₹' + parseFloat(u.balance || 0).toFixed(2);
+  document.getElementById('u-wallet').textContent  = u.wallet_id || '—';
+  document.getElementById('u-tgid').textContent    = u.tg_id   || 'Not set';
+
+  const statusEl = document.getElementById('u-status');
+  statusEl.textContent  = u.status || 'active';
+  statusEl.className    = 'val ' + (u.status === 'active' ? 'status-active' : 'status-inactive');
+
+  const joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN') : '—';
+  document.getElementById('u-joined').textContent = joined;
+}
+
+function showSearchErr(msg) {
+  const el = document.getElementById('search-err');
+  el.textContent     = msg;
+  el.style.display   = 'block';
+}
+
+// ── Update TG ID ──────────────────────────────────────────────────────────────
+async function updateTgId() {
+  const newTgId = document.getElementById('new-tgid').value.trim();
+  const msgEl   = document.getElementById('msg');
+
+  if (!newTgId)          return showMsg('❌ TG ID daalo!', 'err');
+  if (!currentMobile)    return showMsg('❌ Pehle user search karo!', 'err');
+
+  const btn = document.getElementById('update-btn');
+  btn.innerHTML = '<span class="spinner"></span> Updating...';
+  btn.disabled  = true;
+
+  try {
+    const r = await fetch(API + '/admin/tgch-update', {
+      method:  'POST',
+      headers: getAuthHeader(),
+      body:    JSON.stringify({ mobile: currentMobile, tg_id: newTgId })
+    });
+    const d = await r.json();
+
+    if (d.status === 'success') {
+      showMsg('✅ TG ID updated!', 'ok');
+      document.getElementById('u-tgid').textContent = newTgId;
+      document.getElementById('new-tgid').value     = '';
+    } else {
+      showMsg('❌ ' + (d.message || 'Failed!'), 'err');
+    }
+  } catch(e) {
+    showMsg('❌ Server error!', 'err');
+  }
+
+  btn.innerHTML = 'Update TG ID';
+  btn.disabled  = false;
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.innerHTML  = text;
+  el.className  = type === 'ok' ? 'msg-ok' : 'msg-err';
+}
+</script>
+</body>
+</html>
+
