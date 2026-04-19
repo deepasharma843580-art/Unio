@@ -6,63 +6,89 @@
 <title>Lifafa | UNIO</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:80px}
-
-/* Purple Bot Alert Style */
-.bot-alert {
-    background: #7c3aed;
-    color: white;
-    padding: 12px;
-    text-align: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: block;
-    text-decoration: none;
-    letter-spacing: 0.02em;
-}
-.bot-alert i { margin-right: 5px; }
-
-.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.bot-alert{background:#7c3aed;color:white;padding:12px;text-align:center;font-size:.75rem;font-weight:700;text-transform:uppercase;display:block;text-decoration:none;letter-spacing:.02em}
+.bot-alert i{margin-right:5px}
+.header{background:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.05)}
 .back{width:36px;height:36px;background:#f8fafc;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:#64748b}
 .header h1{font-size:1rem;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.05em}
 .container{max-width:480px;margin:0 auto;padding:1.25rem}
-.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:1.25rem}
-.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.balance-pill{background:white;border-radius:1rem;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05)}
 .balance-pill span{font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase}
 .balance-pill strong{font-size:1rem;font-weight:800;color:#0057ff}
-.section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+.card{background:white;border-radius:1.75rem;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1.25rem}
+.section-title{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
 .input-group{margin-bottom:1.25rem}
 .input-group label{display:block;font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;margin-left:.25rem}
-.input-group input,.input-group select{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit}
+.input-group input,.input-group select{width:100%;padding:1rem 1.25rem;background:#f8fafc;border:2px solid #f1f5f9;border-radius:1rem;font-size:.9rem;font-weight:600;outline:none;transition:all .2s;font-family:inherit;color:#0f172a}
 .input-group input:focus,.input-group select:focus{border-color:#0057ff;background:white}
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
-.btn:disabled{background:#94a3b8;cursor:not-allowed}
-.btn:active:not(:disabled){transform:scale(.98)}
-.btn-outline{width:100%;padding:.75rem;background:white;color:#0057ff;border:2px solid #0057ff;border-radius:1rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:.75rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
-.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
-.msg.error{background:#fee2e2;color:#dc2626;display:block}
-.msg.success{background:#dcfce7;color:#16a34a;display:block}
+
+/* Refer & Earn box — shown in all themes */
+.refer-box{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:2px solid #fed7aa;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.refer-box-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.refer-box-header i{color:#ea580c;font-size:1rem}
+.refer-box-header span{font-size:.72rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.05em}
+.refer-row{display:flex;gap:.6rem;align-items:center}
+.refer-prefix{font-size:.8rem;font-weight:800;color:#92400e;white-space:nowrap}
+.refer-inp{flex:1;padding:.75rem 1rem;background:white;border:2px solid #fed7aa;border-radius:.85rem;font-size:.88rem;font-weight:700;outline:none;font-family:inherit;color:#0f172a}
+.refer-inp:focus{border-color:#ea580c}
+.refer-note{font-size:.62rem;color:#92400e;font-weight:600;margin-top:.5rem;line-height:1.5}
+.refer-note b{color:#ea580c}
+
+/* Deduction */
+.deduction-box{background:#fff7ed;border:2px solid #fed7aa;border-radius:1rem;padding:1rem;margin-bottom:1.25rem;display:none}
+.deduction-box.show{display:block}
+.deduction-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:.3rem}
+.deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
+.deduction-row.refer-line{color:#7c3aed}
+
 .channel-item{background:#f8fafc;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
 .channel-item input{flex:1;background:transparent;border:none;font-size:.85rem;font-weight:600;outline:none;font-family:inherit}
 .channel-item button{background:none;border:none;color:#dc2626;cursor:pointer;font-size:.9rem;padding:.25rem}
 .add-ch-btn{background:#f0f4ff;border:2px dashed #bfdbfe;border-radius:1rem;padding:.75rem;width:100%;font-size:.75rem;font-weight:700;color:#0057ff;cursor:pointer;font-family:inherit;margin-bottom:1.25rem}
-.deduction-box{background:#fff7ed;border:2px solid #fed7aa;border-radius:1rem;padding:1rem;margin-bottom:1.25rem;display:none}
-.deduction-box.show{display:block}
-.deduction-row{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:.25rem}
-.deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
+
+.btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn-outline{width:100%;padding:.75rem;background:white;color:#0057ff;border:2px solid #0057ff;border-radius:1rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:.75rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-orange{background:#ea580c}
+
+.msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
+.msg.error{background:#fee2e2;color:#dc2626;display:block}
+.msg.success{background:#dcfce7;color:#16a34a;display:block}
+
+/* Result */
+.result-gradient{background:linear-gradient(135deg,#7c3aed,#0057ff);border-radius:1.75rem;padding:1.5rem;color:white;text-align:center;margin-bottom:1rem}
+.result-emoji{font-size:2.5rem;margin-bottom:.5rem}
+.result-code{font-size:1.4rem;font-weight:900;letter-spacing:.1em;margin-bottom:.35rem}
+.result-info{font-size:.68rem;opacity:.75;margin-bottom:.75rem}
+.result-link-box{background:rgba(255,255,255,.18);border-radius:.85rem;padding:.75rem 1rem;font-size:.7rem;font-weight:700;word-break:break-all;margin-bottom:.65rem;line-height:1.6;text-align:left}
+.result-fund-row{display:flex;justify-content:space-between;background:rgba(255,255,255,.12);border-radius:.75rem;padding:.6rem 1rem;font-size:.72rem;font-weight:700;margin-bottom:.75rem}
+
+/* Refer share card */
+.refer-share-card{background:white;border-radius:1.5rem;padding:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1rem}
+.rsc-title{font-size:.7rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.rsc-code-row{display:flex;align-items:center;gap:.5rem;background:#fff7ed;border:2px solid #fed7aa;border-radius:.85rem;padding:.65rem 1rem;margin-bottom:.75rem}
+.rsc-code-label{font-size:.6rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.rsc-code-val{font-size:.9rem;font-weight:900;color:#0f172a;flex:1}
+.rsc-link{background:#f8fafc;border:2px solid #e2e8f0;border-radius:.75rem;padding:.6rem .85rem;font-size:.65rem;font-weight:700;color:#475569;word-break:break-all;line-height:1.5;margin-bottom:.65rem}
+.rsc-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.rsc-btn{padding:.7rem;border:none;border-radius:.75rem;font-size:.7rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.35rem;text-transform:uppercase}
+.rsc-btn.copy{background:#f0f4ff;color:#0057ff}
+.rsc-btn.share{background:#ea580c;color:white}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
+
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.74rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#16a34a}
 </style>
 </head>
 <body>
@@ -83,14 +109,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <strong>₹<span id="balance">0.00</span></strong>
   </div>
 
-  <div class="card">
+  <!-- Form card -->
+  <div class="card" id="form-card">
     <div class="section-title"><i class="fa-solid fa-envelope-open-text"></i> Lifafa Details</div>
     <div id="create-msg" class="msg"></div>
 
     <div class="input-group">
       <label>Unique Code</label>
-      <input type="text" id="c-code" placeholder="e.g. DIWALI2025"
-        oninput="this.value=this.value.toUpperCase()">
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase()">
     </div>
 
     <div class="input-group">
@@ -102,11 +128,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </select>
     </div>
 
+    <!-- Standard / Toss amount -->
     <div id="f-amt" class="input-group">
       <label>Amount Per User (₹)</label>
       <input type="number" id="c-amt" placeholder="0.00" step="0.01" oninput="calcDeduction()">
     </div>
 
+    <!-- Scratch range -->
     <div id="f-range" style="display:none">
       <div class="input-group">
         <label>Amount Range (₹)</label>
@@ -117,6 +145,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
     </div>
 
+    <!-- Toss answer -->
     <div id="f-toss" class="input-group" style="display:none">
       <label>Correct Answer</label>
       <select id="c-toss">
@@ -130,20 +159,30 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
     </div>
 
-    <div class="deduction-box" id="deduction-box">
-      <div class="deduction-row">
-        <span>Calculation</span>
-        <span id="d-calc"></span>
+    <!-- ── Refer & Earn — har theme mein dikhega ── -->
+    <div class="refer-box">
+      <div class="refer-box-header">
+        <i class="fa-solid fa-people-arrows"></i>
+        <span>Refer & Earn (Optional)</span>
       </div>
-      <div class="deduction-row total">
-        <span>Total Deduction</span>
-        <span id="d-total"></span>
+      <div class="refer-row">
+        <span class="refer-prefix">₹</span>
+        <input type="number" class="refer-inp" id="c-refer" placeholder="Bonus per refer (e.g. 5)" step="0.01" min="0" oninput="calcDeduction()">
+      </div>
+      <div class="refer-note">
+        Jab koi user <b>aapke refer link</b> se claim kare, referrer ko yeh amount milega. Yeh fund <b>lifafa ke balance se deduct</b> hoga per refer.
       </div>
     </div>
 
-    <div class="section-title">
-      <i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels
+    <!-- Deduction preview -->
+    <div class="deduction-box" id="deduction-box">
+      <div class="deduction-row"><span>Base Calculation</span><span id="d-calc">—</span></div>
+      <div class="deduction-row refer-line" id="d-refer-row" style="display:none"><span>Refer Bonus Reserve</span><span id="d-refer">—</span></div>
+      <div class="deduction-row total"><span>Total Deduction</span><span id="d-total">—</span></div>
     </div>
+
+    <!-- Channels -->
+    <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels</div>
     <div id="channels-container">
       <div class="channel-item">
         <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
@@ -151,27 +190,51 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
-    <button class="add-ch-btn" onclick="addChannel()">
-      <i class="fa-solid fa-plus"></i> Add Channel
-    </button>
+    <button class="add-ch-btn" onclick="addChannel()"><i class="fa-solid fa-plus"></i> Add Channel</button>
 
     <button class="btn" id="create-btn" onclick="createLifafa()">
       <i class="fa-solid fa-rocket"></i> Generate Lifafa
     </button>
   </div>
 
-  <div id="create-result" style="display:none" class="card">
-    <div style="text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
-      <div style="font-size:.75rem;font-weight:800;color:#16a34a;text-transform:uppercase;margin-bottom:.75rem">Lifafa Created!</div>
-      <div style="font-size:.72rem;font-weight:700;color:#0f172a;background:#f8fafc;padding:.75rem 1rem;border-radius:.75rem;word-break:break-all;margin-bottom:.75rem;line-height:1.6" id="claim-link"></div>
-      <button class="btn" onclick="copyLink()">
+  <!-- Result card -->
+  <div id="create-result" style="display:none">
+
+    <div class="result-gradient">
+      <div class="result-emoji">🎉</div>
+      <div class="result-code" id="r-code">—</div>
+      <div class="result-info" id="r-info">—</div>
+
+      <div class="result-fund-row">
+        <span>💰 Fund</span>
+        <span id="r-fund">₹0</span>
+      </div>
+
+      <div class="result-link-box" id="r-link-box">—</div>
+
+      <button class="btn btn-orange" onclick="copyBaseLink()">
         <i class="fa-solid fa-copy"></i> Copy Claim Link
       </button>
-      <button class="btn-outline" onclick="createAnother()">
-        <i class="fa-solid fa-plus"></i> Create Another
-      </button>
     </div>
+
+    <!-- ── Refer & Earn share section ── -->
+    <div class="refer-share-card" id="refer-share-section" style="display:none">
+      <div class="rsc-title"><i class="fa-solid fa-people-arrows" style="color:#ea580c"></i> Your Refer & Earn Link</div>
+      <div class="rsc-code-row">
+        <span class="rsc-code-label">Your Code</span>
+        <span class="rsc-code-val" id="rsc-code-val">—</span>
+      </div>
+      <div class="rsc-link" id="rsc-link">—</div>
+      <div style="font-size:.62rem;color:#92400e;font-weight:600;margin-bottom:.65rem;line-height:1.5">
+        Yeh link share karo — jab koi isse claim kare, aapko <b id="rsc-bonus">₹0</b> milega automatically!
+      </div>
+      <div class="rsc-btns">
+        <button class="rsc-btn copy" onclick="copyReferLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
+        <button class="rsc-btn share" onclick="shareReferLink()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+      </div>
+    </div>
+
+    <button class="btn-outline" onclick="createAnother()"><i class="fa-solid fa-plus"></i> Create Another</button>
   </div>
 
 </div>
@@ -184,22 +247,35 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
   <a href="lifafa.html" class="nav-item active"><i class="fa-solid fa-envelope-open-text"></i>Lifafa</a>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const API   = '';
+const API   = 'https://unio-hazel.vercel.app';
 const token = localStorage.getItem('token');
+const userData = JSON.parse(localStorage.getItem('user') || '{}');
 if(!token) window.location.href = 'index.html';
 
-let userBalance = 0;
-let claimLink   = '';
+let userBalance  = 0;
+let baseLink     = '';
+let referLink    = '';
+let userMobile   = userData.mobile || '';
 
 // Load balance
 fetch(API+'/wallet/balance', {headers:{'Authorization':'Bearer '+token}})
   .then(r=>r.json()).then(d=>{
-    if(d.status==='success') {
+    if(d.status==='success'){
       userBalance = parseFloat(d.balance);
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     }
   });
+
+// Also get user mobile if not in localStorage
+if(!userMobile) {
+  fetch(API+'/auth/me', {headers:{'Authorization':'Bearer '+token}})
+    .then(r=>r.json()).then(d=>{
+      if(d.status==='success') userMobile = d.user?.mobile || '';
+    });
+}
 
 function changeType() {
   const t = document.getElementById('c-type').value;
@@ -210,15 +286,30 @@ function changeType() {
 }
 
 function calcDeduction() {
-  const t     = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value) || 0;
-  const amt   = parseFloat(document.getElementById('c-amt').value) || 0;
-  const max   = parseFloat(document.getElementById('c-max').value) || 0;
-  const total = t==='scratch' ? (max*users) : (amt*users);
-  const box   = document.getElementById('deduction-box');
-  if(total > 0 && users > 0) {
+  const t       = document.getElementById('c-type').value;
+  const users   = parseInt(document.getElementById('c-users').value) || 0;
+  const amt     = parseFloat(document.getElementById('c-amt').value) || 0;
+  const max     = parseFloat(document.getElementById('c-max').value) || 0;
+  const refer   = parseFloat(document.getElementById('c-refer').value) || 0;
+
+  const base    = t==='scratch' ? (max*users) : (amt*users);
+  // Refer reserve = refer bonus * users (worst case all claimed via refer)
+  const referReserve = refer > 0 ? (refer * users) : 0;
+  const total   = base + referReserve;
+
+  const box = document.getElementById('deduction-box');
+  if(base > 0 && users > 0) {
     const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
     document.getElementById('d-calc').textContent = calc;
+
+    const referRow = document.getElementById('d-refer-row');
+    if(refer > 0) {
+      referRow.style.display = 'flex';
+      document.getElementById('d-refer').textContent = `₹${refer} × ${users} reserve = ₹${referReserve.toFixed(2)}`;
+    } else {
+      referRow.style.display = 'none';
+    }
+
     document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
     box.classList.add('show');
   } else {
@@ -228,7 +319,7 @@ function calcDeduction() {
 
 function addChannel() {
   const container = document.getElementById('channels-container');
-  if(container.children.length >= 10) return alert('Max 10 channels!');
+  if(container.children.length >= 10) return toast('Max 10 channels!');
   const div = document.createElement('div');
   div.className = 'channel-item';
   div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
@@ -236,13 +327,11 @@ function addChannel() {
     <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
   container.appendChild(div);
 }
-
 function removeCh(btn) { btn.closest('.channel-item').remove(); }
 
 function showMsg(text, type) {
   const m = document.getElementById('create-msg');
-  m.textContent = text;
-  m.className = 'msg ' + type;
+  m.textContent = text; m.className = 'msg '+type;
   m.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
@@ -254,26 +343,20 @@ async function createLifafa() {
   const min   = parseFloat(document.getElementById('c-min').value) || 0;
   const max   = parseFloat(document.getElementById('c-max').value) || 0;
   const toss  = document.getElementById('c-toss').value;
+  const refer = parseFloat(document.getElementById('c-refer').value) || 0;
 
-  // Validations
-  if(!code)         return showMsg('❌ Unique code required!', 'error');
-  if(users <= 0)    return showMsg('❌ Total users required!', 'error');
+  if(!code)       return showMsg('❌ Unique code required!', 'error');
+  if(users <= 0)  return showMsg('❌ Total users required!', 'error');
   if(type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
   if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
 
-  // Total deduction
-  const total = type === 'scratch' ? (max * users) : (amt * users);
+  const base  = type==='scratch' ? (max*users) : (amt*users);
+  const total = base + (refer > 0 ? refer*users : 0);
 
-  // Balance check
-  if(userBalance < total) {
-    return showMsg(
-      `❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`,
-      'error'
-    );
-  }
+  if(userBalance < total)
+    return showMsg(`❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`, 'error');
 
-  const channels = [...document.querySelectorAll('.ch-input')]
-    .map(i => i.value.trim()).filter(v => v);
+  const channels = [...document.querySelectorAll('.ch-input')].map(i=>i.value.trim()).filter(v=>v);
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
@@ -283,43 +366,77 @@ async function createLifafa() {
     const r = await fetch(API+'/lifafa/create', {
       method: 'POST',
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels })
+      body: JSON.stringify({ code, type, amt, min_range:min, max_range:max, toss_answer:toss, users, channels, refer_bonus:refer })
     });
     const d = await r.json();
     if(d.status === 'success') {
-      claimLink = window.location.origin + '/claim.html?code=' + d.code;
-      document.getElementById('claim-link').textContent = claimLink;
+      baseLink  = window.location.origin + '/claim.html?code=' + d.code;
+      referLink = baseLink + '&ref=' + (userMobile || '');
+
+      // Update UI
+      document.getElementById('r-code').textContent = d.code;
+      document.getElementById('r-info').textContent = `${type.toUpperCase()} · ${users} users · ₹${amt||max}/user`;
+      document.getElementById('r-fund').textContent = '₹' + total.toFixed(2);
+      document.getElementById('r-link-box').textContent = baseLink;
+
+      // Refer share section
+      if(refer > 0 && userMobile) {
+        document.getElementById('rsc-code-val').textContent = userMobile;
+        document.getElementById('rsc-link').textContent     = referLink;
+        document.getElementById('rsc-bonus').textContent    = '₹' + refer;
+        document.getElementById('refer-share-section').style.display = 'block';
+      } else {
+        document.getElementById('refer-share-section').style.display = 'none';
+      }
+
+      document.getElementById('form-card').style.display    = 'none';
       document.getElementById('create-result').style.display = 'block';
       document.getElementById('create-result').scrollIntoView({behavior:'smooth'});
-      // Update balance
+
       userBalance -= total;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
-      showMsg('', '');
     } else {
       showMsg('❌ ' + (d.message || 'Failed!'), 'error');
     }
   } catch(e) {
     showMsg('❌ Server error! Try again.', 'error');
   }
-
   btn.disabled = false;
   btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Generate Lifafa';
 }
 
-function copyLink() {
-  navigator.clipboard.writeText(claimLink);
-  alert('Claim link copied! ✅');
+function copyBaseLink() {
+  navigator.clipboard.writeText(baseLink).then(()=>toast('Claim link copied! ✅','ok'));
+}
+
+function copyReferLink() {
+  navigator.clipboard.writeText(referLink).then(()=>toast('Refer link copied! ✅','ok'));
+}
+
+function shareReferLink() {
+  if(navigator.share) {
+    navigator.share({ title:'UNIO Lifafa', text:'Claim karo aur reward pao!', url: referLink });
+  } else {
+    copyReferLink();
+  }
 }
 
 function createAnother() {
   document.getElementById('create-result').style.display = 'none';
+  document.getElementById('form-card').style.display     = 'block';
   document.getElementById('c-code').value  = '';
   document.getElementById('c-amt').value   = '';
   document.getElementById('c-users').value = '';
+  document.getElementById('c-refer').value = '';
   document.getElementById('deduction-box').classList.remove('show');
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toast(msg, type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(type||'');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 </script>
 </body>
-      </html>
-      
+</html>
