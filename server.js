@@ -110,7 +110,7 @@ app.use('/card-admin', require('./routes/card-admin'));
 app.use('/circle', require('./routes/circle'));
 app.use('/admin',  require('./routes/admin-circle'));  // existing /admin ke saath merge karo ya alag rakho
 app.use('/game',             require('./routes/game'));
-
+app.use('/api/lite',  require('./routes/lite'));
 
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
