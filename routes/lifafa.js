@@ -236,8 +236,8 @@ router.post('/claim', async (req, res) => {
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // REFER BONUS — LIFAFA KE SAME FUND SE DEDUCT HOGA
-    // Check: claim + refer dono ke liye fund hai?
+    // REFER BONUS — DB SE FRESH READ KARO CLAIMED_FUND
+    // Stale value se check nahi — actual current fund check hoga
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
@@ -245,9 +245,12 @@ router.post('/claim', async (req, res) => {
       const referrer = await User.findOne({ mobile: ref_code.toString() });
 
       if (referrer && referrer.mobile !== mobile) {
-        // remainingFund mein se amt already ja raha hai
-        // toh refer ke liye bhi alag se paise chahiye
-        const canPayRefer = parseFloat((remainingFund - amt).toFixed(2)) >= lifafa.refer_bonus;
+
+        // Fresh lifafa read — claimed_fund ab tak kitna ho gaya actual DB mein
+        const freshLifafa     = await Lifafa.findById(lifafa._id).select('claimed_fund');
+        const freshUsed       = parseFloat(((freshLifafa?.claimed_fund) || 0).toFixed(2));
+        const freshRemaining  = parseFloat((totalFund - freshUsed).toFixed(2));
+        const canPayRefer     = freshRemaining >= lifafa.refer_bonus;
 
         if (canPayRefer) {
           // ✅ Fund hai — refer bonus do
