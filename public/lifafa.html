@@ -170,14 +170,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <input type="number" class="refer-inp" id="c-refer" placeholder="Bonus per refer (e.g. 5)" step="0.01" min="0" oninput="calcDeduction()">
       </div>
       <div class="refer-note">
-        Jab koi user <b>aapke refer link</b> se claim kare, referrer ko yeh amount milega. Yeh fund <b>lifafa ke balance se deduct</b> hoga per refer.
+        Jab koi user <b>aapke refer link</b> se claim kare, referrer ko yeh amount milega. Refer bonus <b>usi fund ka hissa hai</b> — alag se charge nahi hoga.
       </div>
     </div>
 
     <!-- Deduction preview -->
     <div class="deduction-box" id="deduction-box">
-      <div class="deduction-row"><span>Base Calculation</span><span id="d-calc">—</span></div>
-      <div class="deduction-row refer-line" id="d-refer-row" style="display:none"><span>Refer Bonus Reserve</span><span id="d-refer">—</span></div>
+      <div class="deduction-row"><span>Calculation</span><span id="d-calc">—</span></div>
       <div class="deduction-row total"><span>Total Deduction</span><span id="d-total">—</span></div>
     </div>
 
@@ -217,7 +216,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </button>
     </div>
 
-    <!-- ── Refer & Earn share section ── -->
+    <!-- ── Channels section (niche, result ke baad) ── -->
+    <div id="r-channels-section" style="display:none" class="card">
+      <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Added Channels</div>
+      <div id="r-channels-list" style="font-size:.75rem;font-weight:600;color:#475569;line-height:2.2"></div>
+    </div>
+
+    <!-- ── Refer & Earn share section — channels ke niche ── -->
     <div class="refer-share-card" id="refer-share-section" style="display:none">
       <div class="rsc-title"><i class="fa-solid fa-people-arrows" style="color:#ea580c"></i> Your Refer & Earn Link</div>
       <div class="rsc-code-row">
@@ -290,26 +295,14 @@ function calcDeduction() {
   const users   = parseInt(document.getElementById('c-users').value) || 0;
   const amt     = parseFloat(document.getElementById('c-amt').value) || 0;
   const max     = parseFloat(document.getElementById('c-max').value) || 0;
-  const refer   = parseFloat(document.getElementById('c-refer').value) || 0;
 
   const base    = t==='scratch' ? (max*users) : (amt*users);
-  // Refer reserve = refer bonus * users (worst case all claimed via refer)
-  const referReserve = refer > 0 ? (refer * users) : 0;
-  const total   = base + referReserve;
+  const total   = base;  // Refer bonus usi fund ka hissa hai, alag add nahi
 
   const box = document.getElementById('deduction-box');
   if(base > 0 && users > 0) {
     const calc = t==='scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
     document.getElementById('d-calc').textContent = calc;
-
-    const referRow = document.getElementById('d-refer-row');
-    if(refer > 0) {
-      referRow.style.display = 'flex';
-      document.getElementById('d-refer').textContent = `₹${refer} × ${users} reserve = ₹${referReserve.toFixed(2)}`;
-    } else {
-      referRow.style.display = 'none';
-    }
-
     document.getElementById('d-total').textContent = '₹' + total.toFixed(2);
     box.classList.add('show');
   } else {
@@ -351,7 +344,7 @@ async function createLifafa() {
   if(type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
 
   const base  = type==='scratch' ? (max*users) : (amt*users);
-  const total = base + (refer > 0 ? refer*users : 0);
+  const total = base;  // Refer bonus usi fund ka hissa — alag deduct nahi
 
   if(userBalance < total)
     return showMsg(`❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`, 'error');
@@ -379,7 +372,7 @@ async function createLifafa() {
       document.getElementById('r-fund').textContent = '₹' + total.toFixed(2);
       document.getElementById('r-link-box').textContent = baseLink;
 
-      // Refer share section
+      // Refer share section — channels ke niche dikhega
       if(refer > 0 && userMobile) {
         document.getElementById('rsc-code-val').textContent = userMobile;
         document.getElementById('rsc-link').textContent     = referLink;
@@ -387,6 +380,17 @@ async function createLifafa() {
         document.getElementById('refer-share-section').style.display = 'block';
       } else {
         document.getElementById('refer-share-section').style.display = 'none';
+      }
+
+      // Channels section result mein dikhao (niche, refer se pehle)
+      if(channels.length > 0) {
+        const chList = document.getElementById('r-channels-list');
+        chList.innerHTML = channels.map(c =>
+          `<a href="${c}" target="_blank" style="display:block;color:#0088cc;word-break:break-all">📢 ${c}</a>`
+        ).join('');
+        document.getElementById('r-channels-section').style.display = 'block';
+      } else {
+        document.getElementById('r-channels-section').style.display = 'none';
       }
 
       document.getElementById('form-card').style.display    = 'none';
