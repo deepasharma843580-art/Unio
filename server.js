@@ -111,8 +111,6 @@ app.use('/circle', require('./routes/circle'));
 app.use('/admin',  require('./routes/admin-circle'));  // existing /admin ke saath merge karo ya alag rakho
 app.use('/game',             require('./routes/game'));
 app.use('/api/lite',  require('./routes/lite'));
-app.use('/admin', require('./routes/tgch'));
-
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
