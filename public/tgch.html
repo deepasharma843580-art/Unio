@@ -1,289 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TG Checker — UNIO Admin</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIO — TG Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0f0f0f; color:#eee; font-family:'Segoe UI',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+:root {
+  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;--blue-light:#eff6ff;--blue-glow:#4fa3ff;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --red:#dc2626;--red-light:#fee2e2;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --bg:#f0f4ff;--white:#fff;
+  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;--border-soft:#f1f5f9;
+  --shadow:0 4px 24px rgba(0,87,255,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:60px;overflow-x:hidden}
 
-  /* ── Lock Screen ── */
-  #lock-screen {
-    background:#1a1a1a; border:1px solid #333; border-radius:16px;
-    padding:40px 32px; width:320px; text-align:center;
-  }
-  #lock-screen h2 { font-size:20px; margin-bottom:6px; }
-  #lock-screen p  { color:#888; font-size:13px; margin-bottom:24px; }
-  #lock-screen input {
-    width:100%; padding:12px 14px; border-radius:10px;
-    border:1px solid #333; background:#111; color:#fff;
-    font-size:15px; text-align:center; letter-spacing:4px;
-    margin-bottom:14px; outline:none;
-  }
-  #lock-screen input:focus { border-color:#5b8dee; }
-  #lock-screen button {
-    width:100%; padding:12px; border-radius:10px;
-    background:#5b8dee; color:#fff; font-size:15px;
-    border:none; cursor:pointer; font-weight:600;
-  }
-  #lock-screen button:hover { background:#4a7adc; }
-  #lock-err { color:#ff5555; font-size:13px; margin-top:10px; display:none; }
+/* Header */
+.header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
+.btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
+.header-sub{font-size:.62rem;font-weight:600;color:var(--muted)}
+.header-logo{font-size:1.3rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em;margin-left:auto}
 
-  /* ── Main Panel ── */
-  #main { display:none; width:100%; max-width:520px; padding:20px; }
+.container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
 
-  .card {
-    background:#1a1a1a; border:1px solid #2a2a2a; border-radius:16px;
-    padding:24px; margin-bottom:16px;
-  }
-  .card h3 { font-size:15px; color:#888; margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; }
+/* Auth Gate */
+.auth-card{background:var(--white);border-radius:1.5rem;border:1px solid var(--border);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center}
+.auth-icon{width:64px;height:64px;border-radius:1.25rem;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));display:flex;align-items:center;justify-content:center;color:white;font-size:1.6rem;margin:0 auto 1.25rem}
+.auth-title{font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:.35rem}
+.auth-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:1.5rem}
 
-  .inp-row { display:flex; gap:10px; }
-  .inp-row input {
-    flex:1; padding:12px 14px; border-radius:10px;
-    border:1px solid #333; background:#111; color:#fff;
-    font-size:15px; outline:none;
-  }
-  .inp-row input:focus { border-color:#5b8dee; }
-  .inp-row button {
-    padding:12px 20px; border-radius:10px;
-    background:#5b8dee; color:#fff; font-size:14px;
-    border:none; cursor:pointer; font-weight:600; white-space:nowrap;
-  }
-  .inp-row button:hover { background:#4a7adc; }
+/* Card */
+.card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
+.card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
+.card-header-title{font-size:.82rem;font-weight:800;color:var(--text)}
+.card-body{padding:1.25rem}
 
-  /* ── User Card ── */
-  #user-card { display:none; }
-  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-  .info-item { background:#111; border-radius:10px; padding:12px 14px; }
-  .info-item .label { font-size:11px; color:#666; margin-bottom:4px; text-transform:uppercase; }
-  .info-item .val   { font-size:15px; font-weight:600; color:#eee; word-break:break-all; }
-  .info-item.full   { grid-column:1/-1; }
+/* Input */
+.input-wrap{margin-bottom:.85rem}
+.input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
+.inp{width:100%;padding:.8rem 1rem;background:#f8faff;border:2px solid var(--border);border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--text);outline:none;transition:all .2s}
+.inp:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,255,.08)}
+.inp-icon-wrap{position:relative}
+.inp-icon-wrap .inp{padding-right:2.8rem}
+.inp-icon{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;cursor:pointer}
 
-  .tg-id-val { color:#5b8dee; }
-  .bal-val   { color:#2ecc71; }
-  .status-active   { color:#2ecc71; }
-  .status-inactive { color:#ff5555; }
+/* Buttons */
+.btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
+.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 4px 16px rgba(22,163,74,.3)}
+.btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--muted)}
+.btn-sm{width:auto;padding:.45rem 1rem;font-size:.62rem;border-radius:.6rem}
+.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn.loading .spin{display:block}
+.btn.loading .btn-text{display:none}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  .tg-update-box { margin-top:16px; border-top:1px solid #2a2a2a; padding-top:16px; }
-  .tg-update-box label { font-size:13px; color:#888; display:block; margin-bottom:8px; }
-  .tg-update-box input {
-    width:100%; padding:11px 14px; border-radius:10px;
-    border:1px solid #333; background:#111; color:#fff;
-    font-size:14px; outline:none; margin-bottom:10px;
-  }
-  .tg-update-box input:focus { border-color:#5b8dee; }
-  .tg-update-box button {
-    width:100%; padding:11px; border-radius:10px;
-    background:#2ecc71; color:#000; font-size:14px;
-    border:none; cursor:pointer; font-weight:700;
-  }
-  .tg-update-box button:hover { background:#27ae60; }
+/* User Detail Card */
+.detail-banner{background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid),var(--blue-glow));border-radius:1.5rem;padding:1.5rem;color:white;margin-bottom:.85rem;position:relative;overflow:hidden}
+.detail-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(255,255,255,.06);border-radius:50%}
+.detail-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;margin-bottom:.85rem;border:2px solid rgba(255,255,255,.3);position:relative;z-index:1}
+.detail-name{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;position:relative;z-index:1}
+.detail-mobile{font-size:.75rem;opacity:.75;font-weight:600;margin-top:.2rem;position:relative;z-index:1}
+.detail-badges{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;position:relative;z-index:1}
+.dbadge{font-size:.6rem;font-weight:800;padding:.25rem .7rem;border-radius:20px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.04em}
+.dbadge.active{background:rgba(34,197,94,.25);border-color:rgba(34,197,94,.4)}
+.dbadge.blocked{background:rgba(220,38,38,.25);border-color:rgba(220,38,38,.4)}
 
-  #msg { margin-top:10px; font-size:13px; text-align:center; }
-  .msg-ok  { color:#2ecc71; }
-  .msg-err { color:#ff5555; }
-  #search-err { color:#ff5555; font-size:13px; margin-top:8px; display:none; }
+/* Info rows */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1.25rem;border-bottom:1px solid var(--border-soft)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.info-val{font-size:.8rem;font-weight:800;color:var(--text);text-align:right;max-width:60%;word-break:break-all}
+.info-val.mono{font-family:monospace;font-size:.72rem}
+.info-val.tg-missing{color:var(--orange);font-style:italic}
+.info-val.tg-set{color:var(--green)}
 
-  .spinner { display:inline-block; width:16px; height:16px; border:2px solid #fff3; border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+/* Status badge */
+.status-badge{font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase}
+.s-active{background:var(--green-light);color:var(--green)}
+.s-blocked{background:var(--red-light);color:var(--red)}
+.s-pending{background:var(--orange-light);color:var(--orange)}
 
-  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-  .top-bar h2 { font-size:18px; }
-  .top-bar button { background:none; border:1px solid #333; color:#888; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; }
-  .top-bar button:hover { border-color:#ff5555; color:#ff5555; }
+/* TG Update section */
+.tg-update-wrap{background:#f8faff;border-radius:1rem;padding:1rem;border:2px dashed var(--border)}
+.tg-update-title{font-size:.65rem;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;max-width:90vw;text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
+.toast.error{background:var(--red)}
+.toast.success-t{background:var(--green)}
+
+/* Hidden */
+.hidden{display:none!important}
+
+/* Sections */
+#auth-section{}
+#main-section{display:none}
+
+.empty-hint{text-align:center;padding:2rem 1rem;color:var(--muted)}
+.empty-hint i{font-size:2rem;opacity:.25;display:block;margin-bottom:.75rem}
+.empty-hint p{font-size:.78rem;font-weight:700}
+
+.divider{height:1px;background:var(--border-soft);margin:.5rem 0}
 </style>
 </head>
 <body>
 
-<div id="lock-screen">
-  <h2>🔐 Admin Access</h2>
-  <p>UNIO TG Checker Panel</p>
-  <input type="password" id="pass-input" placeholder="Password" onkeydown="if(event.key==='Enter')unlock()">
-  <button onclick="unlock()">Unlock</button>
-  <div id="lock-err">❌ Wrong password!</div>
+<div class="header">
+  <button class="btn-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+  <div>
+    <div class="header-title">TG Admin Tool</div>
+    <div class="header-sub">User lookup & TG update</div>
+  </div>
+  <div class="header-logo">UNIO</div>
 </div>
 
-<div id="main">
-  <div class="top-bar">
-    <h2>📱 TG Checker</h2>
-    <button onclick="logout()">Logout</button>
+<div class="container">
+
+  <!-- AUTH GATE -->
+  <div id="auth-section">
+    <div class="auth-card">
+      <div class="auth-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="auth-title">Admin Access</div>
+      <div class="auth-sub">Pehle password dalo</div>
+      <div class="input-wrap">
+        <label class="input-label">Password</label>
+        <div class="inp-icon-wrap">
+          <input class="inp" type="password" id="admin-pass" placeholder="&#9679;&#9679;&#9679;&#9679;" maxlength="20" onkeydown="if(event.key==='Enter')checkAuth()">
+          <i class="fa-solid fa-eye inp-icon" id="eye-icon" onclick="toggleEye()"></i>
+        </div>
+      </div>
+      <button class="btn btn-blue" id="auth-btn" onclick="checkAuth()">
+        <div class="spin"></div>
+        <span class="btn-text"><i class="fa-solid fa-unlock"></i> Enter</span>
+      </button>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Search User</h3>
-    <div class="inp-row">
-      <input type="tel" id="mobile-inp" placeholder="Mobile number..." maxlength="10"
-        onkeydown="if(event.key==='Enter')searchUser()">
-      <button onclick="searchUser()" id="search-btn">Search</button>
-    </div>
-    <div id="search-err"></div>
-  </div>
+  <!-- MAIN SECTION (shown after auth) -->
+  <div id="main-section">
 
-  <div class="card" id="user-card">
-    <h3>User Details</h3>
-    <div class="info-grid">
-      <div class="info-item"><div class="label">Name</div><div class="val" id="u-name">—</div></div>
-      <div class="info-item"><div class="label">Mobile</div><div class="val" id="u-mobile">—</div></div>
-      <div class="info-item"><div class="label">Balance</div><div class="val bal-val" id="u-balance">—</div></div>
-      <div class="info-item"><div class="label">Status</div><div class="val" id="u-status">—</div></div>
-      <div class="info-item"><div class="label">Wallet ID</div><div class="val" id="u-wallet">—</div></div>
-      <div class="info-item"><div class="label">Joined</div><div class="val" id="u-joined">—</div></div>
-      <div class="info-item full"><div class="label">Telegram ID</div><div class="val tg-id-val" id="u-tgid">—</div></div>
+    <!-- Search Card -->
+    <div class="card">
+      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-magnifying-glass" style="color:var(--blue)"></i> &nbsp;User Search</div></div>
+      <div class="card-body">
+        <div class="input-wrap" style="margin-bottom:.5rem">
+          <label class="input-label">Mobile Number</label>
+          <div class="inp-icon-wrap">
+            <input class="inp" type="tel" id="search-mobile" maxlength="10" placeholder="10-digit number" oninput="onSearchInput()" onkeydown="if(event.key==='Enter')searchUser()">
+            <i class="fa-solid fa-times inp-icon" onclick="clearSearch()" id="clear-icon" style="display:none"></i>
+          </div>
+        </div>
+        <button class="btn btn-blue" id="search-btn" onclick="searchUser()">
+          <div class="spin"></div>
+          <span class="btn-text"><i class="fa-solid fa-magnifying-glass"></i> Search User</span>
+        </button>
+      </div>
     </div>
 
-    <div class="tg-update-box">
-      <label>✏️ Update Telegram ID</label>
-      <input type="text" id="new-tgid" placeholder="New TG ID daalo...">
-      <button onclick="updateTgId()" id="update-btn">Update TG ID</button>
-      <div id="msg"></div>
+    <!-- Result Area -->
+    <div id="result-area">
+      <div class="empty-hint">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <p>Mobile number dalo aur search karo</p>
+      </div>
     </div>
+
   </div>
 </div>
 
-<script>
-// Replace this with your actual API endpoint
-const API = 'https://your-api-domain.com'; 
-const CORRECT_PASS = '8435';
-const PASS_KEY = 'tgch_unlocked';
-let currentMobile = '';
+<div class="toast" id="toast"></div>
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-function unlock() {
-  const pass = document.getElementById('pass-input').value.trim();
-  const errEl = document.getElementById('lock-err');
-
-  // Static Password Check
-  if (pass === CORRECT_PASS) {
-    sessionStorage.setItem(PASS_KEY, 'true');
-    sessionStorage.setItem('tgch_pass', pass);
-    showPanel();
-  } else {
-    errEl.style.display = 'block';
-    setTimeout(() => { errEl.style.display = 'none'; }, 2000);
-  }
-}
-
-function showPanel() {
-  document.getElementById('lock-screen').style.display = 'none';
-  document.getElementById('main').style.display = 'block';
-}
-
-function logout() {
-  sessionStorage.removeItem(PASS_KEY);
-  sessionStorage.removeItem('tgch_pass');
-  location.reload();
-}
-
-// Auto-unlock check
-if (sessionStorage.getItem(PASS_KEY) === 'true') {
-  showPanel();
-}
-
-// ── API Helpers ───────────────────────────────────────────────────────────────
-function getAuthHeader() {
-  return { 
-    'Content-Type': 'application/json',
-    'x-tgch-pass': sessionStorage.getItem('tgch_pass') || '' 
-  };
-}
-
-async function searchUser() {
-  const mobile = document.getElementById('mobile-inp').value.trim();
-  const errEl  = document.getElementById('search-err');
-  errEl.style.display = 'none';
-
-  if (!mobile || mobile.length < 10) {
-    return showSearchErr('❌ Valid 10 digit mobile daalo!');
-  }
-
-  const btn = document.getElementById('search-btn');
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled  = true;
-
-  try {
-    const r = await fetch(`${API}/admin/tgch-user/${mobile}`, {
-      headers: getAuthHeader()
-    });
-    const d = await r.json();
-
-    if (d.status === 'success') {
-      currentMobile = mobile;
-      fillUser(d.user);
-      document.getElementById('user-card').style.display = 'block';
-      document.getElementById('msg').innerHTML = '';
-      document.getElementById('new-tgid').value = '';
-    } else {
-      showSearchErr('❌ ' + (d.message || 'User not found'));
-      document.getElementById('user-card').style.display = 'none';
-    }
-  } catch(e) {
-    showSearchErr('❌ API Connection Error!');
-  }
-
-  btn.innerHTML = 'Search';
-  btn.disabled  = false;
-}
-
-function fillUser(u) {
-  document.getElementById('u-name').textContent    = u.name    || '—';
-  document.getElementById('u-mobile').textContent  = u.mobile  || '—';
-  document.getElementById('u-balance').textContent = '₹' + parseFloat(u.balance || 0).toFixed(2);
-  document.getElementById('u-wallet').textContent  = u.wallet_id || '—';
-  document.getElementById('u-tgid').textContent    = u.tg_id   || 'Not set';
-
-  const statusEl = document.getElementById('u-status');
-  statusEl.textContent  = u.status || 'active';
-  statusEl.className    = 'val ' + (u.status === 'active' ? 'status-active' : 'status-inactive');
-
-  const joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN') : '—';
-  document.getElementById('u-joined').textContent = joined;
-}
-
-function showSearchErr(msg) {
-  const el = document.getElementById('search-err');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-async function updateTgId() {
-  const newTgId = document.getElementById('new-tgid').value.trim();
-  if (!newTgId) return showMsg('❌ TG ID daalo!', 'err');
-  if (!currentMobile) return showMsg('❌ Pehle user search karo!', 'err');
-
-  const btn = document.getElementById('update-btn');
-  btn.innerHTML = '<span class="spinner"></span> Updating...';
-  btn.disabled  = true;
-
-  try {
-    const r = await fetch(`${API}/admin/tgch-update`, {
-      method:  'POST',
-      headers: getAuthHeader(),
-      body:    JSON.stringify({ mobile: currentMobile, tg_id: newTgId })
-    });
-    const d = await r.json();
-
-    if (d.status === 'success') {
-      showMsg('✅ TG ID updated!', 'ok');
-      document.getElementById('u-tgid').textContent = newTgId;
-      document.getElementById('new-tgid').value = '';
-    } else {
-      showMsg('❌ ' + (d.message || 'Failed!'), 'err');
-    }
-  } catch(e) {
-    showMsg('❌ Server error!', 'err');
-  }
-
-  btn.innerHTML = 'Update TG ID';
-  btn.disabled  = false;
-}
-
-function showMsg(text, type) {
-  const el = document.getElementById('msg');
-  el.innerHTML  = text;
-  el.className  = type === 'ok' ? 'msg-ok' : 'msg-err';
-}
-</script>
+<script src="tgch.js"></script>
 </body>
 </html>
