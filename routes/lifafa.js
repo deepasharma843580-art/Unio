@@ -31,9 +31,12 @@ function istTime() {
 async function finishLifafa(lifafa, finalClaimedFund, finalClaimedUsers) {
   const dt = istTime();
 
-  const perAmt    = lifafa.per_user_amount > 0 ? lifafa.per_user_amount : lifafa.max_range;
-  const totalFund = parseFloat((perAmt * lifafa.max_users).toFixed(2));
-  const remaining = parseFloat((totalFund - finalClaimedFund).toFixed(2));
+  const perAmt    = parseFloat(lifafa.per_user_amount) > 0
+    ? parseFloat(lifafa.per_user_amount)
+    : parseFloat(lifafa.max_range) || 0;
+  const totalFund  = parseFloat((perAmt * (parseInt(lifafa.max_users) || 0)).toFixed(2));
+  const usedSafe   = parseFloat(finalClaimedFund) || 0;
+  const remaining  = parseFloat(Math.max(0, totalFund - usedSafe).toFixed(2));
 
   // ── Refund karo agar kuch bacha ──
   if (remaining > 0.00) {
@@ -273,21 +276,29 @@ router.post('/claim', async (req, res) => {
       return res.status(400).json({ status: 'error', message: 'Lifafa is full!' });
 
     // ── Total fund (creator ne itna hi diya, 1 paisa zyada nahi) ──
-    const perAmt    = lifafa.per_user_amount > 0 ? lifafa.per_user_amount : lifafa.max_range;
-    const totalFund = parseFloat((perAmt * lifafa.max_users).toFixed(2));
+    const perUserAmt = parseFloat(lifafa.per_user_amount) || 0;
+    const maxRange   = parseFloat(lifafa.max_range)       || 0;
+    const minRange   = parseFloat(lifafa.min_range)       || 0;
+    const perAmt     = perUserAmt > 0 ? perUserAmt : maxRange;
+    const totalFund  = parseFloat((perAmt * (parseInt(lifafa.max_users) || 0)).toFixed(2));
+
+    if (totalFund <= 0)
+      return res.status(400).json({ status: 'error', message: 'Lifafa fund invalid!' });
 
     // ── Claim amount decide ──
-    let amt = lifafa.per_user_amount;
+    let amt = perUserAmt;
     if (lifafa.type === 'scratch') {
-      amt = Math.floor(
-        Math.random() * (lifafa.max_range * 100 - lifafa.min_range * 100 + 1)
-        + lifafa.min_range * 100
-      ) / 100;
+      const minP = Math.round(minRange * 100);
+      const maxP = Math.round(maxRange * 100);
+      amt = Math.floor(Math.random() * (maxP - minP + 1) + minP) / 100;
     }
-    amt = parseFloat(amt.toFixed(2));
+    amt = parseFloat((amt || 0).toFixed(2));
+
+    if (amt <= 0)
+      return res.status(400).json({ status: 'error', message: 'Claim amount invalid!' });
 
     // ── Toss check ──
-    if (lifafa.type === 'toss' && (!guess || guess.toUpperCase() !== lifafa.toss_answer.toUpperCase())) {
+    if (lifafa.type === 'toss' && (!guess || guess.toUpperCase() !== (lifafa.toss_answer || '').toUpperCase())) {
       await Transaction.create({
         receiver_id: user._id, amount: 0, remark: rem,
         type: 'transfer', status: 'failed', tx_time: new Date()
@@ -296,7 +307,7 @@ router.post('/claim', async (req, res) => {
     }
 
     // ── Referrer check (pehle karo taaki rb pata ho) ──
-    const rb          = parseFloat((lifafa.refer_bonus || 0).toFixed(2));
+    const rb          = parseFloat((parseFloat(lifafa.refer_bonus) || 0).toFixed(2));
     let   referrer    = null;
     let   referBonus  = 0;
 
@@ -451,4 +462,3 @@ router.post('/claim', async (req, res) => {
 });
 
 module.exports = router;
-        
