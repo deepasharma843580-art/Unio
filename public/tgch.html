@@ -66,7 +66,6 @@
   .status-active   { color:#2ecc71; }
   .status-inactive { color:#ff5555; }
 
-  /* ── TG Update ── */
   .tg-update-box { margin-top:16px; border-top:1px solid #2a2a2a; padding-top:16px; }
   .tg-update-box label { font-size:13px; color:#888; display:block; margin-bottom:8px; }
   .tg-update-box input {
@@ -85,7 +84,6 @@
   #msg { margin-top:10px; font-size:13px; text-align:center; }
   .msg-ok  { color:#2ecc71; }
   .msg-err { color:#ff5555; }
-
   #search-err { color:#ff5555; font-size:13px; margin-top:8px; display:none; }
 
   .spinner { display:inline-block; width:16px; height:16px; border:2px solid #fff3; border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
@@ -99,7 +97,6 @@
 </head>
 <body>
 
-<!-- ── LOCK SCREEN ── -->
 <div id="lock-screen">
   <h2>🔐 Admin Access</h2>
   <p>UNIO TG Checker Panel</p>
@@ -108,7 +105,6 @@
   <div id="lock-err">❌ Wrong password!</div>
 </div>
 
-<!-- ── MAIN PANEL ── -->
 <div id="main">
   <div class="top-bar">
     <h2>📱 TG Checker</h2>
@@ -128,40 +124,18 @@
   <div class="card" id="user-card">
     <h3>User Details</h3>
     <div class="info-grid">
-      <div class="info-item">
-        <div class="label">Name</div>
-        <div class="val" id="u-name">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Mobile</div>
-        <div class="val" id="u-mobile">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Balance</div>
-        <div class="val bal-val" id="u-balance">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Status</div>
-        <div class="val" id="u-status">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Wallet ID</div>
-        <div class="val" id="u-wallet">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Joined</div>
-        <div class="val" id="u-joined">—</div>
-      </div>
-      <div class="info-item full">
-        <div class="label">Telegram ID</div>
-        <div class="val tg-id-val" id="u-tgid">—</div>
-      </div>
+      <div class="info-item"><div class="label">Name</div><div class="val" id="u-name">—</div></div>
+      <div class="info-item"><div class="label">Mobile</div><div class="val" id="u-mobile">—</div></div>
+      <div class="info-item"><div class="label">Balance</div><div class="val bal-val" id="u-balance">—</div></div>
+      <div class="info-item"><div class="label">Status</div><div class="val" id="u-status">—</div></div>
+      <div class="info-item"><div class="label">Wallet ID</div><div class="val" id="u-wallet">—</div></div>
+      <div class="info-item"><div class="label">Joined</div><div class="val" id="u-joined">—</div></div>
+      <div class="info-item full"><div class="label">Telegram ID</div><div class="val tg-id-val" id="u-tgid">—</div></div>
     </div>
 
-    <!-- TG Update -->
     <div class="tg-update-box">
       <label>✏️ Update Telegram ID</label>
-      <input type="text" id="new-tgid" placeholder="New TG ID dalो...">
+      <input type="text" id="new-tgid" placeholder="New TG ID daalo...">
       <button onclick="updateTgId()" id="update-btn">Update TG ID</button>
       <div id="msg"></div>
     </div>
@@ -169,32 +143,31 @@
 </div>
 
 <script>
-const API      = '';
+// Replace this with your actual API endpoint
+const API = 'https://your-api-domain.com'; 
+const CORRECT_PASS = '8435';
 const PASS_KEY = 'tgch_unlocked';
 let currentMobile = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 function unlock() {
   const pass = document.getElementById('pass-input').value.trim();
-  fetch(API + '/admin/tgch-auth', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: pass })
-  })
-  .then(r => r.json())
-  .then(d => {
-    if (d.status === 'success') {
-      sessionStorage.setItem(PASS_KEY, '1');
-      sessionStorage.setItem('tgch_pass', pass);
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('main').style.display        = 'block';
-    } else {
-      document.getElementById('lock-err').style.display = 'block';
-    }
-  })
-  .catch(() => {
-    document.getElementById('lock-err').style.display = 'block';
-  });
+  const errEl = document.getElementById('lock-err');
+
+  // Static Password Check
+  if (pass === CORRECT_PASS) {
+    sessionStorage.setItem(PASS_KEY, 'true');
+    sessionStorage.setItem('tgch_pass', pass);
+    showPanel();
+  } else {
+    errEl.style.display = 'block';
+    setTimeout(() => { errEl.style.display = 'none'; }, 2000);
+  }
+}
+
+function showPanel() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
 }
 
 function logout() {
@@ -203,16 +176,17 @@ function logout() {
   location.reload();
 }
 
-// Auto-unlock agar session hai
-if (sessionStorage.getItem(PASS_KEY)) {
-  document.getElementById('lock-screen').style.display = 'none';
-  document.getElementById('main').style.display        = 'block';
+// Auto-unlock check
+if (sessionStorage.getItem(PASS_KEY) === 'true') {
+  showPanel();
 }
 
-// ── Search ────────────────────────────────────────────────────────────────────
+// ── API Helpers ───────────────────────────────────────────────────────────────
 function getAuthHeader() {
-  return { 'Content-Type': 'application/json',
-           'x-tgch-pass': sessionStorage.getItem('tgch_pass') || '' };
+  return { 
+    'Content-Type': 'application/json',
+    'x-tgch-pass': sessionStorage.getItem('tgch_pass') || '' 
+  };
 }
 
 async function searchUser() {
@@ -220,15 +194,16 @@ async function searchUser() {
   const errEl  = document.getElementById('search-err');
   errEl.style.display = 'none';
 
-  if (!mobile || mobile.length < 10)
+  if (!mobile || mobile.length < 10) {
     return showSearchErr('❌ Valid 10 digit mobile daalo!');
+  }
 
   const btn = document.getElementById('search-btn');
   btn.innerHTML = '<span class="spinner"></span>';
   btn.disabled  = true;
 
   try {
-    const r = await fetch(API + '/admin/tgch-user/' + mobile, {
+    const r = await fetch(`${API}/admin/tgch-user/${mobile}`, {
       headers: getAuthHeader()
     });
     const d = await r.json();
@@ -244,7 +219,7 @@ async function searchUser() {
       document.getElementById('user-card').style.display = 'none';
     }
   } catch(e) {
-    showSearchErr('❌ Server error!');
+    showSearchErr('❌ API Connection Error!');
   }
 
   btn.innerHTML = 'Search';
@@ -268,24 +243,21 @@ function fillUser(u) {
 
 function showSearchErr(msg) {
   const el = document.getElementById('search-err');
-  el.textContent     = msg;
-  el.style.display   = 'block';
+  el.textContent = msg;
+  el.style.display = 'block';
 }
 
-// ── Update TG ID ──────────────────────────────────────────────────────────────
 async function updateTgId() {
   const newTgId = document.getElementById('new-tgid').value.trim();
-  const msgEl   = document.getElementById('msg');
-
-  if (!newTgId)          return showMsg('❌ TG ID daalo!', 'err');
-  if (!currentMobile)    return showMsg('❌ Pehle user search karo!', 'err');
+  if (!newTgId) return showMsg('❌ TG ID daalo!', 'err');
+  if (!currentMobile) return showMsg('❌ Pehle user search karo!', 'err');
 
   const btn = document.getElementById('update-btn');
   btn.innerHTML = '<span class="spinner"></span> Updating...';
   btn.disabled  = true;
 
   try {
-    const r = await fetch(API + '/admin/tgch-update', {
+    const r = await fetch(`${API}/admin/tgch-update`, {
       method:  'POST',
       headers: getAuthHeader(),
       body:    JSON.stringify({ mobile: currentMobile, tg_id: newTgId })
@@ -295,7 +267,7 @@ async function updateTgId() {
     if (d.status === 'success') {
       showMsg('✅ TG ID updated!', 'ok');
       document.getElementById('u-tgid').textContent = newTgId;
-      document.getElementById('new-tgid').value     = '';
+      document.getElementById('new-tgid').value = '';
     } else {
       showMsg('❌ ' + (d.message || 'Failed!'), 'err');
     }
@@ -315,4 +287,3 @@ function showMsg(text, type) {
 </script>
 </body>
 </html>
-
