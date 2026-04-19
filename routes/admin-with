@@ -1,0 +1,118 @@
+// routes/admin-with.js
+// GET /todaywithdraws  →  aaj ki saari withdrawals
+// Header: x-admin-pass: 8435
+
+const router      = require('express').Router();
+const Transaction = require('../models/Transaction');
+const User        = require('../models/User');
+
+const ADMIN_PASS = '8435';
+
+function adminAuth(req, res, next) {
+  const pass = req.headers['x-admin-pass'] || req.query.admin_pass;
+  if (pass !== ADMIN_PASS)
+    return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+  next();
+}
+
+// ── Mask mobile: 9876543210 → 987654xxx10 ────────────────────────────────────
+function maskMobile(mobile) {
+  if (!mobile) return 'xxxxxxxxxx';
+  const s = mobile.toString().trim();
+  if (s.length <= 4) return 'x'.repeat(s.length);
+  const start = s.slice(0, 4);
+  const end   = s.slice(-2);
+  const mid   = 'x'.repeat(s.length - 6);
+  return start + mid + end;
+}
+
+// ── Mask UPI: user@bank → use***@bank ────────────────────────────────────────
+function maskUPI(upi) {
+  if (!upi) return null;
+  const s = upi.toString().trim();
+  const atIdx = s.indexOf('@');
+  if (atIdx === -1) {
+    // No @ — mask middle
+    if (s.length <= 4) return s[0] + '***';
+    return s.slice(0, 3) + '***' + s.slice(-2);
+  }
+  const handle = s.slice(0, atIdx);
+  const bank   = s.slice(atIdx);          // @bank part stays visible
+  if (handle.length <= 3) return handle[0] + '***' + bank;
+  return handle.slice(0, 3) + '***' + bank;
+}
+
+// ── GET /todaywithdraws ────────────────────────────────────────────────────────
+router.get('/todaywithdraws', adminAuth, async (req, res) => {
+  try {
+    const now        = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,  0,  0,   0);
+    const endOfDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    // Pull today's withdrawals — populate sender for name + mobile
+    const withdrawals = await Transaction.find({
+      type:    { $in: ['withdrawal', 'withdraw'] },
+      tx_time: { $gte: startOfDay, $lte: endOfDay }
+    })
+    .populate('sender_id', 'name mobile upi_id')
+    .sort({ tx_time: -1 });
+
+    // ── Counters ──────────────────────────────────────────────────────────────
+    let totalAmount  = 0;
+    let countPending = 0;
+    let countSuccess = 0;
+    let countFailed  = 0;
+
+    const list = withdrawals.map(t => {
+      const status = (t.status || 'pending').toLowerCase();
+
+      if (status === 'pending')              countPending++;
+      else if (status === 'success')         countSuccess++;
+      else if (status === 'failed' || status === 'rejected') countFailed++;
+
+      if (status === 'success') totalAmount += (t.amount || 0);
+
+      const user   = t.sender_id || {};
+      const mobile = user.mobile || null;
+      const upi    = user.upi_id || t.upi_id || t.remark?.match(/[\w.\-]+@[\w]+/)?.[0] || null;
+
+      return {
+        tx_id:         t._id,
+        name:          user.name  || 'Unknown',
+        mobile_masked: maskMobile(mobile),
+        upi_masked:    maskUPI(upi),
+        amount:        t.amount || 0,
+        status:        status,
+        remark:        t.remark || null,
+        time:          t.tx_time
+      };
+    });
+
+    // ── Group by status ───────────────────────────────────────────────────────
+    const pending  = list.filter(t => t.status === 'pending');
+    const success  = list.filter(t => t.status === 'success');
+    const rejected = list.filter(t => t.status === 'failed' || t.status === 'rejected');
+
+    return res.json({
+      status: 'success',
+      date:   now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      summary: {
+        total_requests: list.length,
+        total_success_amount: totalAmount,
+        pending:  countPending,
+        success:  countSuccess,
+        rejected: countFailed
+      },
+      pending,
+      success,
+      rejected
+    });
+
+  } catch (e) {
+    console.error('[admin-with/todaywithdraws]', e.message);
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+module.exports = router;
+
