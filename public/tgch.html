@@ -1,185 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>UNIO — TG Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG Control | UNIO</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root {
-  --blue:#0057ff;--blue-mid:#1a4fd6;--blue-deep:#0a2463;--blue-light:#eff6ff;--blue-glow:#4fa3ff;
-  --green:#16a34a;--green-light:#f0fdf4;
-  --red:#dc2626;--red-light:#fee2e2;
-  --orange:#ea580c;--orange-light:#fff7ed;
-  --bg:#f0f4ff;--white:#fff;
-  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;--border-soft:#f1f5f9;
-  --shadow:0 4px 24px rgba(0,87,255,.08);
+:root{
+  --bg:#07090f;--bg2:#0d1117;--bg3:#111827;
+  --border:#1a2535;--border2:#1e3a5f;
+  --blue:#0ea5e9;--blue2:#0284c7;--blue3:rgba(14,165,233,.12);
+  --text:#e2eaf6;--muted:#4a6080;--muted2:#7a90a8;
+  --green:#10b981;--red:#f43f5e;--yellow:#f59e0b;
+  --mono:'JetBrains Mono',monospace;--sans:'Outfit',sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:60px;overflow-x:hidden}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;background:var(--bg);color:var(--text)}
+body{font-family:var(--sans);overflow-x:hidden}
 
-/* Header */
-.header{background:var(--white);padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;box-shadow:0 1px 0 var(--border);position:sticky;top:0;z-index:100}
-.btn-back{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:none;color:var(--blue);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.header-title{font-size:1rem;font-weight:900;color:var(--text);letter-spacing:-.02em}
-.header-sub{font-size:.62rem;font-weight:600;color:var(--muted)}
-.header-logo{font-size:1.3rem;font-weight:900;color:var(--blue);font-style:italic;letter-spacing:-.03em;margin-left:auto}
+/* grid bg */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(14,165,233,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(14,165,233,.03) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;z-index:0
+}
 
-.container{max-width:480px;margin:0 auto;padding:1.25rem 1rem}
+/* ── TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.5rem;
+  background:rgba(7,9,15,.9);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(14px);
+}
+.brand{display:flex;align-items:center;gap:.7rem}
+.brand-dot{
+  width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.75rem;font-weight:700;color:#fff;
+}
+.brand-name{font-family:var(--mono);font-size:.88rem;font-weight:700;color:var(--text)}
+.brand-badge{
+  font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(14,165,233,.15);color:var(--blue);
+  border:1px solid rgba(14,165,233,.25);border-radius:4px;
+  padding:.15rem .45rem;margin-left:.25rem;
+}
+.topbar-right{display:flex;align-items:center;gap:.65rem}
+.pass-wrap{display:flex;align-items:center;gap:.5rem}
+.pass-field{
+  width:100px;padding:.4rem .75rem;
+  background:var(--bg2);border:1px solid var(--border);border-radius:.6rem;
+  font-size:.75rem;font-family:var(--mono);color:var(--text);outline:none;
+  letter-spacing:.12em;text-align:center;transition:border-color .2s;
+}
+.pass-field:focus{border-color:var(--blue)}
+.pass-btn{
+  padding:.4rem .85rem;background:var(--blue2);color:#fff;
+  border:none;border-radius:.6rem;font-size:.72rem;font-weight:700;
+  cursor:pointer;font-family:var(--sans);transition:background .2s;
+}
+.pass-btn:hover{background:var(--blue)}
+.unlock-status{font-size:.7rem;font-weight:600;display:flex;align-items:center;gap:.3rem}
+.unlock-status.ok{color:var(--green)}
+.unlock-status.fail{color:var(--red)}
 
-/* Auth Gate */
-.auth-card{background:var(--white);border-radius:1.5rem;border:1px solid var(--border);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center}
-.auth-icon{width:64px;height:64px;border-radius:1.25rem;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));display:flex;align-items:center;justify-content:center;color:white;font-size:1.6rem;margin:0 auto 1.25rem}
-.auth-title{font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:.35rem}
-.auth-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:1.5rem}
+/* ── WRAP ── */
+.wrap{max-width:760px;margin:0 auto;padding:2rem 1rem;position:relative;z-index:1}
 
-/* Card */
-.card{background:var(--white);border-radius:1.25rem;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
-.card-header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border-soft)}
-.card-header-title{font-size:.82rem;font-weight:800;color:var(--text)}
-.card-body{padding:1.25rem}
+/* ── LOCK SCREEN ── */
+.lock-screen{
+  text-align:center;padding:5rem 1rem;
+}
+.lock-icon{
+  width:64px;height:64px;border-radius:1.1rem;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.25rem;font-size:1.4rem;color:var(--muted);
+}
+.lock-title{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:.35rem}
+.lock-sub{font-size:.75rem;color:var(--muted);opacity:.6}
 
-/* Input */
-.input-wrap{margin-bottom:.85rem}
-.input-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;display:block}
-.inp{width:100%;padding:.8rem 1rem;background:#f8faff;border:2px solid var(--border);border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--text);outline:none;transition:all .2s}
-.inp:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,255,.08)}
-.inp-icon-wrap{position:relative}
-.inp-icon-wrap .inp{padding-right:2.8rem}
-.inp-icon{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;cursor:pointer}
+/* ── SEARCH BAR ── */
+.search-bar{
+  display:flex;gap:.65rem;margin-bottom:1.75rem;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:1rem;padding:.6rem .75rem;
+  transition:border-color .2s;
+}
+.search-bar:focus-within{border-color:var(--blue2)}
+.search-bar i{color:var(--muted);font-size:.9rem;padding:.5rem .25rem}
+.search-bar input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-size:.92rem;font-family:var(--sans);color:var(--text);
+  font-weight:500;
+}
+.search-bar input::placeholder{color:var(--muted)}
+.search-go{
+  padding:.55rem 1.1rem;background:var(--blue2);color:#fff;
+  border:none;border-radius:.65rem;font-size:.78rem;font-weight:700;
+  cursor:pointer;font-family:var(--sans);transition:background .2s;
+  white-space:nowrap;
+}
+.search-go:hover{background:var(--blue)}
+.search-go:disabled{background:var(--muted);cursor:not-allowed}
 
-/* Buttons */
-.btn{width:100%;padding:.9rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s}
-.btn:active:not(:disabled){transform:scale(.97)}
-.btn-blue{background:linear-gradient(135deg,var(--blue-mid),var(--blue-glow));color:white;box-shadow:0 6px 20px rgba(0,87,255,.3)}
-.btn-green{background:linear-gradient(135deg,var(--green),#22c55e);color:white;box-shadow:0 4px 16px rgba(22,163,74,.3)}
-.btn-red{background:linear-gradient(135deg,#dc2626,#f87171);color:white}
-.btn-outline{background:transparent;border:2px solid var(--border);color:var(--muted)}
-.btn-sm{width:auto;padding:.45rem 1rem;font-size:.62rem;border-radius:.6rem}
-.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
-.btn.loading .spin{display:block}
-.btn.loading .btn-text{display:none}
-.btn:disabled{opacity:.6;cursor:not-allowed}
+/* ── USER CARD ── */
+.user-card{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:1.25rem;overflow:hidden;margin-bottom:1.25rem;
+  animation:slideUp .35s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.user-header{
+  background:linear-gradient(135deg,rgba(14,165,233,.15),rgba(2,132,199,.08));
+  border-bottom:1px solid var(--border2);
+  padding:1.25rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.user-avatar{
+  width:48px;height:48px;border-radius:.9rem;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:1.1rem;font-weight:700;color:#fff;
+  flex-shrink:0;
+}
+.user-main{flex:1;min-width:0}
+.user-name{font-family:var(--sans);font-size:1.1rem;font-weight:700;color:var(--text)}
+.user-mobile{font-family:var(--mono);font-size:.78rem;color:var(--muted2);margin-top:.2rem}
+.user-balance{
+  text-align:right;
+}
+.user-bal-lbl{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.user-bal-amt{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--blue);margin-top:.1rem}
+
+/* ── INFO GRID ── */
+.info-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--border);
+}
+@media(min-width:600px){.info-grid{grid-template-columns:repeat(3,1fr)}}
+.info-cell{
+  background:var(--bg2);padding:1rem 1.25rem;
+}
+.info-cell-lbl{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.35rem}
+.info-cell-val{font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--text);word-break:break-all}
+.info-cell-val.blue{color:var(--blue)}
+.info-cell-val.green{color:var(--green)}
+.info-cell-val.yellow{color:var(--yellow)}
+.info-cell-val.red{color:var(--red)}
+.badge{display:inline-block;padding:.15rem .5rem;border-radius:.35rem;font-size:.62rem;font-weight:700;letter-spacing:.04em}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.badge-red{background:rgba(244,63,94,.12);color:var(--red);border:1px solid rgba(244,63,94,.2)}
+.badge-yellow{background:rgba(245,158,11,.12);color:var(--yellow);border:1px solid rgba(245,158,11,.2)}
+
+/* ── TG UPDATE SECTION ── */
+.tg-section{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:1.1rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;
+  animation:slideUp .4s .1s ease both;
+}
+.tg-section-head{
+  display:flex;align-items:center;gap:.65rem;
+  font-size:.7rem;font-weight:700;color:var(--muted2);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;
+}
+.tg-section-head i{color:var(--blue);font-size:.85rem}
+.tg-current{
+  display:flex;align-items:center;gap:.65rem;
+  background:var(--bg2);border:1px solid var(--border);border-radius:.75rem;
+  padding:.75rem 1rem;margin-bottom:1rem;
+}
+.tg-current i{color:var(--blue);font-size:1rem}
+.tg-current-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.06em}
+.tg-current-val{font-family:var(--mono);font-size:.88rem;font-weight:700;color:var(--text)}
+
+.tg-input-row{display:flex;gap:.65rem}
+.tg-input{
+  flex:1;padding:.75rem 1rem;
+  background:var(--bg2);border:1px solid var(--border);border-radius:.75rem;
+  font-family:var(--mono);font-size:.88rem;color:var(--text);outline:none;
+  transition:border-color .2s;
+}
+.tg-input:focus{border-color:var(--blue2)}
+.tg-input::placeholder{color:var(--muted)}
+.tg-save-btn{
+  padding:.75rem 1.25rem;background:var(--blue2);color:#fff;
+  border:none;border-radius:.75rem;font-size:.8rem;font-weight:700;
+  cursor:pointer;font-family:var(--sans);transition:all .2s;
+  display:flex;align-items:center;gap:.45rem;white-space:nowrap;
+}
+.tg-save-btn:hover{background:var(--blue)}
+.tg-save-btn:disabled{background:var(--muted);cursor:not-allowed}
+
+/* ── TRANSACTIONS ── */
+.tx-section{
+  animation:slideUp .4s .2s ease both;
+}
+.tx-head{
+  font-size:.7rem;font-weight:700;color:var(--muted2);
+  text-transform:uppercase;letter-spacing:.08em;
+  display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem;
+}
+.tx-head i{color:var(--blue)}
+.tx-item{
+  display:flex;align-items:center;gap:.85rem;
+  padding:.85rem 1rem;background:var(--bg2);
+  border:1px solid var(--border);border-radius:.85rem;
+  margin-bottom:.5rem;transition:border-color .2s;
+}
+.tx-item:hover{border-color:var(--border2)}
+.tx-ico{
+  width:34px;height:34px;border-radius:.6rem;
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;
+}
+.tx-ico.cr{background:rgba(16,185,129,.15);color:var(--green)}
+.tx-ico.dr{background:rgba(244,63,94,.12);color:var(--red)}
+.tx-ico.tr{background:var(--blue3);color:var(--blue)}
+.tx-info{flex:1;min-width:0}
+.tx-rem{font-size:.78rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-time{font-size:.62rem;color:var(--muted);margin-top:.15rem;font-family:var(--mono)}
+.tx-amt{font-family:var(--mono);font-size:.9rem;font-weight:700;white-space:nowrap}
+.tx-amt.cr{color:var(--green)}
+.tx-amt.dr{color:var(--red)}
+
+/* ── MSG ── */
+.msg-bar{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.65rem 1rem;border-radius:.75rem;
+  font-size:.75rem;font-weight:600;margin-bottom:.85rem;
+  display:none;
+}
+.msg-bar.show{display:flex}
+.msg-bar.err{background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.2)}
+.msg-bar.ok{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+
+.spin{animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* User Detail Card */
-.detail-banner{background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid),var(--blue-glow));border-radius:1.5rem;padding:1.5rem;color:white;margin-bottom:.85rem;position:relative;overflow:hidden}
-.detail-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(255,255,255,.06);border-radius:50%}
-.detail-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;margin-bottom:.85rem;border:2px solid rgba(255,255,255,.3);position:relative;z-index:1}
-.detail-name{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;position:relative;z-index:1}
-.detail-mobile{font-size:.75rem;opacity:.75;font-weight:600;margin-top:.2rem;position:relative;z-index:1}
-.detail-badges{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;position:relative;z-index:1}
-.dbadge{font-size:.6rem;font-weight:800;padding:.25rem .7rem;border-radius:20px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.04em}
-.dbadge.active{background:rgba(34,197,94,.25);border-color:rgba(34,197,94,.4)}
-.dbadge.blocked{background:rgba(220,38,38,.25);border-color:rgba(220,38,38,.4)}
+.empty-state{text-align:center;padding:2rem;color:var(--muted);font-size:.78rem}
+.empty-state i{font-size:1.8rem;display:block;margin-bottom:.5rem;opacity:.25}
 
-/* Info rows */
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1.25rem;border-bottom:1px solid var(--border-soft)}
-.info-row:last-child{border-bottom:none}
-.info-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.info-val{font-size:.8rem;font-weight:800;color:var(--text);text-align:right;max-width:60%;word-break:break-all}
-.info-val.mono{font-family:monospace;font-size:.72rem}
-.info-val.tg-missing{color:var(--orange);font-style:italic}
-.info-val.tg-set{color:var(--green)}
-
-/* Status badge */
-.status-badge{font-size:.55rem;font-weight:800;padding:.2rem .6rem;border-radius:20px;text-transform:uppercase}
-.s-active{background:var(--green-light);color:var(--green)}
-.s-blocked{background:var(--red-light);color:var(--red)}
-.s-pending{background:var(--orange-light);color:var(--orange)}
-
-/* TG Update section */
-.tg-update-wrap{background:#f8faff;border-radius:1rem;padding:1rem;border:2px dashed var(--border)}
-.tg-update-title{font-size:.65rem;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
-
-/* Toast */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:.7rem 1.25rem;border-radius:2rem;font-size:.78rem;font-weight:700;opacity:0;transition:all .3s;z-index:500;max-width:90vw;text-align:center;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
-.toast.error{background:var(--red)}
-.toast.success-t{background:var(--green)}
-
-/* Hidden */
-.hidden{display:none!important}
-
-/* Sections */
-#auth-section{}
-#main-section{display:none}
-
-.empty-hint{text-align:center;padding:2rem 1rem;color:var(--muted)}
-.empty-hint i{font-size:2rem;opacity:.25;display:block;margin-bottom:.75rem}
-.empty-hint p{font-size:.78rem;font-weight:700}
-
-.divider{height:1px;background:var(--border-soft);margin:.5rem 0}
+/* ── SUCCESS FLASH ── */
+.flash{
+  position:fixed;top:1.25rem;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);
+  color:#fff;border-radius:.85rem;padding:.75rem 1.5rem;
+  font-size:.8rem;font-weight:700;
+  display:flex;align-items:center;gap:.6rem;
+  box-shadow:0 8px 32px rgba(14,165,233,.35);
+  z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;
+}
+.flash.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <button class="btn-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
-  <div>
-    <div class="header-title">TG Admin Tool</div>
-    <div class="header-sub">User lookup & TG update</div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-dot">U</div>
+    <div>
+      <span class="brand-name">UNIO</span>
+      <span class="brand-badge">TG CONTROL</span>
+    </div>
   </div>
-  <div class="header-logo">UNIO</div>
+  <div class="topbar-right">
+    <div class="pass-wrap">
+      <input class="pass-field" type="password" id="pass-inp" placeholder="••••" onkeydown="if(event.key==='Enter')unlock()">
+      <button class="pass-btn" onclick="unlock()">Unlock</button>
+      <span class="unlock-status" id="unlock-st"></span>
+    </div>
+  </div>
 </div>
 
-<div class="container">
+<!-- FLASH -->
+<div class="flash" id="flash"></div>
 
-  <!-- AUTH GATE -->
-  <div id="auth-section">
-    <div class="auth-card">
-      <div class="auth-icon"><i class="fa-solid fa-shield-halved"></i></div>
-      <div class="auth-title">Admin Access</div>
-      <div class="auth-sub">Pehle password dalo</div>
-      <div class="input-wrap">
-        <label class="input-label">Password</label>
-        <div class="inp-icon-wrap">
-          <input class="inp" type="password" id="admin-pass" placeholder="&#9679;&#9679;&#9679;&#9679;" maxlength="20" onkeydown="if(event.key==='Enter')checkAuth()">
-          <i class="fa-solid fa-eye inp-icon" id="eye-icon" onclick="toggleEye()"></i>
-        </div>
-      </div>
-      <button class="btn btn-blue" id="auth-btn" onclick="checkAuth()">
-        <div class="spin"></div>
-        <span class="btn-text"><i class="fa-solid fa-unlock"></i> Enter</span>
+<div class="wrap">
+
+  <!-- LOCK -->
+  <div id="lock-screen" class="lock-screen">
+    <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+    <div class="lock-title">TG Control Panel</div>
+    <div class="lock-sub">Enter password to access user management</div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main" style="display:none">
+
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="number" id="search-inp" placeholder="Enter mobile number..." onkeydown="if(event.key==='Enter')searchUser()">
+      <button class="search-go" id="search-btn" onclick="searchUser()">
+        <i class="fa-solid fa-arrow-right"></i> Search
       </button>
     </div>
-  </div>
 
-  <!-- MAIN SECTION (shown after auth) -->
-  <div id="main-section">
+    <div id="search-msg" class="msg-bar"></div>
 
-    <!-- Search Card -->
-    <div class="card">
-      <div class="card-header"><div class="card-header-title"><i class="fa-solid fa-magnifying-glass" style="color:var(--blue)"></i> &nbsp;User Search</div></div>
-      <div class="card-body">
-        <div class="input-wrap" style="margin-bottom:.5rem">
-          <label class="input-label">Mobile Number</label>
-          <div class="inp-icon-wrap">
-            <input class="inp" type="tel" id="search-mobile" maxlength="10" placeholder="10-digit number" oninput="onSearchInput()" onkeydown="if(event.key==='Enter')searchUser()">
-            <i class="fa-solid fa-times inp-icon" onclick="clearSearch()" id="clear-icon" style="display:none"></i>
+    <!-- RESULT -->
+    <div id="result" style="display:none">
+
+      <!-- USER CARD -->
+      <div class="user-card" id="user-card">
+        <div class="user-header">
+          <div class="user-avatar" id="u-avatar">?</div>
+          <div class="user-main">
+            <div class="user-name" id="u-name">—</div>
+            <div class="user-mobile" id="u-mobile">—</div>
+          </div>
+          <div class="user-balance">
+            <div class="user-bal-lbl">Balance</div>
+            <div class="user-bal-amt" id="u-bal">₹0</div>
           </div>
         </div>
-        <button class="btn btn-blue" id="search-btn" onclick="searchUser()">
-          <div class="spin"></div>
-          <span class="btn-text"><i class="fa-solid fa-magnifying-glass"></i> Search User</span>
-        </button>
+
+        <div class="info-grid" id="info-grid"></div>
+      </div>
+
+      <!-- TG UPDATE -->
+      <div class="tg-section">
+        <div class="tg-section-head">
+          <i class="fa-brands fa-telegram"></i>
+          Telegram ID Management
+        </div>
+        <div class="tg-current">
+          <i class="fa-brands fa-telegram"></i>
+          <div>
+            <div class="tg-current-lbl">Current TG ID</div>
+            <div class="tg-current-val" id="tg-current-val">Not linked</div>
+          </div>
+        </div>
+        <div id="tg-msg" class="msg-bar"></div>
+        <div class="tg-input-row">
+          <input class="tg-input" type="number" id="tg-new-inp" placeholder="Enter new Telegram ID...">
+          <button class="tg-save-btn" id="tg-save-btn" onclick="updateTg()">
+            <i class="fa-solid fa-floppy-disk"></i> Update
+          </button>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="tx-section">
+        <div class="tx-head"><i class="fa-solid fa-clock-rotate-left"></i> Recent Transactions</div>
+        <div id="tx-list"></div>
+      </div>
+
+    </div><!-- /result -->
+  </div><!-- /main -->
+
+</div><!-- /wrap -->
+
+<script>
+const API = 'https://unio-hazel.vercel.app';
+let PASS  = '';
+let currentMobile = '';
+
+// ── Unlock ────────────────────────────────────────────────────────────────────
+function unlock() {
+  const p = document.getElementById('pass-inp').value.trim();
+  if (!p) return;
+  PASS = p;
+  fetch(`${API}/lite/user/0000000000?pass=${p}`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.message === 'Unauthorized') {
+        document.getElementById('unlock-st').innerHTML = '<i class="fa-solid fa-xmark"></i> Wrong';
+        document.getElementById('unlock-st').className = 'unlock-status fail';
+      } else {
+        showMain();
+      }
+    })
+    .catch(() => showMain());
+}
+
+function showMain() {
+  document.getElementById('unlock-st').innerHTML = '<i class="fa-solid fa-check"></i> Unlocked';
+  document.getElementById('unlock-st').className = 'unlock-status ok';
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('search-inp').focus();
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+async function searchUser() {
+  const mob = document.getElementById('search-inp').value.trim();
+  hideMsg('search-msg');
+  if (!mob || mob.length < 10) return showMsg('search-msg','err','Valid mobile enter karo (10 digits)');
+
+  currentMobile = mob;
+  const btn = document.getElementById('search-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch spin"></i> Searching';
+
+  try {
+    const r = await fetch(`${API}/lite/user/${mob}?pass=${PASS}`);
+    const d = await r.json();
+
+    if (d.status !== 'success') {
+      showMsg('search-msg','err', d.message || 'User not found');
+      document.getElementById('result').style.display = 'none';
+    } else {
+      renderUser(d.user, d.transactions);
+      document.getElementById('result').style.display = 'block';
+    }
+  } catch(e) {
+    showMsg('search-msg','err','Server error!');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Search';
+}
+
+// ── Render User ───────────────────────────────────────────────────────────────
+function renderUser(u, txns) {
+  // Avatar
+  const initials = (u.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('u-avatar').textContent = initials;
+  document.getElementById('u-name').textContent   = u.name || '—';
+  document.getElementById('u-mobile').textContent = u.mobile;
+  document.getElementById('u-bal').textContent    = '₹' + parseFloat(u.balance||0).toFixed(2);
+
+  // TG current
+  const tgVal = u.tg_id || 'Not linked';
+  document.getElementById('tg-current-val').textContent = tgVal;
+  document.getElementById('tg-current-val').style.color = u.tg_id ? '' : 'var(--red)';
+
+  // Info grid
+  const fields = [
+    { lbl:'Wallet ID',   val: u.wallet_id || '—',       cls:'blue' },
+    { lbl:'Email',       val: u.email || '—',            cls:'' },
+    { lbl:'KYC',         val: u.kyc_status || 'pending', cls: u.kyc_status==='verified'?'green':'yellow', badge:true },
+    { lbl:'Joined',      val: u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '—', cls:'' },
+    { lbl:'TG ID',       val: u.tg_id || '—',           cls: u.tg_id?'blue':'red' },
+    { lbl:'Status',      val: u.status || 'active',      cls: u.status==='active'?'green':'red', badge:true },
+  ];
+
+  document.getElementById('info-grid').innerHTML = fields.map(f => `
+    <div class="info-cell">
+      <div class="info-cell-lbl">${f.lbl}</div>
+      <div class="info-cell-val ${f.cls||''}">
+        ${f.badge
+          ? `<span class="badge badge-${f.cls||'yellow'}">${f.val}</span>`
+          : f.val
+        }
       </div>
     </div>
+  `).join('');
 
-    <!-- Result Area -->
-    <div id="result-area">
-      <div class="empty-hint">
-        <i class="fa-solid fa-mobile-screen-button"></i>
-        <p>Mobile number dalo aur search karo</p>
+  // Transactions
+  if (!txns || !txns.length) {
+    document.getElementById('tx-list').innerHTML =
+      '<div class="empty-state"><i class="fa-solid fa-receipt"></i>No transactions yet</div>';
+    return;
+  }
+
+  document.getElementById('tx-list').innerHTML = txns.map(t => {
+    const isCredit = t.type === 'credit' || (t.receiver_id && t.receiver_id.toString() === u._id.toString());
+    const iconClass = t.type === 'transfer' ? 'tr' : (isCredit ? 'cr' : 'dr');
+    const iconName  = t.type === 'credit' ? 'fa-arrow-down-long' : (t.type === 'transfer' ? 'fa-right-left' : 'fa-arrow-up-long');
+    const sign      = isCredit ? '+' : '-';
+    const amtCls    = isCredit ? 'cr' : 'dr';
+    const dateStr   = new Date(t.tx_time).toLocaleString('en-IN', {
+      timeZone:'Asia/Kolkata', day:'2-digit', month:'short',
+      hour:'2-digit', minute:'2-digit', hour12:true
+    });
+    return `<div class="tx-item">
+      <div class="tx-ico ${iconClass}"><i class="fa-solid ${iconName}"></i></div>
+      <div class="tx-info">
+        <div class="tx-rem">${t.remark || t.type}</div>
+        <div class="tx-time">${dateStr} · <span style="color:${t.status==='success'?'var(--green)':'var(--red)'}">${t.status}</span></div>
       </div>
-    </div>
+      <div class="tx-amt ${amtCls}">${sign}₹${parseFloat(t.amount||0).toFixed(2)}</div>
+    </div>`;
+  }).join('');
+}
 
-  </div>
-</div>
+// ── Update TG ─────────────────────────────────────────────────────────────────
+async function updateTg() {
+  const newTg = document.getElementById('tg-new-inp').value.trim();
+  hideMsg('tg-msg');
 
-<div class="toast" id="toast"></div>
+  if (!newTg) return showMsg('tg-msg','err','New TG ID enter karo');
+  if (!currentMobile) return showMsg('tg-msg','err','Pehle user search karo');
 
-<script src="tgch.js"></script>
+  const btn = document.getElementById('tg-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch spin"></i> Saving';
+
+  try {
+    const r = await fetch(`${API}/lite/update-tg`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ mobile: currentMobile, tg_id: newTg, pass: PASS })
+    });
+    const d = await r.json();
+
+    if (d.status === 'success') {
+      document.getElementById('tg-current-val').textContent = newTg;
+      document.getElementById('tg-current-val').style.color = '';
+      document.getElementById('tg-new-inp').value = '';
+      showMsg('tg-msg','ok','TG ID updated successfully!');
+      flash('✅ TG ID updated for ' + (d.user?.name || currentMobile));
+    } else {
+      showMsg('tg-msg','err', d.message || 'Failed!');
+    }
+  } catch(e) {
+    showMsg('tg-msg','err','Server error!');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update';
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showMsg(id, type, text) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<i class="fa-solid ${type==='err'?'fa-circle-exclamation':'fa-check-circle'}"></i> ${text}`;
+  el.className = `msg-bar show ${type}`;
+}
+function hideMsg(id) {
+  document.getElementById(id).className = 'msg-bar';
+}
+
+let flashTimer;
+function flash(msg) {
+  const el = document.getElementById('flash');
+  el.innerHTML = '<i class="fa-solid fa-bolt"></i> ' + msg;
+  el.classList.add('show');
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+</script>
 </body>
 </html>
