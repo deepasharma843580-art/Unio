@@ -1,13 +1,3 @@
-// routes/lite.js
-// ─────────────────────────────────────────────────────────────────────────────
-//  UNIO Lite — All Routes
-//
-//  GET  /lite/balance
-//  GET  /lite/transactions?limit=15
-//  POST /lite/lookup
-//  POST /lite/pay
-// ─────────────────────────────────────────────────────────────────────────────
-
 const router      = require('express').Router();
 const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
@@ -16,20 +6,9 @@ const axios       = require('axios');
 
 const BOT_TOKEN   = process.env.BOT_TOKEN   || '7507385917:AAG3MmJO2VlzJAfvyjKeu_hqfQ0F3dCztow';
 const ADMIN_TG_ID = process.env.ADMIN_TG_ID || '8509393869';
+const LITE_PASS   = '8435';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-async function sendTG(tg_id, text) {
-  if (!tg_id) return;
-  try {
-    await axios.post(
-      `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
-      { chat_id: tg_id, text, parse_mode: 'Markdown' },
-      { timeout: 8000 }
-    );
-  } catch(e) {}
-}
-
-function istNow() {
+function istTime() {
   return new Date().toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata', hour12: true,
     day: '2-digit', month: 'short', year: 'numeric',
@@ -37,90 +16,103 @@ function istNow() {
   });
 }
 
-function makeTxId() {
-  return 'UL' + Date.now() + Math.floor(Math.random() * 9000 + 1000);
+async function sendTG(tg_id, text) {
+  if (!tg_id) return;
+  try {
+    await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      chat_id: tg_id, text, parse_mode: 'Markdown'
+    }, { timeout: 8000 });
+  } catch(e) {}
+}
+
+// Admin auth middleware
+function adminAuth(req, res, next) {
+  const pass = req.headers['x-lite-pass'] || req.body?.pass || req.query?.pass;
+  if (pass !== LITE_PASS)
+    return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+  next();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /lite/balance
-// Response: name, mobile, balance, wallet_id, avatar
+// GET /lite/me
+// Token se apna balance + lite_balance fetch karo
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/balance', auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
-      .select('name mobile balance wallet_id tg_id');
-
+      .select('name mobile balance lite_balance wallet_id tg_id');
     if (!user) return res.status(404).json({ status: 'error', message: 'User not found' });
 
     res.json({
+      status:       'success',
+      name:         user.name,
+      mobile:       user.mobile,
+      wallet_id:    user.wallet_id,
+      balance:      parseFloat((user.balance || 0).toFixed(2)),
+      lite_balance: parseFloat((user.lite_balance || 0).toFixed(2))
+    });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /lite/add
+// Main wallet se Lite balance mein fund move karo
+// Body: { amount }
+// Auth: Bearer token
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/add', auth, async (req, res) => {
+  try {
+    const amt = parseFloat(req.body.amount);
+    if (isNaN(amt) || amt <= 0)
+      return res.status(400).json({ status: 'error', message: 'Valid amount required' });
+
+    // Atomic: main balance ghata, lite_balance badhao — condition: balance >= amt
+    const user = await User.findOneAndUpdate(
+      { _id: req.user._id, balance: { $gte: amt } },
+      { $inc: { balance: -amt, lite_balance: amt } },
+      { new: true }
+    ).select('name mobile balance lite_balance tg_id');
+
+    if (!user)
+      return res.status(400).json({ status: 'error', message: 'Insufficient wallet balance' });
+
+    const dt = istTime();
+
+    await Transaction.create({
+      sender_id: user._id,
+      amount:    amt,
+      type:      'transfer',
       status:    'success',
-      name:      user.name,
-      mobile:    user.mobile,
-      balance:   parseFloat(user.balance || 0).toFixed(2),
-      wallet_id: user.wallet_id,
-      avatar:    (user.name || 'U')[0].toUpperCase(),
-    });
-  } catch(e) {
-    res.status(500).json({ status: 'error', message: e.message });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /lite/transactions?limit=15
-// Recent txns with direction (credit/debit) from current user's POV
-// ─────────────────────────────────────────────────────────────────────────────
-router.get('/transactions', auth, async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const limit  = Math.min(parseInt(req.query.limit) || 15, 50);
-
-    const txns = await Transaction.find({
-      $or: [{ sender_id: userId }, { receiver_id: userId }]
-    })
-      .sort({ tx_time: -1, createdAt: -1 })
-      .limit(limit)
-      .populate('sender_id',   'name mobile')
-      .populate('receiver_id', 'name mobile')
-      .lean();
-
-    const result = txns.map(t => {
-      const isCr = t.receiver_id?._id?.toString() === userId.toString();
-      return {
-        tx_id:     t.tx_id || t._id,
-        direction: isCr ? 'credit' : 'debit',
-        amount:    parseFloat(t.amount || 0).toFixed(2),
-        remark:    t.remark || (isCr ? 'Received' : 'Sent'),
-        status:    t.status || 'success',
-        other:     isCr
-          ? (t.sender_id   ? `${t.sender_id.name} · ${t.sender_id.mobile}`   : 'System')
-          : (t.receiver_id ? `${t.receiver_id.name} · ${t.receiver_id.mobile}` : 'System'),
-        tx_time:   t.tx_time || t.createdAt,
-      };
+      remark:    `Lite Fund Add: ₹${amt} (Wallet → Lite)`,
+      tx_time:   new Date()
     });
 
-    res.json({ status: 'success', transactions: result });
-  } catch(e) {
-    res.status(500).json({ status: 'error', message: e.message });
-  }
-});
+    if (user.tg_id) {
+      sendTG(user.tg_id,
+`💳 *Lite Fund Added!*
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /lite/lookup
-// Body: { mobile }
-// Pay form mein naam chip dikhane ke liye
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/lookup', auth, async (req, res) => {
-  try {
-    const { mobile } = req.body;
-    if (!mobile) return res.status(400).json({ status: 'error', message: 'Mobile required' });
+━━━━━━━━━━━━━━
+🏦   UNIO LITE ✅
+━━━━━━━━━━━━━━
 
-    if (mobile.toString() === req.user.mobile?.toString())
-      return res.json({ status: 'error', message: 'Apna number nahi daal sakte' });
+💸 Added : ₹${amt}
+💳 Lite Balance : ₹${user.lite_balance.toFixed(2)}
+👛 Wallet Balance : ₹${user.balance.toFixed(2)}
+📅 Time : ${dt}
 
-    const user = await User.findOne({ mobile: mobile.toString() }).select('name mobile');
-    if (!user) return res.json({ status: 'error', message: 'User not found' });
+✅ Lite mein transfer ho gaya!`
+      );
+    }
 
-    res.json({ status: 'success', name: user.name, mobile: user.mobile });
+    res.json({
+      status:       'success',
+      message:      `₹${amt} Lite mein add ho gaya`,
+      balance:      user.balance,
+      lite_balance: user.lite_balance
+    });
+
   } catch(e) {
     res.status(500).json({ status: 'error', message: e.message });
   }
@@ -128,110 +120,113 @@ router.post('/lookup', auth, async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /lite/pay
-// Body: { to_mobile, amount, comment? }
-// Wallet to wallet transfer + TG alerts dono ko
+// Lite balance se kisi ko payment karo
+// Body: { to_mobile, amount }
+// Auth: Bearer token
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/pay', auth, async (req, res) => {
   try {
-    const { to_mobile, amount, comment } = req.body;
+    const { to_mobile, amount } = req.body;
+    const amt = parseFloat(amount);
 
-    if (!to_mobile || !amount)
-      return res.status(400).json({ status: 'error', message: 'to_mobile aur amount required hai' });
+    if (!to_mobile)          return res.status(400).json({ status: 'error', message: 'to_mobile required' });
+    if (isNaN(amt) || amt <= 0) return res.status(400).json({ status: 'error', message: 'Valid amount required' });
 
-    const amt = Math.round(parseFloat(amount) * 100) / 100;
-    if (isNaN(amt) || amt < 1)
-      return res.status(400).json({ status: 'error', message: 'Minimum ₹1 required' });
-
-    // Sender
     const sender = await User.findById(req.user._id);
-    if (!sender) return res.status(404).json({ status: 'error', message: 'Sender not found' });
+    if (!sender) return res.status(404).json({ status: 'error', message: 'User not found' });
 
-    // Self transfer block
-    if (sender.mobile === to_mobile.toString())
-      return res.json({ status: 'error', message: 'Apne aap ko transfer nahi kar sakte' });
+    if (sender.mobile === to_mobile)
+      return res.status(400).json({ status: 'error', message: 'Apne aap ko pay nahi kar sakte!' });
 
-    // Receiver
-    const receiver = await User.findOne({ mobile: to_mobile.toString() });
-    if (!receiver)
-      return res.json({ status: 'error', message: `${to_mobile} UNIO pe registered nahi hai` });
-
-    // Balance check
-    if (parseFloat(sender.balance) < amt)
-      return res.json({
-        status:  'error',
-        message: `Balance kam hai. Available: ₹${parseFloat(sender.balance).toFixed(2)}`
+    if ((sender.lite_balance || 0) < amt)
+      return res.status(400).json({
+        status: 'error',
+        message: `Insufficient Lite balance. Available: ₹${(sender.lite_balance || 0).toFixed(2)}`
       });
 
-    // Deduct & Credit
-    await User.findByIdAndUpdate(sender._id,   { $inc: { balance: -amt } });
-    await User.findByIdAndUpdate(receiver._id, { $inc: { balance: +amt } });
+    const receiver = await User.findOne({ mobile: to_mobile });
+    if (!receiver) return res.status(404).json({ status: 'error', message: 'Receiver not found' });
 
-    const tx_id = makeTxId();
-    const note  = (comment || 'UNIO Lite Payment').toString().trim();
-    const now   = new Date();
-    const dt    = istNow();
+    const now = new Date();
+    const dt  = istTime();
+    const txId = `LITE${Date.now()}`;
 
-    // Transaction record
+    // Atomic deduct from sender lite_balance
+    const updSender = await User.findOneAndUpdate(
+      { _id: sender._id, lite_balance: { $gte: amt } },
+      { $inc: { lite_balance: -amt } },
+      { new: true }
+    ).select('name mobile balance lite_balance tg_id');
+
+    if (!updSender)
+      return res.status(400).json({ status: 'error', message: 'Insufficient Lite balance (concurrent check)' });
+
+    // Credit receiver main wallet
+    const updReceiver = await User.findByIdAndUpdate(
+      receiver._id,
+      { $inc: { balance: +amt } },
+      { new: true }
+    ).select('name mobile balance tg_id');
+
     await Transaction.create({
-      tx_id,
       sender_id:   sender._id,
       receiver_id: receiver._id,
       amount:      amt,
       type:        'transfer',
       status:      'success',
-      remark:      note,
-      tx_time:     now,
+      remark:      `Lite Pay: ${sender.mobile} → ${to_mobile} | ${txId}`,
+      tx_time:     now
     });
 
     // TG to sender
-    if (sender.tg_id) {
-      sendTG(sender.tg_id,
-`💸 *Payment Sent — UNIO Lite*
+    if (updSender.tg_id) {
+      sendTG(updSender.tg_id,
+`💸 *Lite Payment Sent!*
 
 ━━━━━━━━━━━━━━
-👤 To     : ${receiver.name} (\`${receiver.mobile}\`)
-💰 Amount : ₹${amt}
-💬 Note   : ${note}
-🆔 Txn ID : \`${tx_id}\`
-📅 Time   : ${dt}
+💳   UNIO LITE ✅
 ━━━━━━━━━━━━━━
-🏦 Balance : ₹${(parseFloat(sender.balance) - amt).toFixed(2)}`
+
+➡️ To : ${updReceiver.name} (${to_mobile})
+💰 Amount : ₹${amt}
+💳 Lite Balance : ₹${updSender.lite_balance.toFixed(2)}
+🆔 TxID : \`${txId}\`
+📅 Time : ${dt}
+
+✅ Payment successful!`
       );
     }
 
     // TG to receiver
-    if (receiver.tg_id) {
-      sendTG(receiver.tg_id,
-`💰 *Payment Received — UNIO Lite*
+    if (updReceiver.tg_id) {
+      sendTG(updReceiver.tg_id,
+`💰 *Payment Received!*
 
 ━━━━━━━━━━━━━━
-👤 From   : ${sender.name} (\`${sender.mobile}\`)
-💰 Amount : ₹${amt}
-💬 Note   : ${note}
-🆔 Txn ID : \`${tx_id}\`
-📅 Time   : ${dt}
+💳   UNIO LITE ✅
 ━━━━━━━━━━━━━━
-✅ Balance mein add ho gaya!`
+
+⬅️ From : ${updSender.name} (${sender.mobile})
+💰 Amount : ₹${amt}
+👛 Wallet Balance : ₹${updReceiver.balance.toFixed(2)}
+🆔 TxID : \`${txId}\`
+📅 Time : ${dt}
+
+✅ Wallet mein add ho gaya!`
       );
     }
 
-    // TG to admin
     sendTG(ADMIN_TG_ID,
-`🔁 *Lite Transfer*
-
-👤 ${sender.name} (${sender.mobile}) → ${receiver.name} (${receiver.mobile})
-💰 ₹${amt} | 🆔 \`${tx_id}\`
-📅 ${dt}`
+`💸 *Lite Payment*\n👤 ${updSender.name} → ${updReceiver.name}\n💰 ₹${amt} | 🆔 ${txId}\n📅 ${dt}`
     );
 
     res.json({
-      status:  'success',
-      message: `₹${amt} successfully sent to ${receiver.name}!`,
-      tx_id,
-      amount:  amt,
-      to_name: receiver.name,
-      to_mobile: receiver.mobile,
-      timestamp: dt,
+      status:           'success',
+      tx_id:            txId,
+      amount:           amt,
+      lite_balance:     updSender.lite_balance,
+      receiver_name:    updReceiver.name,
+      receiver_mobile:  to_mobile
     });
 
   } catch(e) {
@@ -239,5 +234,74 @@ router.post('/pay', auth, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /lite/txns
+// Apni last 20 Lite transactions
+// Auth: Bearer token
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/txns', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ status: 'error', message: 'Not found' });
+
+    const txns = await Transaction.find({
+      $or: [{ sender_id: user._id }, { receiver_id: user._id }],
+      remark: { $regex: /^Lite/i }
+    })
+      .sort({ tx_time: -1 })
+      .limit(20)
+      .lean();
+
+    res.json({ status: 'success', transactions: txns });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN ROUTES (pass: 8435)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// GET /lite/user/:mobile?pass=8435
+router.get('/user/:mobile', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findOne({ mobile: req.params.mobile }).select('-password');
+    if (!user) return res.status(404).json({ status: 'error', message: 'User not found' });
+
+    const txns = await Transaction.find({
+      $or: [{ sender_id: user._id }, { receiver_id: user._id }]
+    }).sort({ tx_time: -1 }).limit(10).lean();
+
+    res.json({ status: 'success', user, transactions: txns });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+// POST /lite/update-tg  (admin)
+router.post('/update-tg', adminAuth, async (req, res) => {
+  try {
+    const { mobile, tg_id } = req.body;
+    if (!mobile || !tg_id)
+      return res.status(400).json({ status: 'error', message: 'mobile aur tg_id required' });
+
+    const user = await User.findOneAndUpdate(
+      { mobile },
+      { tg_id: tg_id.toString() },
+      { new: true }
+    ).select('name mobile tg_id');
+
+    if (!user) return res.status(404).json({ status: 'error', message: 'User not found' });
+
+    sendTG(tg_id,
+`🔔 *Telegram ID Updated!*\n\n👤 ${user.name} (${mobile})\n✅ TG linked successfully!`
+    );
+
+    res.json({ status: 'success', message: 'TG ID updated', user });
+  } catch(e) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
 module.exports = router;
-  
+      
