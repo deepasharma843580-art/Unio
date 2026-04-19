@@ -149,8 +149,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </div>
 
     <div class="input-group">
-      <label>Total Users</label>
-      <input type="number" id="c-users" placeholder="How many users?" oninput="calcDeduction()">
+      <label>Estimated Users (Fund Calculation ke liye)</label>
+      <input type="number" id="c-users" placeholder="Kitne users expect karte ho?" oninput="calcDeduction()">
     </div>
 
     <!-- Refer & Earn -->
@@ -165,14 +165,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </div>
       <div class="refer-note">
         Refer bonus <b>lifafa fund mein se</b> niklegaa — aapke wallet se 1 paisa extra nahi jaayega.<br>
-        Refer bonus <b>per user amount se kam</b> hona chahiye. Jab fund khatam hoga, refer band ho jaayega. <b>Bacha hua fund wapas aayega.</b>
+        Jab fund khatam hoga, lifafa automatically band ho jaayega. <b>Koi extra paisa nahi jaayega.</b>
       </div>
     </div>
 
     <!-- Deduction preview -->
     <div class="deduction-box" id="deduction-box">
-      <div class="deduction-row sub"><span>Base Fund</span><span id="d-base">—</span></div>
-      <div class="deduction-row sub" id="d-refer-row" style="display:none"><span>⚠️ Refer Bonus (max, fund mein se)</span><span id="d-refer">—</span></div>
+      <div class="deduction-row sub"><span>Total Fund</span><span id="d-base">—</span></div>
+      <div class="deduction-row sub" id="d-refer-row" style="display:none"><span>⚠️ Max Refer Cost (fund mein se)</span><span id="d-refer">—</span></div>
       <div class="deduction-row total"><span>You Pay</span><span id="d-total">—</span></div>
     </div>
 
@@ -344,7 +344,7 @@ async function createLifafa() {
   const refer = parseFloat(document.getElementById('c-refer').value) || 0;
 
   if (!code)      return showMsg('❌ Unique code required!', 'error');
-  if (users <= 0) return showMsg('❌ Total users required!', 'error');
+  if (users <= 0) return showMsg('❌ Estimated users required!', 'error');
   if (type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
   if (type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
 
@@ -378,7 +378,7 @@ async function createLifafa() {
       referLink = baseLink + '&ref=' + (userMobile || '');
 
       document.getElementById('r-code').textContent = d.code;
-      document.getElementById('r-info').textContent = `${type.toUpperCase()} · ${users} users · ₹${amt || max}/user`;
+      document.getElementById('r-info').textContent = `${type.toUpperCase()} · ₹${amt || max}/user · Fund se chalega`;
       document.getElementById('r-fund').textContent = '₹' + total.toFixed(2);
       document.getElementById('r-link-box').textContent = baseLink;
 
