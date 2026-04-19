@@ -13,6 +13,7 @@ const LifafaSchema = new mongoose.Schema({
   claimed_users:   { type: Number, default: 0 },
   channels:        { type: [String], default: [] },
   refer_bonus:     { type: Number, default: 0 },
+  refer_fund_used: { type: Number, default: 0 },
   status:          { type: String, enum: ['active','expired'], default: 'active' },
   created_at:      { type: Date, default: Date.now }
 });
