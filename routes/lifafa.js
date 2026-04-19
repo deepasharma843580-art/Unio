@@ -221,7 +221,7 @@ router.post('/claim', async (req, res) => {
 
     const newClaimed = lifafa.claimed_users + 1;
 
-    // claimed_fund mein claimer ka amount add karo (lifafa fund se deduct)
+    // claimed_fund + claimed_users atomically update (refer baad mein add hoga agar eligible)
     await Lifafa.findByIdAndUpdate(lifafa._id, {
       $inc: { claimed_users: 1, claimed_fund: amt }
     });
@@ -237,7 +237,7 @@ router.post('/claim', async (req, res) => {
 
     // ─────────────────────────────────────────────────────────────────────────
     // REFER BONUS — LIFAFA KE SAME FUND SE DEDUCT HOGA
-    // Agar fund nahi hai to bonus nahi milega — sirf TG alert
+    // Check: claim + refer dono ke liye fund hai?
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
@@ -245,13 +245,15 @@ router.post('/claim', async (req, res) => {
       const referrer = await User.findOne({ mobile: ref_code.toString() });
 
       if (referrer && referrer.mobile !== mobile) {
-        // Remaining fund AFTER is claim ke baad
-        const remainingAfterClaim = parseFloat((remainingFund - amt).toFixed(2));
+        // remainingFund mein se amt already ja raha hai
+        // toh refer ke liye bhi alag se paise chahiye
+        const canPayRefer = parseFloat((remainingFund - amt).toFixed(2)) >= lifafa.refer_bonus;
 
-        if (remainingAfterClaim >= lifafa.refer_bonus) {
+        if (canPayRefer) {
           // ✅ Fund hai — refer bonus do
           referBonus = lifafa.refer_bonus;
 
+          // claimed_fund mein refer bonus bhi add karo same time
           await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_fund: referBonus } });
           await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
 
@@ -387,4 +389,3 @@ Agali baar pehle claim karo! 🙏`
 
 module.exports = router;
 
-           
