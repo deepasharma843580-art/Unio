@@ -4,7 +4,6 @@ const mongoose  = require('mongoose');
 const cors      = require('cors');
 const rateLimit = require('express-rate-limit');
 const path      = require('path');
-const liteRoutes = require('./routes/lite');
 
 const app = express();
 
@@ -113,7 +112,7 @@ app.use('/admin',  require('./routes/admin-circle'));  // existing /admin ke saa
 app.use('/game',             require('./routes/game'));
 app.use('/api/lite',  require('./routes/lite'));
 app.use('/admin', require('./routes/tgch'));
-app.use('/lite', liteRoutes);
+
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
