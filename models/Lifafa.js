@@ -9,11 +9,11 @@ const LifafaSchema = new mongoose.Schema({
   min_range:       { type: Number, default: 0 },
   max_range:       { type: Number, default: 0 },
   toss_answer:     { type: String, default: '' },
-  max_users:       { type: Number, required: true },
+  max_users:       { type: Number, required: true },   // estimation for fund calc, not hard limit
   claimed_users:   { type: Number, default: 0 },
   channels:        { type: [String], default: [] },
   refer_bonus:     { type: Number, default: 0 },
-  refer_fund_used: { type: Number, default: 0 },
+  refer_fund_used: { type: Number, default: 0 },       // refer bonuses diye gaye — fund mein se
   status:          { type: String, enum: ['active','expired'], default: 'active' },
   created_at:      { type: Date, default: Date.now }
 });
