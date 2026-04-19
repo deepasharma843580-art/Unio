@@ -60,13 +60,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .toss-btn{padding:1rem;border:none;border-radius:1rem;font-size:.9rem;font-weight:900;cursor:pointer;font-family:inherit;transition:all .2s}
 .toss-btn.heads{background:#0057ff;color:white}
 .toss-btn.tails{background:#0f172a;color:white}
-
-/* ── SUCCESS PAGE ── */
 .won-emoji{font-size:3.5rem;text-align:center}
 .won-amount{font-size:2.5rem;font-weight:900;color:#16a34a;text-align:center;margin:.2rem 0 .3rem}
 .won-sub{font-size:.72rem;font-weight:700;color:#94a3b8;text-align:center;margin-bottom:1.25rem}
-
-/* ── REFER EARN CARD ── */
 .re-card{background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:1.5rem;padding:1.5rem;margin-top:1.25rem;color:white;position:relative;overflow:hidden}
 .re-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(255,255,255,.06);border-radius:50%}
 .re-tag{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:.3rem}
@@ -85,7 +81,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .how-box{background:rgba(255,255,255,.1);border-radius:1rem;padding:.9rem 1rem;margin-top:.8rem;font-size:.68rem;line-height:1.9;font-weight:600}
 .how-box b{font-size:.7rem;display:block;margin-bottom:.1rem}
 .no-refer{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;padding:.75rem;margin-top:.5rem}
-
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:.6rem 0;z-index:50}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
@@ -142,7 +137,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">₹0</div></div>
     </div>
 
-    <!-- Referred By (only when ?ref= present) -->
     <div class="ref-by-box" id="ref-by-box">
       <div style="font-size:1.4rem">🤝</div>
       <div>
@@ -204,7 +198,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       </button>
     </div>
 
-    <!-- EARLY REFER CARD — mobile verify ke baad, claim se pehle bhi dikhega -->
+    <!-- EARLY REFER CARD -->
     <div class="re-card" id="early-re-card" style="display:none;margin-bottom:1.25rem">
       <div class="re-tag">💰 Refer &amp; Earn</div>
       <div class="re-title">Dosto ko bhejo, paise kamao!</div>
@@ -217,12 +211,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         </button>
       </div>
       <div class="share-row">
-        <button class="share-btn wa" onclick="shareEarlyWA()">
-          <i class="fa-brands fa-whatsapp"></i> WhatsApp
-        </button>
-        <button class="share-btn tg" onclick="shareEarlyTG()">
-          <i class="fa-brands fa-telegram"></i> Telegram
-        </button>
+        <button class="share-btn wa" onclick="shareEarlyWA()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+        <button class="share-btn tg" onclick="shareEarlyTG()"><i class="fa-brands fa-telegram"></i> Telegram</button>
       </div>
     </div>
 
@@ -235,7 +225,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <i class="fa-solid fa-wallet"></i> Go to Wallet
       </a>
 
-      <!-- REFER & EARN CARD -->
       <div class="re-card" id="re-card" style="display:none">
         <div class="re-tag">💰 Refer &amp; Earn</div>
         <div class="re-title">Dosto ko bhejo, paise kamao!</div>
@@ -248,12 +237,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
           </button>
         </div>
         <div class="share-row">
-          <button class="share-btn wa" onclick="shareWA()">
-            <i class="fa-brands fa-whatsapp"></i> WhatsApp
-          </button>
-          <button class="share-btn tg" onclick="shareTG()">
-            <i class="fa-brands fa-telegram"></i> Telegram
-          </button>
+          <button class="share-btn wa" onclick="shareWA()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+          <button class="share-btn tg" onclick="shareTG()"><i class="fa-brands fa-telegram"></i> Telegram</button>
         </div>
         <div class="how-box">
           <b>Kaise kaam karta hai?</b>
@@ -267,7 +252,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <i class="fa-solid fa-info-circle"></i> Is Lifafa mein Refer Bonus nahi hai
       </div>
     </div>
-    <!-- END SUCCESS -->
 
   </div>
 </div>
@@ -290,31 +274,23 @@ let userMobile       = '';
 let userTgId         = '';
 let currentCode      = '';
 let verifiedChannels = [];
-let ref_mobile       = '';   // URL ?ref=XXXXXXXXXX (referrer ka mobile)
-let myReferLink      = '';   // claim ke baad apna link
+let ref_mobile       = '';
+let myReferLink      = '';
 
-// ── PAGE LOAD ─────────────────────────────────────────────────────────────────
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
-  const code   = params.get('code')  || '';
-  ref_mobile   = (params.get('ref')  || '').trim();
+  const code   = params.get('code') || '';
+  ref_mobile   = (params.get('ref') || '').trim();
 
-  // Auto load lifafa from URL
   if (code) {
     document.getElementById('code-input').value = code.toUpperCase();
     loadLifafa();
   }
-
-  // Show referrer name if ?ref= present
-  if (ref_mobile) {
-    loadReferrerName(ref_mobile);
-  }
+  if (ref_mobile) loadReferrerName(ref_mobile);
 };
 
-// ── REFERRER NAME ─────────────────────────────────────────────────────────────
 async function loadReferrerName(mobile) {
   try {
-    // ← Ye route lifafa.js mein add karna hai (neeche explain kiya)
     const r = await fetch(API + '/lifafa/referrer-by-mobile/' + mobile);
     const d = await r.json();
     if (d.status === 'success') {
@@ -324,7 +300,6 @@ async function loadReferrerName(mobile) {
   } catch(e) {}
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 function showMsg(id, text, type) {
   const m = document.getElementById(id);
   if (!m) return;
@@ -352,7 +327,6 @@ function setBtnLoading(id, loading, label) {
   }
 }
 
-// ── STEP 1: LOAD LIFAFA ───────────────────────────────────────────────────────
 async function loadLifafa() {
   const code = document.getElementById('code-input').value.trim().toUpperCase();
   if (!code) return showMsg('code-msg', 'Code enter karo!', 'error');
@@ -369,19 +343,23 @@ async function loadLifafa() {
     currentLifafa = d.lifafa;
     currentCode   = code;
 
-    document.getElementById('banner-code').textContent          = currentLifafa.code;
-    document.getElementById('banner-type').textContent          = currentLifafa.type.toUpperCase();
+    document.getElementById('banner-code').textContent = currentLifafa.code;
+    document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
+
     const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
-    document.getElementById('banner-progress').style.width      = pct + '%';
-    document.getElementById('banner-pct').textContent           = pct + '% Full';
-    document.getElementById('banner-claimed-text').textContent  =
+    document.getElementById('banner-progress').style.width     = pct + '%';
+    document.getElementById('banner-pct').textContent          = pct + '% Full';
+    document.getElementById('banner-claimed-text').textContent =
       currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
 
-    document.getElementById('stat-total')?.remove?.();
-    const perAmt      = currentLifafa.per_user_amount > 0 ? currentLifafa.per_user_amount : (currentLifafa.max_range || 0);
-    const totalFund   = perAmt * currentLifafa.max_users;
-    const claimedFund = currentLifafa.claimed_fund || 0;
-    const leftFund    = Math.max(0, totalFund - claimedFund);
+    // ✅ Stats: totalFund = per_user_amount × max_users (sirf base, refer se nahi badhta)
+    const perAmt      = currentLifafa.per_user_amount > 0
+      ? currentLifafa.per_user_amount
+      : (currentLifafa.max_range || 0);
+    const totalFund   = parseFloat((perAmt * currentLifafa.max_users).toFixed(2));
+    const claimedFund = parseFloat((currentLifafa.claimed_fund || 0).toFixed(2));
+    const leftFund    = Math.max(0, parseFloat((totalFund - claimedFund).toFixed(2)));
+
     document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
     document.getElementById('stat-claimed').textContent = '₹' + claimedFund.toFixed(0);
     document.getElementById('stat-left').textContent    = '₹' + leftFund.toFixed(0);
@@ -390,7 +368,7 @@ async function loadLifafa() {
       document.getElementById('refer-badge').style.display = 'block';
     }
 
-    if (currentLifafa.claimed_users >= currentLifafa.max_users) {
+    if (currentLifafa.claimed_users >= currentLifafa.max_users || leftFund <= 0) {
       setBtnLoading('find-btn', false, 'Find Lifafa');
       return showMsg('code-msg', '❌ Lifafa is Full!', 'error');
     }
@@ -405,12 +383,10 @@ async function loadLifafa() {
   }
 }
 
-// ── STEP 2: VERIFY MOBILE ────────────────────────────────────────────────────
 async function verifyMobile() {
   const mobile = document.getElementById('mobile-input').value.trim();
   if (!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
 
-  // Frontend self-refer check
   if (ref_mobile && ref_mobile === mobile) {
     return showMsg('mobile-msg', '❌ Apne aap ko refer nahi kar sakte!', 'error');
   }
@@ -443,7 +419,6 @@ async function verifyMobile() {
   }
 }
 
-// ── STEP 3: SAVE TG ID ────────────────────────────────────────────────────────
 async function saveTgId() {
   const tg_id = document.getElementById('tg-id-input').value.trim();
   if (!tg_id) return showMsg('tg-msg', 'TG ID enter karo!', 'error');
@@ -469,7 +444,6 @@ async function saveTgId() {
   }
 }
 
-// ── STEP 4: CHANNELS ─────────────────────────────────────────────────────────
 function goToClaimStep() {
   document.getElementById('step-claim').style.display  = 'block';
   document.getElementById('step-mobile').style.display = 'none';
@@ -483,7 +457,6 @@ function goToClaimStep() {
     showClaimButton();
   }
 
-  // Refer link seedha dikhao — claim se pehle bhi
   if (currentLifafa.refer_bonus > 0 && userMobile) {
     myReferLink = window.location.origin
       + '/claim.html?code=' + currentCode
@@ -492,9 +465,9 @@ function goToClaimStep() {
       '<i class="fa-solid fa-gift"></i> ₹' + currentLifafa.refer_bonus + ' per Refer';
     document.getElementById('early-re-desc').textContent =
       'Jab koi tumhare link se "' + currentCode + '" claim kare, tumhe ₹'
-      + currentLifafa.refer_bonus + ' milega!';
-    document.getElementById('early-re-link').textContent = myReferLink;
-    document.getElementById('early-re-card').style.display = 'block';
+      + currentLifafa.refer_bonus + ' milega (fund mein se)!';
+    document.getElementById('early-re-link').textContent    = myReferLink;
+    document.getElementById('early-re-card').style.display  = 'block';
   }
 }
 
@@ -523,9 +496,9 @@ async function verifyChannel(i, link) {
     const res  = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=@${link.split('/').pop()}`);
     const data = await res.json();
     if (data.ok && data.joined) {
-      verifiedChannels[i] = true;
-      badge.className     = 'ch-badge verified'; badge.textContent = '✅ Verified';
-      btn.className       = 'ch-btn done'; btn.innerHTML = 'Done ✓';
+      verifiedChannels[i]  = true;
+      badge.className      = 'ch-badge verified'; badge.textContent = '✅ Verified';
+      btn.className        = 'ch-btn done'; btn.innerHTML = 'Done ✓';
       document.getElementById('ch-' + i).style.borderColor = '#bbf7d0';
       checkAllVerified(); return true;
     } else { btn.disabled = false; btn.innerHTML = 'Verify'; return false; }
@@ -553,7 +526,6 @@ function showClaimButton() {
   else document.getElementById('claim-btn-wrap').style.display = 'block';
 }
 
-// ── CLAIM API ─────────────────────────────────────────────────────────────────
 async function claimNow(guess) {
   if (currentLifafa.type !== 'toss') setBtnLoading('claim-btn', true, 'Claim Now!');
   try {
@@ -561,7 +533,7 @@ async function claimNow(guess) {
       code:     currentCode,
       mobile:   userMobile,
       guess:    guess,
-      ref_code: ref_mobile    // ← referrer ka mobile — backend lookup karta hai
+      ref_code: ref_mobile
     };
 
     const r = await fetch(API + '/lifafa/claim', {
@@ -573,11 +545,10 @@ async function claimNow(guess) {
 
     if (d.status === 'success') {
       ['channels-card','toss-wrap','claim-btn-wrap','verify-all-wrap']
-        .forEach(id => document.getElementById(id).style.display = 'none');
+        .forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
 
       document.getElementById('won-amt').textContent = '₹' + d.amount;
 
-      // Apna refer link — mobile number as ref code
       myReferLink = window.location.origin
         + '/claim.html?code=' + currentCode
         + '&ref=' + userMobile;
@@ -597,7 +568,6 @@ async function claimNow(guess) {
   }
 }
 
-// ── REFER CARD ────────────────────────────────────────────────────────────────
 function showReferCard() {
   const bonus = currentLifafa.refer_bonus || 0;
   if (bonus > 0) {
@@ -605,8 +575,8 @@ function showReferCard() {
       '<i class="fa-solid fa-gift"></i> ₹' + bonus + ' per Refer';
     document.getElementById('re-desc').textContent =
       'Jab bhi koi tumhare link se "' + currentCode
-      + '" claim kare, tumhe ₹' + bonus + ' milega — turant!';
-    document.getElementById('re-link').textContent  = myReferLink;
+      + '" claim kare, tumhe ₹' + bonus + ' milega (fund mein se)!';
+    document.getElementById('re-link').textContent    = myReferLink;
     document.getElementById('re-card').style.display  = 'block';
     document.getElementById('no-refer').style.display = 'none';
   } else {
@@ -615,11 +585,9 @@ function showReferCard() {
   }
 }
 
-// ── EARLY REFER SHARE ────────────────────────────────────────────────────────
 function copyEarlyLink() {
   navigator.clipboard.writeText(myReferLink).then(() => {
-    const btns = document.querySelectorAll('#early-re-card .copy-btn');
-    btns.forEach(btn => {
+    document.querySelectorAll('#early-re-card .copy-btn').forEach(btn => {
       btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
       setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy'; }, 2200);
     });
@@ -637,7 +605,6 @@ function shareEarlyTG() {
   );
 }
 
-// ── SHARE ─────────────────────────────────────────────────────────────────────
 function copyLink() {
   navigator.clipboard.writeText(myReferLink).then(() => {
     const btn = document.getElementById('copy-btn');
