@@ -138,8 +138,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
     <div class="stats-row">
       <div class="stat"><div class="stat-label">Fund</div><div class="stat-val" id="stat-fund" style="color:#7c3aed">₹0</div></div>
-      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a">0</div></div>
-      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">0</div></div>
+      <div class="stat"><div class="stat-label">Claimed</div><div class="stat-val" id="stat-claimed" style="color:#16a34a">₹0</div></div>
+      <div class="stat"><div class="stat-label">Left</div><div class="stat-val" id="stat-left" style="color:#dc2626">₹0</div></div>
     </div>
 
     <!-- Referred By (only when ?ref= present) -->
@@ -379,11 +379,13 @@ async function loadLifafa() {
 
     document.getElementById('stat-total')?.remove?.();
     // Fund = sirf base amount jitne se lifafa generate hua — refer usi me se milega
-    const perAmt    = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
-    const totalFund = perAmt * currentLifafa.max_users;
+    const perAmt      = currentLifafa.per_user_amount || currentLifafa.max_range || 0;
+    const totalFund   = perAmt * currentLifafa.max_users;
+    const claimedFund = currentLifafa.claimed_fund || 0;
+    const leftFund    = Math.max(0, totalFund - claimedFund);
     document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
-    document.getElementById('stat-claimed').textContent = currentLifafa.claimed_users;
-    document.getElementById('stat-left').textContent    = currentLifafa.max_users - currentLifafa.claimed_users;
+    document.getElementById('stat-claimed').textContent = '₹' + claimedFund.toFixed(0);
+    document.getElementById('stat-left').textContent    = '₹' + leftFund.toFixed(0);
 
     if (currentLifafa.refer_bonus > 0) {
       document.getElementById('refer-badge').style.display = 'block';
