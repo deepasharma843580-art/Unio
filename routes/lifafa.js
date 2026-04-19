@@ -236,6 +236,7 @@ router.post('/claim', async (req, res) => {
 
     // ─────────────────────────────────────────────────────────────────────────
     // REFER BONUS — LIFAFA KE SAME FUND SE DEDUCT HOGA
+    // Agar fund nahi hai to bonus nahi milega — sirf TG alert
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
@@ -243,15 +244,13 @@ router.post('/claim', async (req, res) => {
       const referrer = await User.findOne({ mobile: ref_code.toString() });
 
       if (referrer && referrer.mobile !== mobile) {
-        // Check karo fund mein refer bonus ke liye jagah hai ya nahi
         const fundAfterClaim = totalFund - (usedFund + amt);
+
         if (fundAfterClaim >= lifafa.refer_bonus) {
+          // ✅ Fund hai — refer bonus do
           referBonus = lifafa.refer_bonus;
 
-          // Refer bonus bhi lifafa ke claimed_fund mein add karo (same fund se)
           await Lifafa.findByIdAndUpdate(lifafa._id, { $inc: { claimed_fund: referBonus } });
-
-          // Referrer ko credit karo
           await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
 
           await Transaction.create({
@@ -277,6 +276,26 @@ router.post('/claim', async (req, res) => {
 📅 Time : ${dt}
 
 ✅ Balance mein add ho gaya!`
+            );
+          }
+
+        } else {
+          // ❌ Fund nahi — bonus nahi, sirf TG alert
+          if (referrer.tg_id) {
+            sendTG(referrer.tg_id,
+`⚠️ *Refer Bonus Nahi Mila!*
+
+━━━━━━━━━━━━━━
+🎁   UNIO REFER ALERT ❌
+━━━━━━━━━━━━━━
+
+👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
+🔑 Lifafa : \`${code}\`
+❌ Refer Bonus : ₹${lifafa.refer_bonus} — nahi mila
+💸 Wajah : Lifafa ka fund khatam ho gaya tha
+📅 Time : ${dt}
+
+Agali baar pehle claim karo! 🙏`
             );
           }
         }
@@ -366,3 +385,4 @@ router.post('/claim', async (req, res) => {
 
 module.exports = router;
 
+                  
