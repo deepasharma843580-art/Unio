@@ -346,19 +346,20 @@ async function loadLifafa() {
     document.getElementById('banner-code').textContent = currentLifafa.code;
     document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
 
-    const pct = Math.round((currentLifafa.claimed_users / currentLifafa.max_users) * 100);
+    // Fund-based progress
+    const totalFundDisp   = parseFloat((currentLifafa.total_fund  || 0).toFixed(2));
+    const totalUsedDisp   = parseFloat((currentLifafa.total_used  || 0).toFixed(2));
+    const pct = totalFundDisp > 0 ? Math.round((totalUsedDisp / totalFundDisp) * 100) : 0;
     document.getElementById('banner-progress').style.width     = pct + '%';
-    document.getElementById('banner-pct').textContent          = pct + '% Full';
+    document.getElementById('banner-pct').textContent          = pct + '% Used';
     document.getElementById('banner-claimed-text').textContent =
-      currentLifafa.claimed_users + '/' + currentLifafa.max_users + ' Claimed';
+      currentLifafa.claimed_users + ' claimed · ₹' + totalUsedDisp.toFixed(2) + ' used';
 
-    // ✅ Stats: totalFund = per_user_amount × max_users (sirf base, refer se nahi badhta)
-    const perAmt      = currentLifafa.per_user_amount > 0
-      ? currentLifafa.per_user_amount
-      : (currentLifafa.max_range || 0);
-    const totalFund   = parseFloat((perAmt * currentLifafa.max_users).toFixed(2));
-    const claimedFund = parseFloat((currentLifafa.claimed_fund || 0).toFixed(2));
-    const leftFund    = Math.max(0, parseFloat((totalFund - claimedFund).toFixed(2)));
+    // ✅ Stats: server se total_fund, total_used, remaining use karo
+    // (claimed_fund = sirf claim amounts, claimed_refer = sirf refer amounts)
+    const totalFund   = parseFloat((currentLifafa.total_fund  || 0).toFixed(2));
+    const claimedFund = parseFloat((currentLifafa.total_used  || 0).toFixed(2));
+    const leftFund    = parseFloat((currentLifafa.remaining   || 0).toFixed(2));
 
     document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
     document.getElementById('stat-claimed').textContent = '₹' + claimedFund.toFixed(0);
