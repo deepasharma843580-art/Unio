@@ -113,6 +113,8 @@ app.use('/game',             require('./routes/game'));
 app.use('/api/lite',  require('./routes/lite'));
 app.use('/tgch',  require('./routes/tgch'));               // ✅ TG Manager
 app.use('/', require('./routes/admin-with'));   // ✅ Today Withdrawals
+app.use('/ulite',            require('./routes/ulite'));
+
 // ── HTML Pages ────────────────────────────────────────────────────────────────
 app.get('/',              (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/dashboard',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
