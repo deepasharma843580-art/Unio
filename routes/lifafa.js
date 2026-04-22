@@ -25,12 +25,12 @@ function istTime() {
   });
 }
 
-// GET /lifafa/referrer-by-mobile/:mobile
-router.get('/referrer-by-mobile/:mobile', async (req, res) => {
+// GET /lifafa/referrer-by-tg/:tg_id
+router.get('/referrer-by-tg/:tg_id', async (req, res) => {
   try {
-    const referrer = await User.findOne({ mobile: req.params.mobile }).select('name mobile');
+    const referrer = await User.findOne({ tg_id: req.params.tg_id }).select('name tg_id');
     if (!referrer) return res.status(404).json({ status: 'error', message: 'User not found' });
-    res.json({ status: 'success', name: referrer.name, mobile: referrer.mobile });
+    res.json({ status: 'success', name: referrer.name, tg_id: referrer.tg_id });
   } catch(e) {
     res.status(500).json({ status: 'error', message: e.message });
   }
@@ -126,7 +126,7 @@ Share karo! 🚀`
     sendTG(ADMIN_TG_ID,
 `🎁 *New Lifafa Created*
 
-👤 By : ${sender.name} (${sender.mobile})
+👤 By : ${sender.name} (TG: ${sender.tg_id})
 🔑 Code : \`${lifafa.code}\`
 📋 Type : ${type} | 💸 Fund : ₹${totalFund}
 🎯 Refer : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus : 'Off'}`
@@ -274,9 +274,9 @@ router.post('/claim', async (req, res) => {
     // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
-      const referrer = await User.findOne({ mobile: ref_code.toString() });
+      const referrer = await User.findOne({ tg_id: ref_code.toString() });
 
-      if (referrer && referrer.mobile !== mobile) {
+      if (referrer && referrer.tg_id !== user.tg_id) {
         const rb = parseFloat(lifafa.refer_bonus.toFixed(2));
 
         let referDoc = null;
@@ -309,7 +309,7 @@ router.post('/claim', async (req, res) => {
           await Transaction.create({
             receiver_id: referrer._id,
             amount:      referBonus,
-            remark:      `Refer Bonus: ${mobile} ne ${code} claim kiya`,
+            remark:      `Refer Bonus: ${user.tg_id} ne ${code} claim kiya`,
             type:        'transfer',
             status:      'success',
             tx_time:     now
@@ -323,7 +323,7 @@ router.post('/claim', async (req, res) => {
 🎁   UNIO REFER BONUS ✅
 ━━━━━━━━━━━━━━
 
-👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
+👤 ${user.name} (TG: ${user.tg_id}) ne aapke refer link se claim kiya!
 🔑 Lifafa : \`${code}\`
 💰 Bonus : ₹${referBonus}
 📅 Time : ${dt}
@@ -340,7 +340,7 @@ router.post('/claim', async (req, res) => {
 🎁   UNIO REFER ALERT ❌
 ━━━━━━━━━━━━━━
 
-👤 ${user.name} (${mobile}) ne aapke refer link se claim kiya!
+👤 ${user.name} (TG: ${user.tg_id}) ne aapke refer link se claim kiya!
 🔑 Lifafa : \`${code}\`
 ❌ Refer Bonus : ₹${rb} — nahi mila
 💸 Wajah : Lifafa ka fund khatam ho gaya tha
@@ -410,7 +410,7 @@ Agali baar pehle claim karo! 🙏`
 `👋 *Someone Claimed Your Lifafa!*
 
 🔑 Code : \`${code}\`
-👤 By : ${user.name} (${mobile})
+👤 By : ${user.name} (TG: ${user.tg_id})
 💰 Amount : ₹${amt}
 💸 Fund Remaining : ₹${remaining} / ₹${totalFund}
 📅 Time : ${dt}`
@@ -432,4 +432,5 @@ Agali baar pehle claim karo! 🙏`
 });
 
 module.exports = router;
-                                                                                
+
+    
