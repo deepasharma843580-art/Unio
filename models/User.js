@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-function generateRefCode(mobile) {
-  const m       = mobile.toString();
+function generateRefCode(tg_id) {
+  const m       = tg_id.toString();
   const d0      = m[0]           || '0';
   const d8      = m[m.length-2]  || '0';
   const d9      = m[m.length-1]  || '0';
@@ -37,8 +37,8 @@ UserSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 10);
   if (this.isModified('pin') && this.pin)
     this.pin = await bcrypt.hash(this.pin, 10);
-  if (!this.ref_code && this.mobile)
-    this.ref_code = generateRefCode(this.mobile);
+  if (!this.ref_code && this.tg_id)
+    this.ref_code = generateRefCode(this.tg_id);
   next();
 });
 
