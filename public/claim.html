@@ -274,24 +274,24 @@ let userMobile       = '';
 let userTgId         = '';
 let currentCode      = '';
 let verifiedChannels = [];
-let ref_mobile       = '';
+let ref_tg_id        = '';
 let myReferLink      = '';
 
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const code   = params.get('code') || '';
-  ref_mobile   = (params.get('ref') || '').trim();
+  ref_tg_id    = (params.get('ref') || '').trim();
 
   if (code) {
     document.getElementById('code-input').value = code.toUpperCase();
     loadLifafa();
   }
-  if (ref_mobile) loadReferrerName(ref_mobile);
+  if (ref_tg_id) loadReferrerName(ref_tg_id);
 };
 
-async function loadReferrerName(mobile) {
+async function loadReferrerName(tg_id) {
   try {
-    const r = await fetch(API + '/lifafa/referrer-by-mobile/' + mobile);
+    const r = await fetch(API + '/lifafa/referrer-by-tg/' + tg_id);
     const d = await r.json();
     if (d.status === 'success') {
       document.getElementById('ref-by-name').textContent = d.name;
@@ -388,10 +388,6 @@ async function verifyMobile() {
   const mobile = document.getElementById('mobile-input').value.trim();
   if (!mobile || mobile.length < 10) return showMsg('mobile-msg', 'Valid number enter karo!', 'error');
 
-  if (ref_mobile && ref_mobile === mobile) {
-    return showMsg('mobile-msg', '❌ Apne aap ko refer nahi kar sakte!', 'error');
-  }
-
   setBtnLoading('mobile-btn', true, 'Next');
   try {
     const r = await fetch(API + '/auth/check-mobile', {
@@ -403,6 +399,13 @@ async function verifyMobile() {
     if (d.status === 'success') {
       userMobile = mobile;
       userTgId   = d.tg_id || '';
+
+      // Self-refer check: apne tg_id se refer nahi kar sakte
+      if (ref_tg_id && userTgId && ref_tg_id === userTgId) {
+        setBtnLoading('mobile-btn', false, 'Next');
+        return showMsg('mobile-msg', '❌ Apne aap ko refer nahi kar sakte!', 'error');
+      }
+
       setBtnLoading('mobile-btn', false, 'Next');
       if (!userTgId) {
         document.getElementById('step-mobile').style.display = 'none';
@@ -458,10 +461,10 @@ function goToClaimStep() {
     showClaimButton();
   }
 
-  if (currentLifafa.refer_bonus > 0 && userMobile) {
+  if (currentLifafa.refer_bonus > 0 && userTgId) {
     myReferLink = window.location.origin
       + '/claim.html?code=' + currentCode
-      + '&ref=' + userMobile;
+      + '&ref=' + userTgId;
     document.getElementById('early-re-pill').innerHTML =
       '<i class="fa-solid fa-gift"></i> ₹' + currentLifafa.refer_bonus + ' per Refer';
     document.getElementById('early-re-desc').textContent =
@@ -534,7 +537,7 @@ async function claimNow(guess) {
       code:     currentCode,
       mobile:   userMobile,
       guess:    guess,
-      ref_code: ref_mobile
+      ref_code: ref_tg_id
     };
 
     const r = await fetch(API + '/lifafa/claim', {
@@ -552,7 +555,7 @@ async function claimNow(guess) {
 
       myReferLink = window.location.origin
         + '/claim.html?code=' + currentCode
-        + '&ref=' + userMobile;
+        + '&ref=' + userTgId;
 
       showReferCard();
 
