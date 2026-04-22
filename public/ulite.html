@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIO Lite</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding-bottom:86px;color:#0f172a}
+
+/* Header */
+.header{background:#0a2463;padding:14px 16px 48px;position:relative;overflow:hidden}
+.header::before,.header::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}
+.header::before{width:180px;height:180px;top:-60px;right:-40px}
+.header::after{width:130px;height:130px;bottom:-60px;left:-30px}
+.header-row{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.logo{font-size:1.05rem;font-weight:900;color:white}
+.logo em{color:#4fa3ff;font-style:normal}
+.logo-tag{font-size:.55rem;background:rgba(255,255,255,.18);color:white;padding:.2rem .5rem;border-radius:2rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-left:.35rem;vertical-align:middle}
+.h-link{color:rgba(255,255,255,.7);font-size:.7rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.3rem}
+
+/* Balance card */
+.bal-card{background:white;border-radius:1.4rem;margin:0 14px;margin-top:-32px;padding:1.2rem 1.25rem;box-shadow:0 6px 28px rgba(0,87,255,.11);position:relative;z-index:10}
+.bc-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.7rem}
+.bc-labels{font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em}
+.bc-name{font-size:.78rem;font-weight:700;color:#0f172a;margin-top:.1rem}
+.bc-ref{width:28px;height:28px;background:#eff6ff;border-radius:.55rem;border:none;color:#0057ff;font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bal-amt{font-size:2.2rem;font-weight:900;color:#0f172a;line-height:1;margin-bottom:.6rem}
+.bal-amt small{font-size:1rem;color:#0057ff;font-weight:800;margin-right:.05rem}
+.bal-sub{font-size:.62rem;font-weight:700;color:#94a3b8}
+.bal-sub b{color:#0057ff}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:#f0f4ff;margin:12px 14px;border-radius:1rem;padding:3px;overflow:hidden}
+.tab{flex:1;padding:.65rem .4rem;text-align:center;font-size:.62rem;font-weight:800;border-radius:.8rem;cursor:pointer;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;transition:all .2s;border:none;background:none;font-family:inherit}
+.tab.active{background:white;color:#0057ff;box-shadow:0 2px 10px rgba(0,87,255,.12)}
+
+/* Panel */
+.panels{padding:0 14px}
+.panel{display:none;animation:up .25s ease both}
+.panel.show{display:block}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.pcard{background:white;border-radius:1.25rem;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:.75rem}
+.ptitle{font-size:.6rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.9rem;display:flex;align-items:center;gap:.35rem}
+
+/* Form */
+.iw{margin-bottom:.75rem}
+.il{display:block;font-size:.58rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.28rem}
+.inp{width:100%;padding:.78rem .9rem;background:#f8faff;border:2px solid #e2e8f0;border-radius:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:600;color:#0f172a;outline:none;transition:border-color .2s}
+.inp:focus{border-color:#0057ff;background:white}
+.inp.big{font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:.04em}
+.inp::placeholder{color:#cbd5e1}
+
+/* Name chip */
+.nchip{display:none;align-items:center;gap:.3rem;background:#eff6ff;border-radius:.45rem;padding:.28rem .6rem;font-size:.66rem;font-weight:700;color:#0057ff;margin-top:.3rem}
+.nchip.show{display:flex}
+.nchip.err{background:#fee2e2;color:#dc2626}
+
+/* Chips */
+.chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem}
+.chip{padding:.28rem .65rem;background:white;border:1.5px solid #e2e8f0;border-radius:2rem;font-size:.63rem;font-weight:700;color:#64748b;cursor:pointer;transition:all .15s}
+.chip.on{background:#0057ff;border-color:#0057ff;color:white}
+.chip:active{transform:scale(.95)}
+
+/* Btn */
+.btn{width:100%;padding:.85rem;border:none;border-radius:.9rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:all .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-blue{background:#0057ff;color:white;box-shadow:0 4px 14px rgba(0,87,255,.25)}
+.btn-green{background:#16a34a;color:white;box-shadow:0 4px 12px rgba(22,163,74,.2)}
+.spi{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.btn.ld .spi{display:block}
+.btn.ld .btxt{display:none}
+
+/* Transactions */
+.txitem{display:flex;align-items:center;gap:.7rem;padding:.72rem .85rem;border-radius:.85rem;background:#f8faff;margin-bottom:.45rem;border:1px solid #e2e8f0}
+.txav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.txav.add{background:#dcfce7;color:#16a34a}
+.txav.send{background:#fee2e2;color:#dc2626}
+.txav.recv{background:#eff6ff;color:#0057ff}
+.txav.wd{background:#fef3c7;color:#d97706}
+.txinfo{flex:1;min-width:0}
+.txname{font-size:.76rem;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txrm{font-size:.6rem;color:#94a3b8;font-weight:600;margin-top:.04rem}
+.txamt{font-size:.82rem;font-weight:800;flex-shrink:0}
+.txamt.pos{color:#16a34a}
+.txamt.neg{color:#dc2626}
+.txamt.neu{color:#0057ff}
+
+/* ── SUCCESS OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(8,28,80,.94);backdrop-filter:blur(10px);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:1.5rem}
+.overlay.open{display:flex}
+
+/* Confetti */
+.cfw{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.cf{position:absolute;border-radius:2px;animation:cffall linear forwards}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* Circles burst */
+.burst{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.bcirc{position:absolute;border-radius:50%;transform-origin:50% 50%;animation:burstOut .6s ease forwards}
+@keyframes burstOut{0%{transform:scale(0);opacity:.7}100%{transform:scale(4);opacity:0}}
+
+/* Receipt card */
+.receipt{background:white;border-radius:1.75rem;width:100%;max-width:370px;overflow:hidden;position:relative;z-index:1;animation:rcptIn .5s cubic-bezier(.34,1.56,.64,1) .3s both}
+@keyframes rcptIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:none}}
+
+.rcpt-top{background:linear-gradient(135deg,#0a2463,#1a4fd6);padding:1.5rem;text-align:center;position:relative;overflow:hidden}
+.rcpt-top::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:rgba(255,255,255,.07);border-radius:50%}
+.rcpt-anim{width:70px;height:70px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.8rem;border:2px solid rgba(255,255,255,.25);animation:iconPop .5s cubic-bezier(.34,1.56,.64,1) .7s both}
+@keyframes iconPop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0)}}
+.rcpt-title{font-size:1rem;font-weight:900;color:white;margin-bottom:.2rem;animation:fadeUp .4s ease .9s both}
+.rcpt-amt{font-size:2.2rem;font-weight:900;color:#fde68a;text-shadow:0 4px 16px rgba(0,0,0,.2);animation:amtPop .5s cubic-bezier(.34,1.56,.64,1) 1s both}
+@keyframes amtPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Jagged edge */
+.rcpt-edge{height:20px;background:white;position:relative}
+.rcpt-edge::before{content:'';position:absolute;top:-10px;left:0;right:0;height:20px;background:linear-gradient(135deg,#0a2463,#1a4fd6);clip-path:polygon(0 0,2.5% 100%,5% 0,7.5% 100%,10% 0,12.5% 100%,15% 0,17.5% 100%,20% 0,22.5% 100%,25% 0,27.5% 100%,30% 0,32.5% 100%,35% 0,37.5% 100%,40% 0,42.5% 100%,45% 0,47.5% 100%,50% 0,52.5% 100%,55% 0,57.5% 100%,60% 0,62.5% 100%,65% 0,67.5% 100%,70% 0,72.5% 100%,75% 0,77.5% 100%,80% 0,82.5% 100%,85% 0,87.5% 100%,90% 0,92.5% 100%,95% 0,97.5% 100%,100% 0)}
+
+.rcpt-body{padding:1rem 1.25rem}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #f1f5f9;font-size:.73rem}
+.rrow:last-child{border-bottom:none}
+.rl{font-weight:600;color:#94a3b8}
+.rv{font-weight:700;color:#0f172a;text-align:right;max-width:60%;word-break:break-word}
+.rv.mono{font-family:monospace;font-size:.67rem}
+.rv.blue{color:#0057ff}
+
+/* Dashed divider */
+.dashed{border:none;border-top:2px dashed #e2e8f0;margin:.5rem 0}
+
+.rcpt-footer{padding:.85rem 1.25rem 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.rfbtn{padding:.75rem;border:none;border-radius:.8rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.68rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.rfbtn.copy{background:#eff6ff;color:#0057ff}
+.rfbtn.done{background:#0057ff;color:white}
+
+.empty{text-align:center;padding:2rem;color:#94a3b8;font-size:.75rem;font-weight:700}
+.empty i{display:block;font-size:2rem;opacity:.2;margin-bottom:.5rem}
+
+.toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%) translateY(16px);background:#0f172a;color:white;padding:.55rem 1.1rem;border-radius:2rem;font-size:.72rem;font-weight:600;opacity:0;transition:all .3s;z-index:600;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#16a34a}
+.toast.err{background:#dc2626}
+
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e2e8f0;display:flex;padding:.55rem 0 .4rem;z-index:100;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;color:#94a3b8;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:none;background:none;font-family:inherit}
+.ni .nico{font-size:1.05rem;display:block}
+.ni.on{color:#0057ff}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">UNI<em>O</em><span class="logo-tag">Lite</span></div>
+    <a href="dashboard.html" class="h-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Full App</a>
+  </div>
+</div>
+
+<!-- Balance Card -->
+<div class="bal-card">
+  <div class="bc-row1">
+    <div>
+      <div class="bc-labels">ULite Balance</div>
+      <div class="bc-name" id="bc-name">Loading...</div>
+    </div>
+    <button class="bc-ref" onclick="loadBal()"><i class="fa-solid fa-rotate"></i></button>
+  </div>
+  <div class="bal-amt"><small>₹</small><span id="bc-bal">0.00</span></div>
+  <div class="bal-sub">Main Wallet: <b>₹<span id="bc-wbal">0.00</span></b></div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('add')">Add</button>
+  <button class="tab" onclick="showTab('send')">Send</button>
+  <button class="tab" onclick="showTab('wd')">Withdraw</button>
+  <button class="tab" onclick="showTab('hist')">History</button>
+</div>
+
+<div class="panels">
+
+  <!-- ADD -->
+  <div class="panel show" id="p-add">
+    <div class="pcard">
+      <div class="ptitle"><i class="fa-solid fa-plus" style="color:#16a34a"></i> Add from Main Wallet</div>
+      <div class="iw">
+        <span class="il">Amount (₹)</span>
+        <input type="number" class="inp big" id="add-amt" placeholder="0" oninput="syncC('add')">
+      </div>
+      <div class="chips" id="add-chips">
+        <div class="chip" onclick="setAmt('add',50)">₹50</div>
+        <div class="chip" onclick="setAmt('add',100)">₹100</div>
+        <div class="chip" onclick="setAmt('add',200)">₹200</div>
+        <div class="chip" onclick="setAmt('add',500)">₹500</div>
+      </div>
+      <div class="iw">
+        <span class="il">PIN</span>
+        <input type="password" class="inp" id="add-pin" placeholder="4-digit PIN" maxlength="4">
+      </div>
+      <button class="btn btn-green" id="add-btn" onclick="doAdd()">
+        <div class="spi"></div><span class="btxt"><i class="fa-solid fa-plus"></i>&nbsp; Add to ULite</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SEND -->
+  <div class="panel" id="p-send">
+    <div class="pcard">
+      <div class="ptitle"><i class="fa-solid fa-paper-plane" style="color:#0057ff"></i> Send to Anyone</div>
+      <div class="iw">
+        <span class="il">Mobile Number</span>
+        <input type="tel" class="inp" id="send-mob" placeholder="10-digit mobile"
+          maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);onMob()">
+        <div class="nchip" id="nchip"><i class="fa-solid fa-circle-check"></i><span id="nchip-txt">—</span></div>
+      </div>
+      <div class="iw">
+        <span class="il">Amount (₹)</span>
+        <input type="number" class="inp big" id="send-amt" placeholder="0" oninput="syncC('send')">
+      </div>
+      <div class="chips" id="send-chips">
+        <div class="chip" onclick="setAmt('send',10)">₹10</div>
+        <div class="chip" onclick="setAmt('send',50)">₹50</div>
+        <div class="chip" onclick="setAmt('send',100)">₹100</div>
+        <div class="chip" onclick="setAmt('send',200)">₹200</div>
+      </div>
+      <div class="iw">
+        <span class="il">Remark (optional)</span>
+        <input type="text" class="inp" id="send-rm" placeholder="e.g. Dinner, Petrol...">
+      </div>
+      <div class="iw">
+        <span class="il">PIN</span>
+        <input type="password" class="inp" id="send-pin" placeholder="4-digit PIN" maxlength="4">
+      </div>
+      <button class="btn btn-blue" id="send-btn" onclick="doSend()">
+        <div class="spi"></div><span class="btxt"><i class="fa-solid fa-paper-plane"></i>&nbsp; Send Now</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- WITHDRAW -->
+  <div class="panel" id="p-wd">
+    <div class="pcard">
+      <div class="ptitle"><i class="fa-solid fa-arrow-down" style="color:#d97706"></i> Withdraw to Main Wallet</div>
+      <div class="iw">
+        <span class="il">Amount (₹)</span>
+        <input type="number" class="inp big" id="wd-amt" placeholder="0" oninput="syncC('wd')">
+      </div>
+      <div class="chips" id="wd-chips">
+        <div class="chip" onclick="setAmt('wd',50)">₹50</div>
+        <div class="chip" onclick="setAmt('wd',100)">₹100</div>
+        <div class="chip" onclick="setAmt('wd',200)">₹200</div>
+        <div class="chip" onclick="setAmt('wd',500)">₹500</div>
+      </div>
+      <div class="iw">
+        <span class="il">PIN</span>
+        <input type="password" class="inp" id="wd-pin" placeholder="4-digit PIN" maxlength="4">
+      </div>
+      <button class="btn btn-blue" id="wd-btn" onclick="doWd()">
+        <div class="spi"></div><span class="btxt"><i class="fa-solid fa-arrow-down"></i>&nbsp; Withdraw</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="p-hist">
+    <div class="pcard">
+      <div class="ptitle"><i class="fa-solid fa-clock-rotate-left" style="color:#7c3aed"></i> Transactions</div>
+      <div id="tx-list"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom nav -->
+<div class="bnav">
+  <button class="ni on" id="ni-add" onclick="showTab('add')"><span class="nico">➕</span>Add</button>
+  <button class="ni" id="ni-send" onclick="showTab('send')"><span class="nico">💸</span>Send</button>
+  <button class="ni" id="ni-wd" onclick="showTab('wd')"><span class="nico">⬇️</span>Withdraw</button>
+  <button class="ni" id="ni-hist" onclick="showTab('hist');loadTx()"><span class="nico">📋</span>History</button>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="cfw" id="cfw"></div>
+  <div class="burst" id="burst"></div>
+
+  <div class="receipt">
+    <div class="rcpt-top">
+      <div class="rcpt-anim" id="rcpt-icon">💙</div>
+      <div class="rcpt-title" id="rcpt-title">Payment Successful!</div>
+      <div class="rcpt-amt" id="rcpt-amt">₹0</div>
+    </div>
+    <div class="rcpt-edge"></div>
+    <div class="rcpt-body">
+      <div class="rrow"><span class="rl">Status</span><span class="rv blue">✅ Success</span></div>
+      <div class="rrow"><span class="rl">Type</span><span class="rv" id="rcpt-type">—</span></div>
+      <div class="rrow" id="rcpt-to-row"><span class="rl">To</span><span class="rv" id="rcpt-to">—</span></div>
+      <div class="rrow" id="rcpt-rm-row"><span class="rl">Remark</span><span class="rv" id="rcpt-rm">—</span></div>
+      <hr class="dashed">
+      <div class="rrow"><span class="rl">Txn ID</span><span class="rv mono" id="rcpt-txid">—</span></div>
+      <div class="rrow"><span class="rl">ULite Balance</span><span class="rv blue" id="rcpt-bal">—</span></div>
+      <div class="rrow"><span class="rl">Date</span><span class="rv" id="rcpt-date">—</span></div>
+    </div>
+    <div class="rcpt-footer">
+      <button class="rfbtn copy" onclick="copyTxid()"><i class="fa-solid fa-copy"></i> Copy ID</button>
+      <button class="rfbtn done" onclick="closeOverlay()"><i class="fa-solid fa-check"></i> Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API  = 'https://unio-hazel.vercel.app';
+const tok  = localStorage.getItem('token');
+const udat = JSON.parse(localStorage.getItem('user') || '{}');
+if (!tok) window.location.href = 'index.html';
+
+const hdrs = () => ({'Content-Type':'application/json','Authorization':'Bearer '+tok});
+
+let uliteBal = 0, walletBal = 0, lastTxid = '', mobTimer = null;
+
+// ── Load balance ──────────────────────────────────────────────────────────
+async function loadBal() {
+  document.getElementById('bc-name').textContent = udat.name || '—';
+  document.getElementById('bc-bal').textContent  = parseFloat(udat.ulite_balance||0).toFixed(2);
+  document.getElementById('bc-wbal').textContent = parseFloat(udat.balance||0).toFixed(2);
+  try {
+    const r = await fetch(API+'/ulite/balance', {headers:hdrs()});
+    const d = await r.json();
+    if (d.status==='success') {
+      uliteBal  = d.ulite_balance;
+      walletBal = d.wallet_balance;
+      document.getElementById('bc-name').textContent = d.name;
+      document.getElementById('bc-bal').textContent  = parseFloat(uliteBal).toFixed(2);
+      document.getElementById('bc-wbal').textContent = parseFloat(walletBal).toFixed(2);
+    }
+  } catch(e) {}
+}
+loadBal();
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function showTab(t) {
+  ['add','send','wd','hist'].forEach(x => {
+    document.getElementById('p-'+x).classList.toggle('show', x===t);
+    document.getElementById('ni-'+x).classList.toggle('on', x===t);
+    document.querySelectorAll('.tab').forEach((el,i) => {
+      const tabs=['add','send','wd','hist'];
+      el.classList.toggle('active', tabs[i]===t);
+    });
+  });
+}
+
+// ── Amount helpers ────────────────────────────────────────────────────────
+function setAmt(p, v) {
+  document.getElementById(p+'-amt').value = v;
+  syncC(p);
+}
+function syncC(p) {
+  const v = parseFloat(document.getElementById(p+'-amt').value)||0;
+  document.querySelectorAll('#'+p+'-chips .chip').forEach(c => {
+    c.classList.toggle('on', parseFloat(c.textContent.replace('₹',''))===v);
+  });
+}
+
+// ── Auto name fetch ───────────────────────────────────────────────────────
+function onMob() {
+  const mob = document.getElementById('send-mob').value.trim();
+  const chip = document.getElementById('nchip');
+  if (mob.length < 10) { chip.classList.remove('show'); return; }
+  clearTimeout(mobTimer);
+  mobTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(`${API}/ulite/lookup/${mob}`, {headers:hdrs()});
+      const d = await r.json();
+      if (d.status==='success') {
+        document.getElementById('nchip-txt').textContent = d.name;
+        chip.className = 'nchip show';
+      } else {
+        document.getElementById('nchip-txt').textContent = 'User not found';
+        chip.className = 'nchip show err';
+      }
+    } catch(e) { chip.classList.remove('show'); }
+  }, 500);
+}
+
+// ── Add ───────────────────────────────────────────────────────────────────
+async function doAdd() {
+  const amt = parseFloat(document.getElementById('add-amt').value);
+  const pin = document.getElementById('add-pin').value.trim();
+  if (!amt||amt<1) return toast('Amount daalo','err');
+  if (!pin)        return toast('PIN daalo','err');
+  const btn = document.getElementById('add-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(API+'/ulite/add', {
+      method:'POST', headers:hdrs(),
+      body: JSON.stringify({amount:amt, pin})
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      uliteBal  = d.ulite_balance;
+      walletBal = d.wallet_balance;
+      document.getElementById('bc-bal').textContent  = parseFloat(uliteBal).toFixed(2);
+      document.getElementById('bc-wbal').textContent = parseFloat(walletBal).toFixed(2);
+      document.getElementById('add-amt').value = '';
+      document.getElementById('add-pin').value = '';
+      syncC('add');
+      showReceipt({
+        icon:'➕', title:'Added to ULite!', amt, type:'ULite Add',
+        to:null, rm:null, txid:d.tx_id, bal:d.ulite_balance
+      });
+    } else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Send ──────────────────────────────────────────────────────────────────
+async function doSend() {
+  const mob = document.getElementById('send-mob').value.trim();
+  const amt = parseFloat(document.getElementById('send-amt').value);
+  const rm  = document.getElementById('send-rm').value.trim();
+  const pin = document.getElementById('send-pin').value.trim();
+  if (mob.length!==10) return toast('10-digit mobile daalo','err');
+  if (!amt||amt<1)     return toast('Amount daalo','err');
+  if (!pin)            return toast('PIN daalo','err');
+  const btn = document.getElementById('send-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(API+'/ulite/transfer', {
+      method:'POST', headers:hdrs(),
+      body: JSON.stringify({to_mobile:mob, amount:amt, pin, remark:rm})
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      uliteBal = d.ulite_balance;
+      document.getElementById('bc-bal').textContent = parseFloat(uliteBal).toFixed(2);
+      document.getElementById('send-mob').value = '';
+      document.getElementById('send-amt').value = '';
+      document.getElementById('send-rm').value  = '';
+      document.getElementById('send-pin').value = '';
+      document.getElementById('nchip').classList.remove('show');
+      syncC('send');
+      showReceipt({
+        icon:'💸', title:'Payment Successful!', amt, type:'ULite Transfer',
+        to: d.receiver_name+' ('+mob+')', rm: rm||'ULite Transfer',
+        txid:d.tx_id, bal:d.ulite_balance
+      });
+    } else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── Withdraw ──────────────────────────────────────────────────────────────
+async function doWd() {
+  const amt = parseFloat(document.getElementById('wd-amt').value);
+  const pin = document.getElementById('wd-pin').value.trim();
+  if (!amt||amt<1) return toast('Amount daalo','err');
+  if (!pin)        return toast('PIN daalo','err');
+  const btn = document.getElementById('wd-btn');
+  btnLoad(btn, true);
+  try {
+    const r = await fetch(API+'/ulite/withdraw', {
+      method:'POST', headers:hdrs(),
+      body: JSON.stringify({amount:amt, pin})
+    });
+    const d = await r.json();
+    if (d.status==='success') {
+      uliteBal  = d.ulite_balance;
+      walletBal = d.wallet_balance;
+      document.getElementById('bc-bal').textContent  = parseFloat(uliteBal).toFixed(2);
+      document.getElementById('bc-wbal').textContent = parseFloat(walletBal).toFixed(2);
+      document.getElementById('wd-amt').value = '';
+      document.getElementById('wd-pin').value = '';
+      syncC('wd');
+      showReceipt({
+        icon:'⬇️', title:'Withdrawn!', amt, type:'ULite → Wallet',
+        to:null, rm:null, txid:d.tx_id, bal:d.ulite_balance
+      });
+    } else toast(d.message||'Error','err');
+  } catch(e) { toast('Network error','err'); }
+  finally { btnLoad(btn, false); }
+}
+
+// ── History ───────────────────────────────────────────────────────────────
+async function loadTx() {
+  const el = document.getElementById('tx-list');
+  el.innerHTML = '<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+  try {
+    const r = await fetch(API+'/ulite/transactions', {headers:hdrs()});
+    const d = await r.json();
+    if (!d.data?.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-receipt"></i><p>Koi transactions nahi.</p></div>';
+      return;
+    }
+    el.innerHTML = d.data.map(t => {
+      const myId   = udat._id || '';
+      const isSend = t.type==='ulite_transfer' && t.sender_id?._id?.toString()===myId;
+      const isAdd  = t.type==='ulite_add';
+      const isWd   = t.type==='ulite_withdraw';
+      const isRecv = t.type==='ulite_transfer' && !isSend;
+      const cls    = isAdd?'add':isSend?'send':isWd?'wd':'recv';
+      const ico    = isAdd?'➕':isSend?'⬆️':isWd?'⬇️':'⬇️';
+      const name   = isSend ? (t.receiver_id?.name||'Sent') : isRecv ? (t.sender_id?.name||'Received') : (isAdd?'From Wallet':'To Wallet');
+      const sign   = (isSend||isWd) ? '-' : '+';
+      const amtCls = (isSend||isWd) ? 'neg' : 'pos';
+      const dt     = new Date(t.tx_time).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true});
+      return `<div class="txitem">
+        <div class="txav ${cls}">${ico}</div>
+        <div class="txinfo">
+          <div class="txname">${name}</div>
+          <div class="txrm">${t.remark||t.type} · ${dt}</div>
+        </div>
+        <div class="txamt ${amtCls}">${sign}₹${t.amount}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML='<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>Load failed.</p></div>'; }
+}
+
+// ── Receipt / Success overlay ─────────────────────────────────────────────
+function showReceipt({icon, title, amt, type, to, rm, txid, bal}) {
+  lastTxid = txid;
+  document.getElementById('rcpt-icon').textContent  = icon;
+  document.getElementById('rcpt-title').textContent = title;
+  document.getElementById('rcpt-amt').textContent   = '₹' + amt;
+  document.getElementById('rcpt-type').textContent  = type;
+  document.getElementById('rcpt-txid').textContent  = txid;
+  document.getElementById('rcpt-bal').textContent   = '₹' + parseFloat(bal).toFixed(2);
+
+  const now = new Date();
+  document.getElementById('rcpt-date').textContent = now.toLocaleString('en-IN',{
+    day:'2-digit',month:'short',year:'numeric',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true
+  });
+
+  const toRow = document.getElementById('rcpt-to-row');
+  const rmRow = document.getElementById('rcpt-rm-row');
+  if (to) { document.getElementById('rcpt-to').textContent = to; toRow.style.display='flex'; } else toRow.style.display='none';
+  if (rm) { document.getElementById('rcpt-rm').textContent = rm; rmRow.style.display='flex'; } else rmRow.style.display='none';
+
+  document.getElementById('overlay').classList.add('open');
+  spawnConfetti();
+  spawnBurst();
+}
+
+function spawnConfetti() {
+  const w = document.getElementById('cfw');
+  w.innerHTML = '';
+  const cols = ['#0057ff','#4fa3ff','#fde68a','#16a34a','#ffffff','#e0f2fe','#bfdbfe'];
+  for (let i=0;i<55;i++) {
+    const el=document.createElement('div');
+    el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${4+Math.random()*7}px;height:${7+Math.random()*10}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()*.8}s`;
+    w.appendChild(el);
+  }
+}
+
+function spawnBurst() {
+  const b = document.getElementById('burst');
+  b.innerHTML = '';
+  const cols = ['#0057ff','#4fa3ff','#fde68a','#16a34a'];
+  for (let i=0;i<6;i++) {
+    const el=document.createElement('div');
+    el.className='bcirc';
+    el.style.cssText=`width:60px;height:60px;background:${cols[i%cols.length]};left:-30px;top:-30px;animation-delay:${i*.08}s;opacity:.3`;
+    b.appendChild(el);
+  }
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('cfw').innerHTML='';
+  document.getElementById('burst').innerHTML='';
+}
+
+function copyTxid() {
+  navigator.clipboard.writeText(lastTxid).then(()=>toast('Txn ID copied!','ok'));
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function btnLoad(btn,on){btn.classList.toggle('ld',on);btn.disabled=on;}
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(type||'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
