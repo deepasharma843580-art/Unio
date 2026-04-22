@@ -25,8 +25,6 @@ body {
   padding-bottom: 30px;
   overflow-x: hidden;
 }
-
-/* ── Header ── */
 .header {
   background: var(--white);
   padding: 1rem 1.25rem;
@@ -38,100 +36,45 @@ body {
   top: 0;
   z-index: 100;
 }
-.back-btn {
-  font-size: 1.2rem;
-  color: var(--text);
-  text-decoration: none;
-}
-.header-logo {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--text);
-}
-
-/* ── Container ── */
-.container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 1.25rem;
-}
-
+.back-btn { font-size: 1.2rem; color: var(--text); text-decoration: none; }
+.header-logo { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+.container { max-width: 480px; margin: 0 auto; padding: 1.25rem; }
 .section-label {
-  font-size: .65rem;
-  font-weight: 800;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  margin-bottom: 1rem;
-  padding-left: .25rem;
+  font-size: .65rem; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 1rem; padding-left: .25rem;
 }
-
-/* ── Options Grid ── */
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-}
-
+.options-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
 .option-card {
-  background: var(--white);
-  border-radius: 1.25rem;
-  padding: 1rem 0.5rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: 1px solid var(--border);
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.15s;
+  background: var(--white); border-radius: 1.25rem; padding: 1rem 0.5rem;
+  text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid var(--border); text-decoration: none;
+  display: flex; flex-direction: column; align-items: center; transition: transform 0.15s;
 }
-.option-card:active {
-  transform: scale(0.93);
-}
-
+.option-card:active { transform: scale(0.93); }
 .icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.6rem;
-  font-size: 1.2rem;
+  width: 48px; height: 48px; border-radius: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.6rem; font-size: 1.2rem;
 }
-
 .option-label {
-  font-size: 0.58rem;
-  font-weight: 800;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  line-height: 1.2;
+  font-size: 0.58rem; font-weight: 800; color: #64748b;
+  text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.2;
 }
-
-/* Colors */
-.bg-blue { background: #eff6ff; color: #0057ff; }
+.bg-blue   { background: #eff6ff; color: #0057ff; }
 .bg-purple { background: #fdf4ff; color: #9333ea; }
 .bg-orange { background: #fff7ed; color: #ea580c; }
-.bg-cyan { background: #ecfeff; color: #0891b2; }
-.bg-green { background: #f0fdf4; color: #16a34a; }
-.bg-gray { background: #f8fafc; color: #94a3b8; }
-.bg-pink { background: #fff1f2; color: #e11d48; } /* Added for Games */
-
-/* Coming Soon Style */
-.coming-soon {
-  opacity: 0.6;
-}
-
+.bg-cyan   { background: #ecfeff; color: #0891b2; }
+.bg-green  { background: #f0fdf4; color: #16a34a; }
+.bg-gray   { background: #f8fafc; color: #94a3b8; }
+.bg-pink   { background: #fff1f2; color: #e11d48; }
+.bg-indigo { background: #eef2ff; color: #4f46e5; }
+.coming-soon { opacity: 0.6; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.fade-up {
-  opacity: 0;
-  animation: fadeUp 0.4s ease forwards;
-}
+.fade-up { opacity: 0; animation: fadeUp 0.4s ease forwards; }
 </style>
 </head>
 <body>
@@ -143,92 +86,94 @@ body {
 
 <div class="container">
   <div class="section-label">Explore Features</div>
-  
+
   <div class="options-grid">
-    <a href="card.html" class="option-card fade-up" style="animation-delay: 0.05s">
+
+    <a href="card.html" class="option-card fade-up" style="animation-delay:0.05s">
       <div class="icon-box bg-blue"><i class="fa-solid fa-id-card"></i></div>
       <div class="option-label">UNIO Card</div>
     </a>
 
-    <a href="envelopes.html" class="option-card fade-up" style="animation-delay: 0.1s">
+    <a href="envelopes.html" class="option-card fade-up" style="animation-delay:0.1s">
       <div class="icon-box bg-orange"><i class="fa-solid fa-gift"></i></div>
       <div class="option-label">Admin Gifts</div>
     </a>
 
-    <a href="lead.html" class="option-card fade-up" style="animation-delay: 0.15s">
+    <a href="lead.html" class="option-card fade-up" style="animation-delay:0.15s">
       <div class="icon-box bg-purple"><i class="fa-solid fa-trophy"></i></div>
       <div class="option-label">Leaderboard</div>
     </a>
 
-    <a href="keeper.html" class="option-card fade-up" style="animation-delay: 0.2s">
+    <a href="keeper.html" class="option-card fade-up" style="animation-delay:0.2s">
       <div class="icon-box bg-cyan"><i class="fa-solid fa-vault"></i></div>
       <div class="option-label">Keeper</div>
     </a>
 
-    <a href="ai.html" class="option-card fade-up" style="animation-delay: 0.25s">
+    <a href="ai.html" class="option-card fade-up" style="animation-delay:0.25s">
       <div class="icon-box bg-blue"><i class="fa-solid fa-robot"></i></div>
       <div class="option-label">AI Chat</div>
     </a>
 
-    <a href="circle.html" class="option-card fade-up" style="animation-delay: 0.3s">
+    <a href="circle.html" class="option-card fade-up" style="animation-delay:0.3s">
       <div class="icon-box bg-green"><i class="fa-solid fa-circle-dot"></i></div>
       <div class="option-label">UNIO Circle</div>
     </a>
 
-    <a href="games.html" class="option-card fade-up" style="animation-delay: 0.35s">
+    <a href="games.html" class="option-card fade-up" style="animation-delay:0.35s">
       <div class="icon-box bg-pink"><i class="fa-solid fa-gamepad"></i></div>
       <div class="option-label">Games</div>
     </a>
 
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.4s">
+    <a href="ulite.html" class="option-card fade-up" style="animation-delay:0.4s">
+      <div class="icon-box bg-indigo"><i class="fa-solid fa-wallet"></i></div>
+      <div class="option-label">UNIO Lite</div>
+    </a>
+
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.45s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.45s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.5s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.5s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.55s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.55s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.6s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.6s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.65s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.65s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.7s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.7s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.75s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.75s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.8s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.8s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.85s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.85s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.9s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.9s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:0.95s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 0.95s">
-      <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
-      <div class="option-label">Soon</div>
-    </div>
-    <div class="option-card coming-soon fade-up" style="animation-delay: 1.0s">
+    <div class="option-card coming-soon fade-up" style="animation-delay:1.0s">
       <div class="icon-box bg-gray"><i class="fa-solid fa-lock"></i></div>
       <div class="option-label">Soon</div>
     </div>
