@@ -6,7 +6,7 @@ const TxSchema = new mongoose.Schema({
   receiver_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   amount:      { type: Number, required: true },
   fee:         { type: Number, default: 0 },
-  type:        { type: String, enum: ['transfer','api','admin_add','admin_deduct','withdraw','gateway','redeem','keeper_deposit','keeper_withdraw','envelope','card_load','card_withdraw','card_pay','circle_pay','game_win','game_loss'], default: 'transfer' },
+  type:        { type: String, enum: ['transfer','api','admin_add','admin_deduct','withdraw','gateway','redeem','keeper_deposit','keeper_withdraw','envelope','card_load','card_withdraw','card_pay','circle_pay','game_win','game_loss','ulite_add','ulite_withdraw'], default: 'transfer' },
   status:      { type: String, enum: ['success','pending','rejected','failed'], default: 'success' },
   remark:      { type: String, default: '' },
   tx_time:     { type: Date, default: Date.now }
