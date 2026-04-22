@@ -256,20 +256,38 @@ let baseLink    = '';
 let referLink   = '';
 let userTgId    = userData.tg_id || '';
 
-fetch(API + '/wallet/balance', { headers: { 'Authorization': 'Bearer ' + token } })
-  .then(r => r.json()).then(d => {
-    if (d.status === 'success') {
-      userBalance = parseFloat(d.balance);
+// Init: balance + tgId ek saath fetch karo
+async function initPage() {
+  try {
+    const br = await fetch(API + '/wallet/balance', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const bd = await br.json();
+    if (bd.status === 'success') {
+      userBalance = parseFloat(bd.balance);
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     }
-  });
+  } catch(e) {}
 
-if (!userTgId) {
-  fetch(API + '/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
-    .then(r => r.json()).then(d => {
-      if (d.status === 'success') userTgId = d.user?.tg_id || '';
-    });
+  if (!userTgId) {
+    try {
+      const mr = await fetch(API + '/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const md = await mr.json();
+      if (md.status === 'success') {
+        userTgId = md.user?.tg_id || '';
+        if (userTgId) {
+          const saved = JSON.parse(localStorage.getItem('user') || '{}');
+          saved.tg_id = userTgId;
+          localStorage.setItem('user', JSON.stringify(saved));
+        }
+      }
+    } catch(e) {}
+  }
 }
+
+initPage();
 
 function changeType() {
   const t = document.getElementById('c-type').value;
@@ -287,74 +305,6 @@ function calcDeduction() {
   const refer = parseFloat(document.getElementById('c-refer').value) || 0;
 
   // Creator sirf base fund pay karta hai
-  const perAmt = t === 'scratch' ? max : amt;
-  const base   = parseFloat((perAmt * users).toFixed(2));
-  const box    = document.getElementById('deduction-box');
-
-  if (base > 0 && users > 0) {
-    const calc = t === 'scratch'
-      ? `Max ₹${max} × ${users} users`
-      : `₹${amt} × ${users} users`;
-
-    document.getElementById('d-base').textContent  = '₹' + base.toFixed(2) + ' (' + calc + ')';
-    document.getElementById('d-total').textContent = '₹' + base.toFixed(2);
-
-    // Refer note (informational only — fund mein se hi jaayega)
-    const referRow = document.getElementById('d-refer-row');
-    if (refer > 0 && users > 0) {
-      const maxReferTotal = parseFloat((refer * users).toFixed(2));
-      document.getElementById('d-refer').textContent = '₹' + maxReferTotal.toFixed(2) + ' (max, fund mein se)';
-      referRow.style.display = 'flex';
-    } else {
-      referRow.style.display = 'none';
-    }
-
-    box.classList.add('show');
-  } else {
-    box.classList.remove('show');
-  }
-}
-
-function addChannel() {
-  const container = document.getElementById('channels-container');
-  if (container.children.length >= 10) return toast('Max 10 channels!');
-  const div = document.createElement('div');
-  div.className = 'channel-item';
-  div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
-    <input type="url" placeholder="https://t.me/channel" class="ch-input">
-    <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
-  container.appendChild(div);
-}
-function removeCh(btn) { btn.closest('.channel-item').remove(); }
-
-function showMsg(text, type) {
-  const m = document.getElementById('create-msg');
-  m.textContent = text; m.className = 'msg ' + type;
-  m.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-async function createLifafa() {
-  const code  = document.getElementById('c-code').value.trim().toUpperCase();
-  const type  = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value)   || 0;
-  const amt   = parseFloat(document.getElementById('c-amt').value)   || 0;
-  const min   = parseFloat(document.getElementById('c-min').value)   || 0;
-  const max   = parseFloat(document.getElementById('c-max').value)   || 0;
-  const toss  = document.getElementById('c-toss').value;
-  const refer = parseFloat(document.getElementById('c-refer').value) || 0;
-
-  if (!code)      return showMsg('❌ Unique code required!', 'error');
-  if (users <= 0) return showMsg('❌ Estimated users required!', 'error');
-  if (type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
-  if (type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
-
-  // Refer bonus validation (frontend)
-  const perAmt = type === 'scratch' ? max : amt;
-  if (refer > 0 && refer >= perAmt) {
-    return showMsg(`❌ Refer bonus (₹${refer}) per user amount (₹${perAmt}) se kam hona chahiye!`, 'error');
-  }
-
-   // Creator sirf base fund pay karta hai
   const perAmt = t === 'scratch' ? max : amt;
   const base   = parseFloat((perAmt * users).toFixed(2));
   const box    = document.getElementById('deduction-box');
@@ -516,4 +466,3 @@ function toast(msg, type = '') {
 </script>
 </body>
 </html>
-
