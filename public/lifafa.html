@@ -289,20 +289,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
         <div class="private-fields" id="ch-private-0">
           <div class="channel-item-row" style="margin-bottom:.4rem">
             <i class="fa-brands fa-telegram" style="color:#be185d;font-size:.9rem;flex-shrink:0"></i>
-            <input type="url" placeholder="https://t.me/+xxxxxxxx" class="ch-input">
+            <input type="url" placeholder="https://t.me/+xxxxxxxx (invite link)" class="ch-input">
             <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
           </div>
           <div class="private-field-row">
             <i class="fa-solid fa-hashtag"></i>
             <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
           </div>
-          <div class="private-field-row">
-            <i class="fa-solid fa-link"></i>
-            <input type="url" placeholder="Permanent Invite Link (https://t.me/+xxxxx)" class="ch-invite">
-          </div>
           <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.5rem;line-height:1.6;background:#fdf2f8;border-radius:.6rem;padding:.5rem .75rem;">
             🔒 Private channel ke liye:<br>
-            1⃣ Bot ko admin banao &nbsp;2⃣ Chat ID daalo &nbsp;3⃣ Permanent invite link daalo
+            1⃣ Bot ko admin banao &nbsp;2⃣ Invite link daalo &nbsp;3⃣ Chat ID daalo
           </div>
           <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" style="margin-top:.5rem">
             <i class="fa-solid fa-robot"></i>
@@ -517,19 +513,16 @@ function addChannel() {
     <div class="private-fields" id="ch-private-${idx}">
       <div class="channel-item-row" style="margin-bottom:.4rem">
         <i class="fa-brands fa-telegram" style="color:#be185d;font-size:.9rem;flex-shrink:0"></i>
-        <input type="url" placeholder="https://t.me/+xxxxxxxx" class="ch-input">
+        <input type="url" placeholder="https://t.me/+xxxxxxxx (invite link)" class="ch-input">
         <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="private-field-row">
         <i class="fa-solid fa-hashtag"></i>
         <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
       </div>
-      <div class="private-field-row">
-        <i class="fa-solid fa-link"></i>
-        <input type="url" placeholder="Permanent Invite Link (https://t.me/+xxxxx)" class="ch-invite">
-      </div>
       <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.5rem;line-height:1.6;background:#fdf2f8;border-radius:.6rem;padding:.5rem .75rem;">
-        🔒 Bot ko admin banao · Chat ID daalo · Invite link daalo
+        🔒 Private channel ke liye:<br>
+        1⃣ Bot ko admin banao &nbsp;2⃣ Invite link daalo &nbsp;3⃣ Chat ID daalo
       </div>
       <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" style="margin-top:.5rem">
         <i class="fa-solid fa-robot"></i>
@@ -578,7 +571,6 @@ async function createLifafa() {
   document.querySelectorAll('.channel-item').forEach(item => {
     const urlInp    = item.querySelector('.ch-input');
     const chatIdInp = item.querySelector('.ch-chatid');
-    const inviteInp = item.querySelector('.ch-invite');
     // Tab-based type detect: private-fields div visible hai to private
     const privDiv   = item.querySelector('.private-fields');
     const isPrivate = privDiv && privDiv.classList.contains('show');
@@ -589,7 +581,7 @@ async function createLifafa() {
         url,
         type:        'private',
         chat_id:     chatIdInp?.value.trim() || '',
-        invite_link: inviteInp?.value.trim() || ''
+        invite_link: url  // URL hi invite link hai private mein
       });
     } else {
       channels.push({ url, type: 'public' });
