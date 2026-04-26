@@ -477,8 +477,15 @@ async function verifyMobile() {
 /* Show TG ID bar at top */
 function showTgBar(tgId) {
   document.getElementById('top-tg-id').textContent = tgId;
-  // View TG ID link — opens telegram profile if possible
-  document.getElementById('tg-view-link').href = 'https://t.me/' + tgId;
+  // tg://user?id=XXXXX → opens Telegram app directly on that user's profile
+  // Fallback: if user clicks and app isn't installed, nothing happens (better than wrong page)
+  const tgBtn = document.getElementById('tg-view-link');
+  tgBtn.href = 'tg://user?id=' + tgId;
+  // Also try opening in app on click (some browsers need window.open)
+  tgBtn.onclick = function(e) {
+    e.preventDefault();
+    window.location.href = 'tg://user?id=' + tgId;
+  };
   document.getElementById('tg-id-bar-wrap').style.display = 'block';
 }
 
@@ -538,20 +545,36 @@ function goToClaimStep() {
 
 function buildChannels(channels) {
   document.getElementById('channels-list').innerHTML = channels.map((ch, i) => {
-    // Support both old string format and new object format
-    const link       = typeof ch === 'object' ? ch.url : ch;
     const isPrivate  = typeof ch === 'object' && ch.type === 'private';
-    const inviteLink = isPrivate && ch.invite_link ? ch.invite_link : link;
-    const name       = link.split('/').pop();
+    const link       = typeof ch === 'object' ? ch.url : ch;
+
+    // Private: use invite_link for Join button (t.me/+xxx), or fallback to url
+    const joinLink   = isPrivate
+      ? (ch.invite_link && ch.invite_link.trim() ? ch.invite_link.trim() : link)
+      : link;
+
+    // Display name: private channels don't have @username
+    // try to get last part but if it starts with + it's an invite hash — show "Private Channel"
+    const rawName    = link.split('/').pop() || '';
+    const displayName = isPrivate
+      ? (rawName.startsWith('+') ? 'Private Channel' : rawName)
+      : ('@' + rawName);
+
     const typeLabel  = isPrivate ? '🔒 Private' : '📢 Public';
-    return `<div class="ch-item" id="ch-${i}">
+    const typeBg     = isPrivate
+      ? 'background:#fdf2f8;border-color:#f9a8d4'
+      : 'background:#eff6ff;border-color:#bfdbfe';
+
+    return `<div class="ch-item" id="ch-${i}" style="${typeBg}">
       <div class="ch-top">
-        <div class="ch-name">${typeLabel} @${name}</div>
+        <div class="ch-name">${typeLabel} ${displayName}</div>
         <div class="ch-badge pending" id="badge-${i}">⏳ Pending</div>
       </div>
       <div class="ch-btns">
-        <a href="${inviteLink}" target="_blank" class="ch-btn join">Join</a>
-        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}','${isPrivate}')">Verify</button>
+        <a href="${joinLink}" target="_blank" class="ch-btn join" style="${isPrivate ? 'background:#be185d' : ''}">
+          ${isPrivate ? '🔒 Join Private' : '📢 Join'}
+        </a>
+        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}',${isPrivate})">Verify</button>
       </div>
     </div>`;
   }).join('');
@@ -713,4 +736,4 @@ function shareTG() {
 }
 </script>
 </body>
-  </html>
+</html>
