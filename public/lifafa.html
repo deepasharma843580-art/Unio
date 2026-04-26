@@ -152,7 +152,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 
     <div class="input-group">
       <label>Unique Code</label>
-      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase()">
+      <input type="text" id="c-code" placeholder="e.g. DIWALI2025" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
     </div>
 
     <div class="input-group">
