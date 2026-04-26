@@ -41,6 +41,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-sizing:border-box}
 .btn.purple{background:linear-gradient(135deg,#7c3aed,#0057ff)}
 .btn.green{background:#16a34a}
+.btn.sky{background:#0284c7}
 .btn:disabled{background:#94a3b8;cursor:not-allowed;opacity:.8}
 .btn:active:not(:disabled){transform:scale(.98)}
 .msg{padding:.75rem 1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;text-align:center;margin-bottom:1rem;display:none;line-height:1.6}
@@ -85,6 +86,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:.6rem;font-weight:700;text-transform:uppercase;text-decoration:none;flex:1}
 .nav-item.active{color:#0057ff}
 .nav-item i{font-size:1.2rem}
+
+/* TG ID top bar */
+.tg-id-bar{background:white;border-bottom:1px solid #f1f5f9;padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;max-width:480px;margin:0 auto}
+.tg-id-bar-left{display:flex;align-items:center;gap:.5rem}
+.tg-id-label{font-size:.6rem;font-weight:800;color:#94a3b8;text-transform:uppercase}
+.tg-id-val{font-size:.8rem;font-weight:800;color:#0f172a}
+.tg-id-val span{color:#7c3aed}
+.tg-view-btn{display:flex;align-items:center;gap:.3rem;background:#f0f4ff;border:none;border-radius:2rem;padding:.35rem .75rem;font-size:.65rem;font-weight:800;color:#0057ff;cursor:pointer;text-decoration:none;font-family:inherit;transition:all .2s}
+.tg-view-btn:active{transform:scale(.95)}
+.tg-id-bar-wrap{background:white;border-bottom:1px solid #f1f5f9}
+
+/* Access code card */
+.access-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;border-radius:1.5rem;padding:1.25rem;margin-bottom:1.25rem}
+.access-card-title{font-size:.7rem;font-weight:800;color:#0369a1;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.access-inp-row{display:flex;gap:.6rem;align-items:center}
+.access-inp{flex:1;padding:.9rem 1rem;background:white;border:2px solid #bae6fd;border-radius:.85rem;font-size:.9rem;font-weight:700;outline:none;font-family:inherit;color:#0f172a;letter-spacing:.05em}
+.access-inp:focus{border-color:#0284c7}
+.access-submit-btn{padding:.9rem 1.25rem;background:#0284c7;color:white;border:none;border-radius:.85rem;font-size:.75rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:.35rem}
+.access-submit-btn:disabled{background:#94a3b8;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -92,6 +112,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 <div class="header">
   <a href="dashboard.html" class="back"><i class="fa-solid fa-arrow-left"></i></a>
   <h1>Claim Lifafa</h1>
+</div>
+
+<!-- TG ID top bar — shown after mobile verify -->
+<div class="tg-id-bar-wrap" id="tg-id-bar-wrap" style="display:none">
+  <div class="tg-id-bar">
+    <div class="tg-id-bar-left">
+      <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:1rem"></i>
+      <div>
+        <div class="tg-id-label">Your Telegram ID</div>
+        <div class="tg-id-val">Use this ID for claim lifafa — <span id="top-tg-id">—</span></div>
+      </div>
+    </div>
+    <a id="tg-view-link" href="#" target="_blank" class="tg-view-btn">
+      <i class="fa-brands fa-telegram"></i> View TG ID
+    </a>
+  </div>
 </div>
 
 <div class="container">
@@ -169,7 +205,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     </button>
   </div>
 
-  <!-- STEP 4: Channels + Claim -->
+  <!-- STEP 4: Channels + Access Code + Claim -->
   <div id="step-claim" style="display:none">
     <div id="claim-msg" class="msg"></div>
 
@@ -182,6 +218,26 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <button class="btn purple" id="verify-all-btn" onclick="verifyAllChannels()">
         <i class="fa-solid fa-circle-check"></i><span>Verify All Channels</span>
       </button>
+    </div>
+
+    <!-- Access Code (shown after channel verify, before claim) -->
+    <div id="access-code-wrap" style="display:none">
+      <div class="access-card">
+        <div class="access-card-title">
+          <i class="fa-solid fa-lock"></i> Enter Access Code
+        </div>
+        <div id="access-msg" class="msg"></div>
+        <div class="access-inp-row">
+          <input type="text" class="access-inp" id="access-inp" placeholder="Enter access code..."
+            style="text-transform:uppercase;letter-spacing:.1em">
+          <button class="access-submit-btn" id="access-submit-btn" onclick="verifyAccessCode()">
+            <i class="fa-solid fa-check"></i> Verify
+          </button>
+        </div>
+        <div style="font-size:.62rem;color:#0369a1;font-weight:600;margin-top:.6rem;line-height:1.5">
+          🔐 Is lifafa ke liye secret access code required hai. Creator se code leke enter karo.
+        </div>
+      </div>
     </div>
 
     <div id="toss-wrap" class="card" style="display:none">
@@ -276,12 +332,12 @@ let currentCode      = '';
 let verifiedChannels = [];
 let ref_tg_id        = '';
 let myReferLink      = '';
+let accessVerified   = false;
 
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const code   = params.get('code') || '';
   ref_tg_id    = (params.get('ref') || '').trim();
-
   if (code) {
     document.getElementById('code-input').value = code.toUpperCase();
     loadLifafa();
@@ -346,20 +402,17 @@ async function loadLifafa() {
     document.getElementById('banner-code').textContent = currentLifafa.code;
     document.getElementById('banner-type').textContent = currentLifafa.type.toUpperCase();
 
-    // Fund-based progress
-    const totalFundDisp   = parseFloat((currentLifafa.total_fund  || 0).toFixed(2));
-    const totalUsedDisp   = parseFloat((currentLifafa.total_used  || 0).toFixed(2));
+    const totalFundDisp = parseFloat((currentLifafa.total_fund || 0).toFixed(2));
+    const totalUsedDisp = parseFloat((currentLifafa.total_used || 0).toFixed(2));
     const pct = totalFundDisp > 0 ? Math.round((totalUsedDisp / totalFundDisp) * 100) : 0;
     document.getElementById('banner-progress').style.width     = pct + '%';
     document.getElementById('banner-pct').textContent          = pct + '% Used';
     document.getElementById('banner-claimed-text').textContent =
       currentLifafa.claimed_users + ' claimed · ₹' + totalUsedDisp.toFixed(2) + ' used';
 
-    // ✅ Stats: server se total_fund, total_used, remaining use karo
-    // (claimed_fund = sirf claim amounts, claimed_refer = sirf refer amounts)
-    const totalFund   = parseFloat((currentLifafa.total_fund  || 0).toFixed(2));
-    const claimedFund = parseFloat((currentLifafa.total_used  || 0).toFixed(2));
-    const leftFund    = parseFloat((currentLifafa.remaining   || 0).toFixed(2));
+    const totalFund   = parseFloat((currentLifafa.total_fund || 0).toFixed(2));
+    const claimedFund = parseFloat((currentLifafa.total_used || 0).toFixed(2));
+    const leftFund    = parseFloat((currentLifafa.remaining  || 0).toFixed(2));
 
     document.getElementById('stat-fund').textContent    = '₹' + totalFund.toFixed(0);
     document.getElementById('stat-claimed').textContent = '₹' + claimedFund.toFixed(0);
@@ -368,7 +421,6 @@ async function loadLifafa() {
     if (currentLifafa.refer_bonus > 0) {
       document.getElementById('refer-badge').style.display = 'block';
     }
-
     if (currentLifafa.claimed_users >= currentLifafa.max_users || leftFund <= 0) {
       setBtnLoading('find-btn', false, 'Find Lifafa');
       return showMsg('code-msg', '❌ Lifafa is Full!', 'error');
@@ -377,7 +429,6 @@ async function loadLifafa() {
     document.getElementById('step-code').style.display   = 'none';
     document.getElementById('step-mobile').style.display = 'block';
     setBtnLoading('find-btn', false, 'Find Lifafa');
-
   } catch(e) {
     setBtnLoading('find-btn', false, 'Find Lifafa');
     showMsg('code-msg', 'Server error!', 'error');
@@ -400,7 +451,6 @@ async function verifyMobile() {
       userMobile = mobile;
       userTgId   = d.tg_id || '';
 
-      // Self-refer check: apne tg_id se refer nahi kar sakte
       if (ref_tg_id && userTgId && ref_tg_id === userTgId) {
         setBtnLoading('mobile-btn', false, 'Next');
         return showMsg('mobile-msg', '❌ Apne aap ko refer nahi kar sakte!', 'error');
@@ -411,6 +461,7 @@ async function verifyMobile() {
         document.getElementById('step-mobile').style.display = 'none';
         document.getElementById('step-tg').style.display     = 'block';
       } else {
+        showTgBar(userTgId);
         goToClaimStep();
       }
     } else {
@@ -421,6 +472,14 @@ async function verifyMobile() {
     setBtnLoading('mobile-btn', false, 'Next');
     showMsg('mobile-msg', 'Server error!', 'error');
   }
+}
+
+/* Show TG ID bar at top */
+function showTgBar(tgId) {
+  document.getElementById('top-tg-id').textContent = tgId;
+  // View TG ID link — opens telegram profile if possible
+  document.getElementById('tg-view-link').href = 'https://t.me/' + tgId;
+  document.getElementById('tg-id-bar-wrap').style.display = 'block';
 }
 
 async function saveTgId() {
@@ -437,6 +496,7 @@ async function saveTgId() {
     const d = await r.json();
     if (d.status === 'success') {
       userTgId = tg_id;
+      showTgBar(userTgId);
       document.getElementById('step-tg').style.display = 'none';
       goToClaimStep();
     } else {
@@ -458,7 +518,8 @@ function goToClaimStep() {
     document.getElementById('channels-card').style.display   = 'block';
     document.getElementById('verify-all-wrap').style.display = 'block';
   } else {
-    showClaimButton();
+    // No channels — check access code
+    afterChannelsVerified();
   }
 
   if (currentLifafa.refer_bonus > 0 && userTgId) {
@@ -476,28 +537,36 @@ function goToClaimStep() {
 }
 
 function buildChannels(channels) {
-  document.getElementById('channels-list').innerHTML = channels.map((link, i) => {
-    const name = link.split('/').pop();
+  document.getElementById('channels-list').innerHTML = channels.map((ch, i) => {
+    // Support both old string format and new object format
+    const link       = typeof ch === 'object' ? ch.url : ch;
+    const isPrivate  = typeof ch === 'object' && ch.type === 'private';
+    const inviteLink = isPrivate && ch.invite_link ? ch.invite_link : link;
+    const name       = link.split('/').pop();
+    const typeLabel  = isPrivate ? '🔒 Private' : '📢 Public';
     return `<div class="ch-item" id="ch-${i}">
       <div class="ch-top">
-        <div class="ch-name">@${name}</div>
+        <div class="ch-name">${typeLabel} @${name}</div>
         <div class="ch-badge pending" id="badge-${i}">⏳ Pending</div>
       </div>
       <div class="ch-btns">
-        <a href="${link}" target="_blank" class="ch-btn join">Join</a>
-        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}')">Verify</button>
+        <a href="${inviteLink}" target="_blank" class="ch-btn join">Join</a>
+        <button class="ch-btn verify" id="vbtn-${i}" onclick="verifyChannel(${i},'${link}','${isPrivate}')">Verify</button>
       </div>
     </div>`;
   }).join('');
 }
 
-async function verifyChannel(i, link) {
+async function verifyChannel(i, link, isPrivate) {
   if (verifiedChannels[i]) return true;
   const btn   = document.getElementById('vbtn-' + i);
   const badge = document.getElementById('badge-' + i);
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
   try {
-    const res  = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=@${link.split('/').pop()}`);
+    // For private channels, use chat_id if available
+    const ch = currentLifafa.channels[i];
+    const chatId = (typeof ch === 'object' && ch.chat_id) ? ch.chat_id : ('@' + link.split('/').pop());
+    const res  = await fetch(`${G_SCRIPT}?tg_id=${userTgId}&channel=${encodeURIComponent(chatId)}`);
     const data = await res.json();
     if (data.ok && data.joined) {
       verifiedChannels[i]  = true;
@@ -513,7 +582,12 @@ async function verifyAllChannels() {
   const channels = currentLifafa.channels || [];
   setBtnLoading('verify-all-btn', true, 'Verify All Channels');
   for (let i = 0; i < channels.length; i++) {
-    if (!verifiedChannels[i]) await verifyChannel(i, channels[i]);
+    if (!verifiedChannels[i]) {
+      const ch   = channels[i];
+      const link = typeof ch === 'object' ? ch.url : ch;
+      const isP  = typeof ch === 'object' && ch.type === 'private';
+      await verifyChannel(i, link, isP);
+    }
   }
   setBtnLoading('verify-all-btn', false, 'Verify All Channels');
 }
@@ -521,8 +595,32 @@ async function verifyAllChannels() {
 function checkAllVerified() {
   if (verifiedChannels.every(v => v)) {
     document.getElementById('verify-all-wrap').style.display = 'none';
+    afterChannelsVerified();
+  }
+}
+
+/* After channels verified → check if access code required */
+function afterChannelsVerified() {
+  if (currentLifafa.access_code) {
+    // Show access code input
+    document.getElementById('access-code-wrap').style.display = 'block';
+  } else {
+    // No access code — show claim button
     showClaimButton();
   }
+}
+
+function verifyAccessCode() {
+  const entered = document.getElementById('access-inp').value.trim().toUpperCase();
+  const correct = (currentLifafa.access_code || '').toUpperCase();
+  if (!entered) return showMsg('access-msg', '❌ Access code enter karo!', 'error');
+  if (entered !== correct) {
+    showMsg('access-msg', '❌ Wrong access code! Creator se sahi code lo.', 'error');
+    return;
+  }
+  accessVerified = true;
+  document.getElementById('access-code-wrap').style.display = 'none';
+  showClaimButton();
 }
 
 function showClaimButton() {
@@ -539,16 +637,14 @@ async function claimNow(guess) {
       guess:    guess,
       ref_code: ref_tg_id
     };
-
     const r = await fetch(API + '/lifafa/claim', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload)
     });
     const d = await r.json();
-
     if (d.status === 'success') {
-      ['channels-card','toss-wrap','claim-btn-wrap','verify-all-wrap']
+      ['channels-card','toss-wrap','claim-btn-wrap','verify-all-wrap','access-code-wrap']
         .forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
 
       document.getElementById('won-amt').textContent = '₹' + d.amount;
@@ -558,10 +654,8 @@ async function claimNow(guess) {
         + '&ref=' + userTgId;
 
       showReferCard();
-
       document.getElementById('step-success').style.display = 'block';
       document.getElementById('step-success').scrollIntoView({ behavior: 'smooth' });
-
     } else {
       if (currentLifafa.type !== 'toss') setBtnLoading('claim-btn', false, 'Claim Now!');
       showMsg('claim-msg', d.message || 'Claim fail!', 'error');
@@ -575,11 +669,9 @@ async function claimNow(guess) {
 function showReferCard() {
   const bonus = currentLifafa.refer_bonus || 0;
   if (bonus > 0) {
-    document.getElementById('re-pill').innerHTML =
-      '<i class="fa-solid fa-gift"></i> ₹' + bonus + ' per Refer';
+    document.getElementById('re-pill').innerHTML  = '<i class="fa-solid fa-gift"></i> ₹' + bonus + ' per Refer';
     document.getElementById('re-desc').textContent =
-      'Jab bhi koi tumhare link se "' + currentCode
-      + '" claim kare, tumhe ₹' + bonus + ' milega (fund mein se)!';
+      'Jab bhi koi tumhare link se "' + currentCode + '" claim kare, tumhe ₹' + bonus + ' milega (fund mein se)!';
     document.getElementById('re-link').textContent    = myReferLink;
     document.getElementById('re-card').style.display  = 'block';
     document.getElementById('no-refer').style.display = 'none';
@@ -602,13 +694,8 @@ function shareEarlyWA() {
   window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
 }
 function shareEarlyTG() {
-  window.open(
-    'https://t.me/share/url?url=' + encodeURIComponent(myReferLink)
-    + '&text=' + encodeURIComponent('🎁 UNIO Lifafa! Is link se claim karo:'),
-    '_blank'
-  );
+  window.open('https://t.me/share/url?url=' + encodeURIComponent(myReferLink) + '&text=' + encodeURIComponent('🎁 UNIO Lifafa! Is link se claim karo:'), '_blank');
 }
-
 function copyLink() {
   navigator.clipboard.writeText(myReferLink).then(() => {
     const btn = document.getElementById('copy-btn');
@@ -617,21 +704,13 @@ function copyLink() {
   });
 }
 function shareWA() {
-  const txt = '🎁 *UNIO Lifafa!*\n\nMujhe '
-    + document.getElementById('won-amt').textContent
-    + ' mila! Tum bhi claim karo:\n' + myReferLink;
+  const txt = '🎁 *UNIO Lifafa!*\n\nMujhe ' + document.getElementById('won-amt').textContent + ' mila! Tum bhi claim karo:\n' + myReferLink;
   window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
 }
 function shareTG() {
-  const txt = '🎁 UNIO Lifafa! Mujhe '
-    + document.getElementById('won-amt').textContent
-    + ' mila! Tum bhi claim karo: ' + myReferLink;
-  window.open(
-    'https://t.me/share/url?url=' + encodeURIComponent(myReferLink)
-    + '&text=' + encodeURIComponent(txt),
-    '_blank'
-  );
+  const txt = '🎁 UNIO Lifafa! Mujhe ' + document.getElementById('won-amt').textContent + ' mila! Tum bhi claim karo: ' + myReferLink;
+  window.open('https://t.me/share/url?url=' + encodeURIComponent(myReferLink) + '&text=' + encodeURIComponent(txt), '_blank');
 }
 </script>
 </body>
-</html>
+  </html>
