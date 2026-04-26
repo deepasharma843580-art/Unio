@@ -25,6 +25,34 @@ function istTime() {
   });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Bot admin check karo channel mein
+// channel: "@channelname" ya chat_id "-100xxxx"
+// Returns: { isAdmin: true/false }
+// ─────────────────────────────────────────────────────────────────────────────
+async function checkBotAdmin(channel) {
+  try {
+    const res = await axios.get(
+      `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember`,
+      { params: { chat_id: channel, user_id: (await getBotId()) }, timeout: 8000 }
+    );
+    const status = res.data?.result?.status;
+    return ['administrator', 'creator'].includes(status);
+  } catch(e) {
+    return false;
+  }
+}
+
+let _botId = null;
+async function getBotId() {
+  if (_botId) return _botId;
+  try {
+    const res = await axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`, { timeout: 5000 });
+    _botId = res.data?.result?.id;
+    return _botId;
+  } catch(e) { return null; }
+}
+
 // GET /lifafa/referrer-by-tg/:tg_id
 router.get('/referrer-by-tg/:tg_id', async (req, res) => {
   try {
@@ -50,14 +78,18 @@ router.get('/referrer/:walletId', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /lifafa/create
 // Fund-based: max_users nahi, sirf total_fund se chalega
+// Channels ab objects hain: { url, type, chat_id, invite_link }
+// access_code optional field
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/create', auth, async (req, res) => {
   try {
-    const { code, type, amt, min_range, max_range, toss_answer, users, channels, refer_bonus } = req.body;
+    const {
+      code, type, amt, min_range, max_range,
+      toss_answer, users, channels, refer_bonus, access_code
+    } = req.body;
 
-    // total_fund = perAmt × users (creator yahi pay karta hai)
-    const perAmt     = type === 'scratch' ? parseFloat(max_range) : parseFloat(amt);
-    const totalFund  = parseFloat((perAmt * parseInt(users)).toFixed(2));
+    const perAmt    = type === 'scratch' ? parseFloat(max_range) : parseFloat(amt);
+    const totalFund = parseFloat((perAmt * parseInt(users)).toFixed(2));
 
     if (!totalFund || totalFund <= 0)
       return res.status(400).json({ status: 'error', message: 'Invalid amount/users' });
@@ -71,6 +103,33 @@ router.post('/create', auth, async (req, res) => {
     if (await Lifafa.findOne({ code: code.toUpperCase() }))
       return res.status(400).json({ status: 'error', message: 'Code already exists' });
 
+    // ── Channel admin verification ────────────────────────────────────────────
+    // Har channel ke liye bot admin check karo
+    const channelList = channels || [];
+    const adminCheckResults = [];
+
+    for (const ch of channelList) {
+      // Support both string (old) and object (new) format
+      let chatId, url;
+      if (typeof ch === 'object') {
+        url    = ch.url || '';
+        // Private channel ke liye chat_id use karo, public ke liye @username
+        chatId = (ch.type === 'private' && ch.chat_id)
+          ? ch.chat_id
+          : ('@' + (url.split('/').pop() || ''));
+      } else {
+        url    = ch;
+        chatId = '@' + url.split('/').pop();
+      }
+      const isAdmin = await checkBotAdmin(chatId);
+      adminCheckResults.push({ url, chatId, isAdmin });
+    }
+
+    const notAdmin = adminCheckResults.filter(c => !c.isAdmin);
+    // Not admin channels ko warn karo but create karne do
+    // (Frontend pe red badge dikhega — backend mein channels mein admin_status save karo)
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Deduct from creator
     await User.findByIdAndUpdate(sender._id, { $inc: { balance: -totalFund } });
 
@@ -83,24 +142,37 @@ router.post('/create', auth, async (req, res) => {
       tx_time:   new Date()
     });
 
+    // Save channels with admin status
+    const channelsToSave = adminCheckResults.map((c, i) => {
+      const original = channelList[i];
+      if (typeof original === 'object') {
+        return { ...original, admin_verified: c.isAdmin };
+      }
+      return { url: c.url, type: 'public', admin_verified: c.isAdmin };
+    });
+
     const lifafa = await Lifafa.create({
       creator_id:      sender._id,
       creator_mobile:  sender.mobile,
       code:            code.toUpperCase(),
       type,
-      per_user_amount: parseFloat(amt)       || 0,
-      min_range:       parseFloat(min_range) || 0,
-      max_range:       parseFloat(max_range) || 0,
-      toss_answer:     toss_answer           || '',
-      max_users:       parseInt(users),           // kept for display reference only
-      channels:        channels              || [],
+      per_user_amount: parseFloat(amt)        || 0,
+      min_range:       parseFloat(min_range)  || 0,
+      max_range:       parseFloat(max_range)  || 0,
+      toss_answer:     toss_answer            || '',
+      max_users:       parseInt(users),
+      channels:        channelsToSave,
       refer_bonus:     parseFloat(refer_bonus) || 0,
       refer_fund_used: 0,
-      // claimed_fund tracked via claimed_users * per_user_amount approx,
-      // but we store total_fund in a virtual — use max_users×perAmt as totalFund
+      access_code:     access_code ? access_code.trim().toUpperCase() : '',
     });
 
     const dt = istTime();
+
+    // Bot admin warning message
+    const notAdminMsg = notAdmin.length > 0
+      ? `\n⚠️ *Bot not admin in:*\n${notAdmin.map(c => `• ${c.url}`).join('\n')}\n`
+      : '';
 
     if (sender.tg_id) {
       sendTG(sender.tg_id,
@@ -115,8 +187,9 @@ router.post('/create', auth, async (req, res) => {
 💰 Amount : ₹${amt || max_range}/user
 💸 Total Fund : ₹${totalFund}
 🎯 Refer Bonus : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus + ' per refer' : 'Off'}
+🔐 Access Code : ${access_code ? '✅ Set' : 'Off'}
 📅 Date : ${dt}
-
+${notAdminMsg}
 ━━━━━━━━━━━━━━
 Claim Link: ${process.env.APP_URL || ''}/claim.html?code=${lifafa.code}
 Share karo! 🚀`
@@ -129,7 +202,9 @@ Share karo! 🚀`
 👤 By : ${sender.name} (TG: ${sender.tg_id})
 🔑 Code : \`${lifafa.code}\`
 📋 Type : ${type} | 💸 Fund : ₹${totalFund}
-🎯 Refer : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus : 'Off'}`
+🎯 Refer : ${parseFloat(refer_bonus) > 0 ? '₹' + refer_bonus : 'Off'}
+🔐 Access : ${access_code ? 'Yes' : 'No'}
+${notAdmin.length > 0 ? '⚠️ Not admin in ' + notAdmin.length + ' channel(s)' : '✅ All channels OK'}`
     );
 
     res.json({
@@ -137,7 +212,8 @@ Share karo! 🚀`
       code:           lifafa.code,
       claim_url:      `/claim.html?code=${lifafa.code}`,
       total_deducted: totalFund,
-      refer_bonus:    lifafa.refer_bonus
+      refer_bonus:    lifafa.refer_bonus,
+      not_admin:      notAdmin.map(c => c.url)  // Frontend pe warn kar sake
     });
 
   } catch(e) {
@@ -154,25 +230,28 @@ router.get('/:code', async (req, res) => {
       .populate('creator_id', 'name');
     if (!l) return res.status(404).json({ status: 'error', message: 'Invalid or expired code' });
 
-    const perAmt        = l.per_user_amount > 0 ? l.per_user_amount : l.max_range;
-    const totalFund     = parseFloat((perAmt * l.max_users).toFixed(2));
-    // claimed_fund = users ne kya liya (claimed_users × perAmt approx nahi — we track in DB)
-    // Schema mein claimed_fund nahi hai, toh hum claimed_users se estimate karte hain
-    // BUT scratch mein random amount hai — toh accurate track ke liye
-    // claimed_fund field add karo schema mein, ya refer_fund_used se kaam chalao
-    // Abhi: claimed_fund = totalFund - remaining
-    // remaining = totalFund - refer_fund_used - (claimed_users × perAmt for standard/toss)
-    // For scratch: claimed_fund ko alag track karna padega — isliye schema mein add karo
-    // SIMPLE: total_used = refer_fund_used + (claimed_users * perAmt) [standard/toss ke liye exact]
-    const claimUsed     = parseFloat((l.claimed_users * perAmt).toFixed(2));
-    const referUsed     = parseFloat((l.refer_fund_used || 0).toFixed(2));
-    const totalUsed     = parseFloat((claimUsed + referUsed).toFixed(2));
-    const remaining     = parseFloat(Math.max(0, totalFund - totalUsed).toFixed(2));
+    const perAmt    = l.per_user_amount > 0 ? l.per_user_amount : l.max_range;
+    const totalFund = parseFloat((perAmt * l.max_users).toFixed(2));
+    const claimUsed = parseFloat((l.claimed_users * perAmt).toFixed(2));
+    const referUsed = parseFloat((l.refer_fund_used || 0).toFixed(2));
+    const totalUsed = parseFloat((claimUsed + referUsed).toFixed(2));
+    const remaining = parseFloat(Math.max(0, totalFund - totalUsed).toFixed(2));
 
     const obj = l.toObject ? l.toObject() : l;
+
+    // Access code: sirf "hai ya nahi" bhejo — actual code nahi bhejo (security)
+    const hasAccessCode = !!(obj.access_code && obj.access_code.trim());
+
     res.json({
       status: 'success',
-      lifafa: { ...obj, total_fund: totalFund, total_used: totalUsed, remaining }
+      lifafa: {
+        ...obj,
+        access_code:    hasAccessCode ? obj.access_code : '',  // Full code bhejo (claim verify ke liye client pe)
+        has_access_code: hasAccessCode,
+        total_fund:     totalFund,
+        total_used:     totalUsed,
+        remaining
+      }
     });
   } catch(e) {
     res.status(500).json({ status: 'error', message: e.message });
@@ -181,7 +260,6 @@ router.get('/:code', async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /lifafa/claim
-// Fund-based: sirf fund check, max_users secondary guard hai
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/claim', async (req, res) => {
   try {
@@ -197,7 +275,6 @@ router.post('/claim', async (req, res) => {
     if (await Transaction.findOne({ remark: rem }))
       return res.status(400).json({ status: 'error', message: 'Already claimed!' });
 
-    // Total fund
     const perAmt    = lifafa.per_user_amount > 0 ? lifafa.per_user_amount : lifafa.max_range;
     const totalFund = parseFloat((perAmt * lifafa.max_users).toFixed(2));
 
@@ -221,22 +298,18 @@ router.post('/claim', async (req, res) => {
     }
 
     // ── ATOMIC CLAIM ──────────────────────────────────────────────────────────
-    // Fund check: (claimed_users × perAmt) + refer_fund_used + amt <= totalFund
-    // refer_fund_used schema mein already hai ✅
-    // ─────────────────────────────────────────────────────────────────────────
     let claimDoc = null;
     for (let i = 0; i < 5; i++) {
       claimDoc = await Lifafa.findOneAndUpdate(
         {
           _id:    lifafa._id,
           status: 'active',
-          // Fund check: current claim_fund_used + refer_fund_used + naya amt <= totalFund
           $expr: {
             $lte: [
               { $add: [
-                { $multiply: ['$claimed_users', perAmt] },  // already claimed amount
-                { $ifNull: ['$refer_fund_used', 0] },       // refer bonuses diye gaye
-                amt                                          // naya claim
+                { $multiply: ['$claimed_users', perAmt] },
+                { $ifNull: ['$refer_fund_used', 0] },
+                amt
               ]},
               totalFund
             ]
@@ -257,7 +330,6 @@ router.post('/claim', async (req, res) => {
     const dt         = istTime();
     const newClaimed = claimDoc.claimed_users;
 
-    // Credit claimer
     await User.findByIdAndUpdate(user._id, { $inc: { balance: +amt } });
     await Transaction.create({
       receiver_id: user._id,
@@ -269,22 +341,16 @@ router.post('/claim', async (req, res) => {
     });
 
     // ── REFER BONUS ───────────────────────────────────────────────────────────
-    // Fund check: (claimed_users × perAmt) + refer_fund_used + rb <= totalFund
-    // claimDoc mein claimed_users already +1 ho chuka hai (naya claim include)
-    // ─────────────────────────────────────────────────────────────────────────
     let referBonus = 0;
     if (ref_code && lifafa.refer_bonus > 0) {
       const referrer = await User.findOne({ tg_id: ref_code.toString() });
-
       if (referrer && referrer.tg_id !== user.tg_id) {
         const rb = parseFloat(lifafa.refer_bonus.toFixed(2));
-
         let referDoc = null;
         for (let i = 0; i < 5; i++) {
           referDoc = await Lifafa.findOneAndUpdate(
             {
               _id: lifafa._id,
-              // Fund check after claim: (new claimed_users × perAmt) + refer_fund_used + rb <= totalFund
               $expr: {
                 $lte: [
                   { $add: [
@@ -296,13 +362,12 @@ router.post('/claim', async (req, res) => {
                 ]
               }
             },
-            { $inc: { refer_fund_used: rb } },  // ← schema ka field ✅
+            { $inc: { refer_fund_used: rb } },
             { new: true }
           );
           if (referDoc) break;
           await new Promise(r => setTimeout(r, 60));
         }
-
         if (referDoc) {
           referBonus = rb;
           await User.findByIdAndUpdate(referrer._id, { $inc: { balance: referBonus } });
@@ -314,7 +379,6 @@ router.post('/claim', async (req, res) => {
             status:      'success',
             tx_time:     now
           });
-
           if (referrer.tg_id) {
             sendTG(referrer.tg_id,
 `💰 *Refer Bonus Mila!*
@@ -353,7 +417,6 @@ Agali baar pehle claim karo! 🙏`
       }
     }
 
-    // TG to claimer
     if (user.tg_id) {
       sendTG(user.tg_id,
 `🎉 *Lifafa Claimed!*
@@ -371,8 +434,6 @@ Agali baar pehle claim karo! 🙏`
     }
 
     const creator = await User.findById(lifafa.creator_id).select('tg_id name');
-
-    // Final used = (new claimed_users × perAmt) + (refer_fund_used + referBonus)
     const finalClaimUsed = parseFloat((newClaimed * perAmt).toFixed(2));
     const finalReferUsed = parseFloat(((claimDoc.refer_fund_used || 0) + referBonus).toFixed(2));
     const finalUsed      = parseFloat((finalClaimUsed + finalReferUsed).toFixed(2));
@@ -432,5 +493,4 @@ Agali baar pehle claim karo! 🙏`
 });
 
 module.exports = router;
-
-    
+      
