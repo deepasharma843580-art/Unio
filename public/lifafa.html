@@ -124,20 +124,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{background:#16a34a}
 
-/* Channel tabs — Public / Private */
-.ch-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin-bottom:.65rem}
-.ch-tab{padding:.45rem;border:2px solid #e2e8f0;border-radius:.75rem;font-size:.68rem;font-weight:800;cursor:pointer;font-family:inherit;background:white;color:#94a3b8;text-transform:uppercase;letter-spacing:.03em;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.3rem}
-.ch-tab.active-pub{border-color:#0057ff;background:#eff6ff;color:#0057ff}
-.ch-tab.active-priv{border-color:#be185d;background:#fdf2f8;color:#be185d}
-/* Public fields */
-.public-fields{display:block}
-.public-fields.hidden{display:none}
-/* Private fields */
-.private-fields{display:none}
-.private-fields.show{display:block}
-.private-field-row{display:flex;align-items:center;gap:.4rem;background:white;border:2px solid #fce7f3;border-radius:.75rem;padding:.55rem .8rem;margin-top:.4rem}
-.private-field-row i{color:#be185d;font-size:.75rem;flex-shrink:0}
-.private-field-row input{flex:1;background:transparent;border:none;font-size:.78rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
+
 </style>
 </head>
 <body>
@@ -266,15 +253,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels</div>
     <div id="channels-container">
       <div class="channel-item" id="ch-item-0">
-        <div class="ch-tabs">
-          <button class="ch-tab active-pub" id="ch-tab-pub-0" onclick="selectChType(0,'public')">
-            <i class="fa-solid fa-globe"></i> Public
-          </button>
-          <button class="ch-tab" id="ch-tab-priv-0" onclick="selectChType(0,'private')">
-            <i class="fa-solid fa-lock"></i> Private
-          </button>
-        </div>
-        <div class="public-fields" id="ch-pub-0">
           <div class="channel-item-row">
             <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
             <input type="url" placeholder="https://t.me/yourchannel" class="ch-input">
@@ -285,27 +263,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
             <span>Make <b>@OTP_UNIO_BOT</b> admin in your channel</span>
             <span class="arrow">→</span>
           </a>
-        </div>
-        <div class="private-fields" id="ch-private-0">
-          <div class="channel-item-row" style="margin-bottom:.4rem">
-            <i class="fa-brands fa-telegram" style="color:#be185d;font-size:.9rem;flex-shrink:0"></i>
-            <input type="url" placeholder="https://t.me/+xxxxxxxx (invite link)" class="ch-input">
-            <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div class="private-field-row">
-            <i class="fa-solid fa-hashtag"></i>
-            <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
-          </div>
-          <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.5rem;line-height:1.6;background:#fdf2f8;border-radius:.6rem;padding:.5rem .75rem;">
-            🔒 Private channel ke liye:<br>
-            1⃣ Bot ko admin banao &nbsp;2⃣ Invite link daalo &nbsp;3⃣ Chat ID daalo
-          </div>
-          <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" style="margin-top:.5rem">
-            <i class="fa-solid fa-robot"></i>
-            <span>Make <b>@OTP_UNIO_BOT</b> admin in private channel</span>
-            <span class="arrow">→</span>
-          </a>
-        </div>
       </div>
     </div>
     <button class="add-ch-btn" onclick="addChannel()"><i class="fa-solid fa-plus"></i> Add Channel</button>
@@ -425,27 +382,6 @@ function toggleAccess(cb) {
   if (!cb.checked) document.getElementById('c-access').value = '';
 }
 
-function selectChType(idx, type) {
-  const pubTab   = document.getElementById('ch-tab-pub-'   + idx);
-  const privTab  = document.getElementById('ch-tab-priv-'  + idx);
-  const pubDiv   = document.getElementById('ch-pub-'       + idx);
-  const privDiv  = document.getElementById('ch-private-'   + idx);
-  const item     = document.getElementById('ch-item-'      + idx);
-  if (type === 'private') {
-    pubTab.className  = 'ch-tab';
-    privTab.className = 'ch-tab active-priv';
-    if (pubDiv)  pubDiv.classList.add('hidden');
-    if (privDiv) privDiv.classList.add('show');
-    if (item)    item.style.borderColor = '#f9a8d4';
-  } else {
-    pubTab.className  = 'ch-tab active-pub';
-    privTab.className = 'ch-tab';
-    if (pubDiv)  pubDiv.classList.remove('hidden');
-    if (privDiv) privDiv.classList.remove('show');
-    if (item)    item.style.borderColor = '#f1f5f9';
-  }
-}
-
 function changeType() {
   const t = document.getElementById('c-type').value;
   document.getElementById('f-amt').style.display   = t === 'scratch' ? 'none'  : 'block';
@@ -490,46 +426,16 @@ function addChannel() {
   div.className = 'channel-item';
   div.id = 'ch-item-' + idx;
   div.innerHTML = `
-    <div class="ch-tabs">
-      <button class="ch-tab active-pub" id="ch-tab-pub-${idx}" onclick="selectChType(${idx},'public')">
-        <i class="fa-solid fa-globe"></i> Public
-      </button>
-      <button class="ch-tab" id="ch-tab-priv-${idx}" onclick="selectChType(${idx},'private')">
-        <i class="fa-solid fa-lock"></i> Private
-      </button>
+    <div class="channel-item-row">
+      <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
+      <input type="url" placeholder="https://t.me/yourchannel" class="ch-input">
+      <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div class="public-fields" id="ch-pub-${idx}">
-      <div class="channel-item-row">
-        <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
-        <input type="url" placeholder="https://t.me/yourchannel" class="ch-input">
-        <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note">
-        <i class="fa-solid fa-robot"></i>
-        <span>Make <b>@OTP_UNIO_BOT</b> admin in your channel</span>
-        <span class="arrow">→</span>
-      </a>
-    </div>
-    <div class="private-fields" id="ch-private-${idx}">
-      <div class="channel-item-row" style="margin-bottom:.4rem">
-        <i class="fa-brands fa-telegram" style="color:#be185d;font-size:.9rem;flex-shrink:0"></i>
-        <input type="url" placeholder="https://t.me/+xxxxxxxx (invite link)" class="ch-input">
-        <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="private-field-row">
-        <i class="fa-solid fa-hashtag"></i>
-        <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
-      </div>
-      <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.5rem;line-height:1.6;background:#fdf2f8;border-radius:.6rem;padding:.5rem .75rem;">
-        🔒 Private channel ke liye:<br>
-        1⃣ Bot ko admin banao &nbsp;2⃣ Invite link daalo &nbsp;3⃣ Chat ID daalo
-      </div>
-      <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" style="margin-top:.5rem">
-        <i class="fa-solid fa-robot"></i>
-        <span>Make <b>@OTP_UNIO_BOT</b> admin in private channel</span>
-        <span class="arrow">→</span>
-      </a>
-    </div>`;
+    <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note">
+      <i class="fa-solid fa-robot"></i>
+      <span>Make <b>@OTP_UNIO_BOT</b> admin in your channel</span>
+      <span class="arrow">→</span>
+    </a>`;
   container.appendChild(div);
 }
 
@@ -566,26 +472,12 @@ async function createLifafa() {
   if (userBalance < total)
     return showMsg(`❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`, 'error');
 
-  // Collect channels
+  // Collect channels (public only)
   const channels = [];
   document.querySelectorAll('.channel-item').forEach(item => {
-    const urlInp    = item.querySelector('.ch-input');
-    const chatIdInp = item.querySelector('.ch-chatid');
-    // Tab-based type detect: private-fields div visible hai to private
-    const privDiv   = item.querySelector('.private-fields');
-    const isPrivate = privDiv && privDiv.classList.contains('show');
-    const url       = urlInp?.value.trim() || '';
+    const url = item.querySelector('.ch-input')?.value.trim() || '';
     if (!url) return;
-    if (isPrivate) {
-      channels.push({
-        url,
-        type:        'private',
-        chat_id:     chatIdInp?.value.trim() || '',
-        invite_link: url  // URL hi invite link hai private mein
-      });
-    } else {
-      channels.push({ url, type: 'public' });
-    }
+    channels.push({ url, type: 'public' });
   });
 
   const btn = document.getElementById('create-btn');
