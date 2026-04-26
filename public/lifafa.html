@@ -28,15 +28,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .range-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 
 .refer-box{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:2px solid #fed7aa;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem}
-.refer-box-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.refer-box-header{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.85rem}
+.refer-box-header-left{display:flex;align-items:center;gap:.5rem}
 .refer-box-header i{color:#ea580c;font-size:1rem}
 .refer-box-header span{font-size:.72rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.05em}
 .refer-row{display:flex;gap:.6rem;align-items:center}
 .refer-prefix{font-size:.8rem;font-weight:800;color:#92400e;white-space:nowrap}
 .refer-inp{flex:1;padding:.75rem 1rem;background:white;border:2px solid #fed7aa;border-radius:.85rem;font-size:.88rem;font-weight:700;outline:none;font-family:inherit;color:#0f172a}
 .refer-inp:focus{border-color:#ea580c}
+.refer-inp:disabled{opacity:.4;cursor:not-allowed}
 .refer-note{font-size:.62rem;color:#92400e;font-weight:600;margin-top:.5rem;line-height:1.5}
 .refer-note b{color:#ea580c}
+
+/* Toggle Switch */
+.toggle-switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:.3s;border-radius:22px}
+.toggle-slider:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%}
+.toggle-switch input:checked + .toggle-slider{background:#0057ff}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(18px)}
+.toggle-switch.orange input:checked + .toggle-slider{background:#ea580c}
+
+/* Access Code Box */
+.access-box{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;border-radius:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.access-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.access-box-header-left{display:flex;align-items:center;gap:.5rem}
+.access-box-header i{color:#0284c7;font-size:1rem}
+.access-box-header span{font-size:.72rem;font-weight:800;color:#075985;text-transform:uppercase;letter-spacing:.05em}
+.access-inp{width:100%;padding:.75rem 1rem;background:white;border:2px solid #bae6fd;border-radius:.85rem;font-size:.88rem;font-weight:700;outline:none;font-family:inherit;color:#0f172a}
+.access-inp:focus{border-color:#0284c7}
+.access-inp:disabled{opacity:.4;cursor:not-allowed}
+.access-note{font-size:.62rem;color:#075985;font-weight:600;margin-top:.5rem;line-height:1.5}
 
 /* Deduction */
 .deduction-box{background:#fff7ed;border:2px solid #fed7aa;border-radius:1rem;padding:1rem;margin-bottom:1.25rem;display:none}
@@ -45,9 +67,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .deduction-row.total{font-size:.85rem;font-weight:900;color:#ea580c;padding-top:.5rem;border-top:1px solid #fed7aa;margin-bottom:0}
 .deduction-row.sub{color:#b45309;font-size:.7rem}
 
-.channel-item{background:#f8fafc;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
-.channel-item input{flex:1;background:transparent;border:none;font-size:.85rem;font-weight:600;outline:none;font-family:inherit}
-.channel-item button{background:none;border:none;color:#dc2626;cursor:pointer;font-size:.9rem;padding:.25rem}
+/* Channel items */
+.channel-section{margin-bottom:1.25rem}
+.channel-item{background:#f8fafc;border-radius:1rem;padding:.75rem 1rem;margin-bottom:.75rem;border:2px solid #f1f5f9}
+.channel-item-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.channel-item-row:last-child{margin-bottom:0}
+.channel-item input{flex:1;background:transparent;border:none;font-size:.85rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
+.channel-item .ch-remove{background:none;border:none;color:#dc2626;cursor:pointer;font-size:.9rem;padding:.25rem;flex-shrink:0}
+.ch-type-badge{font-size:.55rem;font-weight:800;padding:.2rem .5rem;border-radius:2rem;text-transform:uppercase;flex-shrink:0}
+.ch-type-badge.public{background:#dbeafe;color:#1d4ed8}
+.ch-type-badge.private{background:#fce7f3;color:#be185d}
+
+/* Bot admin note */
+.bot-note{display:flex;align-items:center;gap:.5rem;background:#f5f3ff;border:2px solid #ddd6fe;border-radius:.85rem;padding:.6rem .9rem;margin-top:.5rem;font-size:.65rem;font-weight:700;color:#6d28d9;text-decoration:none;cursor:pointer}
+.bot-note i{color:#7c3aed;font-size:.9rem;flex-shrink:0}
+.bot-note span{flex:1;line-height:1.4}
+.bot-note .arrow{font-size:.7rem;opacity:.6;flex-shrink:0}
+.not-admin-badge{display:inline-block;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:2rem;font-size:.6rem;font-weight:800;padding:.15rem .5rem;margin-left:.4rem;text-transform:uppercase}
+
 .add-ch-btn{background:#f0f4ff;border:2px dashed #bfdbfe;border-radius:1rem;padding:.75rem;width:100%;font-size:.75rem;font-weight:700;color:#0057ff;cursor:pointer;font-family:inherit;margin-bottom:1.25rem}
 
 .btn{width:100%;padding:1rem;background:#0057ff;color:white;border:none;border-radius:1rem;font-size:.85rem;font-weight:800;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem}
@@ -86,6 +123,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
 .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:white;padding:.6rem 1.2rem;border-radius:2rem;font-size:.74rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{background:#16a34a}
+
+/* Private channel extra fields */
+.private-fields{margin-top:.6rem;display:none}
+.private-fields.show{display:block}
+.private-field-row{display:flex;align-items:center;gap:.4rem;background:white;border:2px solid #fce7f3;border-radius:.75rem;padding:.55rem .8rem;margin-top:.4rem}
+.private-field-row i{color:#be185d;font-size:.75rem;flex-shrink:0}
+.private-field-row input{flex:1;background:transparent;border:none;font-size:.78rem;font-weight:600;outline:none;font-family:inherit;color:#0f172a}
+.ch-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem}
+.ch-toggle-label{font-size:.65rem;font-weight:800;color:#94a3b8;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -153,19 +199,53 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
       <input type="number" id="c-users" placeholder="Kitne users expect karte ho?" oninput="calcDeduction()">
     </div>
 
-    <!-- Refer & Earn -->
+    <!-- Refer & Earn with Toggle -->
     <div class="refer-box">
       <div class="refer-box-header">
-        <i class="fa-solid fa-people-arrows"></i>
-        <span>Refer & Earn (Optional)</span>
+        <div class="refer-box-header-left">
+          <i class="fa-solid fa-people-arrows"></i>
+          <span>Refer & Earn (Optional)</span>
+        </div>
+        <label class="toggle-switch orange">
+          <input type="checkbox" id="refer-toggle" onchange="toggleRefer(this)">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
-      <div class="refer-row">
-        <span class="refer-prefix">₹</span>
-        <input type="number" class="refer-inp" id="c-refer" placeholder="Bonus per refer (e.g. 0.50)" step="0.01" min="0" oninput="calcDeduction()">
+      <div id="refer-fields" style="display:none">
+        <div class="refer-row">
+          <span class="refer-prefix">₹</span>
+          <input type="number" class="refer-inp" id="c-refer" placeholder="Bonus per refer (e.g. 0.50)" step="0.01" min="0" oninput="calcDeduction()">
+        </div>
+        <div class="refer-note">
+          Refer bonus <b>lifafa fund mein se</b> niklegaa — aapke wallet se 1 paisa extra nahi jaayega.<br>
+          Jab fund khatam hoga, lifafa automatically band ho jaayega. <b>Koi extra paisa nahi jaayega.</b>
+        </div>
       </div>
-      <div class="refer-note">
-        Refer bonus <b>lifafa fund mein se</b> niklegaa — aapke wallet se 1 paisa extra nahi jaayega.<br>
-        Jab fund khatam hoga, lifafa automatically band ho jaayega. <b>Koi extra paisa nahi jaayega.</b>
+      <div id="refer-off-note" style="font-size:.65rem;color:#92400e;font-weight:600">
+        Switch on karke refer bonus set karo
+      </div>
+    </div>
+
+    <!-- Access Code with Toggle -->
+    <div class="access-box">
+      <div class="access-box-header">
+        <div class="access-box-header-left">
+          <i class="fa-solid fa-lock"></i>
+          <span>Access Code (Optional)</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="access-toggle" onchange="toggleAccess(this)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="access-fields" style="display:none">
+        <input type="text" class="access-inp" id="c-access" placeholder="Enter secret access code (e.g. UNIO123)">
+        <div class="access-note">
+          Sirf wahi user claim kar sakta hai jo yeh code jaanta ho. Claim page pe channels verify ke baad code enter karna padega.
+        </div>
+      </div>
+      <div id="access-off-note" style="font-size:.65rem;color:#075985;font-weight:600">
+        Switch on karke access code set karo (optional security)
       </div>
     </div>
 
@@ -179,10 +259,43 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:10
     <!-- Channels -->
     <div class="section-title"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Telegram Channels</div>
     <div id="channels-container">
-      <div class="channel-item">
-        <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
-        <input type="url" placeholder="https://t.me/channel" class="ch-input">
-        <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
+      <div class="channel-item" id="ch-item-0">
+        <div class="ch-toggle-row">
+          <span class="ch-toggle-label"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Channel Type</span>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-size:.65rem;font-weight:700;color:#94a3b8" id="ch-type-label-0">Public</span>
+            <label class="toggle-switch">
+              <input type="checkbox" onchange="toggleChType(this,0)">
+              <span class="toggle-slider"></span>
+            </label>
+            <span style="font-size:.65rem;font-weight:700;color:#be185d">Private</span>
+          </div>
+        </div>
+        <div class="channel-item-row">
+          <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
+          <input type="url" placeholder="https://t.me/channel" class="ch-input">
+          <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <!-- Bot Admin Note -->
+        <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" id="ch-bot-note-0">
+          <i class="fa-solid fa-robot"></i>
+          <span>Make <b>@OTP_UNIO_BOT</b> admin in your channel — click here to open bot</span>
+          <span class="arrow">→</span>
+        </a>
+        <!-- Private fields -->
+        <div class="private-fields" id="ch-private-0">
+          <div class="private-field-row">
+            <i class="fa-solid fa-hashtag"></i>
+            <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
+          </div>
+          <div class="private-field-row">
+            <i class="fa-solid fa-link"></i>
+            <input type="url" placeholder="Invite Link (https://t.me/+xxxxx)" class="ch-invite">
+          </div>
+          <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.4rem;line-height:1.5">
+            ⚠️ Private channel ke liye Chat ID aur Invite Link dono zaroori hain. Bot ko channel ka admin banana padega.
+          </div>
+        </div>
       </div>
     </div>
     <button class="add-ch-btn" onclick="addChannel()"><i class="fa-solid fa-plus"></i> Add Channel</button>
@@ -255,8 +368,8 @@ let userBalance = 0;
 let baseLink    = '';
 let referLink   = '';
 let userTgId    = userData.tg_id || '';
+let chCount     = 1;
 
-// Init: balance + tgId ek saath fetch karo
 async function initPage() {
   try {
     const br = await fetch(API + '/wallet/balance', {
@@ -271,9 +384,7 @@ async function initPage() {
 
   if (!userTgId) {
     try {
-      const mr = await fetch(API + '/auth/me', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
+      const mr = await fetch(API + '/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
       const md = await mr.json();
       if (md.status === 'success') {
         userTgId = md.user?.tg_id || '';
@@ -289,6 +400,36 @@ async function initPage() {
 
 initPage();
 
+function toggleRefer(cb) {
+  document.getElementById('refer-fields').style.display  = cb.checked ? 'block' : 'none';
+  document.getElementById('refer-off-note').style.display = cb.checked ? 'none' : 'block';
+  if (!cb.checked) {
+    document.getElementById('c-refer').value = '';
+    calcDeduction();
+  }
+}
+
+function toggleAccess(cb) {
+  document.getElementById('access-fields').style.display  = cb.checked ? 'block' : 'none';
+  document.getElementById('access-off-note').style.display = cb.checked ? 'none' : 'block';
+  if (!cb.checked) document.getElementById('c-access').value = '';
+}
+
+function toggleChType(cb, idx) {
+  const privateDiv = document.getElementById('ch-private-' + idx);
+  const label      = document.getElementById('ch-type-label-' + idx);
+  const item       = privateDiv?.closest('.channel-item');
+  if (cb.checked) {
+    if (privateDiv) privateDiv.classList.add('show');
+    if (label) label.textContent = 'Private';
+    if (item) item.style.borderColor = '#f9a8d4';
+  } else {
+    if (privateDiv) privateDiv.classList.remove('show');
+    if (label) label.textContent = 'Public';
+    if (item) item.style.borderColor = '#f1f5f9';
+  }
+}
+
 function changeType() {
   const t = document.getElementById('c-type').value;
   document.getElementById('f-amt').style.display   = t === 'scratch' ? 'none'  : 'block';
@@ -303,21 +444,14 @@ function calcDeduction() {
   const amt   = parseFloat(document.getElementById('c-amt').value)  || 0;
   const max   = parseFloat(document.getElementById('c-max').value)  || 0;
   const refer = parseFloat(document.getElementById('c-refer').value) || 0;
-
-  // Creator sirf base fund pay karta hai
   const perAmt = t === 'scratch' ? max : amt;
   const base   = parseFloat((perAmt * users).toFixed(2));
   const box    = document.getElementById('deduction-box');
 
   if (base > 0 && users > 0) {
-    const calc = t === 'scratch'
-      ? `Max ₹${max} × ${users} users`
-      : `₹${amt} × ${users} users`;
-
+    const calc = t === 'scratch' ? `Max ₹${max} × ${users} users` : `₹${amt} × ${users} users`;
     document.getElementById('d-base').textContent  = '₹' + base.toFixed(2) + ' (' + calc + ')';
     document.getElementById('d-total').textContent = '₹' + base.toFixed(2);
-
-    // Refer note (informational only — fund mein se hi jaayega)
     const referRow = document.getElementById('d-refer-row');
     if (refer > 0 && users > 0) {
       const maxReferTotal = parseFloat((refer * users).toFixed(2));
@@ -326,7 +460,6 @@ function calcDeduction() {
     } else {
       referRow.style.display = 'none';
     }
-
     box.classList.add('show');
   } else {
     box.classList.remove('show');
@@ -336,13 +469,48 @@ function calcDeduction() {
 function addChannel() {
   const container = document.getElementById('channels-container');
   if (container.children.length >= 10) return toast('Max 10 channels!');
+  const idx = chCount++;
   const div = document.createElement('div');
   div.className = 'channel-item';
-  div.innerHTML = `<i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
-    <input type="url" placeholder="https://t.me/channel" class="ch-input">
-    <button onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>`;
+  div.id = 'ch-item-' + idx;
+  div.innerHTML = `
+    <div class="ch-toggle-row">
+      <span class="ch-toggle-label"><i class="fa-brands fa-telegram" style="color:#0088cc"></i> Channel Type</span>
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <span style="font-size:.65rem;font-weight:700;color:#94a3b8" id="ch-type-label-${idx}">Public</span>
+        <label class="toggle-switch">
+          <input type="checkbox" onchange="toggleChType(this,${idx})">
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-size:.65rem;font-weight:700;color:#be185d">Private</span>
+      </div>
+    </div>
+    <div class="channel-item-row">
+      <i class="fa-brands fa-telegram" style="color:#0088cc;font-size:.9rem;flex-shrink:0"></i>
+      <input type="url" placeholder="https://t.me/channel" class="ch-input">
+      <button class="ch-remove" onclick="removeCh(this)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <a href="https://t.me/OTP_UNIO_BOT" target="_blank" class="bot-note" id="ch-bot-note-${idx}">
+      <i class="fa-solid fa-robot"></i>
+      <span>Make <b>@OTP_UNIO_BOT</b> admin in your channel — click here to open bot</span>
+      <span class="arrow">→</span>
+    </a>
+    <div class="private-fields" id="ch-private-${idx}">
+      <div class="private-field-row">
+        <i class="fa-solid fa-hashtag"></i>
+        <input type="text" placeholder="Chat ID (e.g. -1001234567890)" class="ch-chatid">
+      </div>
+      <div class="private-field-row">
+        <i class="fa-solid fa-link"></i>
+        <input type="url" placeholder="Invite Link (https://t.me/+xxxxx)" class="ch-invite">
+      </div>
+      <div style="font-size:.6rem;color:#be185d;font-weight:600;margin-top:.4rem;line-height:1.5">
+        ⚠️ Private channel ke liye Chat ID aur Invite Link dono zaroori hain. Bot ko channel ka admin banana padega.
+      </div>
+    </div>`;
   container.appendChild(div);
 }
+
 function removeCh(btn) { btn.closest('.channel-item').remove(); }
 
 function showMsg(text, type) {
@@ -352,33 +520,50 @@ function showMsg(text, type) {
 }
 
 async function createLifafa() {
-  const code  = document.getElementById('c-code').value.trim().toUpperCase();
-  const type  = document.getElementById('c-type').value;
-  const users = parseInt(document.getElementById('c-users').value)   || 0;
-  const amt   = parseFloat(document.getElementById('c-amt').value)   || 0;
-  const min   = parseFloat(document.getElementById('c-min').value)   || 0;
-  const max   = parseFloat(document.getElementById('c-max').value)   || 0;
-  const toss  = document.getElementById('c-toss').value;
-  const refer = parseFloat(document.getElementById('c-refer').value) || 0;
+  const code   = document.getElementById('c-code').value.trim().toUpperCase();
+  const type   = document.getElementById('c-type').value;
+  const users  = parseInt(document.getElementById('c-users').value)   || 0;
+  const amt    = parseFloat(document.getElementById('c-amt').value)   || 0;
+  const min    = parseFloat(document.getElementById('c-min').value)   || 0;
+  const max    = parseFloat(document.getElementById('c-max').value)   || 0;
+  const toss   = document.getElementById('c-toss').value;
+  const refer  = document.getElementById('refer-toggle').checked ? (parseFloat(document.getElementById('c-refer').value) || 0) : 0;
+  const access = document.getElementById('access-toggle').checked ? document.getElementById('c-access').value.trim() : '';
 
   if (!code)      return showMsg('❌ Unique code required!', 'error');
   if (users <= 0) return showMsg('❌ Estimated users required!', 'error');
   if (type !== 'scratch' && amt <= 0) return showMsg('❌ Amount required!', 'error');
   if (type === 'scratch' && max <= 0) return showMsg('❌ Max amount required!', 'error');
+  if (document.getElementById('access-toggle').checked && !access) return showMsg('❌ Access code enter karo ya switch off karo!', 'error');
 
-  // Refer bonus validation (frontend)
   const perAmt = type === 'scratch' ? max : amt;
   if (refer > 0 && refer >= perAmt) {
     return showMsg(`❌ Refer bonus (₹${refer}) per user amount (₹${perAmt}) se kam hona chahiye!`, 'error');
   }
-
-  // Creator sirf base fund pay karta hai
   const total = parseFloat((perAmt * users).toFixed(2));
-
   if (userBalance < total)
     return showMsg(`❌ Insufficient Balance!\nRequired: ₹${total.toFixed(2)}\nAvailable: ₹${userBalance.toFixed(2)}`, 'error');
 
-  const channels = [...document.querySelectorAll('.ch-input')].map(i => i.value.trim()).filter(v => v);
+  // Collect channels
+  const channels = [];
+  document.querySelectorAll('.channel-item').forEach(item => {
+    const urlInp    = item.querySelector('.ch-input');
+    const chatIdInp = item.querySelector('.ch-chatid');
+    const inviteInp = item.querySelector('.ch-invite');
+    const isPrivate = item.querySelector('input[type="checkbox"]')?.checked || false;
+    const url       = urlInp?.value.trim() || '';
+    if (!url) return;
+    if (isPrivate) {
+      channels.push({
+        url,
+        type:        'private',
+        chat_id:     chatIdInp?.value.trim() || '',
+        invite_link: inviteInp?.value.trim() || ''
+      });
+    } else {
+      channels.push({ url, type: 'public' });
+    }
+  });
 
   const btn = document.getElementById('create-btn');
   btn.disabled = true;
@@ -388,7 +573,7 @@ async function createLifafa() {
     const r = await fetch(API + '/lifafa/create', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body:    JSON.stringify({ code, type, amt, min_range: min, max_range: max, toss_answer: toss, users, channels, refer_bonus: refer })
+      body:    JSON.stringify({ code, type, amt, min_range: min, max_range: max, toss_answer: toss, users, channels, refer_bonus: refer, access_code: access })
     });
     const d = await r.json();
     if (d.status === 'success') {
@@ -411,9 +596,10 @@ async function createLifafa() {
 
       if (channels.length > 0) {
         const chList = document.getElementById('r-channels-list');
-        chList.innerHTML = channels.map(c =>
-          `<a href="${c}" target="_blank" style="display:block;color:#0088cc;word-break:break-all">📢 ${c}</a>`
-        ).join('');
+        chList.innerHTML = channels.map(c => {
+          const label = c.type === 'private' ? '🔒 Private' : '📢 Public';
+          return `<a href="${c.url}" target="_blank" style="display:block;color:#0088cc;word-break:break-all">${label}: ${c.url}</a>`;
+        }).join('');
         document.getElementById('r-channels-section').style.display = 'block';
       } else {
         document.getElementById('r-channels-section').style.display = 'none';
@@ -422,7 +608,6 @@ async function createLifafa() {
       document.getElementById('form-card').style.display     = 'none';
       document.getElementById('create-result').style.display = 'block';
       document.getElementById('create-result').scrollIntoView({ behavior: 'smooth' });
-
       userBalance -= total;
       document.getElementById('balance').textContent = userBalance.toFixed(2);
     } else {
@@ -444,9 +629,7 @@ function copyReferLink() {
 function shareReferLink() {
   if (navigator.share) {
     navigator.share({ title: 'UNIO Lifafa', text: 'Claim karo aur reward pao!', url: referLink });
-  } else {
-    copyReferLink();
-  }
+  } else { copyReferLink(); }
 }
 function createAnother() {
   document.getElementById('create-result').style.display = 'none';
