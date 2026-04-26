@@ -126,8 +126,15 @@ router.post('/create', auth, async (req, res) => {
     }
 
     const notAdmin = adminCheckResults.filter(c => !c.isAdmin);
-    // Not admin channels ko warn karo but create karne do
-    // (Frontend pe red badge dikhega — backend mein channels mein admin_status save karo)
+
+    // ❌ Bot admin nahi hai — create block karo
+    if (notAdmin.length > 0) {
+      return res.status(400).json({
+        status:    'error',
+        message:   `❌ Bot @OTP_UNIO_BOT admin nahi hai in channels:\n${notAdmin.map(c => c.url).join('\n')}\n\nPehle bot ko admin banao, phir try karo.`,
+        not_admin: notAdmin.map(c => c.url)
+      });
+    }
     // ─────────────────────────────────────────────────────────────────────────
 
     // Deduct from creator
@@ -493,4 +500,5 @@ Agali baar pehle claim karo! 🙏`
 });
 
 module.exports = router;
+
       
