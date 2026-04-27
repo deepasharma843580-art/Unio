@@ -477,14 +477,14 @@ async function verifyMobile() {
 /* Show TG ID bar at top */
 function showTgBar(tgId) {
   document.getElementById('top-tg-id').textContent = tgId;
-  // tg://user?id=XXXXX → opens Telegram app directly on that user's profile
+  // tg://openmessage?user_id=XXXXX → opens Telegram app directly on that user's profile
   // Fallback: if user clicks and app isn't installed, nothing happens (better than wrong page)
   const tgBtn = document.getElementById('tg-view-link');
-  tgBtn.href = 'tg://user?id=' + tgId;
+  tgBtn.href = 'tg://openmessage?user_id=' + tgId;
   // Also try opening in app on click (some browsers need window.open)
   tgBtn.onclick = function(e) {
     e.preventDefault();
-    window.location.href = 'tg://user?id=' + tgId;
+    window.location.href = 'tg://openmessage?user_id=' + tgId;
   };
   document.getElementById('tg-id-bar-wrap').style.display = 'block';
 }
